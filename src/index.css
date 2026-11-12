@@ -45,6 +45,25 @@
   --scrim: rgba(38, 32, 27, 0.4);
   --stage1: #F6EFE0;
   --stage2: #EADFC8;
+
+  /* Laut Kura (preview redesign): langit, laut, warna identitas modul, maskot */
+  --sky: #CDEEF5;
+  --sky-ink: #0D3B4A;
+  --sky-ink-2: #2E5F6E;
+  --sea-1: #2BB3CC;
+  --sea-2: #0E7F9C;
+  --foam: #FFFFFF;
+  --mod-bayi: #FF8C6B;
+  --mod-bayi-fg: #4A1608;
+  --mod-bayi-tint: #FFE6DD;
+  --mod-uang: #FFC53D;
+  --mod-uang-fg: #4A3200;
+  --mod-uang-tint: #FFF2CC;
+  --kura-shell: #2FBF71;
+  --kura-shell-line: #157A45;
+  --kura-skin: #FFC53D;
+  --kura-ink: #26201B;
+  --shadow-float: 0 10px 24px -10px rgba(13, 59, 74, 0.35), 0 2px 6px -2px rgba(13, 59, 74, 0.12);
 }
 
 [data-theme="dark"] {
@@ -59,6 +78,24 @@
   --text-3: #8C8274;
   --stage1: #26302B;
   --stage2: #1A211D;
+
+  --sky: #0B2530;
+  --sky-ink: #E6F6FA;
+  --sky-ink-2: #A9CFD9;
+  --sea-1: #14607A;
+  --sea-2: #0C4458;
+  --foam: #1B3C49;
+  --mod-bayi: #FF9D80;
+  --mod-bayi-fg: #3A1206;
+  --mod-bayi-tint: #4A261C;
+  --mod-uang: #FFD166;
+  --mod-uang-fg: #3A2800;
+  --mod-uang-tint: #453610;
+  --kura-shell: #3BCB7F;
+  --kura-shell-line: #0F5C33;
+  --kura-skin: #FFD166;
+  --kura-ink: #10201A;
+  --shadow-float: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
 
   --primary: #76B495;
   --primary-hover: #8AC3A6;
@@ -95,6 +132,20 @@
 @theme {
   --font-serif: "Fraunces", Georgia, serif;
   --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
+  --font-display: "Fredoka", "DM Sans", system-ui, sans-serif;
+
+  --color-sky: var(--sky);
+  --color-sky-ink: var(--sky-ink);
+  --color-sky-ink-2: var(--sky-ink-2);
+  --color-sea-1: var(--sea-1);
+  --color-sea-2: var(--sea-2);
+  --color-foam: var(--foam);
+  --color-mod-bayi: var(--mod-bayi);
+  --color-mod-bayi-fg: var(--mod-bayi-fg);
+  --color-mod-bayi-tint: var(--mod-bayi-tint);
+  --color-mod-uang: var(--mod-uang);
+  --color-mod-uang-fg: var(--mod-uang-fg);
+  --color-mod-uang-tint: var(--mod-uang-tint);
 
   --color-bg: var(--bg);
   --color-bg-sidebar: var(--bg-sidebar);
@@ -146,6 +197,33 @@ h1, h2, h3, .font-serif-title {
   letter-spacing: -0.01em;
   font-weight: 500;
 }
+
+/* Laut Kura: judul bulat. Ditulis di sini (bukan utility) supaya menang dari aturan h1/h2 di atas. */
+.font-display,
+h1.font-display,
+h2.font-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+@keyframes kura-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-7px) rotate(2deg); }
+}
+@keyframes ombak-geser {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes gelembung-naik {
+  0% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateY(-70px); opacity: 0; }
+}
+.kura-bob { animation: kura-bob 3.6s ease-in-out infinite; transform-origin: 50% 60%; }
+.ombak-belakang { animation: ombak-geser 14s linear infinite; }
+.ombak-depan { animation: ombak-geser 9s linear infinite; }
+.gelembung { animation: gelembung-naik 4s ease-in infinite; }
 
 /* Subtle soft elevation card utility */
 .card-elevated {
