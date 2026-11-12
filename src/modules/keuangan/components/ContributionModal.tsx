@@ -76,17 +76,17 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
       <div
         role="dialog"
         aria-modal="true"
-        className="bg-surface rounded-[12px] max-w-[420px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover"
+        className="bg-surface rounded-card max-w-[420px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover"
       >
         <div className="flex items-center justify-between border-b border-border pb-3">
-          <h2 className="text-[18px] font-serif font-bold text-text">
+          <h2 className="text-[18px] font-serif font-semibold text-text">
             {mode === "deposit" ? "Setor ke Tabungan" : "Tarik dari Tabungan"}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup"
-            className="p-1 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+            className="p-1 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -117,7 +117,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                   setError("");
                 }}
                 placeholder="0"
-                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
                   error ? "border-danger" : "border-border hover:border-border-strong"
                 }`}
               />
@@ -129,14 +129,14 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-[10px] bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
+              className="px-5 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
             >
               {mode === "deposit" ? "Setor" : "Tarik"}
             </button>

@@ -70,7 +70,7 @@ export const TransaksiPage: React.FC = () => {
       {/* Top Header & Month Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-serif font-bold text-text">Daftar Transaksi</h1>
+          <h1 className="text-[22px] font-serif font-semibold text-text">Daftar Transaksi</h1>
           <p className="text-[13px] text-text-2">
             Riwayat pemasukan dan pengeluaran bulan {selectedMonth}.
           </p>
@@ -80,10 +80,10 @@ export const TransaksiPage: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-surface rounded-[12px] border border-border p-4 space-y-3 shadow-card">
+      <div className="bg-surface rounded-card border border-border p-4 space-y-3 shadow-card">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Type Filter Chips */}
-          <div className="flex items-center gap-1.5 bg-surface-sunken p-1 rounded-[10px] border border-border shrink-0">
+          <div className="flex items-center gap-1.5 bg-surface-sunken p-1 rounded-control border border-border shrink-0">
             {[
               { id: "all", label: "Semua" },
               { id: "expense", label: "Pengeluaran" },
@@ -93,7 +93,7 @@ export const TransaksiPage: React.FC = () => {
                 key={chip.id}
                 type="button"
                 onClick={() => setTypeFilter(chip.id as any)}
-                className={`px-3 py-1.5 rounded-[8px] text-[12px] font-medium transition cursor-pointer ${
+                className={`px-3 py-1.5 rounded-chip text-[12px] font-medium transition cursor-pointer ${
                   typeFilter === chip.id
                     ? "bg-surface text-text border border-border shadow-2xs"
                     : "text-text-2 hover:text-text"
@@ -109,7 +109,7 @@ export const TransaksiPage: React.FC = () => {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-3 py-2 text-[13px] rounded-[10px] border border-border bg-surface text-text min-h-[40px]"
+              className="px-3 py-2 text-[13px] rounded-control border border-border bg-surface text-text min-h-[40px]"
             >
               <option value="all">Semua kategori</option>
               {allCategories.map((c) => (
@@ -122,7 +122,7 @@ export const TransaksiPage: React.FC = () => {
             <select
               value={memberFilter}
               onChange={(e) => setMemberFilter(e.target.value)}
-              className="px-3 py-2 text-[13px] rounded-[10px] border border-border bg-surface text-text min-h-[40px]"
+              className="px-3 py-2 text-[13px] rounded-control border border-border bg-surface text-text min-h-[40px]"
             >
               <option value="all">Semua Anggota</option>
               <option value="me">Saya</option>
@@ -140,7 +140,7 @@ export const TransaksiPage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Cari catatan atau kategori"
-                className="w-full pl-9 pr-3 py-2 text-[13px] rounded-[10px] border border-border bg-surface text-text min-h-[40px]"
+                className="w-full pl-9 pr-3 py-2 text-[13px] rounded-control border border-border bg-surface text-text min-h-[40px]"
               />
             </div>
           </div>
@@ -149,12 +149,12 @@ export const TransaksiPage: React.FC = () => {
 
       {/* Content Area */}
       {isMonthEmpty ? (
-        <div className="bg-surface rounded-[12px] border border-border p-8 text-center space-y-4 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-8 text-center space-y-4 shadow-card">
           <div className="w-12 h-12 bg-surface-sunken text-text-2 rounded-full flex items-center justify-center mx-auto">
             <Wallet className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-[16px] font-serif font-bold text-text">Belum ada transaksi bulan ini</h3>
+            <h3 className="text-[16px] font-serif font-semibold text-text">Belum ada transaksi bulan ini</h3>
             <p className="text-[13px] text-text-2 max-w-sm mx-auto">
               Tidak ada catatan transaksi pada bulan yang dipilih.
             </p>
@@ -162,14 +162,14 @@ export const TransaksiPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="px-4 py-2.5 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
+            className="px-4 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             <span>Catat transaksi</span>
           </button>
         </div>
       ) : groupedData.length === 0 ? (
-        <div className="bg-surface rounded-[12px] border border-border p-8 text-center space-y-2 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-8 text-center space-y-2 shadow-card">
           <Filter className="w-8 h-8 text-text-3 mx-auto" />
           <p className="text-[14px] font-medium text-text">
             Tidak ada transaksi yang cocok dengan filter.
@@ -183,7 +183,7 @@ export const TransaksiPage: React.FC = () => {
           {groupedData.map((group) => (
             <div
               key={group.date}
-              className="bg-surface rounded-[12px] border border-border overflow-hidden shadow-card"
+              className="bg-surface rounded-card border border-border overflow-hidden shadow-card"
             >
               {/* Date Header */}
               <div className="bg-surface-sunken/60 px-4 py-2.5 border-b border-border flex items-center justify-between">

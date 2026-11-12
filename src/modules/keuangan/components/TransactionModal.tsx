@@ -166,18 +166,18 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className="bg-surface rounded-[12px] max-w-[460px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover"
+        className="bg-surface rounded-card max-w-[460px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border pb-3">
-          <h2 id="modal-title" className="text-[18px] font-serif font-bold text-text">
+          <h2 id="modal-title" className="text-[18px] font-serif font-semibold text-text">
             {isEdit ? "Ubah transaksi" : "Catat transaksi"}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup modal"
-            className="p-1 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+            className="p-1 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -187,13 +187,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           {/* Type Toggle */}
           <div className="space-y-1">
             <label className="text-[13px] font-medium text-text">Jenis transaksi</label>
-            <div className="flex bg-surface-sunken p-1 rounded-[10px] border border-border" role="radiogroup">
+            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup">
               <button
                 type="button"
                 role="radio"
                 aria-checked={type === "expense"}
                 onClick={() => handleTypeChange("expense")}
-                className={`flex-1 py-2 text-[13px] font-medium rounded-[8px] transition cursor-pointer min-h-[38px] ${
+                className={`flex-1 py-2 text-[13px] font-medium rounded-chip transition cursor-pointer min-h-[38px] ${
                   type === "expense"
                     ? "bg-surface text-danger border border-border shadow-2xs"
                     : "text-text-2 hover:text-text"
@@ -206,7 +206,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 role="radio"
                 aria-checked={type === "income"}
                 onClick={() => handleTypeChange("income")}
-                className={`flex-1 py-2 text-[13px] font-medium rounded-[8px] transition cursor-pointer min-h-[38px] ${
+                className={`flex-1 py-2 text-[13px] font-medium rounded-chip transition cursor-pointer min-h-[38px] ${
                   type === "income"
                     ? "bg-surface text-primary border border-border shadow-2xs"
                     : "text-text-2 hover:text-text"
@@ -234,7 +234,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 value={amountStr}
                 onChange={handleAmountChange}
                 placeholder="0"
-                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
                   errors.amount ? "border-danger" : "border-border hover:border-border-strong"
                 }`}
               />
@@ -256,7 +256,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 setCategoryId(e.target.value);
                 setErrors((prev) => ({ ...prev, categoryId: undefined }));
               }}
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.categoryId ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             >
@@ -286,7 +286,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 setWalletId(e.target.value);
                 setErrors((prev) => ({ ...prev, walletId: undefined }));
               }}
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.walletId ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             >
@@ -317,7 +317,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 setDate(e.target.value);
                 setErrors((prev) => ({ ...prev, date: undefined }));
               }}
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.date ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
@@ -341,7 +341,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                 setErrors((prev) => ({ ...prev, note: undefined }));
               }}
               placeholder="Contoh: Belanja mingguan di pasar"
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.note ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
@@ -356,7 +356,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               <button
                 type="button"
                 onClick={handleDelete}
-                className="px-3.5 py-2.5 rounded-[10px] bg-danger-tint hover:bg-danger/20 text-danger font-medium text-[13px] transition cursor-pointer min-h-[44px] flex items-center gap-1.5"
+                className="px-3.5 py-2.5 rounded-control bg-danger-tint hover:bg-danger/20 text-danger font-medium text-[13px] transition cursor-pointer min-h-[44px] flex items-center gap-1.5"
               >
                 <Trash2 className="w-4 h-4" />
                 <span>Hapus</span>
@@ -367,14 +367,14 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2.5 rounded-[10px] bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
+                className="px-4 py-2.5 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
               >
                 Batal
               </button>
               <button
                 type="submit"
                 disabled={submitting}
-                className="px-5 py-2.5 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
+                className="px-5 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
               >
                 Simpan
               </button>

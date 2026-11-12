@@ -113,25 +113,25 @@ export const RingkasanPage: React.FC = () => {
   if (loading) {
     return (
       <div className="space-y-5 animate-pulse">
-        <div className="h-10 bg-surface-sunken rounded-[10px] w-48" />
+        <div className="h-10 bg-surface-sunken rounded-control w-48" />
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="h-28 bg-surface-sunken rounded-[12px]" />
-          <div className="h-28 bg-surface-sunken rounded-[12px]" />
-          <div className="h-28 bg-surface-sunken rounded-[12px]" />
+          <div className="h-28 bg-surface-sunken rounded-card" />
+          <div className="h-28 bg-surface-sunken rounded-card" />
+          <div className="h-28 bg-surface-sunken rounded-card" />
         </div>
-        <div className="h-48 bg-surface-sunken rounded-[12px]" />
+        <div className="h-48 bg-surface-sunken rounded-card" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 bg-surface rounded-[12px] border border-border text-center space-y-3">
+      <div className="p-6 bg-surface rounded-card border border-border text-center space-y-3">
         <p className="text-[14px] text-danger font-medium">Gagal memuat data keuangan.</p>
         <button
           type="button"
           onClick={() => setSelectedMonth(selectedMonth)}
-          className="px-4 py-2 rounded-[10px] bg-primary text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
+          className="px-4 py-2 rounded-control bg-primary text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
         >
           <RefreshCw className="w-4 h-4" />
           <span>Coba lagi</span>
@@ -147,7 +147,7 @@ export const RingkasanPage: React.FC = () => {
       {/* Top Header & Month Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-serif font-bold text-text">Ringkasan Keuangan</h1>
+          <h1 className="text-[22px] font-serif font-semibold text-text">Ringkasan Keuangan</h1>
           <p className="text-[13px] text-text-2">
             Pemasukan, pengeluaran, dan kesehatan anggaran keluarga Anda.
           </p>
@@ -159,7 +159,7 @@ export const RingkasanPage: React.FC = () => {
       {/* Three Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Pemasukan Card */}
-        <div className="bg-surface rounded-[12px] border border-border p-4 space-y-1.5 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-4 space-y-1.5 shadow-card">
           <span className="text-[12px] font-semibold text-text-3 uppercase tracking-wider">
             Pemasukan
           </span>
@@ -169,7 +169,7 @@ export const RingkasanPage: React.FC = () => {
         </div>
 
         {/* Pengeluaran Card */}
-        <div className="bg-surface rounded-[12px] border border-border p-4 space-y-1.5 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-4 space-y-1.5 shadow-card">
           <span className="text-[12px] font-semibold text-text-3 uppercase tracking-wider">
             Pengeluaran
           </span>
@@ -194,7 +194,7 @@ export const RingkasanPage: React.FC = () => {
         </div>
 
         {/* Selisih Card */}
-        <div className="bg-surface rounded-[12px] border border-border p-4 space-y-1.5 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-4 space-y-1.5 shadow-card">
           <span className="text-[12px] font-semibold text-text-3 uppercase tracking-wider">
             Selisih
           </span>
@@ -210,7 +210,7 @@ export const RingkasanPage: React.FC = () => {
 
       {/* Info Card: Pending Insurance Claims */}
       {config.includeVaccineCosts && pendingClaims.count > 0 && (
-        <div className="p-4 bg-info-tint/60 border border-info/30 rounded-[12px] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-text">
+        <div className="p-4 bg-info-tint/60 border border-info/30 rounded-card flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-text">
           <div className="flex items-center gap-2.5">
             <ShieldAlert className="w-5 h-5 text-info shrink-0" />
             <span className="text-[13px] font-medium">
@@ -229,9 +229,9 @@ export const RingkasanPage: React.FC = () => {
 
       {/* Budget Summary Card */}
       {budgetSummary.rows.length > 0 && (
-        <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
           <div className="flex items-center justify-between">
-            <h3 className="text-[15px] font-serif font-bold text-text">Status Anggaran Bulanan</h3>
+            <h3 className="text-[15px] font-serif font-semibold text-text">Status Anggaran Bulanan</h3>
             <Link
               to="/keuangan-keluarga/anggaran"
               className="text-[12px] font-medium text-primary hover:underline"
@@ -282,7 +282,7 @@ export const RingkasanPage: React.FC = () => {
                   return (
                     <span
                       key={row.categoryId}
-                      className={`text-[12px] px-2.5 py-1 rounded-[8px] border font-medium ${
+                      className={`text-[12px] px-2.5 py-1 rounded-chip border font-medium ${
                         isOver
                           ? "bg-danger-tint text-danger border-danger/30"
                           : "bg-warning-tint text-warning-text border-warning/30"
@@ -300,12 +300,12 @@ export const RingkasanPage: React.FC = () => {
 
       {/* Empty State vs Charts */}
       {isMonthEmpty ? (
-        <div className="bg-surface rounded-[12px] border border-border p-8 text-center space-y-4 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-8 text-center space-y-4 shadow-card">
           <div className="w-12 h-12 bg-surface-sunken text-text-2 rounded-full flex items-center justify-center mx-auto">
             <Wallet className="w-6 h-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="text-[16px] font-serif font-bold text-text">Belum ada transaksi bulan ini</h3>
+            <h3 className="text-[16px] font-serif font-semibold text-text">Belum ada transaksi bulan ini</h3>
             <p className="text-[13px] text-text-2 max-w-sm mx-auto">
               Mulai catat pemasukan dan pengeluaran Anda untuk melihat grafik dan statistik keuangan.
             </p>
@@ -313,7 +313,7 @@ export const RingkasanPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsAddModalOpen(true)}
-            className="px-4 py-2.5 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
+            className="px-4 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
             <span>Catat transaksi pertama</span>
@@ -324,8 +324,8 @@ export const RingkasanPage: React.FC = () => {
           {/* Charts Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Chart 1: Expense by Category */}
-            <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
-              <h3 className="text-[15px] font-serif font-bold text-text">Pengeluaran per kategori</h3>
+            <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
+              <h3 className="text-[15px] font-serif font-semibold text-text">Pengeluaran per kategori</h3>
 
               {chartCategoryData.length === 0 ? (
                 <p className="text-[13px] text-text-3 italic py-8 text-center">
@@ -369,8 +369,8 @@ export const RingkasanPage: React.FC = () => {
             </div>
 
             {/* Chart 2: 6-Month Income vs Expense Trend */}
-            <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
-              <h3 className="text-[15px] font-serif font-bold text-text">Tren 6 bulan terakhir</h3>
+            <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
+              <h3 className="text-[15px] font-serif font-semibold text-text">Tren 6 bulan terakhir</h3>
 
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
@@ -410,9 +410,9 @@ export const RingkasanPage: React.FC = () => {
           </div>
 
           {/* Recent Transactions List (Up to 5) */}
-          <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
+          <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
             <div className="flex items-center justify-between">
-              <h3 className="text-[15px] font-serif font-bold text-text">Transaksi terbaru</h3>
+              <h3 className="text-[15px] font-serif font-semibold text-text">Transaksi terbaru</h3>
               <Link
                 to="/keuangan-keluarga/transaksi"
                 className="text-[12px] font-medium text-primary hover:underline flex items-center gap-1"
@@ -437,7 +437,7 @@ export const RingkasanPage: React.FC = () => {
                     }}
                     className={`py-3 flex items-center justify-between gap-3 ${
                       !entry.readOnly ? "hover:bg-surface-sunken/60 cursor-pointer" : ""
-                    } px-2 rounded-[8px] transition`}
+                    } px-2 rounded-chip transition`}
                   >
                     <div className="space-y-0.5 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">

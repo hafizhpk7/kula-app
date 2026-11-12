@@ -37,7 +37,7 @@ export const BayiSidebar: React.FC = () => {
 
         {/* Brand & Badge (hidden in rail mode) */}
         <div className="hidden lg:flex px-3 py-1 items-center justify-between border-b border-border/40 pb-3">
-          <span className="font-serif font-bold text-[20px] text-text tracking-tight">{APP_NAME}</span>
+          <span className="font-serif font-semibold text-[20px] text-text tracking-tight">{APP_NAME}</span>
           <span className="text-[11px] px-2 py-0.5 rounded-full bg-primary-tint text-primary font-medium border border-primary/20">0–5 thn</span>
         </div>
 

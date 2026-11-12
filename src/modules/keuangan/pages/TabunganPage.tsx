@@ -59,7 +59,7 @@ export const TabunganPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-serif font-bold text-text">Target Tabungan</h1>
+          <h1 className="text-[22px] font-serif font-semibold text-text">Target Tabungan</h1>
           <p className="text-[13px] text-text-2">
             Pantau progres dana darurat, pendidikan, dan target finansial keluarga.
           </p>
@@ -71,23 +71,23 @@ export const TabunganPage: React.FC = () => {
             setEditingGoal(null);
             setIsGoalModalOpen(true);
           }}
-          className="px-4 py-2.5 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-2 shadow-2xs min-h-[44px]"
+          className="px-4 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-2 shadow-2xs min-h-[44px]"
         >
           <Plus className="w-4 h-4 shrink-0" />
           <span>Tambah target</span>
         </button>
       </div>
 
-      <p className="text-[12px] text-text-3 bg-surface-sunken p-3 rounded-[10px] border border-border">
+      <p className="text-[12px] text-text-3 bg-surface-sunken p-3 rounded-control border border-border">
         Catatan: Kontribusi tabungan dicatat dan dikelola secara terpisah dari buku kas transaksi harian.
       </p>
 
       {loading ? (
         <div className="py-12 text-center text-text-2 text-[14px]">Memuat target tabungan...</div>
       ) : sortedGoals.length === 0 ? (
-        <div className="bg-surface rounded-[12px] border border-border p-12 text-center space-y-3 shadow-card">
+        <div className="bg-surface rounded-card border border-border p-12 text-center space-y-3 shadow-card">
           <Target className="w-10 h-10 mx-auto text-text-3" />
-          <h2 className="text-[16px] font-serif font-bold text-text">Belum ada target tabungan</h2>
+          <h2 className="text-[16px] font-serif font-semibold text-text">Belum ada target tabungan</h2>
           <p className="text-[13px] text-text-2 max-w-sm mx-auto">
             Mulai buat target finansial pertama Anda untuk memotivasi menabung secara berkala.
           </p>
@@ -97,7 +97,7 @@ export const TabunganPage: React.FC = () => {
               setEditingGoal(null);
               setIsGoalModalOpen(true);
             }}
-            className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-[10px] bg-primary text-primary-fg text-[13px] font-medium cursor-pointer"
+            className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-control bg-primary text-primary-fg text-[13px] font-medium cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Buat target pertama</span>
@@ -113,12 +113,12 @@ export const TabunganPage: React.FC = () => {
             return (
               <div
                 key={goal.id}
-                className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card flex flex-col justify-between"
+                className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h2 className="text-[16px] font-serif font-bold text-text">{goal.name}</h2>
+                      <h2 className="text-[16px] font-serif font-semibold text-text">{goal.name}</h2>
                       {goal.deadline && (
                         <div className="flex items-center gap-1.5 text-[12px] text-text-2 mt-0.5">
                           <Calendar className="w-3.5 h-3.5" />
@@ -169,7 +169,7 @@ export const TabunganPage: React.FC = () => {
                   </div>
 
                   {monthlyNeeded !== null && monthlyNeeded > 0 && (
-                    <p className="text-[11px] text-text-2 bg-surface-sunken p-2.5 rounded-[8px] border border-border">
+                    <p className="text-[11px] text-text-2 bg-surface-sunken p-2.5 rounded-chip border border-border">
                       Saran: Perlu menabung sekitar <span className="font-semibold text-text">{formatRupiah(monthlyNeeded)}</span> per bulan untuk mencapai target tepat waktu.
                     </p>
                   )}
@@ -185,7 +185,7 @@ export const TabunganPage: React.FC = () => {
                         setContribMode("deposit");
                         setContribModalOpen(true);
                       }}
-                      className="px-3 py-1.5 rounded-[8px] bg-primary-tint hover:bg-primary/25 text-primary-text font-medium text-[12px] transition cursor-pointer flex items-center gap-1 min-h-[36px]"
+                      className="px-3 py-1.5 rounded-chip bg-primary-tint hover:bg-primary/25 text-primary-text font-medium text-[12px] transition cursor-pointer flex items-center gap-1 min-h-[36px]"
                     >
                       <ArrowUpRight className="w-3.5 h-3.5" />
                       <span>Setor</span>
@@ -197,7 +197,7 @@ export const TabunganPage: React.FC = () => {
                         setContribMode("withdraw");
                         setContribModalOpen(true);
                       }}
-                      className="px-3 py-1.5 rounded-[8px] bg-surface-sunken hover:bg-border text-text-2 hover:text-text font-medium text-[12px] transition cursor-pointer flex items-center gap-1 min-h-[36px]"
+                      className="px-3 py-1.5 rounded-chip bg-surface-sunken hover:bg-border text-text-2 hover:text-text font-medium text-[12px] transition cursor-pointer flex items-center gap-1 min-h-[36px]"
                     >
                       <ArrowDownRight className="w-3.5 h-3.5" />
                       <span>Tarik</span>
@@ -213,7 +213,7 @@ export const TabunganPage: React.FC = () => {
                       }}
                       title="Edit target"
                       aria-label="Edit target"
-                      className="p-1.5 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+                      className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
@@ -226,7 +226,7 @@ export const TabunganPage: React.FC = () => {
                       }}
                       title="Hapus target"
                       aria-label="Hapus target"
-                      className="p-1.5 rounded-[8px] hover:bg-danger-tint text-danger transition cursor-pointer"
+                      className="p-1.5 rounded-chip hover:bg-danger-tint text-danger transition cursor-pointer"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

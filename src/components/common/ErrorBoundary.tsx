@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen bg-bg flex items-center justify-center p-4">
           <div
-            className="max-w-[420px] w-full bg-surface rounded-[12px] border border-border p-6 text-center space-y-4"
+            className="max-w-[420px] w-full bg-surface rounded-card border border-border p-6 text-center space-y-4"
             style={{ boxShadow: "var(--shadow-popover)" }}
           >
             <div className="w-12 h-12 bg-danger-tint text-danger rounded-full flex items-center justify-center mx-auto">
@@ -55,7 +55,7 @@ export class ErrorBoundary extends Component<Props, State> {
               Aplikasi mendeteksi kendala pada tampilan. Jangan khawatir, data jadwal dan profil dapat dimuat ulang.
             </p>
             {this.state.error && (
-              <pre className="text-[12px] bg-surface-sunken p-3 rounded-[8px] text-text-2 overflow-auto text-left max-h-32 border border-border">
+              <pre className="text-[12px] bg-surface-sunken p-3 rounded-chip text-text-2 overflow-auto text-left max-h-32 border border-border">
                 {this.state.error.message}
               </pre>
             )}
@@ -63,7 +63,7 @@ export class ErrorBoundary extends Component<Props, State> {
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="w-full py-2.5 bg-primary hover:bg-primary-hover text-primary-fg rounded-[10px] text-[14px] font-medium transition cursor-pointer min-h-[44px]"
+                className="w-full py-2.5 bg-primary hover:bg-primary-hover text-primary-fg rounded-control text-[14px] font-medium transition cursor-pointer min-h-[44px]"
               >
                 Muat ulang halaman
               </button>

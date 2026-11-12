@@ -55,7 +55,7 @@ export const GlobalSettingsPage: React.FC = () => {
 
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-[10px] border border-border transition min-h-[40px] shrink-0"
+            className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border transition min-h-[40px] shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
             <span className="hidden sm:inline">Beranda utama</span>
@@ -63,7 +63,7 @@ export const GlobalSettingsPage: React.FC = () => {
         </div>
 
         {/* 1. User Account Card */}
-        <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-5 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+        <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-5 shadow-[var(--shadow-card)]">
           <div className="flex items-center justify-between border-b border-border pb-3">
             <h2 className="text-[16px] font-semibold text-text">Profil Akun Pengguna</h2>
             <span className="text-[12px] text-primary font-medium flex items-center gap-1.5">
@@ -108,7 +108,7 @@ export const GlobalSettingsPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowLogoutConfirm(true)}
-                className="self-start sm:self-auto px-4 py-2 bg-surface hover:bg-danger-tint text-danger text-[13px] font-medium rounded-[10px] border border-border-strong transition min-h-[40px] flex items-center gap-2 cursor-pointer"
+                className="self-start sm:self-auto px-4 py-2 bg-surface hover:bg-danger-tint text-danger text-[13px] font-medium rounded-control border border-border-strong transition min-h-[40px] flex items-center gap-2 cursor-pointer"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Keluar</span>
@@ -117,7 +117,7 @@ export const GlobalSettingsPage: React.FC = () => {
           </div>
 
           {showLogoutConfirm && (
-            <div className="p-4 bg-danger-tint/50 border border-danger/30 rounded-[10px] space-y-2">
+            <div className="p-4 bg-danger-tint/50 border border-danger/30 rounded-control space-y-2">
               <p className="text-[14px] font-semibold text-danger">
                 Apakah Anda yakin ingin keluar dari akun?
               </p>
@@ -128,7 +128,7 @@ export const GlobalSettingsPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowLogoutConfirm(false)}
-                  className="px-3 py-1.5 bg-surface text-text text-[13px] rounded-[8px] border border-border cursor-pointer"
+                  className="px-3 py-1.5 bg-surface text-text text-[13px] rounded-chip border border-border cursor-pointer"
                 >
                   Batal
                 </button>
@@ -136,7 +136,7 @@ export const GlobalSettingsPage: React.FC = () => {
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="px-3.5 py-1.5 bg-danger text-white text-[13px] font-medium rounded-[8px] cursor-pointer"
+                  className="px-3.5 py-1.5 bg-danger text-white text-[13px] font-medium rounded-chip cursor-pointer"
                 >
                   {isLoggingOut ? "Keluar..." : "Ya, keluar"}
                 </button>
@@ -146,7 +146,7 @@ export const GlobalSettingsPage: React.FC = () => {
         </section>
 
         {/* 2. Theme Setting (Terang / Gelap / Sistem) */}
-        <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-4 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+        <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-4 shadow-[var(--shadow-card)]">
           <div>
             <h2 className="text-[16px] font-semibold text-text">Tema Tampilan Global</h2>
             <p className="text-[13px] text-text-2 mt-0.5">
@@ -154,7 +154,7 @@ export const GlobalSettingsPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="inline-flex bg-surface-sunken p-1 rounded-[10px] border border-border">
+          <div className="inline-flex bg-surface-sunken p-1 rounded-control border border-border">
             {[
               { id: "light", label: "Terang", icon: Sun },
               { id: "dark", label: "Gelap", icon: Moon },
@@ -167,7 +167,7 @@ export const GlobalSettingsPage: React.FC = () => {
                   key={item.id}
                   type="button"
                   onClick={() => setTheme(item.id as ThemeMode)}
-                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-[8px] text-[13px] transition cursor-pointer min-h-[36px] ${
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-chip text-[13px] transition cursor-pointer min-h-[36px] ${
                     isSelected
                       ? "bg-surface text-text font-semibold border border-border shadow-2xs"
                       : "text-text-2 hover:text-text border border-transparent"
@@ -182,15 +182,15 @@ export const GlobalSettingsPage: React.FC = () => {
         </section>
 
         {/* 3. Link to Module-Specific Settings */}
-        <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-3 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+        <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-3 shadow-[var(--shadow-card)]">
           <h2 className="text-[16px] font-semibold text-text">Pengaturan Spesifik Modul</h2>
           <div className="space-y-2 pt-1">
             <Link
               to="/bayi/pengaturan"
-              className="flex items-center justify-between p-3.5 rounded-[10px] bg-surface-sunken hover:bg-border/60 border border-border transition cursor-pointer group"
+              className="flex items-center justify-between p-3.5 rounded-control bg-surface-sunken hover:bg-border/60 border border-border transition cursor-pointer group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[8px] bg-primary-tint text-primary flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-chip bg-primary-tint text-primary flex items-center justify-center shrink-0">
                   <Baby className="w-5 h-5" />
                 </div>
                 <div>
@@ -207,10 +207,10 @@ export const GlobalSettingsPage: React.FC = () => {
 
             <Link
               to="/keuangan-keluarga/pengaturan"
-              className="flex items-center justify-between p-3.5 rounded-[10px] bg-surface-sunken hover:bg-border/60 border border-border transition cursor-pointer group"
+              className="flex items-center justify-between p-3.5 rounded-control bg-surface-sunken hover:bg-border/60 border border-border transition cursor-pointer group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[8px] bg-accent-tint text-accent-text flex items-center justify-center shrink-0">
+                <div className="w-9 h-9 rounded-chip bg-accent-tint text-accent-text flex items-center justify-center shrink-0">
                   <Wallet className="w-5 h-5" />
                 </div>
                 <div>
@@ -228,7 +228,7 @@ export const GlobalSettingsPage: React.FC = () => {
         </section>
 
         {/* 4. PWA Installation Card */}
-        <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-3 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+        <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-3 shadow-[var(--shadow-card)]">
           <h2 className="text-[16px] font-semibold text-text">Aplikasi Perangkat (PWA)</h2>
           <p className="text-[13px] text-text-2 leading-relaxed">
             Aplikasi ini mendukung Progressive Web App (PWA) sehingga dapat diinstal di beranda HP atau Komputer Anda dan diakses secara offline.

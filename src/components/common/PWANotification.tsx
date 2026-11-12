@@ -45,7 +45,7 @@ export const PWANotification: React.FC = () => {
     <div className="fixed bottom-20 md:bottom-6 right-4 left-4 sm:left-auto sm:max-w-sm z-50 no-print" aria-live="polite">
       {offlineReady && (
         <div
-          className="bg-surface text-text p-3.5 rounded-[10px] border border-border flex items-center justify-between gap-3 text-[13px]"
+          className="bg-surface text-text p-3.5 rounded-control border border-border flex items-center justify-between gap-3 text-[13px]"
           style={{ boxShadow: "var(--shadow-popover)" }}
         >
           <div>
@@ -65,7 +65,7 @@ export const PWANotification: React.FC = () => {
 
       {needRefresh && (
         <div
-          className="bg-surface text-text p-3.5 rounded-[10px] border border-border flex items-center justify-between gap-3 text-[13px] mt-2"
+          className="bg-surface text-text p-3.5 rounded-control border border-border flex items-center justify-between gap-3 text-[13px] mt-2"
           style={{ boxShadow: "var(--shadow-popover)" }}
         >
           <div>

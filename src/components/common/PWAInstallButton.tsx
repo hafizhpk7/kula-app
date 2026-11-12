@@ -34,8 +34,8 @@ export const PWAInstallButton: React.FC<Props> = ({ className = "", variant = "h
         onClick={handleClick}
         className={`inline-flex items-center justify-center gap-1.5 font-medium transition min-h-[44px] min-w-[44px] cursor-pointer ${
           variant === "header"
-            ? "px-3 py-1.5 rounded-[10px] bg-surface hover:bg-surface-sunken text-text border border-border-strong text-[13px]"
-            : "px-4 py-2 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px]"
+            ? "px-3 py-1.5 rounded-control bg-surface hover:bg-surface-sunken text-text border border-border-strong text-[13px]"
+            : "px-4 py-2 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px]"
         } ${className}`}
         title="Pasang aplikasi ke layar utama"
         aria-label="Pasang aplikasi ke layar utama"
@@ -51,7 +51,7 @@ export const PWAInstallButton: React.FC<Props> = ({ className = "", variant = "h
           style={{ backgroundColor: "var(--scrim)" }}
         >
           <div
-            className="bg-surface rounded-t-[16px] sm:rounded-[12px] max-w-sm w-full p-5 border border-border space-y-3"
+            className="bg-surface rounded-t-[28px] sm:rounded-card max-w-sm w-full p-5 border border-border space-y-3"
             style={{ boxShadow: "var(--shadow-popover)" }}
           >
             <h3 className="font-serif font-medium text-text text-[16px]">
@@ -65,7 +65,7 @@ export const PWAInstallButton: React.FC<Props> = ({ className = "", variant = "h
             <button
               type="button"
               onClick={() => setShowIOSModal(false)}
-              className="w-full py-2 bg-surface-sunken hover:bg-border text-text rounded-[8px] text-[13px] font-medium min-h-[44px] cursor-pointer mt-2"
+              className="w-full py-2 bg-surface-sunken hover:bg-border text-text rounded-chip text-[13px] font-medium min-h-[44px] cursor-pointer mt-2"
             >
               Mengerti
             </button>

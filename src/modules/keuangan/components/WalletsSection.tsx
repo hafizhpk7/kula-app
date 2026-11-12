@@ -36,9 +36,9 @@ export const WalletsSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
+    <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
       <div>
-        <h2 className="text-[16px] font-serif font-bold text-text">Dompet (Wallet)</h2>
+        <h2 className="text-[16px] font-serif font-semibold text-text">Dompet (Wallet)</h2>
         <p className="text-[12px] text-text-2">
           Kelola beberapa rekening atau dompet kas (misal: Kas Utama, BCA, GoPay).
         </p>
@@ -56,13 +56,13 @@ export const WalletsSection: React.FC = () => {
               setError(null);
             }}
             placeholder="Nama dompet baru (misal: BCA, Dompet Tunai)"
-            className={`flex-1 px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+            className={`flex-1 px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
               error ? "border-danger" : "border-border hover:border-border-strong"
             }`}
           />
           <button
             type="submit"
-            className="px-4 py-2 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
+            className="px-4 py-2 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
           >
             <Plus className="w-4 h-4" />
             <span>Tambah dompet</span>
@@ -80,7 +80,7 @@ export const WalletsSection: React.FC = () => {
           return (
             <div key={w.id} className="py-3 flex items-center justify-between gap-3">
               <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div className="w-9 h-9 rounded-[10px] bg-surface-sunken flex items-center justify-center text-text-2 shrink-0 border border-border">
+                <div className="w-9 h-9 rounded-control bg-surface-sunken flex items-center justify-center text-text-2 shrink-0 border border-border">
                   <WalletIcon className="w-4 h-4" />
                 </div>
                 {isEditing ? (
@@ -91,12 +91,12 @@ export const WalletsSection: React.FC = () => {
                         maxLength={40}
                         value={editingName}
                         onChange={(e) => setEditingName(e.target.value)}
-                        className="flex-1 px-3 py-1.5 text-[14px] rounded-[8px] border border-border bg-surface text-text"
+                        className="flex-1 px-3 py-1.5 text-[14px] rounded-chip border border-border bg-surface text-text"
                       />
                       <button
                         type="button"
                         onClick={() => handleRenameSubmit(w.id)}
-                        className="p-1.5 rounded-[8px] bg-primary text-primary-fg cursor-pointer"
+                        className="p-1.5 rounded-chip bg-primary text-primary-fg cursor-pointer"
                         title="Simpan"
                       >
                         <Check className="w-4 h-4" />
@@ -104,7 +104,7 @@ export const WalletsSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => setEditingId(null)}
-                        className="p-1.5 rounded-[8px] bg-surface-sunken text-text-2 cursor-pointer"
+                        className="p-1.5 rounded-chip bg-surface-sunken text-text-2 cursor-pointer"
                         title="Batal"
                       >
                         <X className="w-4 h-4" />
@@ -143,7 +143,7 @@ export const WalletsSection: React.FC = () => {
                       }}
                       title="Ubah nama"
                       aria-label="Ubah nama"
-                      className="p-1.5 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+                      className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
@@ -154,7 +154,7 @@ export const WalletsSection: React.FC = () => {
                       onClick={() => setWalletArchived(w.id, !w.archived)}
                       title={w.archived ? "Pulihkan dompet" : "Arsipkan dompet"}
                       aria-label={w.archived ? "Pulihkan dompet" : "Arsipkan dompet"}
-                      className="p-1.5 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+                      className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                     >
                       {w.archived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
                     </button>

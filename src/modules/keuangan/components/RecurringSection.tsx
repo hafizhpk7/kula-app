@@ -28,10 +28,10 @@ export const RecurringSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
+    <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h2 className="text-[16px] font-serif font-bold text-text">Transaksi Berulang (Recurring)</h2>
+          <h2 className="text-[16px] font-serif font-semibold text-text">Transaksi Berulang (Recurring)</h2>
           <p className="text-[12px] text-text-2">
             Otomatiskan pencatatan pemasukan atau pengeluaran rutin secara periodik.
           </p>
@@ -43,7 +43,7 @@ export const RecurringSection: React.FC = () => {
             setEditingRule(null);
             setModalOpen(true);
           }}
-          className="px-4 py-2 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
+          className="px-4 py-2 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-1.5 min-h-[44px]"
         >
           <Plus className="w-4 h-4" />
           <span>Tambah aturan</span>
@@ -64,7 +64,7 @@ export const RecurringSection: React.FC = () => {
             return (
               <div key={rule.id} className="py-3.5 flex items-start justify-between gap-3">
                 <div className="flex items-start gap-3 min-w-0 flex-1">
-                  <div className="w-9 h-9 rounded-[10px] bg-surface-sunken flex items-center justify-center text-text-2 shrink-0 border border-border mt-0.5">
+                  <div className="w-9 h-9 rounded-control bg-surface-sunken flex items-center justify-center text-text-2 shrink-0 border border-border mt-0.5">
                     <Repeat className="w-4 h-4" />
                   </div>
                   <div className="min-w-0 space-y-1 flex-1">
@@ -106,7 +106,7 @@ export const RecurringSection: React.FC = () => {
                     }}
                     title="Ubah aturan"
                     aria-label="Ubah aturan"
-                    className="p-1.5 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+                    className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                   >
                     <Edit2 className="w-4 h-4" />
                   </button>
@@ -119,7 +119,7 @@ export const RecurringSection: React.FC = () => {
                     }}
                     title="Hapus aturan"
                     aria-label="Hapus aturan"
-                    className="p-1.5 rounded-[8px] hover:bg-danger-tint text-danger transition cursor-pointer"
+                    className="p-1.5 rounded-chip hover:bg-danger-tint text-danger transition cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

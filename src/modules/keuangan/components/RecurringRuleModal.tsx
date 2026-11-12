@@ -147,17 +147,17 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
       <div
         role="dialog"
         aria-modal="true"
-        className="bg-surface rounded-[12px] max-w-[480px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover max-h-[90vh] overflow-y-auto"
+        className="bg-surface rounded-card max-w-[480px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover max-h-[90vh] overflow-y-auto"
       >
         <div className="flex items-center justify-between border-b border-border pb-3">
-          <h2 className="text-[18px] font-serif font-bold text-text">
+          <h2 className="text-[18px] font-serif font-semibold text-text">
             {isEdit ? "Ubah aturan berulang" : "Tambah aturan berulang"}
           </h2>
           <button
             type="button"
             onClick={onClose}
             aria-label="Tutup"
-            className="p-1 rounded-[8px] hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+            className="p-1 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -179,7 +179,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 setErrors(prev => ({ ...prev, name: undefined }));
               }}
               placeholder="Contoh: Gaji Bulanan, Sewa Rumah, Internet"
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.name ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
@@ -187,7 +187,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
 
           <div className="space-y-1">
             <label className="text-[13px] font-medium text-text">Jenis transaksi</label>
-            <div className="flex bg-surface-sunken p-1 rounded-[10px] border border-border" role="radiogroup">
+            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup">
               <button
                 type="button"
                 role="radio"
@@ -197,7 +197,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   const activeExp = getActiveCategories(config, "expense");
                   setCategoryId(activeExp.length > 0 ? activeExp[0].id : "");
                 }}
-                className={`flex-1 py-2 text-[13px] font-medium rounded-[8px] transition cursor-pointer ${
+                className={`flex-1 py-2 text-[13px] font-medium rounded-chip transition cursor-pointer ${
                   type === "expense" ? "bg-surface text-danger border border-border shadow-2xs" : "text-text-2"
                 }`}
               >
@@ -212,7 +212,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   const activeInc = getActiveCategories(config, "income");
                   setCategoryId(activeInc.length > 0 ? activeInc[0].id : "");
                 }}
-                className={`flex-1 py-2 text-[13px] font-medium rounded-[8px] transition cursor-pointer ${
+                className={`flex-1 py-2 text-[13px] font-medium rounded-chip transition cursor-pointer ${
                   type === "income" ? "bg-surface text-primary border border-border shadow-2xs" : "text-text-2"
                 }`}
               >
@@ -240,7 +240,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   setErrors(prev => ({ ...prev, amount: undefined }));
                 }}
                 placeholder="0"
-                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
                   errors.amount ? "border-danger" : "border-border hover:border-border-strong"
                 }`}
               />
@@ -259,7 +259,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 setCategoryId(e.target.value);
                 setErrors(prev => ({ ...prev, categoryId: undefined }));
               }}
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.categoryId ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             >
@@ -279,7 +279,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
               id="rule-wallet"
               value={walletId}
               onChange={(e) => setWalletId(e.target.value)}
-              className="w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text border-border min-h-[44px]"
+              className="w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text border-border min-h-[44px]"
             >
               {Object.values(config.wallets || {}).map(w => (
                 <option key={w.id} value={w.id}>{w.name}</option>
@@ -296,7 +296,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 id="rule-freq"
                 value={frequency}
                 onChange={(e) => setFrequency(e.target.value as RecurringFrequency)}
-                className="w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text border-border min-h-[44px]"
+                className="w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text border-border min-h-[44px]"
               >
                 <option value="daily">Setiap hari</option>
                 <option value="weekly">Setiap minggu</option>
@@ -316,7 +316,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   max={31}
                   value={dayOfMonth}
                   onChange={(e) => setDayOfMonth(parseInt(e.target.value, 10) || 1)}
-                  className="w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text border-border min-h-[44px]"
+                  className="w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text border-border min-h-[44px]"
                 />
               </div>
             )}
@@ -330,7 +330,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   id="rule-dow"
                   value={dayOfWeek}
                   onChange={(e) => setDayOfWeek(parseInt(e.target.value, 10))}
-                  className="w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text border-border min-h-[44px]"
+                  className="w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text border-border min-h-[44px]"
                 >
                   <option value={1}>(1) Senin</option>
                   <option value={2}>(2) Selasa</option>
@@ -356,7 +356,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 setStartDate(e.target.value);
                 setErrors(prev => ({ ...prev, startDate: undefined }));
               }}
-              className={`w-full px-3 py-2 text-[14px] rounded-[10px] border bg-surface text-text min-h-[44px] ${
+              className={`w-full px-3 py-2 text-[14px] rounded-control border bg-surface text-text min-h-[44px] ${
                 errors.startDate ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
@@ -364,7 +364,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
           </div>
 
           {duePreview.length > 0 && (
-            <div className="bg-surface-sunken p-3 rounded-[10px] border border-border text-[12px] text-text-2">
+            <div className="bg-surface-sunken p-3 rounded-control border border-border text-[12px] text-text-2">
               Perhatian: Tanggal mulai di masa lalu. Aturan ini akan langsung membuat <span className="font-semibold text-text">{duePreview.length} transaksi berulang</span> ke belakang sampai hari ini.
             </div>
           )}
@@ -373,14 +373,14 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-[10px] bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
+              className="px-4 py-2.5 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
             >
               Batal
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="px-5 py-2.5 rounded-[10px] bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
+              className="px-5 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
             >
               Simpan Aturan
             </button>

@@ -81,7 +81,7 @@ export const AnggaranPage: React.FC = () => {
       {/* Header & Month Selector */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-[22px] font-serif font-bold text-text">Anggaran & Kategori</h1>
+          <h1 className="text-[22px] font-serif font-semibold text-text">Anggaran & Kategori</h1>
           <p className="text-[13px] text-text-2">
             Kelola batas pengeluaran bulanan dan daftar kategori kustom.
           </p>
@@ -91,9 +91,9 @@ export const AnggaranPage: React.FC = () => {
       </div>
 
       {/* Section 1: Anggaran Bulanan */}
-      <div className="bg-surface rounded-[12px] border border-border p-5 space-y-4 shadow-card">
+      <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
         <div>
-          <h2 className="text-[16px] font-serif font-bold text-text">Anggaran bulanan</h2>
+          <h2 className="text-[16px] font-serif font-semibold text-text">Anggaran bulanan</h2>
           <p className="text-[12px] text-text-2">
             Anggaran berlaku setiap bulan. Kosongkan nilai jika tidak ingin menetapkan batas.
           </p>
@@ -145,7 +145,7 @@ export const AnggaranPage: React.FC = () => {
                             handleBudgetBlurOrSubmit(cat.id);
                           }
                         }}
-                        className="w-full pl-7 pr-2 py-1 text-[13px] rounded-[8px] border border-border bg-surface text-text text-right min-h-[36px]"
+                        className="w-full pl-7 pr-2 py-1 text-[13px] rounded-chip border border-border bg-surface text-text text-right min-h-[36px]"
                       />
                     </div>
                   </div>
@@ -197,20 +197,20 @@ export const AnggaranPage: React.FC = () => {
       </div>
 
       {/* Section 2: Kelola Kategori */}
-      <div className="bg-surface rounded-[12px] border border-border p-5 space-y-5 shadow-card">
+      <div className="bg-surface rounded-card border border-border p-5 space-y-5 shadow-card">
         <div>
-          <h2 className="text-[16px] font-serif font-bold text-text">Kategori transaksi</h2>
+          <h2 className="text-[16px] font-serif font-semibold text-text">Kategori transaksi</h2>
           <p className="text-[12px] text-text-2">
             Kategori bawaan sistem tidak dapat diubah. Anda dapat menambah atau mengarsipkan kategori kustom.
           </p>
         </div>
 
         {/* Add Category Form */}
-        <form onSubmit={handleAddCategorySubmit} className="space-y-3 p-4 bg-surface-sunken/60 rounded-[10px] border border-border">
+        <form onSubmit={handleAddCategorySubmit} className="space-y-3 p-4 bg-surface-sunken/60 rounded-control border border-border">
           <p className="text-[13px] font-medium text-text">Tambah kategori kustom</p>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div className="flex bg-surface p-1 rounded-[8px] border border-border shrink-0" role="radiogroup">
+            <div className="flex bg-surface p-1 rounded-chip border border-border shrink-0" role="radiogroup">
               <button
                 type="button"
                 role="radio"
@@ -248,12 +248,12 @@ export const AnggaranPage: React.FC = () => {
                 setNewCatName(e.target.value);
                 setAddCatError(null);
               }}
-              className="flex-1 px-3 py-2 text-[13px] rounded-[8px] border border-border bg-surface text-text min-h-[38px]"
+              className="flex-1 px-3 py-2 text-[13px] rounded-chip border border-border bg-surface text-text min-h-[38px]"
             />
 
             <button
               type="submit"
-              className="px-4 py-2 rounded-[8px] bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer min-h-[38px] flex items-center justify-center gap-1.5 shrink-0"
+              className="px-4 py-2 rounded-chip bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer min-h-[38px] flex items-center justify-center gap-1.5 shrink-0"
             >
               <Plus className="w-4 h-4" />
               <span>Tambah</span>

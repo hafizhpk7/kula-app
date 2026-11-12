@@ -62,7 +62,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           <div
             key={toast.id}
             role="status"
-            className="pointer-events-auto bg-surface text-text border border-border px-4 py-3 rounded-[10px] text-[14px] flex items-center justify-between gap-4 max-w-sm w-full transition-all duration-150 ease-out"
+            className="pointer-events-auto bg-surface text-text border border-border px-4 py-3 rounded-control text-[14px] flex items-center justify-between gap-4 max-w-sm w-full transition-all duration-150 ease-out"
             style={{ boxShadow: "var(--shadow-popover)" }}
           >
             <span className="leading-snug">{toast.message}</span>

@@ -45,7 +45,7 @@ export const ShellHeader: React.FC = () => {
         {/* Right side controls: Theme toggle, quiet sync chip, User account */}
         <div className="flex items-center gap-2.5 shrink-0">
           {/* Theme Mode Quick Toggle */}
-          <div className="flex items-center bg-surface-sunken p-1 rounded-[10px] border border-border">
+          <div className="flex items-center bg-surface-sunken p-1 rounded-control border border-border">
             {[
               { id: "light", icon: Sun, label: "Terang" },
               { id: "dark", icon: Moon, label: "Gelap" },
@@ -58,7 +58,7 @@ export const ShellHeader: React.FC = () => {
                   key={mode.id}
                   type="button"
                   onClick={() => setTheme(mode.id as ThemeMode)}
-                  className={`p-1.5 rounded-[8px] transition cursor-pointer ${
+                  className={`p-1.5 rounded-chip transition cursor-pointer ${
                     isSelected
                       ? "bg-surface text-text border border-border shadow-2xs"
                       : "text-text-2 hover:text-text"
@@ -74,7 +74,7 @@ export const ShellHeader: React.FC = () => {
 
           {/* Quiet Sync Status Chip */}
           {user && (
-            <div className="hidden sm:flex items-center gap-1.5 text-[12px] text-text-2 px-2 py-1 rounded-[8px] bg-surface-sunken/60 border border-border" title="Status sinkronisasi">
+            <div className="hidden sm:flex items-center gap-1.5 text-[12px] text-text-2 px-2 py-1 rounded-chip bg-surface-sunken/60 border border-border" title="Status sinkronisasi">
               <span
                 className={`w-2 h-2 rounded-full ${
                   cloudSyncStatus === "synced"
@@ -122,7 +122,7 @@ export const ShellHeader: React.FC = () => {
 
             {isAvatarMenuOpen && user && (
               <div
-                className="absolute right-0 top-full mt-1.5 w-60 bg-surface rounded-[12px] border border-border py-1.5 z-50 divide-y divide-border"
+                className="absolute right-0 top-full mt-1.5 w-60 bg-surface rounded-card border border-border py-1.5 z-50 divide-y divide-border"
                 style={{ boxShadow: "var(--shadow-popover)" }}
               >
                 <div className="px-3.5 py-2">

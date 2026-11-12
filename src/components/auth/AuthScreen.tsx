@@ -171,7 +171,7 @@ export const AuthScreen: React.FC = () => {
         <div className="bg-surface rounded-[28px] shadow-[var(--shadow-float)] p-6 sm:p-7 space-y-5">
           {/* Toggle Login / Register (Only when AUTH_ENABLE_SIGNUP is true) */}
           {AUTH_ENABLE_SIGNUP && (
-            <div className="flex bg-surface-sunken p-1 rounded-[16px]">
+            <div className="flex bg-surface-sunken p-1 rounded-control">
               <button
                 type="button"
                 onClick={() => {
@@ -179,7 +179,7 @@ export const AuthScreen: React.FC = () => {
                   setErrorMessage(null);
                   setIsCredentialError(false);
                 }}
-                className={`flex-1 py-2 text-[14px] rounded-[8px] transition cursor-pointer ${
+                className={`flex-1 py-2 text-[14px] rounded-chip transition cursor-pointer ${
                   effectiveMode === "login"
                     ? "bg-surface text-text font-medium border border-border shadow-xs"
                     : "text-text-2 hover:text-text"
@@ -194,7 +194,7 @@ export const AuthScreen: React.FC = () => {
                   setErrorMessage(null);
                   setIsCredentialError(false);
                 }}
-                className={`flex-1 py-2 text-[14px] rounded-[8px] transition cursor-pointer ${
+                className={`flex-1 py-2 text-[14px] rounded-chip transition cursor-pointer ${
                   effectiveMode === "register"
                     ? "bg-surface text-text font-medium border border-border shadow-xs"
                     : "text-text-2 hover:text-text"
@@ -221,7 +221,7 @@ export const AuthScreen: React.FC = () => {
                 type="button"
                 onClick={handleGoogleSignIn}
                 disabled={googleLoading || loading}
-                className="w-full py-2.5 px-4 bg-surface hover:bg-surface-sunken text-text border border-border-strong rounded-[16px] text-[14px] font-medium flex items-center justify-center gap-2.5 transition min-h-[44px] cursor-pointer"
+                className="w-full py-2.5 px-4 bg-surface hover:bg-surface-sunken text-text border border-border-strong rounded-control text-[14px] font-medium flex items-center justify-center gap-2.5 transition min-h-[44px] cursor-pointer"
               >
                 <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                   <path
@@ -255,7 +255,7 @@ export const AuthScreen: React.FC = () => {
           {errorMessage && (
             <div
               role="alert"
-              className="p-3 bg-danger-tint border border-danger/20 text-danger rounded-[16px] text-[13px] space-y-2"
+              className="p-3 bg-danger-tint border border-danger/20 text-danger rounded-control text-[13px] space-y-2"
             >
               <div className="flex items-start gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -291,7 +291,7 @@ export const AuthScreen: React.FC = () => {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Nama orang tua"
-                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-[16px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>
               </div>
@@ -315,7 +315,7 @@ export const AuthScreen: React.FC = () => {
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
                     placeholder={AUTH_ALLOW_EMAIL_LOGIN ? "username atau email" : "username"}
-                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-[16px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>
               </div>
@@ -332,7 +332,7 @@ export const AuthScreen: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="nama@email.com"
-                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-[16px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>
               </div>
@@ -351,7 +351,7 @@ export const AuthScreen: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 6 karakter"
-                  className="w-full pl-9 pr-10 py-2 text-[15px] rounded-[16px] border border-border-strong bg-surface text-text min-h-[44px]"
+                  className="w-full pl-9 pr-10 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
                 <button
                   type="button"
@@ -379,7 +379,7 @@ export const AuthScreen: React.FC = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Ulangi kata sandi"
-                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-[16px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full pl-9 pr-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>
               </div>
@@ -404,7 +404,7 @@ export const AuthScreen: React.FC = () => {
               <button
                 type="button"
                 onClick={continueAsGuest}
-                className="w-full py-2.5 px-3 rounded-[16px] bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-2.5 px-3 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-2"
               >
                 <Sparkles className="w-4 h-4 text-primary" />
                 <span>Lanjutkan sebagai Tamu (Mode Demo Offline)</span>
