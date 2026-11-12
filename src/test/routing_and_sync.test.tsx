@@ -93,7 +93,7 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     await waitFor(() => {
       expect(window.location.hash).toContain("#/bayi/beranda");
     });
-    expect(screen.getByText(/Yang perlu dilakukan/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Berikutnya" })).toBeInTheDocument();
   });
 
   it("R5 Click Keuangan Keluarga -> opens /keuangan-keluarga/ringkasan and renders Ringkasan page", async () => {
@@ -113,7 +113,7 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     window.location.hash = "#/bayi/beranda";
     render(<App />);
 
-    expect(await screen.findByText(/Yang perlu dilakukan/i)).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Berikutnya" })).toBeInTheDocument();
 
     // Click Jadwal in sidebar
     const jadwalButtons = screen.getAllByRole("link", { name: /Jadwal/i });
@@ -124,13 +124,13 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     });
 
     // Click Biaya vaksin
-    const biayaButtons = screen.getAllByRole("link", { name: /Biaya vaksin/i });
+    const biayaButtons = screen.getAllByRole("link", { name: "Biaya" });
     fireEvent.click(biayaButtons[0]);
 
     await waitFor(() => {
       expect(window.location.hash).toContain("#/bayi/biaya");
     });
-    expect(screen.getByText(/Keuangan/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Biaya vaksin" })).toBeInTheDocument();
   });
 
   it("R9 Back to home button in Bayi goes to '/'", async () => {
@@ -167,6 +167,8 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     window.location.hash = "#/bayi/pengaturan";
     render(<App />);
 
+    // Zona bahaya terlipat (UX-REDESIGN §5A): buka dulu
+    fireEvent.click(await screen.findByRole("button", { name: /Zona bahaya/i }));
     const deleteBtn = await screen.findByText(/Hapus Data Modul Bayi/i);
     fireEvent.click(deleteBtn);
 

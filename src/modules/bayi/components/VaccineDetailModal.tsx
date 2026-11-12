@@ -1,5 +1,6 @@
 import React from "react";
-import { X, ShieldCheck, HeartPulse } from "lucide-react";
+import { ShieldCheck, HeartPulse } from "lucide-react";
+import { BottomSheet } from "../../../components/common/BottomSheet";
 import { SEED_VACCINE_INFO } from "../../../data/seed";
 import { ScheduleRow, VaccineInfo } from "../../../types";
 import { CategoryTag, StatusBadge } from "../../../components/common/Badges";
@@ -20,46 +21,23 @@ export const VaccineDetailModal: React.FC<Props> = ({ vaccineRef, onClose, sched
   const relatedSchedule = scheduleRows.filter((r) => r.ref.toLowerCase() === vaccineRef.toLowerCase());
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ backgroundColor: "var(--scrim)" }}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-title"
+    <BottomSheet
+      isOpen
+      onClose={onClose}
+      titleId="modal-title"
+      title={
+        <span className="flex flex-col gap-1.5 items-start">
+          <span>{info ? info.nama : vaccineRef}</span>
+          {info && (
+            <span className="flex items-center gap-2 font-sans">
+              <StatusBadge status={info.status} />
+              <CategoryTag gratis={info.gratisProgram === "Ya" ? "Ya" : "Tidak"} />
+            </span>
+          )}
+        </span>
+      }
     >
-      <div
-        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[88vh] pb-[max(env(safe-area-inset-bottom),0.5rem)] sm:pb-0 animate-fadeIn"
-        style={{ boxShadow: "var(--shadow-popover)" }}
-      >
-        <div className="sm:hidden flex justify-center pt-2.5 pb-1">
-          <div className="w-10 h-1 bg-border-strong rounded-full" />
-        </div>
-
-        {/* Header */}
-        <div className="p-4 border-b border-border flex items-start justify-between">
-          <div className="space-y-1 pr-3">
-            <h3 id="modal-title" className="text-[20px] font-serif font-medium text-text">
-              {info ? info.nama : vaccineRef}
-            </h3>
-            {info && (
-              <div className="flex items-center gap-2 pt-0.5">
-                <StatusBadge status={info.status} />
-                <CategoryTag gratis={info.gratisProgram === "Ya" ? "Ya" : "Tidak"} />
-              </div>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer shrink-0"
-            aria-label="Tutup"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-4 text-[14px] text-text">
+        <div className="space-y-4 text-[14px] text-text">
           {info ? (
             <>
               {/* Protects Against */}
@@ -114,7 +92,6 @@ export const VaccineDetailModal: React.FC<Props> = ({ vaccineRef, onClose, sched
             <p className="text-text-2">Informasi detail vaksin ini belum tersedia.</p>
           )}
         </div>
-      </div>
-    </div>
+    </BottomSheet>
   );
 };

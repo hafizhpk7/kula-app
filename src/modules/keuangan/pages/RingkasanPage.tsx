@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import {
   BarChart,
@@ -27,22 +27,7 @@ import { addMonths, formatDayHeader, monthKeyOf } from "../utils/dates";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Lipat } from "../../../components/common/Lipat";
 import { EmptyState } from "../../../components/common/EmptyState";
-
-/** ≥ lg: grafik langsung terbuka berdampingan; di HP terlipat (docs/ux/UX-REDESIGN.md §5B). */
-function useLayarLebar(): boolean {
-  const query = "(min-width: 1024px)";
-  const [lebar, setLebar] = useState(
-    () => typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(query).matches
-  );
-  useEffect(() => {
-    if (typeof window.matchMedia !== "function") return;
-    const mq = window.matchMedia(query);
-    const onChange = () => setLebar(mq.matches);
-    mq.addEventListener?.("change", onChange);
-    return () => mq.removeEventListener?.("change", onChange);
-  }, []);
-  return lebar;
-}
+import { useLayarLebar } from "../../../hooks/useMediaQuery";
 
 const TOOLTIP_STYLE = {
   backgroundColor: "var(--surface)",

@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
+import { Check, ChevronRight } from "lucide-react";
 import { PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { APP_NAME } from "../../../config/app";
 import { formatIndonesianDate, getChildAge, getScheduleStatus } from "../../../utils/dates";
@@ -6,297 +7,279 @@ import { calculateCostSummary, formatRupiah } from "../../../utils/calc";
 import { CategoryTag, StatusIndicator } from "../../../components/common/Badges";
 import { PWABanner } from "./PWABanner";
 import { KulaMascotView } from "../../../components/three/KulaMascotView";
+import { KuraBerenang } from "../../../components/common/LautKura";
+import { PageHeader } from "../../../components/common/PageHeader";
+import { useLayarLebar } from "../../../hooks/useMediaQuery";
 
 interface Props {
   profile: Profile;
   paymentMode?: PaymentMode;
-  onOpenProfileModal: () => void;
-  onOpenRecordModal: (row: ScheduleRow) => void;
   onOpenVaccineDetail: (ref: string) => void;
   onNavigateToTab: (tab: any) => void;
   onQuickMarkGiven: (row: ScheduleRow) => void;
+  readOnly?: boolean;
 }
 
+const kartu = "bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)]";
+
+/** Ringkasan Bayi (docs/ux/UX-REDESIGN.md §5A): Berikutnya → Perlu perhatian → Kemajuan → Biaya. */
 export const DashboardTab: React.FC<Props> = ({
   profile,
   paymentMode = "HYBRID",
-  onOpenProfileModal,
-  onOpenRecordModal,
   onOpenVaccineDetail,
   onNavigateToTab,
-  onQuickMarkGiven
+  onQuickMarkGiven,
+  readOnly = false
 }) => {
   const [celebrateSignal, setCelebrateSignal] = useState(0);
+  const lebar = useLayarLebar();
   const age = getChildAge(profile.tanggalLahir);
 
-  const recordMap = useMemo(() => {
-    return new Map<string, Record>(profile.records.map((r) => [r.rowId, r]));
-  }, [profile.records]);
+  const recordMap = useMemo(() => new Map<string, Record>(profile.records.map((r) => [r.rowId, r])), [profile.records]);
 
-  // Overall progress calculations
   const totalSchedule = profile.schedule.length;
   const totalDone = profile.records.filter((r) => r.diberikan).length;
   const progressPercent = totalSchedule > 0 ? Math.round((totalDone / totalSchedule) * 100) : 0;
 
-  // Track record saves (e.g. from RecordModal) to trigger celebration
-  const prevRecordCountRef = useRef(totalDone);
-  const prevRecordsKeyRef = useRef(
-    profile.records
-      .filter((r) => r.diberikan)
-      .map((r) => r.rowId)
-      .join(",")
+  // Maskot 3D bereaksi saat jumlah imunisasi selesai bertambah
+  const prevDoneRef = useRef(totalDone);
+  useEffect(() => {
+    if (totalDone > prevDoneRef.current) setCelebrateSignal((s) => s + 1);
+    prevDoneRef.current = totalDone;
+  }, [totalDone]);
+
+  const rowStatuses = useMemo(
+    () =>
+      profile.schedule.map((row) => {
+        const rec = recordMap.get(row.id);
+        return { row, record: rec, ...getScheduleStatus(row, rec, profile.tanggalLahir) };
+      }),
+    [profile.schedule, recordMap, profile.tanggalLahir]
   );
 
-  useEffect(() => {
-    const currentGivenKey = profile.records
-      .filter((r) => r.diberikan)
-      .map((r) => r.rowId)
-      .join(",");
-    if (currentGivenKey !== prevRecordsKeyRef.current) {
-      if (totalDone > prevRecordCountRef.current || currentGivenKey.length > prevRecordsKeyRef.current.length) {
-        setCelebrateSignal((s) => s + 1);
-      }
-      prevRecordsKeyRef.current = currentGivenKey;
-      prevRecordCountRef.current = totalDone;
-    }
-  }, [profile.records, totalDone]);
-
-  const handleQuickMarkGiven = (row: ScheduleRow) => {
-    setCelebrateSignal((s) => s + 1);
-    onQuickMarkGiven(row);
-  };
-
-  const rowStatuses = useMemo(() => {
-    return profile.schedule.map((row) => {
-      const rec = recordMap.get(row.id);
-      const statusInfo = getScheduleStatus(row, rec, profile.tanggalLahir);
-      return {
-        row,
-        record: rec,
-        ...statusInfo
-      };
-    });
-  }, [profile.schedule, recordMap, profile.tanggalLahir]);
+  const belum = rowStatuses.filter((item) => !item.record?.diberikan);
+  const overdueItems = belum.filter((item) => item.status === "Terlambat");
+  const berikutnya = belum.find((item) => item.status !== "Terlambat") ?? null;
 
   const wajibRows = profile.schedule.filter((r) => r.status === "Wajib");
   const wajibDone = wajibRows.filter((r) => recordMap.get(r.id)?.diberikan).length;
-
   const pilihanRows = profile.schedule.filter((r) => r.status === "Pilihan");
   const pilihanDone = pilihanRows.filter((r) => recordMap.get(r.id)?.diberikan).length;
 
-  // Filter actionable items: Overdue (Belum dilakukan) and Upcoming (Dalam 30 hari ke depan)
-  const overdueItems = useMemo(
-    () => rowStatuses.filter((item) => item.status === "Terlambat"),
-    [rowStatuses]
+  const totalEstimatedSelfPay = useMemo(
+    () => calculateCostSummary(profile.schedule, undefined, paymentMode).total.tanggungSendiriMax,
+    [profile.schedule, paymentMode]
+  );
+  const totalRealizedActual = useMemo(
+    () => profile.records.filter((r) => r.diberikan).reduce((sum, r) => sum + (r.biayaAktual || 0), 0),
+    [profile.records]
   );
 
-  const upcomingItems = useMemo(
-    () => rowStatuses.filter((item) => item.status === "Segera"),
-    [rowStatuses]
-  );
+  const statusLabel = (item: (typeof rowStatuses)[number]) =>
+    item.status === "Terlambat"
+      ? typeof item.daysDiff === "number" && !isNaN(item.daysDiff) && item.daysDiff !== 0
+        ? `Terlambat ${Math.abs(item.daysDiff)} hari (seharusnya ${item.dueDateStr || "-"})`
+        : `Sudah melewati jadwal (${item.dueDateStr || "-"})`
+      : typeof item.daysDiff === "number" && !isNaN(item.daysDiff)
+      ? `${Math.max(0, item.daysDiff)} hari lagi · ${item.dueDateStr || "-"}`
+      : `Jadwal ${item.dueDateStr || "-"}`;
 
-  // Combined action list: Overdue first, then upcoming
-  const actionItems = useMemo(() => {
-    return [...overdueItems, ...upcomingItems];
-  }, [overdueItems, upcomingItems]);
-
-  // Next upcoming vaccine if action list is empty
-  const nextScheduled = useMemo(() => {
-    if (actionItems.length > 0) return null;
-    return rowStatuses.find((item) => !item.record?.diberikan);
-  }, [actionItems, rowStatuses]);
-
-  // Compact financial snapshot
-  const totalEstimatedSelfPay = useMemo(() => {
-    return calculateCostSummary(profile.schedule, undefined, paymentMode).total.tanggungSendiriMax;
-  }, [profile.schedule, paymentMode]);
-
-  const totalRealizedActual = useMemo(() => {
-    return profile.records
-      .filter((r) => r.diberikan)
-      .reduce((sum, r) => sum + (r.biayaAktual || 0), 0);
-  }, [profile.records]);
-
-  return (
-    <div className="space-y-7 animate-fadeIn w-full">
-      <PWABanner />
-
-      {/* Page header: child's name, subline, action buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-4 pt-1">
-        <div>
-          <h1 className="text-[28px] sm:text-[32px] font-semibold leading-tight text-text tracking-tight">
-            {profile.panggilan || APP_NAME}
-          </h1>
-          <p className="text-[15px] text-text-2 mt-1 flex items-center gap-2 flex-wrap">
-            <span className="font-semibold text-text">{age.text}</span>
-            <span>·</span>
-            <span>lahir {formatIndonesianDate(profile.tanggalLahir, "d MMMM yyyy")}</span>
+  /* ── Blok 1: Berikutnya ── */
+  const blokBerikutnya = (
+    <section className={`${kartu} space-y-3`} aria-labelledby="blok-berikutnya">
+      <h2 id="blok-berikutnya" className="font-display text-[16px] text-text">
+        Berikutnya
+      </h2>
+      {berikutnya ? (
+        <>
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => onOpenVaccineDetail(berikutnya.row.ref)}
+                className="text-[18px] font-semibold text-text hover:text-primary-text text-left cursor-pointer leading-snug"
+              >
+                {berikutnya.row.vaksin}
+              </button>
+              <CategoryTag gratis={berikutnya.row.gratis} />
+            </div>
+            <div className="flex items-center gap-x-2 gap-y-1 flex-wrap text-[13px] text-text-2">
+              <span className="font-medium text-text">Usia {berikutnya.row.usia}</span>
+              <span>·</span>
+              <StatusIndicator status={berikutnya.status} label={statusLabel(berikutnya)} />
+            </div>
+          </div>
+          <div className="flex items-center gap-2 pt-1">
+            {!readOnly && (
+              <button
+                type="button"
+                onClick={() => onQuickMarkGiven(berikutnya.row)}
+                className="flex-1 sm:flex-none px-5 rounded-full bg-mod-bayi text-mod-bayi-fg font-semibold text-[15px] min-h-[48px] inline-flex items-center justify-center gap-2 hover:brightness-95 active:scale-95 transition cursor-pointer"
+              >
+                <Check className="w-5 h-5" strokeWidth={3} />
+                Tandai selesai
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => onOpenVaccineDetail(berikutnya.row.ref)}
+              className="px-4 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[48px] hover:bg-surface-sunken transition cursor-pointer"
+            >
+              Detail
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="flex items-center gap-3">
+          <KuraBerenang className="kura-bob w-16 h-auto shrink-0" />
+          <p className="text-[14px] text-text-2">
+            {overdueItems.length > 0
+              ? "Tidak ada jadwal baru. Selesaikan yang terlambat di bawah."
+              : "Semua imunisasi sampai usia ini sudah selesai. Hebat!"}
           </p>
         </div>
+      )}
+    </section>
+  );
 
-        <div className="flex items-center gap-2.5 self-start sm:self-auto">
-          <button
-            type="button"
-            onClick={onOpenProfileModal}
-            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-control border border-border transition min-h-[40px] cursor-pointer shadow-xs hover:border-border-strong"
-          >
-            Ganti profil
-          </button>
+  /* ── Blok 2: Perlu perhatian (hanya yang terlambat) ── */
+  const blokPerhatian =
+    overdueItems.length > 0 ? (
+      <section className={`${kartu} space-y-2`} aria-labelledby="blok-perhatian">
+        <div className="flex items-baseline justify-between">
+          <h2 id="blok-perhatian" className="font-display text-[16px] text-text">
+            Perlu perhatian
+          </h2>
+          <span className="text-[13px] text-text-2 font-medium font-tabular">{overdueItems.length} terlambat</span>
+        </div>
+        <ul className="divide-y divide-border -mx-1">
+          {overdueItems.slice(0, 4).map((item) => (
+            <li key={item.row.id} className="flex items-center gap-2 py-2.5 px-1">
+              <button
+                type="button"
+                onClick={() => onOpenVaccineDetail(item.row.ref)}
+                className="flex-1 min-w-0 text-left cursor-pointer"
+              >
+                <span className="block text-[14px] font-semibold text-text truncate">{item.row.vaksin}</span>
+                <span className="mt-0.5 block">
+                  <StatusIndicator status="Terlambat" label={statusLabel(item)} />
+                </span>
+              </button>
+              {!readOnly && (
+                <button
+                  type="button"
+                  onClick={() => onQuickMarkGiven(item.row)}
+                  aria-label={`Tandai ${item.row.vaksin} selesai`}
+                  className="w-11 h-11 shrink-0 rounded-full border border-border-strong text-text flex items-center justify-center hover:bg-primary-tint hover:text-primary-text transition cursor-pointer"
+                >
+                  <Check className="w-5 h-5" />
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+        {overdueItems.length > 4 && (
           <button
             type="button"
             onClick={() => onNavigateToTab("jadwal")}
-            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-control border border-border transition min-h-[40px] cursor-pointer shadow-xs hover:border-border-strong"
+            className="text-[13px] font-medium text-primary-text hover:underline cursor-pointer"
           >
-            Lihat jadwal
+            Lihat {overdueItems.length - 4} lainnya di Jadwal
           </button>
-        </div>
-      </div>
-
-      {/* 3D Mascot Kura Hero Area */}
-      <KulaMascotView
-        progress={progressPercent}
-        celebrateSignal={celebrateSignal}
-        greeting={`Halo, ${profile.panggilan || "Keluarga"}!`}
-        subtitle="Apa yang ingin dirawat hari ini?"
-      />
-
-      {/* Section "Yang perlu dilakukan" (The main card) */}
-      <section className="space-y-3">
-        <div className="flex items-baseline justify-between">
-          <h2 className="text-[20px] font-semibold text-text">Yang perlu dilakukan</h2>
-          {actionItems.length > 0 && (
-            <span className="text-[13px] text-text-2 font-medium tabular-nums">
-              {actionItems.length} jadwal
-            </span>
-          )}
-        </div>
-
-        {actionItems.length === 0 ? (
-          <div className="p-6 bg-surface rounded-card border border-border shadow-[var(--shadow-card)] text-[14px] text-text-2 space-y-1.5">
-            <p className="text-text font-semibold">Tidak ada yang perlu dilakukan sekarang.</p>
-            {nextScheduled ? (
-              <p className="text-[13px] text-text-2">
-                Jadwal berikutnya: <span className="text-text font-semibold">{nextScheduled.row.vaksin}</span> pada usia {nextScheduled.row.usia} ({nextScheduled.dueDateStr}).
-              </p>
-            ) : (
-              <p className="text-[13px] text-text-2">Semua jadwal imunisasi anak Anda telah selesai.</p>
-            )}
-          </div>
-        ) : (
-          <div className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">
-            {actionItems.map((item, index) => {
-              const isFirstUrgent = index === 0;
-
-              return (
-                <div
-                  key={item.row.id}
-                  className="p-3.5 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-surface-sunken/40 transition-colors"
-                >
-                  <div className="space-y-1.5 min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <button
-                        type="button"
-                        onClick={() => onOpenVaccineDetail(item.row.ref)}
-                        className="text-sm sm:text-base font-semibold text-text hover:text-primary hover:underline text-left cursor-pointer break-words leading-snug"
-                      >
-                        {item.row.vaksin}
-                      </button>
-                      <CategoryTag gratis={item.row.gratis} />
-                    </div>
-
-                    <div className="flex items-center gap-x-2 gap-y-1.5 flex-wrap text-[12px] sm:text-[13px] text-text-2">
-                      <span className="font-medium text-text">Usia {item.row.usia}</span>
-                      <span className="text-text-3">·</span>
-                      {item.status === "Terlambat" ? (
-                        <StatusIndicator
-                          status="Terlambat"
-                          label={
-                            typeof item.daysDiff === "number" && !isNaN(item.daysDiff) && item.daysDiff !== 0
-                              ? `Sudah lewat ${Math.abs(item.daysDiff)} hari (seharusnya ${item.dueDateStr || "-"})`
-                              : `Sudah melewati jadwal (${item.dueDateStr || "-"})`
-                          }
-                        />
-                      ) : (
-                        <StatusIndicator
-                          status="Segera"
-                          label={
-                            typeof item.daysDiff === "number" && !isNaN(item.daysDiff)
-                              ? `Dalam ${Math.max(0, item.daysDiff)} hari (${item.dueDateStr || "-"})`
-                              : `Jadwal segera (${item.dueDateStr || "-"})`
-                          }
-                        />
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="shrink-0 flex justify-end sm:justify-auto mt-2 sm:mt-0 pt-2 sm:pt-0 border-t border-border/40 sm:border-t-0">
-                    <button
-                      type="button"
-                      onClick={() => handleQuickMarkGiven(item.row)}
-                      className={`px-4 py-2 text-[14px] font-semibold rounded-control min-h-[44px] min-w-[88px] transition cursor-pointer shadow-xs active:scale-95 ${
-                        isFirstUrgent
-                          ? "bg-primary hover:bg-primary-hover active:bg-primary-hover text-primary-fg"
-                          : "bg-surface hover:bg-surface-sunken text-text border border-border-strong"
-                      }`}
-                    >
-                      Catat
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
         )}
       </section>
+    ) : null;
 
-      {/* Responsive Grid for Kemajuan and Keuangan summary cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Section "Kemajuan" with subtle elevation */}
-        <section className="bg-surface p-5 sm:p-6 rounded-card border border-border shadow-card space-y-3.5 flex flex-col justify-between">
-          <div className="space-y-3.5">
-            <div className="flex items-baseline justify-between">
-              <h2 className="text-[16px] font-semibold text-text">Kemajuan imunisasi</h2>
-              <span className="text-[14px] text-text font-semibold font-tabular">
-                {totalDone} dari {totalSchedule} selesai ({progressPercent}%)
-              </span>
-            </div>
+  /* ── Blok 3: Kemajuan ── */
+  const blokKemajuan = (
+    <section className={`${kartu} space-y-3`} aria-labelledby="blok-kemajuan">
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 id="blok-kemajuan" className="font-display text-[16px] text-text">
+          Kemajuan imunisasi
+        </h2>
+        <span className="text-[14px] text-text font-semibold font-tabular">
+          {totalDone} dari {totalSchedule} selesai
+        </span>
+      </div>
+      <div className="relative pt-5">
+        <div
+          className="w-full bg-track rounded-full h-3 overflow-hidden"
+          role="progressbar"
+          aria-valuenow={progressPercent}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Kemajuan imunisasi"
+        >
+          <div className="bg-primary h-full rounded-full transition-all duration-300" style={{ width: `${progressPercent}%` }} />
+        </div>
+        {/* Kura kecil mengikuti ujung bar (HP); dijaga agar tidak keluar kartu */}
+        <div
+          className="absolute top-0 w-9 -translate-x-1/2 transition-all duration-300 lg:hidden"
+          style={{ left: `${Math.min(94, Math.max(6, progressPercent))}%` }}
+          aria-hidden="true"
+        >
+          <KuraBerenang className="w-full h-auto" />
+        </div>
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[13px] text-text-2">
+        <span>
+          Imunisasi program <strong className="text-text font-medium">{wajibDone} dari {wajibRows.length}</strong>
+        </span>
+        <span>
+          Vaksin pilihan <strong className="text-text font-medium">{pilihanDone} dari {pilihanRows.length}</strong>
+        </span>
+      </div>
+    </section>
+  );
 
-            {/* 6px bar with rounded track */}
-            <div className="w-full bg-track rounded-[3px] h-[7px] overflow-hidden">
-              <div
-                className="bg-primary h-full rounded-[3px] transition-all duration-300"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
+  /* ── Blok 4: Biaya (satu baris) ── */
+  const blokBiaya = (
+    <button
+      type="button"
+      onClick={() => onNavigateToTab("biaya")}
+      className={`${kartu} w-full flex items-center gap-3 text-left cursor-pointer hover:border-border-strong transition`}
+    >
+      <span className="flex-1 min-w-0">
+        <span className="block font-display text-[16px] text-text">Biaya vaksin</span>
+        <span className="block text-[13px] text-text-2 font-tabular">
+          Terealisasi {formatRupiah(totalRealizedActual)} dari estimasi maks. {formatRupiah(totalEstimatedSelfPay)}
+        </span>
+      </span>
+      <ChevronRight className="w-5 h-5 text-text-2 shrink-0" />
+    </button>
+  );
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[13px] text-text-2 pt-0.5">
-            <span>
-              Imunisasi program <strong className="text-text font-medium">{wajibDone} dari {wajibRows.length}</strong> selesai
-            </span>
-            <span>
-              Vaksin pilihan <strong className="text-text font-medium">{pilihanDone} dari {pilihanRows.length}</strong> selesai
-            </span>
-          </div>
-        </section>
+  return (
+    <div className="space-y-4 animate-fadeIn w-full">
+      <PWABanner />
 
-        {/* Compact Keuangan Summary Card with elevation */}
-        <section className="bg-surface p-5 sm:p-6 rounded-card border border-border shadow-card flex flex-col justify-between gap-4">
-          <div className="space-y-1">
-            <h2 className="text-[16px] font-semibold text-text">Perencanaan keuangan</h2>
-            <p className="text-[13px] text-text-2 leading-relaxed">
-              Realisasi pengeluaran saat ini <span className="font-semibold text-text tabular-nums">{formatRupiah(totalRealizedActual)}</span> dari estimasi maksimal <span className="font-semibold text-text tabular-nums">{formatRupiah(totalEstimatedSelfPay)}</span>.
-            </p>
-          </div>
+      <PageHeader
+        title={profile.panggilan || APP_NAME}
+        subtitle={
+          <span>
+            <strong className="font-semibold text-text">{age.text}</strong> · lahir{" "}
+            {formatIndonesianDate(profile.tanggalLahir, "d MMMM yyyy")}
+          </span>
+        }
+      />
 
-          <button
-            type="button"
-            onClick={() => onNavigateToTab("keuangan")}
-            className="self-start sm:self-auto px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-control border border-border-strong transition min-h-[40px] cursor-pointer shadow-xs shrink-0"
-          >
-            Buka keuangan
-          </button>
-        </section>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+        <div className="lg:col-span-2 space-y-4">
+          {blokBerikutnya}
+          {blokPerhatian}
+        </div>
+        <div className="space-y-4">
+          {lebar && (
+            <KulaMascotView
+              progress={progressPercent}
+              celebrateSignal={celebrateSignal}
+              greeting={`Halo, ${profile.panggilan || "Keluarga"}!`}
+              subtitle={`${totalDone} dari ${totalSchedule} imunisasi selesai`}
+            />
+          )}
+          {blokKemajuan}
+          {blokBiaya}
+        </div>
       </div>
     </div>
   );

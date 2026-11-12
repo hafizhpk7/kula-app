@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { X, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { BottomSheet } from "../../../components/common/BottomSheet";
 import { FacilityType, Gratis, ScheduleRow, Status } from "../../../types";
 
 interface Props {
@@ -17,8 +18,6 @@ export const CustomRowModal: React.FC<Props> = ({
   onSave,
   onDelete
 }) => {
-  if (!isOpen) return null;
-
   const [vaksin, setVaksin] = useState(rowToEdit?.vaksin || "");
   const [tahun, setTahun] = useState<1 | 2 | 3 | 4 | 5>(rowToEdit?.tahun || 1);
   const [usia, setUsia] = useState(rowToEdit?.usia || "12 bulan");
@@ -57,35 +56,8 @@ export const CustomRowModal: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ backgroundColor: "var(--scrim)" }}
-      role="dialog"
-      aria-modal="true"
-    >
-      <div
-        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
-        style={{ boxShadow: "var(--shadow-popover)" }}
-      >
-        <div className="sm:hidden flex justify-center pt-2.5 pb-1">
-          <div className="w-10 h-1 bg-border-strong rounded-full" />
-        </div>
-
-        <div className="p-4 border-b border-border flex items-center justify-between">
-          <h3 className="text-[18px] font-serif font-medium text-text">
-            {rowToEdit ? "Edit baris kustom" : "Tambah jadwal kustom"}
-          </h3>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
-            aria-label="Tutup"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto space-y-3.5 text-[14px]">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={rowToEdit ? "Edit baris kustom" : "Tambah jadwal kustom"} titleId="custom-title">
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-[14px]">
           {errorMsg && (
             <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
               {errorMsg}
@@ -229,7 +201,6 @@ export const CustomRowModal: React.FC<Props> = ({
             </div>
           </div>
         </form>
-      </div>
-    </div>
+    </BottomSheet>
   );
 };

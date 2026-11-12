@@ -11,8 +11,7 @@ export const SchedulePage: React.FC = () => {
     updateScheduleRow,
     updateRecord,
     addCustomRow,
-    deleteCustomRow,
-    resetSchedule
+    deleteCustomRow
   } = useBayi();
   const { setSelectedVaccineRef } = useOutletContext<any>();
 
@@ -27,7 +26,6 @@ export const SchedulePage: React.FC = () => {
       onUpdateRecord={updateRecord}
       onAddCustomRow={addCustomRow}
       onDeleteCustomRow={deleteCustomRow}
-      onResetSchedule={resetSchedule}
       onOpenVaccineDetail={(ref) => setSelectedVaccineRef(ref)}
     />
   );

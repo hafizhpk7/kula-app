@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { X, Calendar, Building2, Tag, Receipt, FileText } from "lucide-react";
+import { BottomSheet } from "../../../components/common/BottomSheet";
+import { Lipat } from "../../../components/common/Lipat";
 import { ClaimStatus, FacilityType, ScheduleRow, VaccineRecord } from "../../../types";
 
 interface Props {
@@ -61,175 +62,159 @@ export const RecordModal: React.FC<Props> = ({
     onSave(updatedRecord);
   };
 
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
-      style={{ backgroundColor: "var(--scrim)" }}
-      role="dialog"
-      aria-modal="true"
-    >
-      {/* Mobile bottom sheet (rounded 16 16 0 0), desktop centered dialog 480px */}
-      <div
-        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
-        style={{ boxShadow: "var(--shadow-popover)" }}
-      >
-        {/* Mobile handle */}
-        <div className="sm:hidden flex justify-center pt-2.5 pb-1">
-          <div className="w-10 h-1 bg-border-strong rounded-full" />
-        </div>
+  const detailTerisi = Boolean(merekBatch || catatan || (record && record.biayaAktual));
+  const inputCls =
+    "w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]";
 
-        {/* Header */}
-        <div className="p-4 border-b border-border flex items-start justify-between">
-          <div>
-            <h3 className="text-[18px] font-serif font-medium text-text">
-              Tandai sudah diberikan
-            </h3>
-            <p className="text-[13px] text-text-2">
-              {row.vaksin} · jadwal anjuran {row.usia} ({dueDateStr})
-            </p>
-          </div>
+  return (
+    <BottomSheet
+      isOpen
+      onClose={onClose}
+      title="Tandai sudah diberikan"
+      titleId="record-title"
+      footer={
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
-            aria-label="Tutup"
+            className="px-5 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[48px] hover:bg-surface-sunken transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            Batal
+          </button>
+          <button
+            type="submit"
+            form="record-form"
+            className="flex-1 rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[15px] font-semibold min-h-[48px] transition cursor-pointer"
+          >
+            Selesai
           </button>
         </div>
+      }
+    >
+      <form id="record-form" onSubmit={handleSubmit} className="space-y-4 text-[14px]">
+        <p className="text-[13px] text-text-2">
+          {row.vaksin} · jadwal anjuran {row.usia} ({dueDateStr})
+        </p>
 
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto space-y-4 text-[14px]">
-          {/* Status Switch */}
-          <div className="flex items-center justify-between p-3 bg-surface-sunken rounded-control">
-            <div>
-              <p className="font-medium text-text">Status pemberian vaksin</p>
-              <p className="text-[13px] text-text-2">
-                {diberikan ? "Sudah disuntikkan kepada anak" : "Belum diberikan"}
-              </p>
+        {/* Status */}
+        <div className="flex items-center justify-between p-3 bg-surface-sunken rounded-control">
+          <div>
+            <p className="font-medium text-text">Status pemberian vaksin</p>
+            <p className="text-[13px] text-text-2">{diberikan ? "Sudah disuntikkan kepada anak" : "Belum diberikan"}</p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={diberikan}
+              onChange={(e) => setDiberikan(e.target.checked)}
+              aria-label="Status pemberian vaksin"
+              className="sr-only peer"
+            />
+            <div className="w-11 h-6 bg-track peer-focus-visible:outline-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
+          </label>
+        </div>
+
+        {diberikan && (
+          <>
+            {/* Wajib: tanggal dan tempat */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label htmlFor="rec-tanggal" className="text-[13px] font-medium text-text">
+                  Tanggal diberikan
+                </label>
+                <input
+                  id="rec-tanggal"
+                  type="date"
+                  required
+                  value={tanggalDiberikan}
+                  onChange={(e) => setTanggalDiberikan(e.target.value)}
+                  className={inputCls}
+                />
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="rec-tempat" className="text-[13px] font-medium text-text">
+                  Tempat faskes
+                </label>
+                <select
+                  id="rec-tempat"
+                  value={tempat}
+                  onChange={(e) => setTempat(e.target.value as FacilityType)}
+                  className={inputCls}
+                >
+                  <option value="Puskesmas">Puskesmas</option>
+                  <option value="Posyandu">Posyandu</option>
+                  <option value="Klinik">Klinik</option>
+                  <option value="Rumah Sakit">Rumah Sakit</option>
+                  <option value="Dokter Praktik">Dokter Praktik</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input
-                type="checkbox"
-                checked={diberikan}
-                onChange={(e) => setDiberikan(e.target.checked)}
-                className="sr-only peer"
-              />
-              <div className="w-11 h-6 bg-track peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary" />
-            </label>
-          </div>
 
-          {diberikan && (
-            <>
-              {/* Tanggal & Tempat */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Detail lain: biaya, merek/batch, catatan */}
+            <Lipat
+              title="Detail lain"
+              summary={`Biaya Rp ${(Number(biayaAktual) || 0).toLocaleString("id-ID")}, merek/batch, catatan`}
+              defaultOpen={detailTerisi}
+            >
+              <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-[13px] font-medium text-text">
-                    Tanggal diberikan
+                  <label htmlFor="rec-biaya" className="text-[13px] font-medium text-text">
+                    Biaya yang dibayarkan (Rp)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-2 text-[14px]">Rp</span>
+                    <input
+                      id="rec-biaya"
+                      type="number"
+                      min="0"
+                      step="5000"
+                      inputMode="numeric"
+                      value={biayaAktual}
+                      onChange={(e) => setBiayaAktual(e.target.value)}
+                      className={`${inputCls} pl-10 font-tabular`}
+                      placeholder="0 jika gratis di Puskesmas"
+                    />
+                  </div>
+                  <p className="text-[12px] text-text-2">
+                    {row.gratis === "Ya"
+                      ? "Vaksin ini termasuk program pemerintah (Rp 0 di Puskesmas/Posyandu)."
+                      : "Estimasi normal: Rp " + row.min.toLocaleString("id-ID") + " – Rp " + row.max.toLocaleString("id-ID")}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="rec-merek" className="text-[13px] font-medium text-text">
+                    Merek / No. Batch (opsional)
                   </label>
                   <input
-                    type="date"
-                    required
-                    value={tanggalDiberikan}
-                    onChange={(e) => setTanggalDiberikan(e.target.value)}
-                    className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
+                    id="rec-merek"
+                    type="text"
+                    value={merekBatch}
+                    onChange={(e) => setMerekBatch(e.target.value)}
+                    placeholder="Contoh: Bio Farma, Sanofi, Hexaxim #B123"
+                    className={inputCls}
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[13px] font-medium text-text">
-                    Tempat faskes
+                  <label htmlFor="rec-catatan" className="text-[13px] font-medium text-text">
+                    Catatan dokter / reaksi (opsional)
                   </label>
-                  <select
-                    value={tempat}
-                    onChange={(e) => setTempat(e.target.value as FacilityType)}
-                    className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
-                  >
-                    <option value="Puskesmas">Puskesmas</option>
-                    <option value="Posyandu">Posyandu</option>
-                    <option value="Klinik">Klinik</option>
-                    <option value="Rumah Sakit">Rumah Sakit</option>
-                    <option value="Dokter Praktik">Dokter Praktik</option>
-                    <option value="Lainnya">Lainnya</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Biaya Riil */}
-              <div className="space-y-1">
-                <label className="text-[13px] font-medium text-text">
-                  Biaya yang dibayarkan (Rp)
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-text-2 text-[14px]">
-                    Rp
-                  </span>
                   <input
-                    type="number"
-                    min="0"
-                    step="5000"
-                    inputMode="numeric"
-                    value={biayaAktual}
-                    onChange={(e) => setBiayaAktual(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 text-[15px] font-tabular rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
-                    placeholder="0 jika gratis di Puskesmas"
+                    id="rec-catatan"
+                    type="text"
+                    value={catatan}
+                    onChange={(e) => setCatatan(e.target.value)}
+                    placeholder="Contoh: Demam ringan 1 hari, kompres hangat"
+                    className={inputCls}
                   />
                 </div>
-                <p className="text-[12px] text-text-2">
-                  {row.gratis === "Ya"
-                    ? "Vaksin ini termasuk program pemerintah (Rp 0 di Puskesmas/Posyandu)."
-                    : "Estimasi normal: Rp " + row.min.toLocaleString("id-ID") + " – Rp " + row.max.toLocaleString("id-ID")}
-                </p>
               </div>
-
-              {/* Merek & Batch */}
-              <div className="space-y-1">
-                <label className="text-[13px] font-medium text-text">
-                  Merek / No. Batch (opsional)
-                </label>
-                <input
-                  type="text"
-                  value={merekBatch}
-                  onChange={(e) => setMerekBatch(e.target.value)}
-                  placeholder="Contoh: Bio Farma, Sanofi, Hexaxim #B123"
-                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
-                />
-              </div>
-
-              {/* Catatan */}
-              <div className="space-y-1">
-                <label className="text-[13px] font-medium text-text">
-                  Catatan dokter / reaksi (opsional)
-                </label>
-                <input
-                  type="text"
-                  value={catatan}
-                  onChange={(e) => setCatatan(e.target.value)}
-                  placeholder="Contoh: Demam ringan 1 hari, kompres hangat"
-                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
-                />
-              </div>
-            </>
-          )}
-
-          {/* Actions */}
-          <div className="pt-2 flex items-center justify-end gap-2 border-t border-border">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-control border border-border-strong transition min-h-[44px] cursor-pointer"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-control transition min-h-[44px] cursor-pointer"
-            >
-              Selesai
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+            </Lipat>
+          </>
+        )}
+      </form>
+    </BottomSheet>
   );
 };

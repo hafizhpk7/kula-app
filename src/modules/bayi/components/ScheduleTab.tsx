@@ -1,18 +1,20 @@
 import React, { useState, useMemo } from "react";
-import {
-  Search,
-  Plus,
-  RotateCcw,
-  LayoutGrid,
-  Table as TableIcon,
-  X
-} from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { calculateDueDate, formatIndonesianDate, getScheduleStatus } from "../../../utils/dates";
 import { formatRupiahRange, getVaccinePriceDisplay } from "../../../utils/calc";
 import { CategoryTag, StatusIndicator } from "../../../components/common/Badges";
 import { CustomRowModal } from "./CustomRowModal";
-import { PaymentModeSelector } from "./PaymentModeSelector";
+import { PageHeader } from "../../../components/common/PageHeader";
+import { EmptyState } from "../../../components/common/EmptyState";
+import { useLayarLebar } from "../../../hooks/useMediaQuery";
+import {
+  FILTER_AWAL,
+  JadwalFilters,
+  JadwalFilterSheet,
+  ViewMode,
+  hitungFilterAktif
+} from "./JadwalFilterSheet";
 import { ScheduleCheckbox } from "./ScheduleCheckbox";
 
 interface Props {
@@ -23,11 +25,19 @@ interface Props {
   onUpdateRecord: (record: Record) => void;
   onAddCustomRow: (row: ScheduleRow) => void;
   onDeleteCustomRow: (rowId: string) => void;
-  onResetSchedule: () => void;
   onOpenVaccineDetail: (ref: string) => void;
 }
 
-type ActiveFilter = "all" | "program" | "pilihan" | "belum" | "selesai" | "terlambat";
+type Segmen = "perlu" | "semua" | "selesai";
+
+/** Tahun jadwal (1–5) sesuai usia anak sekarang */
+function tahunUsiaSekarang(tanggalLahir: string): number {
+  const lahir = new Date(tanggalLahir);
+  if (isNaN(lahir.getTime())) return 1;
+  const now = new Date();
+  const bulan = (now.getFullYear() - lahir.getFullYear()) * 12 + now.getMonth() - lahir.getMonth();
+  return Math.min(5, Math.max(1, Math.floor(bulan / 12) + 1));
+}
 
 export const ScheduleTab: React.FC<Props> = ({
   profile,
@@ -37,13 +47,18 @@ export const ScheduleTab: React.FC<Props> = ({
   onUpdateRecord,
   onAddCustomRow,
   onDeleteCustomRow,
-  onResetSchedule,
   onOpenVaccineDetail
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedYear, setSelectedYear] = useState<number | "all">("all");
-  const [activeFilter, setActiveFilter] = useState<ActiveFilter>("all");
-  const [viewMode, setViewMode] = useState<"timeline" | "table">("timeline");
+  const lebar = useLayarLebar();
+  const [filters, setFilters] = useState<JadwalFilters>(FILTER_AWAL);
+  const [segmen, setSegmen] = useState<Segmen>("perlu");
+  const [filterOpen, setFilterOpen] = useState(false);
+  // Desktop mulai di Tabel (lebih padat); HP di garis waktu. Pilihan pengguna menang setelahnya.
+  const [viewModeDipilih, setViewModeDipilih] = useState<ViewMode | null>(null);
+  const viewMode: ViewMode = viewModeDipilih ?? (lebar ? "table" : "timeline");
+  const setViewMode = (m: ViewMode) => setViewModeDipilih(m);
+  const { searchQuery, selectedYear } = filters;
+  const filterAktif = hitungFilterAktif(filters);
   const [customModalOpen, setCustomModalOpen] = useState(false);
   const [customRowToEdit, setCustomRowToEdit] = useState<ScheduleRow | null>(null);
 
@@ -73,11 +88,11 @@ export const ScheduleTab: React.FC<Props> = ({
       }
 
       // Filter chips
-      if (activeFilter === "program" && item.row.status !== "Wajib") return false;
-      if (activeFilter === "pilihan" && item.row.status !== "Pilihan") return false;
-      if (activeFilter === "belum" && item.record?.diberikan) return false;
-      if (activeFilter === "selesai" && !item.record?.diberikan) return false;
-      if (activeFilter === "terlambat" && item.status !== "Terlambat") return false;
+      if (filters.kategori === "program" && item.row.status !== "Wajib") return false;
+      if (filters.kategori === "pilihan" && item.row.status !== "Pilihan") return false;
+      if (filters.hanyaTerlambat && item.status !== "Terlambat") return false;
+      if (segmen === "perlu" && item.record?.diberikan) return false;
+      if (segmen === "selesai" && !item.record?.diberikan) return false;
 
       // Search query
       if (searchQuery.trim()) {
@@ -90,7 +105,7 @@ export const ScheduleTab: React.FC<Props> = ({
 
       return true;
     });
-  }, [allRowsWithStatus, selectedYear, activeFilter, searchQuery]);
+  }, [allRowsWithStatus, selectedYear, filters.kategori, filters.hanyaTerlambat, segmen, searchQuery]);
 
   // Group displayed rows by year
   const groupedByYear = useMemo(() => {
@@ -102,6 +117,26 @@ export const ScheduleTab: React.FC<Props> = ({
     });
     return map;
   }, [displayedRows]);
+
+  const totalDone = profile.records.filter((r) => r.diberikan).length;
+
+  // Tahun yang terbuka secara default: tahun usia anak sekarang + tahun yang punya jadwal terlambat.
+  const [tahunTerbuka, setTahunTerbuka] = useState<Set<number>>(() => {
+    const buka = new Set<number>([tahunUsiaSekarang(profile.tanggalLahir)]);
+    allRowsWithStatus.forEach((i) => {
+      if (i.status === "Terlambat" && !i.record?.diberikan) buka.add(i.row.tahun);
+    });
+    return buka;
+  });
+  // Saat mencari atau memilih satu tahun, semua hasil langsung terbuka
+  const semuaTerbuka = searchQuery.trim() !== "" || selectedYear !== "all";
+  const toggleTahun = (th: number) =>
+    setTahunTerbuka((prev) => {
+      const next = new Set(prev);
+      if (next.has(th)) next.delete(th);
+      else next.add(th);
+      return next;
+    });
 
   const handleToggleGiven = (row: ScheduleRow, currentGiven: boolean) => {
     const existingRec = recordMap.get(row.id);
@@ -119,206 +154,121 @@ export const ScheduleTab: React.FC<Props> = ({
     onUpdateRecord(updatedRec);
   };
 
-  const handleResetConfirmation = () => {
-    if (confirm("Kembalikan daftar jadwal dan estimasi biaya ke 35 baris bawaan? Catatan yang sudah ada tetap tersimpan.")) {
-      onResetSchedule();
-    }
-  };
-
   return (
     <div className="space-y-6 animate-fadeIn w-full">
-      {/* 1. Header Bar */}
-      <div className="flex flex-col xl:flex-row xl:items-baseline justify-between gap-3 sm:gap-4">
-        <div className="min-w-0 flex-1 min-w-[20rem]">
-          <h1 className="text-[26px] sm:text-[32px] font-semibold leading-tight text-text tracking-tight">
-            Jadwal imunisasi
-          </h1>
-          <p className="text-[14px] sm:text-[15px] text-text-2 mt-1 max-w-prose">
-            Garis waktu kronologis imunisasi 0–5 tahun sesuai anjuran resmi IDAI & Kemenkes RI.
-          </p>
-        </div>
-
-        {/* Action controls: wrap gracefully on 320px-430px */}
-        <div className="flex flex-wrap items-center gap-2 shrink-0">
-          {/* Payment Mode Selector Badge */}
-          <PaymentModeSelector
-            paymentMode={paymentMode}
-            onChange={onUpdatePaymentMode}
-            variant="badge"
-          />
-
-          {/* Timeline / Table Switch */}
-          <div className="flex bg-surface-sunken p-1 rounded-control border border-border">
-            <button
-              type="button"
-              onClick={() => setViewMode("timeline")}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-chip text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
-                viewMode === "timeline"
-                  ? "bg-surface text-text font-semibold border border-border shadow-xs"
-                  : "text-text-2 hover:text-text font-medium"
-              }`}
-              title="Tampilan Garis Waktu"
-            >
-              <LayoutGrid className="w-4 h-4 shrink-0" />
-              <span className="hidden xs:inline sm:inline">Garis waktu</span>
-              <span className="inline xs:hidden sm:hidden">Timeline</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setViewMode("table")}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-chip text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
-                viewMode === "table"
-                  ? "bg-surface text-text font-semibold border border-border shadow-xs"
-                  : "text-text-2 hover:text-text font-medium"
-              }`}
-              title="Tampilan Tabel"
-            >
-              <TableIcon className="w-4 h-4 shrink-0" />
-              <span>Tabel</span>
-            </button>
-          </div>
-
+      {/* 1. Judul + satu aksi sekunder (Filter) */}
+      <PageHeader
+        title="Jadwal imunisasi"
+        subtitle={`${totalDone} dari ${profile.schedule.length} selesai`}
+        action={
           <button
             type="button"
-            onClick={() => {
-              setCustomRowToEdit(null);
-              setCustomModalOpen(true);
-            }}
-            className="px-3 py-1.5 sm:px-3.5 sm:py-2 bg-surface hover:bg-surface-sunken text-text text-[12px] sm:text-[13px] font-medium rounded-control border border-border transition min-h-[40px] flex items-center gap-1.5 cursor-pointer shadow-xs hover:border-border-strong shrink-0"
+            onClick={() => setFilterOpen(true)}
+            className="inline-flex items-center gap-1.5 px-4 rounded-full border border-border-strong bg-surface text-text text-[14px] font-medium min-h-[44px] hover:bg-surface-sunken transition cursor-pointer"
           >
-            <Plus className="w-4 h-4 text-primary shrink-0" />
-            <span>Kustom</span>
+            <SlidersHorizontal className="w-4 h-4" />
+            <span>Filter</span>
+            {filterAktif > 0 && (
+              <span className="min-w-5 h-5 px-1 rounded-full bg-mod-bayi text-mod-bayi-fg text-[12px] font-bold flex items-center justify-center">
+                {filterAktif}
+              </span>
+            )}
           </button>
+        }
+      />
 
+      {/* 2. Tiga segmen status */}
+      <div className="flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Status jadwal">
+        {(
+          [
+            { id: "perlu", label: "Perlu dilakukan" },
+            { id: "semua", label: "Semua" },
+            { id: "selesai", label: "Selesai" }
+          ] as const
+        ).map((s) => (
           <button
+            key={s.id}
             type="button"
-            onClick={handleResetConfirmation}
-            className="p-2 sm:p-2.5 bg-surface hover:bg-surface-sunken text-text-2 hover:text-text rounded-control border border-border transition min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer shadow-xs shrink-0"
-            title="Reset ke 35 baris bawaan"
-            aria-label="Reset ke 35 baris bawaan"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* 2. Filters & Search */}
-      <div className="space-y-3">
-        {/* Search bar */}
-        <div className="relative">
-          <Search className="w-4 h-4 text-text-2 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari vaksin, usia, atau catatan..."
-            className="w-full pl-10 pr-9 py-2 text-[14px] rounded-control border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-text-2 hover:text-text cursor-pointer min-h-[32px] min-w-[32px] flex items-center justify-center"
-              aria-label="Bersihkan pencarian"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-
-        {/* Filter Chips: horizontally scrollable container below lg, wraps at lg+ */}
-        <div className="flex items-center gap-2 overflow-x-auto lg:overflow-visible pb-1.5 pt-0.5 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0 lg:mx-0 lg:px-0 lg:flex-wrap">
-          {[
-            { id: "all", label: "Semua" },
-            { id: "program", label: "Imunisasi program" },
-            { id: "pilihan", label: "Vaksin pilihan" },
-            { id: "belum", label: "Belum dilakukan" },
-            { id: "selesai", label: "Selesai" },
-            { id: "terlambat", label: "Terlambat" }
-          ].map((chip) => {
-            const isSelected = activeFilter === chip.id;
-            return (
-              <button
-                key={chip.id}
-                type="button"
-                onClick={() => setActiveFilter(chip.id as ActiveFilter)}
-                className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
-                  isSelected
-                    ? "bg-surface text-text font-semibold border border-border-strong shadow-xs"
-                    : "bg-surface text-text-2 hover:text-text border border-border font-medium"
-                }`}
-              >
-                {chip.label}
-              </button>
-            );
-          })}
-
-          <span className="text-border shrink-0 lg:hidden">|</span>
-
-          {/* Year selector */}
-          <button
-            type="button"
-            onClick={() => setSelectedYear("all")}
-            className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
-              selectedYear === "all"
-                ? "bg-surface text-text font-semibold border border-border-strong shadow-xs"
-                : "bg-surface text-text-2 hover:text-text border border-border font-medium"
+            role="radio"
+            aria-checked={segmen === s.id}
+            onClick={() => setSegmen(s.id)}
+            className={`flex-1 py-2 rounded-full text-[13px] min-h-[42px] transition cursor-pointer ${
+              segmen === s.id ? "bg-surface text-text font-semibold border border-border shadow-xs" : "text-text-2 hover:text-text font-medium"
             }`}
           >
-            Semua tahun
+            {s.label}
           </button>
-          {([1, 2, 3, 4, 5] as const).map((th) => (
-            <button
-              key={th}
-              type="button"
-              onClick={() => setSelectedYear(th)}
-              className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
-                selectedYear === th
-                  ? "bg-surface text-text font-semibold border border-border-strong shadow-xs"
-                  : "bg-surface text-text-2 hover:text-text border border-border font-medium"
-              }`}
-            >
-              Tahun {th}
-            </button>
-          ))}
-        </div>
+        ))}
       </div>
+
+      <JadwalFilterSheet
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        filters={filters}
+        onChange={setFilters}
+        viewMode={viewMode}
+        onViewModeChange={setViewMode}
+        paymentMode={paymentMode}
+        onUpdatePaymentMode={onUpdatePaymentMode}
+        onAddCustom={() => {
+          setCustomRowToEdit(null);
+          setCustomModalOpen(true);
+        }}
+        hasil={displayedRows.length}
+      />
 
       {/* 3. Schedule Content */}
       {displayedRows.length === 0 ? (
-        <div className="p-8 bg-surface rounded-card border border-border shadow-card text-center text-text-2 text-[14px]">
-          Tidak ada jadwal imunisasi yang cocok dengan filter atau pencarian Anda.
-        </div>
+        <EmptyState
+          title={
+            segmen === "perlu" && filterAktif === 0
+              ? "Tidak ada yang perlu dilakukan"
+              : "Tidak ada jadwal yang cocok"
+          }
+          description={
+            segmen === "perlu" && filterAktif === 0
+              ? "Semua imunisasi yang jatuh tempo sudah selesai. Lihat tab Semua untuk seluruh jadwal."
+              : "Coba ubah segmen atau reset filter."
+          }
+          action={
+            filterAktif > 0 ? (
+              <button
+                type="button"
+                onClick={() => setFilters(FILTER_AWAL)}
+                className="px-5 py-2.5 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[44px] hover:bg-surface-sunken transition cursor-pointer"
+              >
+                Reset filter
+              </button>
+            ) : undefined
+          }
+        />
       ) : viewMode === "timeline" ? (
-        <div className="space-y-6">
+        <div className="space-y-4">
           {Array.from(groupedByYear.entries()).map(([yearNum, items]) => {
+            const semuaTahun = allRowsWithStatus.filter((i) => i.row.tahun === yearNum);
+            const selesaiTahun = semuaTahun.filter((i) => i.record?.diberikan).length;
+            const terbuka = semuaTerbuka || tahunTerbuka.has(yearNum);
+            const rentang =
+              yearNum === 1 ? "0–12 bulan" : yearNum === 2 ? "1–2 tahun" : yearNum === 3 ? "2–3 tahun" : yearNum === 4 ? "3–4 tahun" : "4–5 tahun";
             return (
               <div key={yearNum} className="space-y-3">
-                {/* Year Header (sticky) */}
-                <div className="sticky top-16 z-10 bg-bg/95 py-2.5 border-b border-border flex items-baseline justify-between backdrop-blur-xs">
-                  <h2 className="text-[18px] font-serif font-semibold text-text">
-                    Tahun {yearNum}{" "}
-                    <span className="text-[13px] text-text-2 font-normal font-sans">
-                      (
-                      {yearNum === 1
-                        ? "0–12 bulan"
-                        : yearNum === 2
-                        ? "1–2 tahun"
-                        : yearNum === 3
-                        ? "2–3 tahun"
-                        : yearNum === 4
-                        ? "3–4 tahun"
-                        : "4–5 tahun"}
-                      )
-                    </span>
-                  </h2>
-                  <span className="text-[13px] text-text font-medium font-tabular">
-                    {items.length} jadwal
+                <button
+                  type="button"
+                  aria-expanded={terbuka}
+                  onClick={() => toggleTahun(yearNum)}
+                  className="w-full flex items-center justify-between gap-3 px-1 py-2 text-left min-h-[48px] cursor-pointer"
+                >
+                  <span className="font-display text-[18px] text-text">
+                    Tahun {yearNum} <span className="text-[13px] text-text-2 font-sans font-normal">({rentang})</span>
                   </span>
-                </div>
+                  <span className="flex items-center gap-2 text-[13px] text-text-2 font-medium font-tabular">
+                    {selesaiTahun}/{semuaTahun.length} selesai
+                    <ChevronDown className={`w-5 h-5 transition-transform ${terbuka ? "rotate-180" : ""}`} />
+                  </span>
+                </button>
 
-                {/* Rows as elevated card container */}
-                <div className="bg-surface rounded-card border border-border shadow-card divide-y divide-border overflow-hidden">
+                {terbuka && (
+                <div className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">
                   {items.map((item) => {
                     const isDone = Boolean(item.record?.diberikan);
                     const priceInfo = getVaccinePriceDisplay(item.row, paymentMode);
@@ -402,13 +352,14 @@ export const ScheduleTab: React.FC<Props> = ({
                     );
                   })}
                 </div>
+                )}
               </div>
             );
           })}
         </div>
       ) : (
         /* Table View with robust structured layout and responsive overflow */
-        <div className="bg-surface rounded-card border border-border shadow-card overflow-hidden">
+        <div className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] overflow-hidden">
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-[14px] min-w-[720px] table-fixed border-collapse">
               <colgroup>

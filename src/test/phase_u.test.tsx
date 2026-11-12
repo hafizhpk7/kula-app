@@ -5,10 +5,23 @@ import { BrowserRouter } from "react-router-dom";
 import * as layout from "../config/layout";
 import { ScheduleCheckbox } from "../modules/bayi/components/ScheduleCheckbox";
 import { ScheduleTab } from "../modules/bayi/components/ScheduleTab";
-import { BayiSidebar } from "../modules/bayi/components/BayiSidebar";
+import { AppShell } from "../shell/components/AppShell";
+import { BAYI_TABS } from "../modules/bayi/components/BayiLayout";
 import { createSampleProfile } from "../data/seed";
 import fs from "fs";
 import path from "path";
+import { ThemeProvider } from "../context/ThemeContext";
+
+// AccountMenu di AppShell memakai useAuth: cukup sebagai tamu
+vi.mock("../context/AuthContext", () => ({
+  useAuth: () => ({
+    user: null,
+    isGuest: true,
+    cloudSyncStatus: "synced",
+    signOut: vi.fn()
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children
+}));
 
 describe("Phase U: Layout and Schedule Verification", () => {
   it("U1: Layout constants strictly match specification", () => {
@@ -100,17 +113,20 @@ describe("Phase U: Layout and Schedule Verification", () => {
 
     render(<ScheduleTab {...dummyHandlers} />);
 
-    // Header title and description
+    // Judul dan subjudul kemajuan
     expect(screen.getByText("Jadwal imunisasi")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Garis waktu kronologis imunisasi 0–5 tahun sesuai anjuran resmi IDAI & Kemenkes RI."
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText(/dari [0-9]+ selesai/)).toBeInTheDocument();
 
-    // Required button labels
-    expect(screen.getByText("Kustom")).toBeInTheDocument();
-    expect(screen.getByTitle("Reset ke 35 baris bawaan")).toBeInTheDocument();
+    // Filter, Kustom, dan Reset dipindah (UX-REDESIGN): Kustom ada di lembar Filter, Reset di Pengaturan Bayi
+    fireEvent.click(screen.getByRole("button", { name: /Filter/ }));
+    expect(screen.getByText("Tambah vaksin lain (kustom)")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Tutup" }));
+
+    // Segmen Semua + tahun terbuka supaya semua baris tampil
+    fireEvent.click(screen.getByRole("radio", { name: "Semua" }));
+    fireEvent.click(screen.getByRole("button", { name: /Filter/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Tahun 1" }));
+    fireEvent.click(screen.getByRole("button", { name: "Tutup" }));
     expect(screen.getAllByText("Info Detail").length).toBeGreaterThan(0);
 
     // Timeline checkbox label
@@ -136,8 +152,11 @@ describe("Phase U: Layout and Schedule Verification", () => {
 
     render(<ScheduleTab {...dummyHandlers} />);
 
-    // Switch to table mode
+    // Switch to table mode (lewat lembar Filter), lalu tampilkan semua baris
+    fireEvent.click(screen.getByRole("button", { name: /Filter/ }));
     fireEvent.click(screen.getByTitle("Tampilan Tabel"));
+    fireEvent.click(screen.getByRole("button", { name: "Tutup" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Semua" }));
 
     // Table checkbox label and title
     const firstRow = dummyProfile.schedule[0];
@@ -156,19 +175,23 @@ describe("Phase U: Layout and Schedule Verification", () => {
     ).toBeInTheDocument();
   });
 
-  it("U7: BayiSidebar features tablet icon rail attributes and accessible names", () => {
+  it("U7: AppShell Bayi features tablet icon rail, back link, and accessible names", () => {
     render(
-      <BrowserRouter>
-        <BayiSidebar />
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AppShell title="Bayi" accent="bayi" tabs={BAYI_TABS}>
+            <p>isi</p>
+          </AppShell>
+        </BrowserRouter>
+      </ThemeProvider>
     );
 
-    const berandaUtamaLink = screen.getByRole("link", { name: "Beranda Kula" });
-    expect(berandaUtamaLink).toBeInTheDocument();
-    expect(berandaUtamaLink).toHaveAttribute("title", "Beranda Kula");
+    const berandaKulaLink = screen.getByRole("link", { name: "Kembali ke Beranda Kula" });
+    expect(berandaKulaLink).toBeInTheDocument();
+    expect(berandaKulaLink).toHaveAttribute("title", "Kembali ke Beranda Kula");
 
-    const jadwalLink = screen.getByRole("link", { name: "Jadwal" });
-    expect(jadwalLink).toBeInTheDocument();
-    expect(jadwalLink).toHaveAttribute("title", "Jadwal");
+    const jadwalLinks = screen.getAllByRole("link", { name: "Jadwal" });
+    expect(jadwalLinks.length).toBeGreaterThan(0);
+    expect(jadwalLinks[0]).toHaveAttribute("title", "Jadwal");
   });
 });

@@ -4,9 +4,8 @@ import { useBayi } from "../context/BayiContext";
 import { DashboardTab } from "../components/DashboardTab";
 
 export const DashboardPage: React.FC = () => {
-  const { activeProfile, paymentMode, quickMarkGiven } = useBayi();
-  const { setRecordModalRow, setSelectedVaccineRef, setProfileModalOpen } =
-    useOutletContext<any>();
+  const { activeProfile, paymentMode, quickMarkGiven, isReadOnly } = useBayi();
+  const { setSelectedVaccineRef } = useOutletContext<any>();
   const navigate = useNavigate();
 
   if (!activeProfile) return null;
@@ -15,13 +14,11 @@ export const DashboardPage: React.FC = () => {
     <DashboardTab
       profile={activeProfile}
       paymentMode={paymentMode}
-      onOpenProfileModal={() => setProfileModalOpen(true)}
-      onOpenRecordModal={(row) => setRecordModalRow(row)}
+      readOnly={isReadOnly}
       onOpenVaccineDetail={(ref) => setSelectedVaccineRef(ref)}
       onNavigateToTab={(tab) => {
         if (tab === "jadwal") navigate("/bayi/jadwal");
-        else if (tab === "keuangan" || tab === "biaya" || tab === "asuransi")
-          navigate("/bayi/biaya");
+        else if (tab === "keuangan" || tab === "biaya" || tab === "asuransi") navigate("/bayi/biaya");
         else if (tab === "info-vaksin") navigate("/bayi/info-vaksin");
         else if (tab === "pengaturan") navigate("/bayi/pengaturan");
       }}
