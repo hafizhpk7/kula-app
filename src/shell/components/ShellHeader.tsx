@@ -36,7 +36,7 @@ export const ShellHeader: React.FC = () => {
         {/* Brand Link */}
         <Link
           to="/"
-          className="flex items-center gap-2 font-serif font-bold text-[22px] text-text tracking-tight hover:opacity-90 transition cursor-pointer"
+          className="flex items-center gap-2 font-display text-[24px] text-text hover:opacity-90 transition cursor-pointer"
         >
           <KulaLogo size={40} alt="" />
           <span>{APP_NAME}</span>

@@ -1,50 +1,51 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #FAF7F2;
-  --bg-sidebar: #F5EFE6;
+  /* Laut Kura: permukaan kebiruan, teks biru laut tua */
+  --bg: #E6F6FA;
+  --bg-sidebar: #D6EFF5;
   --surface: #FFFFFF;
-  --surface-sunken: #F4EFEB;
-  --border: #EFE8DE;
-  --border-strong: #DDD4C7;
-  --text: #26201B;
-  --text-2: #61574E;
-  --text-3: #8C8276;
+  --surface-sunken: #EEF8FB;
+  --border: #CFE6EC;
+  --border-strong: #A9CFD9;
+  --text: #0D3B4A;
+  --text-2: #2E5F6E;
+  --text-3: #4F7A87;
 
-  /* Richer, warmer sage primary & soft coral accent */
-  --primary: #34634E;
-  --primary-hover: #29503E;
+  /* Primary = hijau tempurung Kura (juga dipakai status "Selesai"); accent = coral */
+  --primary: #17804A;
+  --primary-hover: #126A3D;
   --primary-fg: #FFFFFF;
-  --primary-tint: #E8F1EC;
-  --primary-text: #254F3D;
+  --primary-tint: #DDF5E7;
+  --primary-text: #0F5E36;
 
-  --accent: #D25C34;
-  --accent-hover: #BC4F29;
-  --accent-text: #A7411E;
-  --accent-tint: #FBECE5;
+  --accent: #E2552D;
+  --accent-hover: #C94722;
+  --accent-text: #A53A1A;
+  --accent-tint: #FFE6DD;
 
-  --info: #3E6382;
-  --info-tint: #E7EFF6;
+  --info: #2C6E9B;
+  --info-tint: #DFF0FA;
   --warning: #C98F28;
   --warning-text: #8F5E0F;
-  --warning-tint: #FAF1DC;
+  --warning-tint: #FFF2CC;
   --danger: #BA3826;
   --danger-tint: #FBE7E3;
-  --track: #EFE8DC;
-  --focus: #34634E;
+  --track: #D6EBF0;
+  --focus: #0E7F9C;
 
   /* Chart & Semantics */
-  --chart-program: #87BBA2;
-  --chart-insurance: #5A83A6;
-  --chart-parent: #26201B;
+  --chart-program: #3BBF86;
+  --chart-insurance: #2B8FB3;
+  --chart-parent: #0D3B4A;
 
-  /* Soft diffused drop shadow for cards to pop from cream bg */
-  --shadow-card: 0 2px 10px -2px rgba(42, 36, 32, 0.05), 0 1px 3px 0 rgba(42, 36, 32, 0.03);
-  --shadow-card-hover: 0 4px 14px -3px rgba(42, 36, 32, 0.08), 0 2px 5px 0 rgba(42, 36, 32, 0.04);
-  --shadow-popover: 0 10px 25px -4px rgba(42, 36, 32, 0.12), 0 4px 8px -2px rgba(42, 36, 32, 0.06);
-  --scrim: rgba(38, 32, 27, 0.4);
-  --stage1: #F6EFE0;
-  --stage2: #EADFC8;
+  /* Bayangan kebiruan supaya kartu terasa mengapung di air */
+  --shadow-card: 0 4px 14px -6px rgba(13, 59, 74, 0.18), 0 1px 3px 0 rgba(13, 59, 74, 0.06);
+  --shadow-card-hover: 0 8px 20px -8px rgba(13, 59, 74, 0.26), 0 2px 5px 0 rgba(13, 59, 74, 0.08);
+  --shadow-popover: 0 14px 30px -8px rgba(13, 59, 74, 0.3), 0 4px 8px -2px rgba(13, 59, 74, 0.1);
+  --scrim: rgba(13, 59, 74, 0.45);
+  --stage1: #DFF4F8;
+  --stage2: #A9DDE8;
 
   /* Laut Kura (preview redesign): langit, laut, warna identitas modul, maskot */
   --sky: #CDEEF5;
@@ -67,17 +68,17 @@
 }
 
 [data-theme="dark"] {
-  --bg: #1B1815;
-  --bg-sidebar: #221E1A;
-  --surface: #27231F;
-  --surface-sunken: #302A24;
-  --border: #3B342C;
-  --border-strong: #4F463B;
-  --text: #F5EFE7;
-  --text-2: #BAAF9F;
-  --text-3: #8C8274;
-  --stage1: #26302B;
-  --stage2: #1A211D;
+  --bg: #0B2530;
+  --bg-sidebar: #0E2C39;
+  --surface: #143644;
+  --surface-sunken: #1B4252;
+  --border: #235061;
+  --border-strong: #33687B;
+  --text: #E6F6FA;
+  --text-2: #A9CFD9;
+  --text-3: #7FA9B5;
+  --stage1: #14607A;
+  --stage2: #0C3B4C;
 
   --sky: #0B2530;
   --sky-ink: #E6F6FA;
@@ -97,31 +98,31 @@
   --kura-ink: #10201A;
   --shadow-float: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
 
-  --primary: #76B495;
-  --primary-hover: #8AC3A6;
-  --primary-fg: #122119;
-  --primary-tint: #23342B;
-  --primary-text: #9FD3B9;
+  --primary: #4FD08D;
+  --primary-hover: #6BDCA1;
+  --primary-fg: #06281A;
+  --primary-tint: #174A36;
+  --primary-text: #8BE5B4;
 
-  --accent: #E5875E;
-  --accent-hover: #F09A73;
-  --accent-text: #F3A988;
-  --accent-tint: #3B281E;
+  --accent: #FF9D80;
+  --accent-hover: #FFB09A;
+  --accent-text: #FFB8A3;
+  --accent-tint: #4A261C;
 
   --info: #8EB2D5;
-  --info-tint: #25313D;
+  --info-tint: #173B50;
   --warning: #E0A73E;
   --warning-text: #ECC36D;
   --warning-tint: #3A2F1C;
   --danger: #E87261;
   --danger-tint: #3A221E;
-  --track: #352F28;
-  --focus: #76B495;
+  --track: #1F4757;
+  --focus: #4CC9E0;
 
   /* Chart & Semantics */
-  --chart-program: #467962;
+  --chart-program: #2FA36F;
   --chart-insurance: #8EB2D5;
-  --chart-parent: #F5EFE7;
+  --chart-parent: #E6F6FA;
 
   --shadow-card: 0 2px 10px -2px rgba(0, 0, 0, 0.35);
   --shadow-card-hover: 0 4px 14px -3px rgba(0, 0, 0, 0.45);
@@ -130,7 +131,7 @@
 }
 
 @theme {
-  --font-serif: "Fraunces", Georgia, serif;
+  --font-serif: "Fredoka", "DM Sans", system-ui, sans-serif; /* nama lama; isinya font judul bulat */
   --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
   --font-display: "Fredoka", "DM Sans", system-ui, sans-serif;
 
