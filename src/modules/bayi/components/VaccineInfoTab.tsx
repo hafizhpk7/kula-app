@@ -63,7 +63,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile }) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari nama vaksin atau penyakit..."
-            className="w-full pl-10 pr-9 py-2 text-[14px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+            className="w-full pl-10 pr-9 py-2 text-[14px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
           />
           {searchQuery && (
             <button
@@ -90,7 +90,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile }) => {
                 key={cat.id}
                 type="button"
                 onClick={() => setFilterCategory(cat.id)}
-                className={`px-3 py-1.5 rounded-[8px] text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] ${
+                className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] ${
                   isSelected
                     ? "bg-surface-sunken text-text font-medium border border-border-strong"
                     : "bg-surface text-text-2 hover:text-text border border-border"
@@ -106,7 +106,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile }) => {
       {/* 3. Cards Grid: 1px border cards, serif vaccine names (Section 6.4) */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredVaccines.length === 0 ? (
-          <div className="col-span-full py-8 text-center text-text-2 text-[14px] bg-surface rounded-[12px] border border-border">
+          <div className="col-span-full py-8 text-center text-text-2 text-[14px] bg-surface rounded-card border border-border">
             Tidak ada vaksin yang cocok dengan pencarian "{searchQuery}".
           </div>
         ) : (
@@ -116,7 +116,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile }) => {
             return (
               <div
                 key={v.id}
-                className="bg-surface rounded-[12px] border border-border p-5 flex flex-col justify-between space-y-4 hover:border-border-strong transition-colors"
+                className="bg-surface rounded-card border border-border p-5 flex flex-col justify-between space-y-4 hover:border-border-strong transition-colors"
               >
                 <div className="space-y-3">
                   {/* Top: Name & Badges */}
@@ -131,13 +131,13 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile }) => {
                   </div>
 
                   {/* Protects against */}
-                  <div className="p-3 rounded-[8px] bg-primary-tint/60 border border-primary/20 text-[13px] space-y-0.5">
+                  <div className="p-3 rounded-chip bg-primary-tint/60 border border-primary/20 text-[13px] space-y-0.5">
                     <span className="font-medium text-primary-text">Penyakit yang dicegah:</span>
                     <p className="text-text leading-relaxed">{v.melindungi}</p>
                   </div>
 
                   {/* Why important */}
-                  <div className="p-3 rounded-[8px] bg-surface-sunken border border-border text-[13px] space-y-0.5">
+                  <div className="p-3 rounded-chip bg-surface-sunken border border-border text-[13px] space-y-0.5">
                     <span className="font-medium text-text-2">Mengapa penting:</span>
                     <p className="text-text-2 leading-relaxed">{v.penting}</p>
                   </div>

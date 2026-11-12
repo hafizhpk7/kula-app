@@ -117,7 +117,7 @@ export const ProfileModal: React.FC<Props> = ({
       aria-modal="true"
     >
       <div
-        className="bg-surface rounded-t-[16px] sm:rounded-[12px] max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
+        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
         style={{ boxShadow: "var(--shadow-popover)" }}
       >
         <div className="sm:hidden flex justify-center pt-2.5 pb-1">
@@ -136,7 +136,7 @@ export const ProfileModal: React.FC<Props> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Tutup"
           >
             <X className="w-5 h-5" />
@@ -146,7 +146,7 @@ export const ProfileModal: React.FC<Props> = ({
         {/* Modal Body */}
         <div className="p-4 sm:p-5 overflow-y-auto space-y-4 text-[14px]">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-[10px] text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -201,7 +201,7 @@ export const ProfileModal: React.FC<Props> = ({
                         <button
                           type="button"
                           onClick={() => startEdit(p)}
-                          className="p-2 text-text-2 hover:text-text rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                          className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                           aria-label={`Edit ${p.panggilan}`}
                         >
                           <Edit2 className="w-4 h-4" />
@@ -211,7 +211,7 @@ export const ProfileModal: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => setConfirmDeleteId(p.id)}
-                            className="p-2 text-danger hover:bg-danger-tint rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                            className="p-2 text-danger hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                             aria-label={`Hapus ${p.panggilan}`}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -225,7 +225,7 @@ export const ProfileModal: React.FC<Props> = ({
 
               {/* Confirm Delete Subpanel */}
               {confirmDeleteId && (
-                <div className="p-3 bg-danger-tint border border-danger/30 rounded-[10px] space-y-2">
+                <div className="p-3 bg-danger-tint border border-danger/30 rounded-control space-y-2">
                   <p className="text-[13px] text-danger font-medium">
                     Hapus profil ini beserta seluruh catatan imunisasinya?
                   </p>
@@ -233,14 +233,14 @@ export const ProfileModal: React.FC<Props> = ({
                     <button
                       type="button"
                       onClick={() => setConfirmDeleteId(null)}
-                      className="px-3 py-1.5 bg-surface text-text rounded-[8px] border border-border text-[13px]"
+                      className="px-3 py-1.5 bg-surface text-text rounded-chip border border-border text-[13px]"
                     >
                       Batal
                     </button>
                     <button
                       type="button"
                       onClick={() => handleDelete(confirmDeleteId)}
-                      className="px-3 py-1.5 bg-danger text-white rounded-[8px] text-[13px] font-medium"
+                      className="px-3 py-1.5 bg-danger text-white rounded-chip text-[13px] font-medium"
                     >
                       Ya, hapus
                     </button>
@@ -251,7 +251,7 @@ export const ProfileModal: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={startAdd}
-                className="w-full py-2.5 bg-surface hover:bg-surface-sunken text-primary border border-border-strong rounded-[10px] font-medium flex items-center justify-center gap-2 transition min-h-[44px] cursor-pointer"
+                className="w-full py-2.5 bg-surface hover:bg-surface-sunken text-primary border border-border-strong rounded-control font-medium flex items-center justify-center gap-2 transition min-h-[44px] cursor-pointer"
               >
                 <Plus className="w-4 h-4" />
                 <span>Tambah anak baru</span>
@@ -269,7 +269,7 @@ export const ProfileModal: React.FC<Props> = ({
                   value={panggilan}
                   onChange={(e) => setPanggilan(e.target.value)}
                   placeholder="Contoh: Kayla / Danis"
-                  className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
               </div>
 
@@ -282,7 +282,7 @@ export const ProfileModal: React.FC<Props> = ({
                   required
                   value={tanggalLahir}
                   onChange={(e) => setTanggalLahir(e.target.value)}
-                  className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
               </div>
 
@@ -295,7 +295,7 @@ export const ProfileModal: React.FC<Props> = ({
                   value={catatan}
                   onChange={(e) => setCatatan(e.target.value)}
                   placeholder="Riwayat alergi, prematur, dsb."
-                  className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
               </div>
 
@@ -303,13 +303,13 @@ export const ProfileModal: React.FC<Props> = ({
                 <button
                   type="button"
                   onClick={() => setMode("list")}
-                  className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-[10px] border border-border-strong min-h-[44px] cursor-pointer"
+                  className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-control border border-border-strong min-h-[44px] cursor-pointer"
                 >
                   Kembali
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-[10px] min-h-[44px] cursor-pointer"
+                  className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-control min-h-[44px] cursor-pointer"
                 >
                   Simpan profil
                 </button>

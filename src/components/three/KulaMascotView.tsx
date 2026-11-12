@@ -68,7 +68,7 @@ export const KulaMascotView: React.FC<KulaMascotViewProps> = ({
     <div
       role="img"
       aria-label="Kura, maskot kura-kura Kula"
-      className={`relative w-full h-[210px] sm:h-[230px] rounded-[24px] overflow-hidden border border-border select-none shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] ${className}`}
+      className={`relative w-full h-[210px] sm:h-[230px] rounded-[28px] overflow-hidden select-none shadow-[var(--shadow-card)] ${className}`}
       style={{
         background: "radial-gradient(circle at 50% 38%, var(--stage1), var(--stage2))",
         touchAction: "pan-y"

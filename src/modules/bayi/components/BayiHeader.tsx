@@ -54,13 +54,13 @@ export const BayiHeader: React.FC<Props> = ({
   }, []);
 
   return (
-    <header className="bg-surface border-b border-border sticky top-0 z-30 transition-colors no-print">
+    <header className="bg-surface border-b-[3px] border-mod-bayi sticky top-0 z-30 transition-colors no-print">
       <div className={`w-full mx-auto ${PAGE_PAD} h-16 flex items-center justify-between gap-3`}>
         <div className="flex items-center gap-2">
           {/* Mobile Back to Launcher Home button */}
           <Link
             to="/"
-            className="md:hidden flex items-center justify-center w-9 h-9 rounded-[10px] bg-surface-sunken hover:bg-border text-text-2 hover:text-text transition cursor-pointer shrink-0 border border-border"
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-control bg-surface-sunken hover:bg-border text-text-2 hover:text-text transition cursor-pointer shrink-0 border border-border"
             aria-label="Kembali ke Beranda utama"
             title="Kembali ke Beranda utama"
           >
@@ -75,7 +75,7 @@ export const BayiHeader: React.FC<Props> = ({
                 onClick={() => setIsDropdownOpen((prev) => !prev)}
                 aria-expanded={isDropdownOpen}
                 aria-haspopup="true"
-                className="flex items-center gap-2.5 py-1 px-2 rounded-[10px] text-text hover:bg-surface-sunken transition-colors min-h-[44px] cursor-pointer"
+                className="flex items-center gap-2.5 py-1 px-2 rounded-control text-text hover:bg-surface-sunken transition-colors min-h-[44px] cursor-pointer"
                 aria-label="Pilih atau kelola profil anak"
               >
                 <div className="w-8 h-8 rounded-full bg-accent-tint text-accent-text flex items-center justify-center text-[13px] font-semibold shrink-0">
@@ -99,7 +99,7 @@ export const BayiHeader: React.FC<Props> = ({
               {/* Child Selection Dropdown Menu */}
               {isDropdownOpen && (
                 <div
-                  className="absolute left-0 top-full mt-1.5 w-72 max-w-[calc(100vw-2rem)] bg-surface rounded-[12px] border border-border py-2 z-50 divide-y divide-border"
+                  className="absolute left-0 top-full mt-1.5 w-72 max-w-[calc(100vw-2rem)] bg-surface rounded-card border border-border py-2 z-50 divide-y divide-border"
                   style={{ boxShadow: "var(--shadow-popover)" }}
                 >
                   <div className="px-3.5 py-1.5">
@@ -119,7 +119,7 @@ export const BayiHeader: React.FC<Props> = ({
                             onSelectProfile(p.id);
                             setIsDropdownOpen(false);
                           }}
-                          className={`w-full text-left px-3 py-2 rounded-[10px] flex items-center justify-between gap-3 transition min-h-[44px] cursor-pointer ${
+                          className={`w-full text-left px-3 py-2 rounded-control flex items-center justify-between gap-3 transition min-h-[44px] cursor-pointer ${
                             isActive
                               ? "bg-primary-tint text-primary-text font-semibold"
                               : "hover:bg-surface-sunken text-text"
@@ -154,7 +154,7 @@ export const BayiHeader: React.FC<Props> = ({
                         if (onOpenAddChild) onOpenAddChild();
                         else onOpenProfileModal();
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-primary hover:bg-primary-tint rounded-[10px] transition min-h-[40px] font-semibold cursor-pointer"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-primary hover:bg-primary-tint rounded-control transition min-h-[40px] font-semibold cursor-pointer"
                     >
                       <Plus className="w-4 h-4" />
                       <span>Tambah anak baru</span>
@@ -165,7 +165,7 @@ export const BayiHeader: React.FC<Props> = ({
                         setIsDropdownOpen(false);
                         onOpenProfileModal();
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-text-2 hover:bg-surface-sunken rounded-[10px] transition min-h-[40px] cursor-pointer"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-[13px] text-text-2 hover:bg-surface-sunken rounded-control transition min-h-[40px] cursor-pointer"
                     >
                       <Users className="w-4 h-4" />
                       <span>Kelola profil</span>
@@ -175,7 +175,7 @@ export const BayiHeader: React.FC<Props> = ({
               )}
             </div>
           ) : (
-            <span className="font-serif font-bold text-[18px] text-text">Kula</span>
+            <span className="font-display text-[20px] text-text">Kula</span>
           )}
         </div>
 
@@ -222,7 +222,7 @@ export const BayiHeader: React.FC<Props> = ({
 
               {isAvatarMenuOpen && (
                 <div
-                  className="absolute right-0 top-full mt-1.5 w-60 bg-surface rounded-[12px] border border-border py-1.5 z-50 divide-y divide-border"
+                  className="absolute right-0 top-full mt-1.5 w-60 bg-surface rounded-card border border-border py-1.5 z-50 divide-y divide-border"
                   style={{ boxShadow: "var(--shadow-popover)" }}
                 >
                   <div className="px-3.5 py-2">

@@ -34,7 +34,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
       style={{ backgroundColor: "var(--scrim)" }}
     >
       <div
-        className="bg-surface rounded-[12px] max-w-[440px] w-full border border-border p-6 sm:p-7 space-y-6 animate-fadeIn"
+        className="bg-surface rounded-card max-w-[440px] w-full border border-border p-6 sm:p-7 space-y-6 animate-fadeIn"
         style={{ boxShadow: "var(--shadow-popover)" }}
       >
         {/* Section 6.8: Typographic welcome (serif heading + one sentence), no stock illustrations */}
@@ -49,7 +49,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-[10px] text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -64,7 +64,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
               value={panggilan}
               onChange={(e) => setPanggilan(e.target.value)}
               placeholder="Contoh: Kayla / Danis"
-              className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+              className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
             />
             <p className="text-[12px] text-text-2">
               Cukup nama panggilan sehari-hari.
@@ -80,13 +80,13 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
               required
               value={tanggalLahir}
               onChange={(e) => setTanggalLahir(e.target.value)}
-              className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+              className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-2.5 bg-primary hover:bg-primary-hover text-primary-fg font-medium rounded-[10px] transition min-h-[44px] cursor-pointer mt-2 text-[14px]"
+            className="w-full py-2.5 bg-primary hover:bg-primary-hover text-primary-fg font-medium rounded-control transition min-h-[44px] cursor-pointer mt-2 text-[14px]"
           >
             Lihat jadwal
           </button>

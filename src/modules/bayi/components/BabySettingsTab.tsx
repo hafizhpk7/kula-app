@@ -39,7 +39,7 @@ export const BabySettingsTab: React.FC = () => {
 
         <Link
           to="/pengaturan"
-          className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-[10px] border border-border transition min-h-[40px] shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border transition min-h-[40px] shrink-0 self-start sm:self-auto"
         >
           <Settings className="w-4 h-4 text-text-2" />
           <span>Pengaturan Akun Global</span>
@@ -48,7 +48,7 @@ export const BabySettingsTab: React.FC = () => {
       </div>
 
       {/* 2. Data Overview & Export Card */}
-      <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-4 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+      <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-4 shadow-[var(--shadow-card)]">
         <h2 className="text-[16px] font-semibold text-text">Ekspor & Cadangan Data Imunisasi</h2>
         <p className="text-[13px] text-text-2 leading-relaxed">
           Menyimpan {appState.profiles.length} profil anak dengan {activeProfile?.schedule.length || 0} jadwal vaksin. Unduh data dalam format Excel, Kalender (.ics), atau JSON.
@@ -59,7 +59,7 @@ export const BabySettingsTab: React.FC = () => {
             <button
               type="button"
               onClick={() => exportToExcel(activeProfile)}
-              className="px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-[10px] border border-border transition flex items-center gap-2 min-h-[40px] cursor-pointer"
+              className="px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border transition flex items-center gap-2 min-h-[40px] cursor-pointer"
             >
               <FileSpreadsheet className="w-4 h-4 text-primary" />
               <span>Ekspor Excel (.xlsx)</span>
@@ -68,7 +68,7 @@ export const BabySettingsTab: React.FC = () => {
             <button
               type="button"
               onClick={() => exportToIcs(activeProfile)}
-              className="px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-[10px] border border-border transition flex items-center gap-2 min-h-[40px] cursor-pointer"
+              className="px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border transition flex items-center gap-2 min-h-[40px] cursor-pointer"
             >
               <Calendar className="w-4 h-4 text-primary" />
               <span>Ekspor Kalender (.ics)</span>
@@ -77,7 +77,7 @@ export const BabySettingsTab: React.FC = () => {
             <button
               type="button"
               onClick={() => downloadJsonBackup(appState)}
-              className="px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-[10px] border border-border transition flex items-center gap-2 min-h-[40px] cursor-pointer"
+              className="px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border transition flex items-center gap-2 min-h-[40px] cursor-pointer"
             >
               <Download className="w-4 h-4 text-primary" />
               <span>Cadangan JSON</span>
@@ -87,7 +87,7 @@ export const BabySettingsTab: React.FC = () => {
       </section>
 
       {/* 3. Reset Schedule Options */}
-      <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-3 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+      <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-3 shadow-[var(--shadow-card)]">
         <h2 className="text-[16px] font-semibold text-text">Reset Jadwal Imunisasi</h2>
         <p className="text-[13px] text-text-2 leading-relaxed">
           Mengembalikan daftar jadwal vaksin ke setelan bawaan rekomendasi IDAI tanpa menghapus riwayat pemberian yang telah dicatat.
@@ -96,7 +96,7 @@ export const BabySettingsTab: React.FC = () => {
           <button
             type="button"
             onClick={resetSchedule}
-            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-[10px] border border-border-strong transition min-h-[40px] flex items-center gap-2 cursor-pointer"
+            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border-strong transition min-h-[40px] flex items-center gap-2 cursor-pointer"
           >
             <RotateCcw className="w-4 h-4 text-text-2" />
             <span>Reset Jadwal ke Standar IDAI</span>
@@ -105,12 +105,12 @@ export const BabySettingsTab: React.FC = () => {
       </section>
 
       {/* 4. Medical References */}
-      <section className="bg-surface rounded-[12px] border border-border p-5 sm:p-6 space-y-4 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+      <section className="bg-surface rounded-card border border-border p-5 sm:p-6 space-y-4 shadow-[var(--shadow-card)]">
         <h2 className="text-[16px] font-semibold text-text">Rujukan Medis Resmi</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {ASSUMPTIONS_AND_NOTES.map((item, idx) => (
-            <div key={idx} className="p-3.5 rounded-[10px] bg-surface-sunken/60 border border-border text-[13px] space-y-1">
+            <div key={idx} className="p-3.5 rounded-control bg-surface-sunken/60 border border-border text-[13px] space-y-1">
               <div className="font-semibold text-text">{item.topik}</div>
               <p className="text-text-2 leading-relaxed">{item.keterangan}</p>
             </div>
@@ -135,7 +135,7 @@ export const BabySettingsTab: React.FC = () => {
       </section>
 
       {/* 5. Danger Zone: Delete Baby Data */}
-      <section className="rounded-[12px] border border-danger/30 p-5 sm:p-6 space-y-3 bg-danger-tint/30 shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)]">
+      <section className="rounded-card border border-danger/30 p-5 sm:p-6 space-y-3 bg-danger-tint/30 shadow-[var(--shadow-card)]">
         <div className="flex items-center gap-2 text-danger font-semibold text-[16px]">
           <Trash2 className="w-4 h-4" />
           <span>Hapus Semua Data Bayi</span>
@@ -148,14 +148,14 @@ export const BabySettingsTab: React.FC = () => {
           <button
             type="button"
             onClick={handleStartDelete}
-            className="px-4 py-2 bg-surface hover:bg-danger-tint text-danger text-[13px] font-medium rounded-[10px] border border-danger/40 transition min-h-[40px] cursor-pointer"
+            className="px-4 py-2 bg-surface hover:bg-danger-tint text-danger text-[13px] font-medium rounded-control border border-danger/40 transition min-h-[40px] cursor-pointer"
           >
             Hapus Data Modul Bayi
           </button>
         )}
 
         {deleteStep === 1 && (
-          <div className="p-3.5 bg-surface rounded-[10px] border border-danger/40 space-y-2">
+          <div className="p-3.5 bg-surface rounded-control border border-danger/40 space-y-2">
             <p className="text-[13px] font-semibold text-danger">
               Peringatan tahap 1: Anda yakin ingin menghapus data profil seluruh anak di modul Bayi?
             </p>
@@ -163,14 +163,14 @@ export const BabySettingsTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDeleteStep(0)}
-                className="px-3 py-1.5 text-text bg-surface-sunken rounded-[8px] text-[13px] cursor-pointer"
+                className="px-3 py-1.5 text-text bg-surface-sunken rounded-chip text-[13px] cursor-pointer"
               >
                 Batal
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="px-3.5 py-1.5 bg-danger text-white font-medium rounded-[8px] text-[13px] cursor-pointer"
+                className="px-3.5 py-1.5 bg-danger text-white font-medium rounded-chip text-[13px] cursor-pointer"
               >
                 Lanjutkan
               </button>
@@ -179,7 +179,7 @@ export const BabySettingsTab: React.FC = () => {
         )}
 
         {deleteStep === 2 && (
-          <div className="p-3.5 bg-surface rounded-[10px] border border-danger space-y-2">
+          <div className="p-3.5 bg-surface rounded-control border border-danger space-y-2">
             <p className="text-[13px] font-semibold text-danger">
               Konfirmasi terakhir: Data profil dan jadwal anak pada modul Bayi akan terhapus secara permanen!
             </p>
@@ -187,14 +187,14 @@ export const BabySettingsTab: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setDeleteStep(0)}
-                className="px-3 py-1.5 text-text bg-surface-sunken rounded-[8px] text-[13px] cursor-pointer"
+                className="px-3 py-1.5 text-text bg-surface-sunken rounded-chip text-[13px] cursor-pointer"
               >
                 Batalkan
               </button>
               <button
                 type="button"
                 onClick={handleConfirmDelete}
-                className="px-3.5 py-1.5 bg-danger text-white font-medium rounded-[8px] text-[13px] cursor-pointer"
+                className="px-3.5 py-1.5 bg-danger text-white font-medium rounded-chip text-[13px] cursor-pointer"
               >
                 Ya, hapus data Bayi
               </button>

@@ -64,7 +64,7 @@ export const CustomRowModal: React.FC<Props> = ({
       aria-modal="true"
     >
       <div
-        className="bg-surface rounded-t-[16px] sm:rounded-[12px] max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
+        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
         style={{ boxShadow: "var(--shadow-popover)" }}
       >
         <div className="sm:hidden flex justify-center pt-2.5 pb-1">
@@ -78,7 +78,7 @@ export const CustomRowModal: React.FC<Props> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Tutup"
           >
             <X className="w-5 h-5" />
@@ -87,7 +87,7 @@ export const CustomRowModal: React.FC<Props> = ({
 
         <form onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto space-y-3.5 text-[14px]">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-[10px] text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -100,7 +100,7 @@ export const CustomRowModal: React.FC<Props> = ({
               value={vaksin}
               onChange={(e) => setVaksin(e.target.value)}
               placeholder="Contoh: Tifoid Dosis 2 / Dengue Booster"
-              className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+              className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
             />
           </div>
 
@@ -110,7 +110,7 @@ export const CustomRowModal: React.FC<Props> = ({
               <select
                 value={tahun}
                 onChange={(e) => setTahun(Number(e.target.value) as 1 | 2 | 3 | 4 | 5)}
-                className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
               >
                 <option value={1}>Tahun 1 (0–12 bln)</option>
                 <option value={2}>Tahun 2 (1–2 thn)</option>
@@ -128,7 +128,7 @@ export const CustomRowModal: React.FC<Props> = ({
                 max="60"
                 value={bln}
                 onChange={(e) => setBln(Number(e.target.value))}
-                className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
               />
             </div>
           </div>
@@ -139,7 +139,7 @@ export const CustomRowModal: React.FC<Props> = ({
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as Status)}
-                className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
               >
                 <option value="Wajib">Program pemerintah</option>
                 <option value="Pilihan">Vaksin pilihan</option>
@@ -152,7 +152,7 @@ export const CustomRowModal: React.FC<Props> = ({
               <select
                 value={gratis}
                 onChange={(e) => setGratis(e.target.value as Gratis)}
-                className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
               >
                 <option value="Ya">Gratis (Puskesmas)</option>
                 <option value="Tidak">Mandiri / swasta</option>
@@ -170,7 +170,7 @@ export const CustomRowModal: React.FC<Props> = ({
                 step="25000"
                 value={min}
                 onChange={(e) => setMin(e.target.value)}
-                className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
               />
             </div>
 
@@ -182,7 +182,7 @@ export const CustomRowModal: React.FC<Props> = ({
                 step="25000"
                 value={max}
                 onChange={(e) => setMax(e.target.value)}
-                className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
               />
             </div>
           </div>
@@ -194,7 +194,7 @@ export const CustomRowModal: React.FC<Props> = ({
               value={catatan}
               onChange={(e) => setCatatan(e.target.value)}
               placeholder="Catatan dokter anak..."
-              className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+              className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
             />
           </div>
 
@@ -203,7 +203,7 @@ export const CustomRowModal: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => onDelete(rowToEdit.id)}
-                className="p-2 text-danger hover:bg-danger-tint rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                className="p-2 text-danger hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                 aria-label="Hapus baris kustom"
               >
                 <Trash2 className="w-5 h-5" />
@@ -216,13 +216,13 @@ export const CustomRowModal: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-[10px] border border-border-strong min-h-[44px] cursor-pointer"
+                className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-control border border-border-strong min-h-[44px] cursor-pointer"
               >
                 Batal
               </button>
               <button
                 type="submit"
-                className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-[10px] min-h-[44px] cursor-pointer"
+                className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-control min-h-[44px] cursor-pointer"
               >
                 Simpan
               </button>

@@ -135,6 +135,11 @@
   --font-sans: "DM Sans", system-ui, -apple-system, sans-serif;
   --font-display: "Fredoka", "DM Sans", system-ui, sans-serif;
 
+  /* Skala bentuk Laut Kura: pakai rounded-card / rounded-control / rounded-chip, jangan rounded-[Npx] */
+  --radius-card: 24px;
+  --radius-control: 16px;
+  --radius-chip: 12px;
+
   --color-sky: var(--sky);
   --color-sky-ink: var(--sky-ink);
   --color-sky-ink-2: var(--sky-ink-2);

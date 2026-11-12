@@ -28,7 +28,7 @@ export const VaccineDetailModal: React.FC<Props> = ({ vaccineRef, onClose, sched
       aria-labelledby="modal-title"
     >
       <div
-        className="bg-surface rounded-t-[16px] sm:rounded-[12px] max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[88vh] pb-[max(env(safe-area-inset-bottom),0.5rem)] sm:pb-0 animate-fadeIn"
+        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[88vh] pb-[max(env(safe-area-inset-bottom),0.5rem)] sm:pb-0 animate-fadeIn"
         style={{ boxShadow: "var(--shadow-popover)" }}
       >
         <div className="sm:hidden flex justify-center pt-2.5 pb-1">
@@ -51,7 +51,7 @@ export const VaccineDetailModal: React.FC<Props> = ({ vaccineRef, onClose, sched
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer shrink-0"
+            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer shrink-0"
             aria-label="Tutup"
           >
             <X className="w-5 h-5" />
@@ -63,7 +63,7 @@ export const VaccineDetailModal: React.FC<Props> = ({ vaccineRef, onClose, sched
           {info ? (
             <>
               {/* Protects Against */}
-              <div className="p-3.5 rounded-[10px] bg-primary-tint/60 border border-primary/20 space-y-1">
+              <div className="p-3.5 rounded-control bg-primary-tint/60 border border-primary/20 space-y-1">
                 <div className="flex items-center gap-1.5 text-primary-text font-medium text-[13px]">
                   <ShieldCheck className="w-4 h-4" />
                   <span>Penyakit yang dicegah</span>
@@ -74,7 +74,7 @@ export const VaccineDetailModal: React.FC<Props> = ({ vaccineRef, onClose, sched
               </div>
 
               {/* Why Important */}
-              <div className="p-3.5 rounded-[10px] bg-surface-sunken border border-border space-y-1">
+              <div className="p-3.5 rounded-control bg-surface-sunken border border-border space-y-1">
                 <div className="flex items-center gap-1.5 text-text-2 font-medium text-[13px]">
                   <HeartPulse className="w-4 h-4" />
                   <span>Mengapa penting</span>

@@ -147,7 +147,7 @@ export const KeuanganTab: React.FC<Props> = ({
       </div>
 
       {/* 2. Hero Financial Narrative Card with soft elevation */}
-      <section className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] p-5 sm:p-7 space-y-6">
+      <section className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] p-5 sm:p-7 space-y-6">
         {/* Payment Mode Selector inside Hero Card */}
         <PaymentModeSelector
           paymentMode={paymentMode}
@@ -169,21 +169,21 @@ export const KeuanganTab: React.FC<Props> = ({
 
         {/* Narrative steps equation with subtle pastel containers */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-4 border-t border-border text-[13px]">
-          <div className="p-3.5 rounded-[10px] bg-surface-sunken/80 border border-border space-y-1">
+          <div className="p-3.5 rounded-control bg-surface-sunken/80 border border-border space-y-1">
             <span className="text-text-2 font-medium">Biaya normal di faskes swasta</span>
             <p className="font-semibold text-text text-[16px] font-tabular">
               {formatRupiah(normalMax)}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-[10px] bg-primary-tint/70 space-y-1 border border-primary/20">
+          <div className="p-3.5 rounded-control bg-primary-tint/70 space-y-1 border border-primary/20">
             <span className="text-primary-text font-medium">Gratis program pemerintah</span>
             <p className="font-semibold text-primary-text text-[16px] font-tabular">
               - {formatRupiah(govSavingsMax)}
             </p>
           </div>
 
-          <div className="p-3.5 rounded-[10px] bg-info-tint/70 space-y-1 border border-info/20">
+          <div className="p-3.5 rounded-control bg-info-tint/70 space-y-1 border border-info/20">
             <span className="text-info font-medium">Ditanggung asuransi (disetujui)</span>
             <p className="font-semibold text-info text-[16px] font-tabular">
               - {formatRupiah(insuranceBenefit)}
@@ -193,7 +193,7 @@ export const KeuanganTab: React.FC<Props> = ({
       </section>
 
       {/* 3. Sub-section Tabs */}
-      <div className="flex bg-surface-sunken p-1 rounded-[10px] border border-border">
+      <div className="flex bg-surface-sunken p-1 rounded-control border border-border">
         {[
           { id: "simulasi", label: "Simulasi & proyeksi biaya" },
           { id: "asuransi", label: "Polis asuransi" },
@@ -205,7 +205,7 @@ export const KeuanganTab: React.FC<Props> = ({
               key={tab.id}
               type="button"
               onClick={() => setActiveSubTab(tab.id as SubTab)}
-              className={`flex-1 py-2 text-[13px] sm:text-[14px] rounded-[8px] transition cursor-pointer text-center ${
+              className={`flex-1 py-2 text-[13px] sm:text-[14px] rounded-chip transition cursor-pointer text-center ${
                 isSelected
                   ? "bg-surface text-text font-semibold border border-border shadow-xs"
                   : "text-text-2 hover:text-text font-medium"
@@ -221,10 +221,10 @@ export const KeuanganTab: React.FC<Props> = ({
       {activeSubTab === "simulasi" && (
         <div className="space-y-6">
           {/* Skenario Switch */}
-          <div className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] p-5 space-y-3">
+          <div className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] p-5 space-y-3">
             <h2 className="text-[15px] font-semibold text-text">Skenario perhitungan</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-[13px]">
-              <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-[8px] hover:bg-surface-sunken/60 transition">
+              <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-chip hover:bg-surface-sunken/60 transition">
                 <input
                   type="checkbox"
                   checked={scenarios.heksavalenSwasta}
@@ -238,7 +238,7 @@ export const KeuanganTab: React.FC<Props> = ({
                 </span>
               </label>
 
-              <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-[8px] hover:bg-surface-sunken/60 transition">
+              <label className="flex items-center gap-2.5 cursor-pointer p-2 rounded-chip hover:bg-surface-sunken/60 transition">
                 <input
                   type="checkbox"
                   checked={scenarios.sertakanKondisional}
@@ -255,7 +255,7 @@ export const KeuanganTab: React.FC<Props> = ({
           </div>
 
           {/* Chart */}
-          <div className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] p-5 sm:p-6 space-y-4">
+          <div className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] p-5 sm:p-6 space-y-4">
             <div className="flex items-baseline justify-between">
               <h2 className="text-[16px] font-semibold text-text">Estimasi pengeluaran per tahun</h2>
               <span className="text-[13px] text-text-2 font-medium">Tahun 1–5</span>
@@ -309,7 +309,7 @@ export const KeuanganTab: React.FC<Props> = ({
                 return (
                   <div
                     key={y.tahun}
-                    className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] overflow-hidden transition-all"
+                    className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] overflow-hidden transition-all"
                   >
                     <button
                       type="button"
@@ -378,7 +378,7 @@ export const KeuanganTab: React.FC<Props> = ({
       {/* 5. Tab 2: Polis Asuransi */}
       {activeSubTab === "asuransi" && (
         <div className="space-y-6">
-          <section className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] p-5 sm:p-6 space-y-4">
+          <section className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] p-5 sm:p-6 space-y-4">
             <h2 className="text-[16px] font-semibold text-text">Informasi polis asuransi</h2>
 
             <div className="space-y-3.5 text-[14px]">
@@ -389,7 +389,7 @@ export const KeuanganTab: React.FC<Props> = ({
                   value={insurance.namaProduk}
                   onChange={(e) => handleFieldChange("namaProduk", e.target.value)}
                   placeholder="Contoh: Prudential / Manulife / AXA"
-                  className="w-full px-3.5 py-2 text-[15px] rounded-[10px] border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
+                  className="w-full px-3.5 py-2 text-[15px] rounded-control border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
                 />
               </div>
 
@@ -400,7 +400,7 @@ export const KeuanganTab: React.FC<Props> = ({
                   value={insurance.nomorPolis || ""}
                   onChange={(e) => handleFieldChange("nomorPolis", e.target.value)}
                   placeholder="Contoh: POL-12345678"
-                  className="w-full px-3.5 py-2 text-[15px] rounded-[10px] border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
+                  className="w-full px-3.5 py-2 text-[15px] rounded-control border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
                 />
               </div>
 
@@ -408,7 +408,7 @@ export const KeuanganTab: React.FC<Props> = ({
                 <label className="text-[13px] font-medium text-text block mb-2">Limit tahunan rawat jalan imunisasi (Rp)</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-[13px]">
                   {([1, 2, 3, 4, 5] as const).map((th) => (
-                    <div key={th} className="flex items-center justify-between gap-2 p-2.5 bg-surface-sunken/80 border border-border rounded-[8px]">
+                    <div key={th} className="flex items-center justify-between gap-2 p-2.5 bg-surface-sunken/80 border border-border rounded-chip">
                       <span className="text-text-2 font-medium">Tahun {th}</span>
                       <input
                         type="number"
@@ -427,7 +427,7 @@ export const KeuanganTab: React.FC<Props> = ({
           </section>
 
           {/* Checklist kelayakan klaim */}
-          <section className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] p-5 sm:p-6 space-y-3">
+          <section className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] p-5 sm:p-6 space-y-3">
             <h2 className="text-[16px] font-semibold text-text">Kelengkapan dokumen klaim</h2>
             <div className="space-y-2 text-[13px]">
               {CHECKLIST_ITEMS.map((item, idx) => {
@@ -437,7 +437,7 @@ export const KeuanganTab: React.FC<Props> = ({
                     key={idx}
                     type="button"
                     onClick={() => handleToggleChecklist(idx)}
-                    className="w-full text-left p-2.5 rounded-[8px] hover:bg-surface-sunken flex items-start gap-2.5 transition cursor-pointer border border-transparent hover:border-border"
+                    className="w-full text-left p-2.5 rounded-chip hover:bg-surface-sunken flex items-start gap-2.5 transition cursor-pointer border border-transparent hover:border-border"
                   >
                     {isChecked ? (
                       <CheckSquare className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -456,7 +456,7 @@ export const KeuanganTab: React.FC<Props> = ({
       {/* 6. Tab 3: Riwayat Realisasi & Klaim */}
       {activeSubTab === "realisasi" && (
         <div className="space-y-6">
-          <section className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] p-5 sm:p-6 space-y-4">
+          <section className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] p-5 sm:p-6 space-y-4">
             <div className="flex items-baseline justify-between">
               <h2 className="text-[16px] font-semibold text-text">Riwayat pengeluaran riil</h2>
               <span className="text-[14px] font-semibold text-text font-tabular">
@@ -465,11 +465,11 @@ export const KeuanganTab: React.FC<Props> = ({
             </div>
 
             {claimRecords.length === 0 ? (
-              <div className="py-8 text-center text-text-2 text-[14px] bg-surface-sunken/40 rounded-[8px] border border-border/60">
+              <div className="py-8 text-center text-text-2 text-[14px] bg-surface-sunken/40 rounded-chip border border-border/60">
                 Belum ada pengeluaran atau pengajuan klaim asuransi yang tercatat. Catat vaksinasi selesai untuk menambahkan riwayat transaksi.
               </div>
             ) : (
-              <div className="divide-y divide-border border border-border rounded-[8px] overflow-hidden">
+              <div className="divide-y divide-border border border-border rounded-chip overflow-hidden">
                 {claimRecords.map(({ record, row }) => (
                   <div key={record.rowId} className="p-3.5 flex items-center justify-between gap-3 text-[13px] hover:bg-surface-sunken/30">
                     <div>

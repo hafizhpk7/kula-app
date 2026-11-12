@@ -70,7 +70,7 @@ export const RecordModal: React.FC<Props> = ({
     >
       {/* Mobile bottom sheet (rounded 16 16 0 0), desktop centered dialog 480px */}
       <div
-        className="bg-surface rounded-t-[16px] sm:rounded-[12px] max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
+        className="bg-surface rounded-t-[28px] sm:rounded-card max-w-[480px] w-full border border-border overflow-hidden flex flex-col max-h-[90vh] pb-[max(env(safe-area-inset-bottom),1rem)] sm:pb-0 animate-fadeIn"
         style={{ boxShadow: "var(--shadow-popover)" }}
       >
         {/* Mobile handle */}
@@ -91,7 +91,7 @@ export const RecordModal: React.FC<Props> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-text-2 hover:text-text rounded-[10px] min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+            className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
             aria-label="Tutup"
           >
             <X className="w-5 h-5" />
@@ -101,7 +101,7 @@ export const RecordModal: React.FC<Props> = ({
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-4 sm:p-5 overflow-y-auto space-y-4 text-[14px]">
           {/* Status Switch */}
-          <div className="flex items-center justify-between p-3 bg-surface-sunken rounded-[10px]">
+          <div className="flex items-center justify-between p-3 bg-surface-sunken rounded-control">
             <div>
               <p className="font-medium text-text">Status pemberian vaksin</p>
               <p className="text-[13px] text-text-2">
@@ -132,7 +132,7 @@ export const RecordModal: React.FC<Props> = ({
                     required
                     value={tanggalDiberikan}
                     onChange={(e) => setTanggalDiberikan(e.target.value)}
-                    className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>
 
@@ -143,7 +143,7 @@ export const RecordModal: React.FC<Props> = ({
                   <select
                     value={tempat}
                     onChange={(e) => setTempat(e.target.value as FacilityType)}
-                    className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   >
                     <option value="Puskesmas">Puskesmas</option>
                     <option value="Posyandu">Posyandu</option>
@@ -171,7 +171,7 @@ export const RecordModal: React.FC<Props> = ({
                     inputMode="numeric"
                     value={biayaAktual}
                     onChange={(e) => setBiayaAktual(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 text-[15px] font-tabular rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                    className="w-full pl-10 pr-3 py-2 text-[15px] font-tabular rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                     placeholder="0 jika gratis di Puskesmas"
                   />
                 </div>
@@ -192,7 +192,7 @@ export const RecordModal: React.FC<Props> = ({
                   value={merekBatch}
                   onChange={(e) => setMerekBatch(e.target.value)}
                   placeholder="Contoh: Bio Farma, Sanofi, Hexaxim #B123"
-                  className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
               </div>
 
@@ -206,7 +206,7 @@ export const RecordModal: React.FC<Props> = ({
                   value={catatan}
                   onChange={(e) => setCatatan(e.target.value)}
                   placeholder="Contoh: Demam ringan 1 hari, kompres hangat"
-                  className="w-full px-3 py-2 text-[15px] rounded-[10px] border border-border-strong bg-surface text-text min-h-[44px]"
+                  className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
               </div>
             </>
@@ -217,13 +217,13 @@ export const RecordModal: React.FC<Props> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-[10px] border border-border-strong transition min-h-[44px] cursor-pointer"
+              className="px-4 py-2 text-[14px] font-medium text-text hover:bg-surface-sunken rounded-control border border-border-strong transition min-h-[44px] cursor-pointer"
             >
               Batal
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-[10px] transition min-h-[44px] cursor-pointer"
+              className="px-5 py-2 text-[14px] font-medium bg-primary hover:bg-primary-hover text-primary-fg rounded-control transition min-h-[44px] cursor-pointer"
             >
               Selesai
             </button>

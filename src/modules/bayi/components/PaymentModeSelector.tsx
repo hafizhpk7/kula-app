@@ -48,7 +48,7 @@ export const PaymentModeSelector: React.FC<Props> = ({
 }) => {
   if (variant === "compact") {
     return (
-      <div className="inline-flex items-center gap-1.5 bg-surface-sunken p-1 rounded-[10px] border border-border">
+      <div className="inline-flex items-center gap-1.5 bg-surface-sunken p-1 rounded-control border border-border">
         {(["HYBRID", "FULL_PRIVATE", "FULL_BPJS"] as const).map((mode) => {
           const isSelected = paymentMode === mode;
           const info = PAYMENT_MODE_LABELS[mode];
@@ -58,7 +58,7 @@ export const PaymentModeSelector: React.FC<Props> = ({
               key={mode}
               type="button"
               onClick={() => onChange(mode)}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-[8px] text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-chip text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
                 isSelected
                   ? "bg-surface text-text font-semibold border border-border shadow-xs"
                   : "text-text-2 hover:text-text font-medium"
@@ -82,7 +82,7 @@ export const PaymentModeSelector: React.FC<Props> = ({
         <select
           value={paymentMode}
           onChange={(e) => onChange(e.target.value as PaymentMode)}
-          className="appearance-none bg-surface border border-border hover:border-border-strong rounded-[8px] pl-8 pr-8 py-1.5 text-[12px] sm:text-[13px] font-semibold text-text cursor-pointer shadow-xs focus:outline-none focus:border-primary transition"
+          className="appearance-none bg-surface border border-border hover:border-border-strong rounded-chip pl-8 pr-8 py-1.5 text-[12px] sm:text-[13px] font-semibold text-text cursor-pointer shadow-xs focus:outline-none focus:border-primary transition"
           aria-label="Mode Simulasi Biaya"
         >
           <option value="HYBRID">Mode: Hybrid (Puskesmas & Swasta)</option>
@@ -117,9 +117,9 @@ export const PaymentModeSelector: React.FC<Props> = ({
               key={mode}
               type="button"
               onClick={() => onChange(mode)}
-              className={`p-3.5 rounded-[12px] border text-left transition-all cursor-pointer flex flex-col justify-between space-y-2 relative ${
+              className={`p-3.5 rounded-card border text-left transition-all cursor-pointer flex flex-col justify-between space-y-2 relative ${
                 isSelected
-                  ? "bg-surface border-primary ring-1 ring-primary/30 shadow-[0_4px_14px_-2px_rgba(0,0,0,0.06)]"
+                  ? "bg-surface border-primary ring-1 ring-primary/30 shadow-[var(--shadow-card-hover)]"
                   : "bg-surface-sunken/60 hover:bg-surface border-border hover:border-border-strong"
               }`}
             >

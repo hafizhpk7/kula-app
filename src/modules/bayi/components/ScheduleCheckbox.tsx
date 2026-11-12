@@ -26,7 +26,7 @@ export const ScheduleCheckbox: React.FC<ScheduleCheckboxProps> = ({
       aria-label={label}
       title={title}
       onClick={onToggle}
-      className={`inline-flex items-center justify-center shrink-0 rounded-[10px] cursor-pointer hover:bg-surface-sunken/60 focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 transition-colors ${
+      className={`inline-flex items-center justify-center shrink-0 rounded-control cursor-pointer hover:bg-surface-sunken/60 focus-visible:outline-2 focus-visible:outline-focus focus-visible:outline-offset-2 transition-colors ${
         isMd ? "w-11 h-11" : "w-10 h-10"
       }`}
     >

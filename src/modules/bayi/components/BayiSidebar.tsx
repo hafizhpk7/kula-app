@@ -27,7 +27,7 @@ export const BayiSidebar: React.FC = () => {
         {/* Back to Launcher Home Link */}
         <Link
           to="/"
-          className="flex items-center justify-center lg:justify-start gap-2.5 px-2.5 lg:px-3 py-2 rounded-[10px] text-[13px] text-text-2 hover:text-text hover:bg-surface-sunken transition-colors font-medium border border-border/60 group"
+          className="flex items-center justify-center lg:justify-start gap-2.5 px-2.5 lg:px-3 py-2 rounded-control text-[13px] text-text-2 hover:text-text hover:bg-surface-sunken transition-colors font-medium border border-border/60 group"
           title="Beranda utama"
           aria-label="Beranda utama"
         >
@@ -52,9 +52,9 @@ export const BayiSidebar: React.FC = () => {
                 to={item.path}
                 title={item.label}
                 aria-label={item.label}
-                className={`w-full flex items-center justify-center lg:justify-start gap-3 px-2.5 lg:px-3 py-2.5 rounded-[10px] text-[14px] transition-colors min-h-[44px] cursor-pointer ${
+                className={`w-full flex items-center justify-center lg:justify-start gap-3 px-2.5 lg:px-3 py-2.5 rounded-control text-[14px] transition-colors min-h-[44px] cursor-pointer ${
                   isActive
-                    ? "bg-primary-tint text-primary-text font-semibold"
+                    ? "bg-mod-bayi text-mod-bayi-fg font-semibold"
                     : "text-text-2 hover:text-text hover:bg-surface-sunken font-medium"
                 }`}
               >
@@ -69,9 +69,9 @@ export const BayiSidebar: React.FC = () => {
               to="/bayi/pengaturan"
               title="Pengaturan & rujukan"
               aria-label="Pengaturan & rujukan"
-              className={`w-full flex items-center justify-center lg:justify-start gap-3 px-2.5 lg:px-3 py-2.5 rounded-[10px] text-[14px] transition-colors min-h-[44px] cursor-pointer ${
+              className={`w-full flex items-center justify-center lg:justify-start gap-3 px-2.5 lg:px-3 py-2.5 rounded-control text-[14px] transition-colors min-h-[44px] cursor-pointer ${
                 currentPath === "/bayi/pengaturan"
-                  ? "bg-primary-tint text-primary-text font-semibold"
+                  ? "bg-mod-bayi text-mod-bayi-fg font-semibold"
                   : "text-text-2 hover:text-text hover:bg-surface-sunken font-medium"
               }`}
             >
@@ -83,7 +83,7 @@ export const BayiSidebar: React.FC = () => {
       </div>
 
       {/* Quiet Sidebar Note */}
-      <div className="hidden lg:block p-3 bg-primary-tint rounded-[10px] text-[13px] text-primary-text leading-relaxed font-medium">
+      <div className="hidden lg:block p-3 bg-primary-tint rounded-control text-[13px] text-primary-text leading-relaxed font-medium">
         14 imunisasi dasar rutin gratis di Puskesmas dan Posyandu.
       </div>
     </aside>

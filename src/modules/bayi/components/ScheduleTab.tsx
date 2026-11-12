@@ -148,11 +148,11 @@ export const ScheduleTab: React.FC<Props> = ({
           />
 
           {/* Timeline / Table Switch */}
-          <div className="flex bg-surface-sunken p-1 rounded-[10px] border border-border">
+          <div className="flex bg-surface-sunken p-1 rounded-control border border-border">
             <button
               type="button"
               onClick={() => setViewMode("timeline")}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-[8px] text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-chip text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
                 viewMode === "timeline"
                   ? "bg-surface text-text font-semibold border border-border shadow-xs"
                   : "text-text-2 hover:text-text font-medium"
@@ -166,7 +166,7 @@ export const ScheduleTab: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => setViewMode("table")}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-[8px] text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
+              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-chip text-[12px] sm:text-[13px] transition cursor-pointer min-h-[36px] ${
                 viewMode === "table"
                   ? "bg-surface text-text font-semibold border border-border shadow-xs"
                   : "text-text-2 hover:text-text font-medium"
@@ -184,7 +184,7 @@ export const ScheduleTab: React.FC<Props> = ({
               setCustomRowToEdit(null);
               setCustomModalOpen(true);
             }}
-            className="px-3 py-1.5 sm:px-3.5 sm:py-2 bg-surface hover:bg-surface-sunken text-text text-[12px] sm:text-[13px] font-medium rounded-[10px] border border-border transition min-h-[40px] flex items-center gap-1.5 cursor-pointer shadow-xs hover:border-border-strong shrink-0"
+            className="px-3 py-1.5 sm:px-3.5 sm:py-2 bg-surface hover:bg-surface-sunken text-text text-[12px] sm:text-[13px] font-medium rounded-control border border-border transition min-h-[40px] flex items-center gap-1.5 cursor-pointer shadow-xs hover:border-border-strong shrink-0"
           >
             <Plus className="w-4 h-4 text-primary shrink-0" />
             <span>Kustom</span>
@@ -193,7 +193,7 @@ export const ScheduleTab: React.FC<Props> = ({
           <button
             type="button"
             onClick={handleResetConfirmation}
-            className="p-2 sm:p-2.5 bg-surface hover:bg-surface-sunken text-text-2 hover:text-text rounded-[10px] border border-border transition min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer shadow-xs shrink-0"
+            className="p-2 sm:p-2.5 bg-surface hover:bg-surface-sunken text-text-2 hover:text-text rounded-control border border-border transition min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer shadow-xs shrink-0"
             title="Reset ke 35 baris bawaan"
             aria-label="Reset ke 35 baris bawaan"
           >
@@ -212,7 +212,7 @@ export const ScheduleTab: React.FC<Props> = ({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari vaksin, usia, atau catatan..."
-            className="w-full pl-10 pr-9 py-2 text-[14px] rounded-[10px] border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
+            className="w-full pl-10 pr-9 py-2 text-[14px] rounded-control border border-border bg-surface text-text min-h-[44px] shadow-2xs focus:border-primary"
           />
           {searchQuery && (
             <button
@@ -242,7 +242,7 @@ export const ScheduleTab: React.FC<Props> = ({
                 key={chip.id}
                 type="button"
                 onClick={() => setActiveFilter(chip.id as ActiveFilter)}
-                className={`px-3 py-1.5 rounded-[8px] text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
+                className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
                   isSelected
                     ? "bg-surface text-text font-semibold border border-border-strong shadow-xs"
                     : "bg-surface text-text-2 hover:text-text border border-border font-medium"
@@ -259,7 +259,7 @@ export const ScheduleTab: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => setSelectedYear("all")}
-            className={`px-3 py-1.5 rounded-[8px] text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
+            className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
               selectedYear === "all"
                 ? "bg-surface text-text font-semibold border border-border-strong shadow-xs"
                 : "bg-surface text-text-2 hover:text-text border border-border font-medium"
@@ -272,7 +272,7 @@ export const ScheduleTab: React.FC<Props> = ({
               key={th}
               type="button"
               onClick={() => setSelectedYear(th)}
-              className={`px-3 py-1.5 rounded-[8px] text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
+              className={`px-3 py-1.5 rounded-chip text-[13px] whitespace-nowrap transition cursor-pointer min-h-[36px] shrink-0 ${
                 selectedYear === th
                   ? "bg-surface text-text font-semibold border border-border-strong shadow-xs"
                   : "bg-surface text-text-2 hover:text-text border border-border font-medium"
@@ -286,7 +286,7 @@ export const ScheduleTab: React.FC<Props> = ({
 
       {/* 3. Schedule Content */}
       {displayedRows.length === 0 ? (
-        <div className="p-8 bg-surface rounded-[12px] border border-border shadow-card text-center text-text-2 text-[14px]">
+        <div className="p-8 bg-surface rounded-card border border-border shadow-card text-center text-text-2 text-[14px]">
           Tidak ada jadwal imunisasi yang cocok dengan filter atau pencarian Anda.
         </div>
       ) : viewMode === "timeline" ? (
@@ -318,7 +318,7 @@ export const ScheduleTab: React.FC<Props> = ({
                 </div>
 
                 {/* Rows as elevated card container */}
-                <div className="bg-surface rounded-[12px] border border-border shadow-card divide-y divide-border overflow-hidden">
+                <div className="bg-surface rounded-card border border-border shadow-card divide-y divide-border overflow-hidden">
                   {items.map((item) => {
                     const isDone = Boolean(item.record?.diberikan);
                     const priceInfo = getVaccinePriceDisplay(item.row, paymentMode);
@@ -393,7 +393,7 @@ export const ScheduleTab: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => onOpenVaccineDetail(item.row.ref)}
-                            className="px-3.5 py-2 rounded-[8px] bg-surface-sunken hover:bg-border text-[13px] text-primary hover:text-primary-hover font-semibold transition cursor-pointer min-h-[40px] sm:min-h-[36px] flex items-center justify-center border border-border shrink-0 active:scale-95"
+                            className="px-3.5 py-2 rounded-chip bg-surface-sunken hover:bg-border text-[13px] text-primary hover:text-primary-hover font-semibold transition cursor-pointer min-h-[40px] sm:min-h-[36px] flex items-center justify-center border border-border shrink-0 active:scale-95"
                           >
                             Info Detail
                           </button>
@@ -408,7 +408,7 @@ export const ScheduleTab: React.FC<Props> = ({
         </div>
       ) : (
         /* Table View with robust structured layout and responsive overflow */
-        <div className="bg-surface rounded-[12px] border border-border shadow-card overflow-hidden">
+        <div className="bg-surface rounded-card border border-border shadow-card overflow-hidden">
           <div className="overflow-x-auto scrollbar-thin">
             <table className="w-full text-left text-[14px] min-w-[720px] table-fixed border-collapse">
               <colgroup>

@@ -138,14 +138,14 @@ export const DashboardTab: React.FC<Props> = ({
           <button
             type="button"
             onClick={onOpenProfileModal}
-            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-[10px] border border-border transition min-h-[40px] cursor-pointer shadow-xs hover:border-border-strong"
+            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-control border border-border transition min-h-[40px] cursor-pointer shadow-xs hover:border-border-strong"
           >
             Ganti profil
           </button>
           <button
             type="button"
             onClick={() => onNavigateToTab("jadwal")}
-            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-[10px] border border-border transition min-h-[40px] cursor-pointer shadow-xs hover:border-border-strong"
+            className="px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-control border border-border transition min-h-[40px] cursor-pointer shadow-xs hover:border-border-strong"
           >
             Lihat jadwal
           </button>
@@ -172,7 +172,7 @@ export const DashboardTab: React.FC<Props> = ({
         </div>
 
         {actionItems.length === 0 ? (
-          <div className="p-6 bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] text-[14px] text-text-2 space-y-1.5">
+          <div className="p-6 bg-surface rounded-card border border-border shadow-[var(--shadow-card)] text-[14px] text-text-2 space-y-1.5">
             <p className="text-text font-semibold">Tidak ada yang perlu dilakukan sekarang.</p>
             {nextScheduled ? (
               <p className="text-[13px] text-text-2">
@@ -183,7 +183,7 @@ export const DashboardTab: React.FC<Props> = ({
             )}
           </div>
         ) : (
-          <div className="bg-surface rounded-[12px] border border-border shadow-[0_2px_10px_-2px_rgba(42,36,32,0.05)] divide-y divide-border overflow-hidden">
+          <div className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">
             {actionItems.map((item, index) => {
               const isFirstUrgent = index === 0;
 
@@ -233,7 +233,7 @@ export const DashboardTab: React.FC<Props> = ({
                     <button
                       type="button"
                       onClick={() => handleQuickMarkGiven(item.row)}
-                      className={`px-4 py-2 text-[14px] font-semibold rounded-[10px] min-h-[44px] min-w-[88px] transition cursor-pointer shadow-xs active:scale-95 ${
+                      className={`px-4 py-2 text-[14px] font-semibold rounded-control min-h-[44px] min-w-[88px] transition cursor-pointer shadow-xs active:scale-95 ${
                         isFirstUrgent
                           ? "bg-primary hover:bg-primary-hover active:bg-primary-hover text-primary-fg"
                           : "bg-surface hover:bg-surface-sunken text-text border border-border-strong"
@@ -252,7 +252,7 @@ export const DashboardTab: React.FC<Props> = ({
       {/* Responsive Grid for Kemajuan and Keuangan summary cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Section "Kemajuan" with subtle elevation */}
-        <section className="bg-surface p-5 sm:p-6 rounded-[12px] border border-border shadow-card space-y-3.5 flex flex-col justify-between">
+        <section className="bg-surface p-5 sm:p-6 rounded-card border border-border shadow-card space-y-3.5 flex flex-col justify-between">
           <div className="space-y-3.5">
             <div className="flex items-baseline justify-between">
               <h2 className="text-[16px] font-semibold text-text">Kemajuan imunisasi</h2>
@@ -281,7 +281,7 @@ export const DashboardTab: React.FC<Props> = ({
         </section>
 
         {/* Compact Keuangan Summary Card with elevation */}
-        <section className="bg-surface p-5 sm:p-6 rounded-[12px] border border-border shadow-card flex flex-col justify-between gap-4">
+        <section className="bg-surface p-5 sm:p-6 rounded-card border border-border shadow-card flex flex-col justify-between gap-4">
           <div className="space-y-1">
             <h2 className="text-[16px] font-semibold text-text">Perencanaan keuangan</h2>
             <p className="text-[13px] text-text-2 leading-relaxed">
@@ -292,7 +292,7 @@ export const DashboardTab: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => onNavigateToTab("keuangan")}
-            className="self-start sm:self-auto px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-[10px] border border-border-strong transition min-h-[40px] cursor-pointer shadow-xs shrink-0"
+            className="self-start sm:self-auto px-4 py-2 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-control border border-border-strong transition min-h-[40px] cursor-pointer shadow-xs shrink-0"
           >
             Buka keuangan
           </button>
