@@ -61,8 +61,8 @@ export const BayiHeader: React.FC<Props> = ({
           <Link
             to="/"
             className="md:hidden flex items-center justify-center w-9 h-9 rounded-control bg-surface-sunken hover:bg-border text-text-2 hover:text-text transition cursor-pointer shrink-0 border border-border"
-            aria-label="Kembali ke Beranda utama"
-            title="Kembali ke Beranda utama"
+            aria-label="Kembali ke Beranda Kula"
+            title="Kembali ke Beranda Kula"
           >
             <LayoutGrid className="w-5 h-5" />
           </Link>

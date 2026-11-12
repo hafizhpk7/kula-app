@@ -163,9 +163,9 @@ describe("Phase U: Layout and Schedule Verification", () => {
       </BrowserRouter>
     );
 
-    const berandaUtamaLink = screen.getByRole("link", { name: "Beranda utama" });
+    const berandaUtamaLink = screen.getByRole("link", { name: "Beranda Kula" });
     expect(berandaUtamaLink).toBeInTheDocument();
-    expect(berandaUtamaLink).toHaveAttribute("title", "Beranda utama");
+    expect(berandaUtamaLink).toHaveAttribute("title", "Beranda Kula");
 
     const jadwalLink = screen.getByRole("link", { name: "Jadwal" });
     expect(jadwalLink).toBeInTheDocument();

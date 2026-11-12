@@ -205,7 +205,7 @@ export const FamilyPage: React.FC = () => {
       <div className="min-h-screen bg-bg text-text pb-12">
         <header className="sticky top-0 z-30 bg-bg/80 backdrop-blur-md border-b border-border">
           <div className="max-w-xl mx-auto px-4 h-14 flex items-center gap-3">
-            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda utama">
+            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda Kula">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <h1 className="text-lg font-bold">Keluarga</h1>
@@ -225,7 +225,7 @@ export const FamilyPage: React.FC = () => {
       <div className="min-h-screen bg-bg text-text pb-12">
         <header className="sticky top-0 z-30 bg-bg/80 backdrop-blur-md border-b border-border">
           <div className="max-w-xl mx-auto px-4 h-14 flex items-center gap-3">
-            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda utama">
+            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda Kula">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <h1 className="text-lg font-bold">Keluarga</h1>
@@ -250,7 +250,7 @@ export const FamilyPage: React.FC = () => {
       <div className="min-h-screen bg-bg text-text pb-12">
         <header className="sticky top-0 z-30 bg-bg/80 backdrop-blur-md border-b border-border">
           <div className="max-w-xl mx-auto px-4 h-14 flex items-center gap-3">
-            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda utama">
+            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda Kula">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <h1 className="text-lg font-bold">Keluarga</h1>
@@ -284,7 +284,7 @@ export const FamilyPage: React.FC = () => {
       <div className="min-h-screen bg-bg text-text pb-12">
         <header className="sticky top-0 z-30 bg-bg/80 backdrop-blur-md border-b border-border">
           <div className="max-w-xl mx-auto px-4 h-14 flex items-center gap-3">
-            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda utama">
+            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda Kula">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <h1 className="text-lg font-bold">Keluarga</h1>
@@ -449,7 +449,7 @@ export const FamilyPage: React.FC = () => {
       <header className="sticky top-0 z-30 bg-bg/80 backdrop-blur-md border-b border-border">
         <div className="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda utama">
+            <Link to="/" className="p-2 -ml-2 text-text-2 hover:text-text rounded-full" aria-label="Kembali ke Beranda Kula">
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <div>

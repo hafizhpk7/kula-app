@@ -58,7 +58,7 @@ export const GlobalSettingsPage: React.FC = () => {
             className="inline-flex items-center gap-2 px-3.5 py-2 bg-surface hover:bg-surface-sunken text-text text-[13px] font-medium rounded-control border border-border transition min-h-[40px] shrink-0"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span className="hidden sm:inline">Beranda utama</span>
+            <span className="hidden sm:inline">Beranda Kula</span>
           </Link>
         </div>
 

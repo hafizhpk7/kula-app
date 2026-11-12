@@ -106,7 +106,7 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     await waitFor(() => {
       expect(window.location.hash).toContain("#/keuangan-keluarga/ringkasan");
     });
-    expect(screen.getByText("Ringkasan Keuangan")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument();
   });
 
   it("R6 Navigating inside Bayi updates routes and highlights active item", async () => {
@@ -137,7 +137,7 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     window.location.hash = "#/bayi/beranda";
     render(<App />);
 
-    const backHome = await screen.findByText(/Beranda utama/i);
+    const backHome = await screen.findByText(/Beranda Kula/i);
     fireEvent.click(backHome);
 
     await waitFor(() => {

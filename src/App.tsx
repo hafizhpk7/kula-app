@@ -65,6 +65,7 @@ function AppRoutes() {
 
       <Route path="/keluarga" element={<FamilyPage />} />
       <Route path="/gabung" element={<JoinFamilyPage />} />
+      <Route path="/gabung/:code" element={<JoinFamilyPage />} />
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

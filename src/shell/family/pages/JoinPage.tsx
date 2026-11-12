@@ -97,7 +97,7 @@ export const JoinPage: React.FC = () => {
           <Link
             to="/keluarga"
             className="p-2 -ml-2 text-text-2 hover:text-text rounded-full hover:bg-surface transition"
-            aria-label="Kembali ke Beranda utama"
+            aria-label="Kembali ke Beranda Kula"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>

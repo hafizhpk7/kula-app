@@ -5,11 +5,11 @@ import { KuraBerenang } from "../../../components/common/LautKura";
 import { formatRupiah } from "../../../utils/calc";
 import { MODULE_REGISTRY } from "../../registry";
 import { MonthSelector } from "../components/MonthSelector";
-import { TransactionModal } from "../components/TransactionModal";
+import { useCatatTransaksi } from "../components/FinanceLayout";
 import { useFinance } from "../state/FinanceContext";
 import { useFamily } from "../../../shell/family/context/FamilyContext";
 import { useAuth } from "../../../context/AuthContext";
-import { LedgerEntry, TxType } from "../types";
+import { TxType } from "../types";
 import { getAllCategories, resolveCategoryName } from "../utils/categories";
 import { filterEntries, groupByDate, summarizeMonth } from "../utils/calculations";
 import { formatDayHeader, monthKeyOf } from "../utils/dates";
@@ -24,8 +24,7 @@ export const TransaksiPage: React.FC = () => {
   const [memberFilter, setMemberFilter] = useState<string>("all"); // "all", "me", or uid
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
-  const [editingEntry, setEditingEntry] = useState<LedgerEntry | null>(null);
+  const bukaCatat = useCatatTransaksi();
 
   const bayiModule = MODULE_REGISTRY.find((m) => m.id === "bayi");
   const bayiBiayaPath = bayiModule ? `${bayiModule.basePath.replace(/\/beranda$/, "")}/biaya` : "/bayi/biaya";
@@ -160,7 +159,7 @@ export const TransaksiPage: React.FC = () => {
           </div>
           <button
             type="button"
-            onClick={() => setIsAddModalOpen(true)}
+            onClick={() => bukaCatat()}
             className="px-4 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
           >
             <Plus className="w-4 h-4" />
@@ -206,12 +205,12 @@ export const TransaksiPage: React.FC = () => {
                       onKeyDown={(e) => {
                         if (!entry.readOnly && (e.key === "Enter" || e.key === " ")) {
                           e.preventDefault();
-                          setEditingEntry(entry);
+                          bukaCatat(entry);
                         }
                       }}
                       onClick={() => {
                         if (!entry.readOnly) {
-                          setEditingEntry(entry);
+                          bukaCatat(entry);
                         }
                       }}
                       className={`px-4 py-3 flex items-center justify-between gap-3 ${
@@ -263,18 +262,6 @@ export const TransaksiPage: React.FC = () => {
           ))}
         </div>
       )}
-
-      {/* Modals */}
-      <TransactionModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-      />
-
-      <TransactionModal
-        isOpen={!!editingEntry}
-        onClose={() => setEditingEntry(null)}
-        initialEntry={editingEntry}
-      />
     </div>
   );
 };

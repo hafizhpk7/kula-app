@@ -63,14 +63,14 @@ describe("9.4 Keuangan Keluarga UI Tests (T-UI-1 .. T-UI-20)", () => {
     await waitFor(() => {
       expect(window.location.hash).toContain("#/keuangan-keluarga/ringkasan");
     });
-    expect(screen.getByText("Ringkasan Keuangan")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument();
   });
 
   it("T-UI-2: Finance Layout tabs navigate properly", async () => {
     window.location.hash = "#/keuangan-keluarga/ringkasan";
     render(<App />);
 
-    expect(await screen.findByText("Ringkasan Keuangan")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument();
 
     // Click Transaksi tab
     const transaksiTabs = screen.getAllByText("Transaksi");
@@ -88,8 +88,8 @@ describe("9.4 Keuangan Keluarga UI Tests (T-UI-1 .. T-UI-20)", () => {
       expect(window.location.hash).toContain("#/keuangan-keluarga/anggaran");
     });
 
-    // Click Pengaturan tab
-    const pengaturanTabs = screen.getAllByText("Pengaturan");
+    // Pengaturan bukan tab lagi: link "Pengaturan Keuangan" di sidebar (UX-REDESIGN #1)
+    const pengaturanTabs = screen.getAllByText("Pengaturan Keuangan");
     fireEvent.click(pengaturanTabs[0]);
 
     await waitFor(() => {

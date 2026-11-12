@@ -28,11 +28,11 @@ export const BayiSidebar: React.FC = () => {
         <Link
           to="/"
           className="flex items-center justify-center lg:justify-start gap-2.5 px-2.5 lg:px-3 py-2 rounded-control text-[13px] text-text-2 hover:text-text hover:bg-surface-sunken transition-colors font-medium border border-border/60 group"
-          title="Beranda utama"
-          aria-label="Beranda utama"
+          title="Beranda Kula"
+          aria-label="Beranda Kula"
         >
           <LayoutGrid className="w-4 h-4 text-text-2 group-hover:text-primary transition-colors shrink-0" />
-          <span className="hidden lg:inline">Beranda utama</span>
+          <span className="hidden lg:inline">Beranda Kula</span>
         </Link>
 
         {/* Brand & Badge (hidden in rail mode) */}
