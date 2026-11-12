@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { Check, ChevronRight, Sparkles } from "lucide-react";
 import { ShellHeader } from "../components/ShellHeader";
 import { MODULE_REGISTRY } from "../../modules/registry";
 import { useAuth } from "../../context/AuthContext";
 import { PAGE_CONTAINER } from "../../config/layout";
 import { getAccountName } from "../../utils/loginIdentity";
 import { KuraBerenang, Ombak } from "../../components/common/LautKura";
+import { useBayi } from "../../modules/bayi/context/BayiContext";
 
 /** Warna identitas per modul. Modul baru tanpa entri di sini pakai warna laut. */
 const MODULE_TONE: Record<string, { icon: string; chip: string }> = {
@@ -33,6 +34,16 @@ function sapaanWaktu(jam: number): string {
 
 export const LauncherPage: React.FC = () => {
   const { user, isGuest } = useAuth();
+
+  const { activeProfile } = useBayi();
+
+  // Ringkasan singkat per modul, tampil sebagai chip di kartu.
+  const ringkasan: Record<string, string | undefined> = {
+    bayi:
+      activeProfile && activeProfile.schedule.length > 0
+        ? `${activeProfile.records.filter((r) => r.diberikan).length} dari ${activeProfile.schedule.length} imunisasi selesai`
+        : undefined
+  };
 
   const greetingName = isGuest
     ? "Tamu"
@@ -84,6 +95,12 @@ export const LauncherPage: React.FC = () => {
                   <p className="text-[13.5px] text-sky-ink-2 leading-snug mt-1">
                     {mod.description}
                   </p>
+                  {ringkasan[mod.id] && (
+                    <p className="inline-flex items-center gap-1 mt-2 px-2.5 py-1 rounded-full bg-primary-tint text-primary-text text-[12px] font-semibold">
+                      <Check className="w-3.5 h-3.5 shrink-0" strokeWidth={3} />
+                      {ringkasan[mod.id]}
+                    </p>
+                  )}
                 </div>
 
                 {isComingSoon ? (

@@ -231,6 +231,29 @@ h2.font-display {
 .ombak-depan { animation: ombak-geser 9s linear infinite; }
 .gelembung { animation: gelembung-naik 4s ease-in infinite; }
 
+/* Perayaan kecil: butir warna naik dari bawah, Kura melompat sekali */
+@keyframes perayaan-naik {
+  0% { transform: translateY(0) scale(0.6); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translateY(-78vh) scale(1.1); opacity: 0; }
+}
+@keyframes perayaan-lompat {
+  0% { transform: translateY(100%); }
+  30% { transform: translateY(-36px) rotate(-8deg); }
+  50% { transform: translateY(-10px) rotate(6deg); }
+  70% { transform: translateY(-24px) rotate(-4deg); }
+  100% { transform: translateY(100%); }
+}
+.perayaan-butir { animation: perayaan-naik 1.6s ease-out both; }
+.perayaan-kura { animation: perayaan-lompat 1.8s ease-in-out both; }
+
+/* Modal dan popover muncul dengan halus (kelas ini sudah dipakai di banyak modal) */
+@keyframes muncul {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fadeIn { animation: muncul 180ms ease-out both; }
+
 /* Subtle soft elevation card utility */
 .card-elevated {
   background-color: var(--surface);

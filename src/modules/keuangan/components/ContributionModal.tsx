@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { SavingsGoal } from "../types";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
+import { rayakan } from "../../../components/common/Perayaan";
 
 interface ContributionModalProps {
   isOpen: boolean;
@@ -61,6 +62,8 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
     setSubmitting(true);
     const delta = mode === "deposit" ? val : -val;
     await onConfirm(goal.id, delta);
+    const tercapai = goal.currentAmount < goal.targetAmount && goal.currentAmount + delta >= goal.targetAmount;
+    if (tercapai) rayakan();
     setSubmitting(false);
     onClose();
   };

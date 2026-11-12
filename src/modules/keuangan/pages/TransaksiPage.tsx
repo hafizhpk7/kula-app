@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, ExternalLink, Plus, Filter, Wallet } from "lucide-react";
+import { KuraBerenang } from "../../../components/common/LautKura";
 import { formatRupiah } from "../../../utils/calc";
 import { MODULE_REGISTRY } from "../../registry";
 import { MonthSelector } from "../components/MonthSelector";
@@ -150,9 +151,7 @@ export const TransaksiPage: React.FC = () => {
       {/* Content Area */}
       {isMonthEmpty ? (
         <div className="bg-surface rounded-card border border-border p-8 text-center space-y-4 shadow-card">
-          <div className="w-12 h-12 bg-surface-sunken text-text-2 rounded-full flex items-center justify-center mx-auto">
-            <Wallet className="w-6 h-6" />
-          </div>
+          <KuraBerenang className="kura-bob w-24 h-auto mx-auto" />
           <div className="space-y-1">
             <h3 className="text-[16px] font-serif font-semibold text-text">Belum ada transaksi bulan ini</h3>
             <p className="text-[13px] text-text-2 max-w-sm mx-auto">

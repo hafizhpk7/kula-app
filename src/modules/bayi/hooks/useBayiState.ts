@@ -6,6 +6,7 @@ import { useToast } from "../../../components/common/Toast";
 import { todayLocal } from "../../keuangan/utils/dates";
 import * as transitions from "../state/transitions";
 import { useBayiRepository } from "../repository/useBayiRepository";
+import { rayakan } from "../../../components/common/Perayaan";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
   const { user } = useAuth();
@@ -183,6 +184,8 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     (updatedRec: Record) => {
       if (!assertCanWrite()) return;
       if (!activeProfile) return;
+      const sebelumnya = activeProfile.records.find((r) => r.rowId === updatedRec.rowId);
+      if (updatedRec.diberikan && !sebelumnya?.diberikan) rayakan();
       const next = transitions.updateRecord(appState, activeProfile.id, updatedRec);
       setAppState(next);
       repository.updateRecord(activeProfile.id, updatedRec).catch((err) => {

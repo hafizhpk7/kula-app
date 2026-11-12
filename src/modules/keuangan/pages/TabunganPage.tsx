@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { todayLocal } from "../utils/dates";
 import { Plus, Target, Trash2, Edit2, ArrowUpRight, ArrowDownRight, Calendar } from "lucide-react";
+import { KuraBerenang } from "../../../components/common/LautKura";
 import { formatRupiah } from "../../../utils/calc";
 import { useFinance } from "../state/FinanceContext";
 import { SavingsGoal } from "../types";
@@ -86,7 +87,7 @@ export const TabunganPage: React.FC = () => {
         <div className="py-12 text-center text-text-2 text-[14px]">Memuat target tabungan...</div>
       ) : sortedGoals.length === 0 ? (
         <div className="bg-surface rounded-card border border-border p-12 text-center space-y-3 shadow-card">
-          <Target className="w-10 h-10 mx-auto text-text-3" />
+          <KuraBerenang className="kura-bob w-24 h-auto mx-auto" />
           <h2 className="text-[16px] font-serif font-semibold text-text">Belum ada target tabungan</h2>
           <p className="text-[13px] text-text-2 max-w-sm mx-auto">
             Mulai buat target finansial pertama Anda untuk memotivasi menabung secara berkala.

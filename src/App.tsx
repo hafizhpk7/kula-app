@@ -23,6 +23,7 @@ import { VaccineInfoPage } from "./modules/bayi/pages/VaccineInfoPage";
 import { BabySettingsPage } from "./modules/bayi/pages/BabySettingsPage";
 import { FamilyPage } from "./shell/family/pages/FamilyPage";
 import { JoinFamilyPage } from "./shell/family/pages/JoinFamilyPage";
+import { PerayaanLayer } from "./components/common/Perayaan";
 
 function AppRoutes() {
   const { user, loading: authLoading, isGuest } = useAuth();
@@ -94,6 +95,7 @@ export default function App() {
         <ToastProvider>
           <MainApp />
           <PWANotification />
+          <PerayaanLayer />
         </ToastProvider>
       </ThemeProvider>
     </ErrorBoundary>
