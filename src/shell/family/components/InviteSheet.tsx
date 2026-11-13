@@ -7,6 +7,7 @@ import { useFamily } from "../context/FamilyContext";
 import { Invite, Relation, Role, RELATIONS, RELATION_LABELS } from "../types";
 import { buildInviteLink, defaultRoleForRelation, formatInviteCode } from "../utils";
 import * as familyService from "../service/family";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 import { useCopy } from "./useCopy";
 
 const sel = "w-full px-3 py-2 bg-surface-sunken border border-border rounded-control text-[14px] min-h-[48px]";
@@ -45,7 +46,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
       setCreatedInvite(inv);
       showToast("Undangan dibuat.");
     } catch (err: any) {
-      showToast(err.message || "Gagal membuat undangan.");
+      showToast(pesanPengguna("keluarga", err, belum("Undangan", "dibuat")));
     } finally {
       setCreatingInvite(false);
     }

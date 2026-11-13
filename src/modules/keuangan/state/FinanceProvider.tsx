@@ -7,6 +7,7 @@ import { CloudRepository } from "../repository/CloudRepository";
 import { useFinanceRepository } from "../repository/useFinanceRepository";
 import { Category, FinanceConfig, LedgerEntry, RecurringRule, SavingsGoal, Transaction, TxType } from "../types";
 import { validateCategoryName } from "../utils/categories";
+import { pesanGagal } from "../utils/pesan";
 import { addMonths, currentMonthKey, monthRange, todayLocal } from "../utils/dates";
 import { decideGuestMigration } from "../utils/migration";
 import { validateRecurringRuleInput, validateSavingsGoalInput, validateTransactionInput, validateWalletName } from "../utils/validation";
@@ -117,7 +118,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         })
         .catch((err) => {
           console.warn("Failed to generate recurring transactions:", err);
-          showToast("Gagal membuat transaksi berulang. Coba lagi.");
+          showToast(pesanGagal("buatBerulang", err));
         });
     }
   }, [loading, recurringRules, repository, userId, showToast]);
@@ -202,7 +203,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       showToast("Data keuangan tamu diunggah ke akun Anda.");
       setMigrationDecision("none");
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("unggahTamu", e));
     }
   }, [userId, repository, showToast]);
 
@@ -289,7 +290,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         showToast("Transaksi disimpan.");
         return { ok: true };
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
+        showToast(pesanGagal("simpanTransaksi", e));
         return { ok: false };
       }
     },
@@ -341,7 +342,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         showToast("Transaksi diperbarui.");
         return { ok: true };
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
+        showToast(pesanGagal("ubahTransaksi", e));
         return { ok: false };
       }
     },
@@ -355,15 +356,15 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         await repository.deleteTransaction(id);
         if (existing) {
           showToast("Transaksi dihapus.", "Urungkan", () => {
-            repository.upsertTransaction(existing).catch(() => {
-              showToast("Gagal menyimpan. Coba lagi.");
+            repository.upsertTransaction(existing).catch((e) => {
+              showToast(pesanGagal("urungkanHapus", e));
             });
           });
         } else {
           showToast("Transaksi dihapus.");
         }
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
+        showToast(pesanGagal("hapusTransaksi", e));
       }
     },
     [manualTransactions, repository, showToast]
@@ -388,7 +389,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         await repository.saveConfig(newConfig);
         showToast("Anggaran disimpan.");
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
+        showToast(pesanGagal("simpanAnggaran", e));
       }
     },
     [config, repository, showToast]
@@ -424,8 +425,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         showToast("Kategori ditambahkan.");
         return { ok: true };
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
-        return { ok: false, error: "Gagal menyimpan." };
+        showToast(pesanGagal("tambahKategori", e));
+        return { ok: false, error: pesanGagal("tambahKategori") };
       }
     },
     [config, repository, showToast]
@@ -452,8 +453,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         await repository.saveConfig(newConfig);
         return { ok: true };
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
-        return { ok: false, error: "Gagal menyimpan." };
+        showToast(pesanGagal("ubahKategori", e));
+        return { ok: false, error: pesanGagal("ubahKategori") };
       }
     },
     [config, repository, showToast]
@@ -471,7 +472,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       try {
         await repository.saveConfig(newConfig);
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
+        showToast(pesanGagal("arsipKategori", e));
       }
     },
     [config, repository, showToast]
@@ -483,7 +484,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       try {
         await repository.saveConfig(newConfig);
       } catch (e) {
-        showToast("Gagal menyimpan. Coba lagi.");
+        showToast(pesanGagal("ubahPengaturan", e));
       }
     },
     [config, repository, showToast]
@@ -511,8 +512,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       showToast("Dompet ditambahkan.");
       return { ok: true };
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
-      return { ok: false, error: "Gagal menyimpan." };
+      showToast(pesanGagal("tambahDompet", e));
+      return { ok: false, error: pesanGagal("tambahDompet") };
     }
   }, [config, repository, showToast]);
 
@@ -534,8 +535,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       showToast("Dompet diperbarui.");
       return { ok: true };
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
-      return { ok: false, error: "Gagal menyimpan." };
+      showToast(pesanGagal("ubahDompet", e));
+      return { ok: false, error: pesanGagal("ubahDompet") };
     }
   }, [config, repository, showToast]);
 
@@ -556,7 +557,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await repository.saveConfig({ ...config, wallets: newWallets });
       showToast(archived ? "Dompet diarsipkan." : "Dompet dipulihkan.");
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("arsipDompet", e));
     }
   }, [config, repository, showToast]);
 
@@ -570,7 +571,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       showToast("Target tabungan disimpan.");
       return { ok: true };
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("simpanTarget", e));
       return { ok: false };
     }
   }, [repository, showToast]);
@@ -580,7 +581,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await repository.deleteSavingsGoal(id);
       showToast("Target tabungan dihapus.");
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("hapusTarget", e));
     }
   }, [repository, showToast]);
 
@@ -589,7 +590,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await repository.adjustSavingsGoal(id, delta);
       showToast("Tabungan diperbarui.");
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("ubahTabungan", e));
     }
   }, [repository, showToast]);
 
@@ -600,10 +601,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     try {
       await repository.upsertRecurringRule(rule);
-      showToast("Aturan transaksi berulang disimpan.");
+      showToast("Aturan berulang disimpan.");
       return { ok: true };
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("simpanAturan", e));
       return { ok: false };
     }
   }, [config, repository, showToast]);
@@ -611,9 +612,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const deleteRecurringRule = useCallback(async (id: string) => {
     try {
       await repository.deleteRecurringRule(id);
-      showToast("Aturan transaksi berulang dihapus.");
+      showToast("Aturan berulang dihapus.");
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("hapusAturan", e));
     }
   }, [repository, showToast]);
 
@@ -626,7 +627,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setRecurringRules([]);
       showToast("Semua data keuangan dihapus.");
     } catch (e) {
-      showToast("Gagal menyimpan. Coba lagi.");
+      showToast(pesanGagal("hapusSemua", e));
     }
   }, [repository, showToast]);
 

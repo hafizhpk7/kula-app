@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFamily } from "../context/FamilyContext";
 import { Invite, RELATION_LABELS, ROLE_LABELS } from "../types";
 import { formatInviteCode, normalizeInviteCode, resolveDefaultDisplayName } from "../utils";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 import * as familyService from "../service/family";
 
 export const JoinPage: React.FC = () => {
@@ -59,7 +60,7 @@ export const JoinPage: React.FC = () => {
         setInvite(loadedInvite);
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "Kode undangan tidak ditemukan.");
+      setErrorMsg(pesanPengguna("gabung", err, "Kode undangan tidak ditemukan. Minta kode baru ke admin keluarga."));
       setInvite(null);
     } finally {
       setPreviewLoading(false);
@@ -79,7 +80,7 @@ export const JoinPage: React.FC = () => {
       await actions.joinFamily(invite.code, displayName);
       navigate("/keluarga");
     } catch (err: any) {
-      setErrorMsg(err.message || "Terjadi kesalahan. Coba lagi.");
+      setErrorMsg(pesanPengguna("gabung", err, belum("Anda", "bergabung ke keluarga")));
     } finally {
       setJoining(false);
     }

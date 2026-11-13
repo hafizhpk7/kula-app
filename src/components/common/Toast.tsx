@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
+import { lokalkanPesan } from "../../utils/pesanError";
 
 export interface ToastItem {
   id: string;
@@ -34,7 +36,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const id = "toast-" + Date.now() + "-" + Math.random().toString(36).slice(2, 6);
       const newToast: ToastItem = {
         id,
-        message,
+        message: lokalkanPesan(message),
         actionLabel,
         onAction,
         duration: 6000
@@ -53,9 +55,11 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   return (
     <ToastContext.Provider value={{ showToast, dismissToast }}>
       {children}
-      {/* Toast container: bottom-center on mobile, bottom-right on desktop */}
+      {/* Toast di body (bukan di #root): tetap terlihat dan terbaca saat lembar terbuka (halaman di belakangnya inert).
+          Bawah-tengah di HP, kanan-bawah di desktop. */}
+      {createPortal(
       <div
-        className="fixed z-50 pointer-events-none bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 flex flex-col items-center md:items-end gap-2"
+        className="fixed z-[70] pointer-events-none bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 flex flex-col items-center md:items-end gap-2"
         aria-live="polite"
       >
         {toasts.map((toast) => (
@@ -80,7 +84,9 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             )}
           </div>
         ))}
-      </div>
+      </div>,
+      document.body
+      )}
     </ToastContext.Provider>
   );
 };

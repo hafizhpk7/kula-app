@@ -6,6 +6,7 @@ import { useToast } from "../../../components/common/Toast";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { useFamily } from "../context/FamilyContext";
 import { Relation, RELATIONS, RELATION_LABELS } from "../types";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 import { resolveDefaultDisplayName, validateFamilyName, validateDisplayName } from "../utils";
 import * as familyService from "../service/family";
 
@@ -81,7 +82,7 @@ export const CreateFamilySheet: React.FC<{ isOpen: boolean; onClose: () => void 
         }
       }
     } catch (err: any) {
-      showToast(err.message || "Terjadi kesalahan. Coba lagi.");
+      showToast(pesanPengguna("keluarga", err, belum("Keluarga", "dibuat")));
     } finally {
       setCreating(false);
     }

@@ -171,7 +171,7 @@ export const PengaturanPage: React.FC = () => {
       <BottomSheet
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
-        title="Konfirmasi Hapus Data"
+        title="Hapus semua data Keuangan Keluarga?"
         titleId="hapus-keuangan-title"
         footer={
           <div className="flex items-center gap-2">
@@ -186,20 +186,22 @@ export const PengaturanPage: React.FC = () => {
               }}
               className={tombolBahaya}
             >
-              Hapus
+              Hapus semua data keuangan
             </button>
           </div>
         }
       >
-        <p className="text-[14px] text-text-2 leading-relaxed">
-          Hapus semua data Keuangan Keluarga? Semua transaksi, kategori kustom, dan anggaran akan dihapus (termasuk dari akun Anda jika Anda sedang masuk). Data Bayi dan akun Anda tidak ikut terhapus. Biaya vaksin dari modul Bayi tetap ada di modul Bayi.
-        </p>
+        <div className="space-y-3 text-[14px] text-text-2 leading-relaxed">
+          <p>Transaksi, kategori kustom, dan anggaran akan hilang, termasuk dari akun Anda, dan tidak bisa dikembalikan.</p>
+          <p>Data Bayi, akun, dan biaya vaksin di modul Bayi tidak ikut terhapus.</p>
+          <p>Unduh salinannya dulu lewat Ekspor Laporan di halaman ini kalau perlu.</p>
+        </div>
       </BottomSheet>
 
       <BottomSheet
         isOpen={showClearGuestConfirm}
         onClose={() => setShowClearGuestConfirm(false)}
-        title="Hapus Data Tamu?"
+        title="Hapus data tamu di perangkat ini?"
         titleId="hapus-tamu-title"
         footer={
           <div className="flex items-center gap-2">
@@ -214,13 +216,13 @@ export const PengaturanPage: React.FC = () => {
               }}
               className={tombolBahaya}
             >
-              Ya, hapus data tamu
+              Hapus data tamu
             </button>
           </div>
         }
       >
         <p className="text-[14px] text-text-2 leading-relaxed">
-          Apakah Anda yakin ingin menghapus data keuangan tamu lokal di perangkat ini tanpa mengunggahnya ke akun Anda?
+          Data keuangan tamu di perangkat ini akan hilang tanpa diunggah ke akun Anda, dan tidak bisa dikembalikan. Pilih Unggah ke akun kalau data itu ingin disimpan.
         </p>
       </BottomSheet>
     </div>

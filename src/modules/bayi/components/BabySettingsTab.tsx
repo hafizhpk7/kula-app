@@ -161,14 +161,14 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
               onClick={() => setDeleteStep(1)}
               className="px-4 py-2.5 bg-surface hover:bg-danger-tint text-danger-text text-[14px] font-medium rounded-full border border-danger/40 transition min-h-[44px] cursor-pointer"
             >
-              Hapus Data Modul Bayi
+              Hapus semua data Bayi
             </button>
           )}
 
           {deleteStep === 1 && (
             <div className="p-3.5 bg-surface rounded-control border border-danger/40 space-y-2">
               <p className="text-[13px] font-semibold text-danger-text">
-                Peringatan tahap 1: Anda yakin ingin menghapus data profil seluruh anak di modul Bayi?
+                Hapus semua data Bayi? Profil, jadwal, dan catatan imunisasi semua anak akan hilang. Unduh ekspor di atas dulu kalau perlu.
               </p>
               <div className="flex items-center gap-2">
                 <button
@@ -183,7 +183,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
                   onClick={handleConfirmDelete}
                   className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
-                  Lanjutkan
+                  Lanjut
                 </button>
               </div>
             </div>
@@ -192,7 +192,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
           {deleteStep === 2 && (
             <div className="p-3.5 bg-surface rounded-control border border-danger space-y-2">
               <p className="text-[13px] font-semibold text-danger-text">
-                Konfirmasi terakhir: Data profil dan jadwal anak pada modul Bayi akan terhapus secara permanen!
+                Terakhir: data Bayi yang sudah dihapus tidak bisa dikembalikan.
               </p>
               <div className="flex items-center gap-2">
                 <button
@@ -200,14 +200,14 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
                   onClick={() => setDeleteStep(0)}
                   className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
-                  Batalkan
+                  Batal
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
                   className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
-                  Ya, hapus data Bayi
+                  Hapus semua data Bayi
                 </button>
               </div>
             </div>
