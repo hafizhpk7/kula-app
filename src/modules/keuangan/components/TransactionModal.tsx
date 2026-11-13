@@ -6,6 +6,7 @@ import { LedgerEntry, TxType } from "../types";
 import { getActiveCategories } from "../utils/categories";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 import { formatDayHeader, todayLocal } from "../utils/dates";
+import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 
 interface TransactionModalProps {
@@ -146,7 +147,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             <button
               type="button"
               onClick={handleDelete}
-              className="px-3.5 rounded-full bg-danger-tint hover:bg-danger/20 text-danger font-medium text-[14px] transition cursor-pointer min-h-[48px] flex items-center gap-1.5"
+              className="px-3.5 rounded-full bg-danger-tint hover:bg-danger/20 text-danger-text font-medium text-[14px] transition cursor-pointer min-h-[48px] flex items-center gap-1.5"
             >
               <Trash2 className="w-4 h-4" />
               <span>Hapus</span>
@@ -172,7 +173,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         >
           {(
             [
-              { id: "expense", label: "Pengeluaran", sign: "−", aktif: "text-danger" },
+              { id: "expense", label: "Pengeluaran", sign: "−", aktif: "text-danger-text" },
               { id: "income", label: "Pemasukan", sign: "+", aktif: "text-primary-text" }
             ] as const
           ).map((j) => (
@@ -208,12 +209,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               value={amountStr}
               onChange={handleAmountChange}
               placeholder="0"
+              {...ariaField("tx-amount", errors.amount)}
               className={`w-full pl-14 pr-4 py-3 text-[28px] font-semibold font-tabular rounded-control border bg-surface text-text min-h-[64px] ${
                 errors.amount ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
           </div>
-          {errors.amount && <p className="text-[12px] text-danger font-medium">{errors.amount}</p>}
+          <FieldError id="tx-amount">{errors.amount}</FieldError>
         </div>
 
         {/* Kategori sebagai chip */}
@@ -245,7 +247,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               );
             })}
           </div>
-          {errors.categoryId && <p className="text-[12px] text-danger font-medium">{errors.categoryId}</p>}
+          <FieldError id="tx-category">{errors.categoryId}</FieldError>
         </div>
 
         {/* Detail lain: tanggal, dompet, catatan */}
@@ -279,9 +281,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setDate(e.target.value);
                     setErrors((prev) => ({ ...prev, date: undefined }));
                   }}
+                  {...ariaField("tx-date", errors.date)}
                   className={inputCls(errors.date)}
                 />
-                {errors.date && <p className="text-[12px] text-danger font-medium">{errors.date}</p>}
+                <FieldError id="tx-date">{errors.date}</FieldError>
               </div>
 
               <div className="space-y-1">
@@ -295,6 +298,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setWalletId(e.target.value);
                     setErrors((prev) => ({ ...prev, walletId: undefined }));
                   }}
+                  {...ariaField("tx-wallet", errors.walletId)}
                   className={inputCls(errors.walletId)}
                 >
                   {wallets.map((w) => (
@@ -303,7 +307,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     </option>
                   ))}
                 </select>
-                {errors.walletId && <p className="text-[12px] text-danger font-medium">{errors.walletId}</p>}
+                <FieldError id="tx-wallet">{errors.walletId}</FieldError>
                 <Link
                   to="/keuangan-keluarga/pengaturan"
                   onClick={onClose}
@@ -327,9 +331,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setErrors((prev) => ({ ...prev, note: undefined }));
                   }}
                   placeholder="Contoh: Belanja mingguan di pasar"
+                  {...ariaField("tx-note", errors.note)}
                   className={inputCls(errors.note)}
                 />
-                {errors.note && <p className="text-[12px] text-danger font-medium">{errors.note}</p>}
+                <FieldError id="tx-note">{errors.note}</FieldError>
               </div>
             </div>
           )}

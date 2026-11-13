@@ -10,7 +10,7 @@ interface StatusDotProps {
  * Status Indicators with light tinted background pill:
  * Selesai: bg-primary-tint text-primary-text border border-primary/20
  * Segera: bg-warning-tint text-warning-text border border-warning/25
- * Terlambat: bg-danger-tint text-danger border border-danger/25
+ * Terlambat: bg-danger-tint text-danger-text border border-danger/25
  * Terjadwal: bg-surface-sunken text-text-2 border border-border
  */
 export const StatusIndicator: React.FC<StatusDotProps> = ({ status, label }) => {
@@ -31,7 +31,7 @@ export const StatusIndicator: React.FC<StatusDotProps> = ({ status, label }) => 
       );
     case "Terlambat":
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] text-[12px] bg-danger-tint text-danger font-medium border border-danger/25">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] text-[12px] bg-danger-tint text-danger-text font-medium border border-danger/25">
           <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
           <span>{label || "Terlambat"}</span>
         </span>

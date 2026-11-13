@@ -94,7 +94,7 @@ export const LauncherPage: React.FC = () => {
         <div className="space-y-3">
           <div className="flex items-start gap-3">
             {hariIni.status === "Terlambat" ? (
-              <AlertTriangle className="w-5 h-5 text-danger shrink-0 mt-0.5" aria-hidden="true" />
+              <AlertTriangle className="w-5 h-5 text-danger-text shrink-0 mt-0.5" aria-hidden="true" />
             ) : (
               <CalendarClock className="w-5 h-5 text-sky-ink-2 shrink-0 mt-0.5" aria-hidden="true" />
             )}
@@ -102,7 +102,7 @@ export const LauncherPage: React.FC = () => {
               <p className="font-display text-[19px] leading-tight text-sky-ink">{hariIni.row.vaksin}</p>
               <p
                 className={`text-[13px] mt-0.5 ${
-                  hariIni.status === "Terlambat" ? "text-danger font-semibold" : "text-sky-ink-2"
+                  hariIni.status === "Terlambat" ? "text-danger-text font-semibold" : "text-sky-ink-2"
                 }`}
               >
                 {hariIni.status === "Terlambat"
@@ -139,7 +139,7 @@ export const LauncherPage: React.FC = () => {
         </div>
         {redup ? (
           <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-sunken text-text-2 shrink-0">
-            <Sparkles className="w-3 h-3 text-warning shrink-0" />
+            <Sparkles className="w-3 h-3 text-warning-text shrink-0" />
             Segera hadir
           </span>
         ) : (
@@ -165,7 +165,7 @@ export const LauncherPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-sky text-sky-ink flex flex-col transition-colors overflow-x-hidden">
+    <div className="min-h-dvh bg-sky text-sky-ink flex flex-col transition-colors overflow-x-hidden">
       <ShellHeader />
 
       <main className={`flex-1 ${PAGE_CONTAINER} pt-7 sm:pt-12 pb-4 space-y-5 sm:space-y-8 relative z-10`}>

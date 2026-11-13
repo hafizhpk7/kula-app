@@ -51,7 +51,7 @@ export const TabunganPage: React.FC = () => {
     }
     const today = todayLocal();
     if (deadline < today) {
-      return { text: "Lewat tenggat", tone: "bg-danger-tint text-danger border border-danger/20" };
+      return { text: "Lewat tenggat", tone: "bg-danger-tint text-danger-text border border-danger/20" };
     }
     const diffTime = new Date(deadline).getTime() - new Date(today).getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -239,7 +239,7 @@ export const TabunganPage: React.FC = () => {
             </button>
             <button
               type="button"
-              className={`${aksiBaris} text-danger hover:bg-danger-tint`}
+              className={`${aksiBaris} text-danger-text hover:bg-danger-tint`}
               onClick={() => {
                 const g = menuGoal;
                 if (window.confirm(`Hapus target tabungan "${g.name}"?`)) {

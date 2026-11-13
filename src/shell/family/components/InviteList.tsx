@@ -61,7 +61,7 @@ export const InviteList: React.FC<{ invites: Invite[] }> = ({ invites }) => {
               }}
               title="Cabut undangan"
               aria-label="Cabut undangan"
-              className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-danger-tint text-danger transition cursor-pointer"
+              className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-danger-tint text-danger-text transition cursor-pointer"
             >
               <Trash2 className="w-4 h-4" />
             </button>

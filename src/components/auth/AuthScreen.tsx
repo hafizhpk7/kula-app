@@ -144,7 +144,7 @@ export const AuthScreen: React.FC = () => {
   const effectiveMode = AUTH_ENABLE_SIGNUP ? mode : "login";
 
   return (
-    <div className="relative min-h-screen bg-sky flex flex-col justify-center items-center p-4 sm:p-6 pb-[150px] sm:pb-[170px] font-sans overflow-hidden">
+    <div className="relative min-h-dvh bg-sky flex flex-col justify-center items-center p-4 sm:p-6 pb-[150px] sm:pb-[170px] font-sans overflow-hidden">
       {/* Laut dekoratif di dasar layar */}
       <div className="absolute inset-x-0 bottom-0 h-[130px] pointer-events-none" aria-hidden="true">
         <Ombak className="absolute inset-x-0 bottom-0 h-[96px]" />
@@ -282,7 +282,9 @@ export const AuthScreen: React.FC = () => {
                   <UserIcon className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="auth-identifier"
-                    type="text"
+                    aria-invalid={isCredentialError ? true : undefined}
+                    aria-describedby={errorMessage ? "auth-error" : undefined}
+                                        type="text"
                     required
                     autoComplete="username"
                     autoCapitalize="none"
@@ -302,7 +304,9 @@ export const AuthScreen: React.FC = () => {
                   <Mail className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="auth-email"
-                    type="email"
+                    aria-invalid={isCredentialError ? true : undefined}
+                    aria-describedby={errorMessage ? "auth-error" : undefined}
+                                        type="email"
                     required
                     autoComplete="email"
                     value={email}
@@ -320,7 +324,9 @@ export const AuthScreen: React.FC = () => {
                 <Lock className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   id="auth-password"
-                  ref={passwordRef}
+                  aria-invalid={isCredentialError ? true : undefined}
+                    aria-describedby={errorMessage ? "auth-error" : undefined}
+                                    ref={passwordRef}
                   type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
@@ -363,8 +369,9 @@ export const AuthScreen: React.FC = () => {
 
             {errorMessage && (
               <div
-                role="alert"
-                className="p-3 bg-danger-tint border border-danger/20 text-danger rounded-control text-[13px] space-y-2"
+                id="auth-error"
+              role="alert"
+                className="p-3 bg-danger-tint border border-danger/20 text-danger-text rounded-control text-[13px] space-y-2"
               >
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -372,7 +379,7 @@ export const AuthScreen: React.FC = () => {
                 </div>
                 {isCredentialError && effectiveMode === "login" && AUTH_ENABLE_SIGNUP && (
                   <div className="pt-1 border-t border-danger/15 flex items-center justify-between">
-                    <span className="text-[12px] text-danger/90">Belum pernah mendaftar?</span>
+                    <span className="text-[12px] text-danger-text/90">Belum pernah mendaftar?</span>
                     <button
                       type="button"
                       onClick={switchToRegisterWithEmail}

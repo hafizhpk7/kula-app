@@ -31,7 +31,7 @@ function AppRoutes() {
   // Auth Loading Skeleton
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-bg flex items-center justify-center p-4">
         <div className="text-center space-y-3">
           <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-[14px] text-text-2 font-medium">Menyiapkan aplikasi...</p>

@@ -8,9 +8,11 @@
   --surface-sunken: #EEF8FB;
   --border: #CFE6EC;
   --border-strong: #A9CFD9;
+  /* Batas kolom isian dan kotak centang: >= 3:1 terhadap bg, surface, surface-sunken */
+  --field-border: #648A97;
   --text: #0D3B4A;
   --text-2: #2E5F6E;
-  --text-3: #4F7A87;
+  --text-3: #4A7482;
 
   /* Primary = hijau tempurung Kura (juga dipakai status "Selesai"); accent = coral */
   --primary: #17804A;
@@ -30,6 +32,7 @@
   --warning-text: #8F5E0F;
   --warning-tint: #FFF2CC;
   --danger: #BA3826;
+  --danger-text: #BA3826;
   --danger-tint: #FBE7E3;
   --track: #D6EBF0;
   --focus: #0E7F9C;
@@ -74,9 +77,10 @@
   --surface-sunken: #1B4252;
   --border: #235061;
   --border-strong: #33687B;
+  --field-border: #6F9DB0;
   --text: #E6F6FA;
   --text-2: #A9CFD9;
-  --text-3: #7FA9B5;
+  --text-3: #8DB4C0;
   --stage1: #14607A;
   --stage2: #0C3B4C;
 
@@ -115,6 +119,7 @@
   --warning-text: #ECC36D;
   --warning-tint: #3A2F1C;
   --danger: #E87261;
+  --danger-text: #F29A8C;
   --danger-tint: #3A221E;
   --track: #1F4757;
   --focus: #4CC9E0;
@@ -182,6 +187,8 @@
   --color-warning-tint: var(--warning-tint);
 
   --color-danger: var(--danger);
+  --color-danger-text: var(--danger-text);
+  --color-field: var(--field-border);
   --color-danger-tint: var(--danger-tint);
 
   --color-track: var(--track);
@@ -269,9 +276,12 @@ h2.font-display {
   border-radius: 12px;
   transition: box-shadow 150ms ease-out, border-color 150ms ease-out;
 }
-.card-elevated-hover:hover {
-  box-shadow: var(--shadow-card-hover);
-  border-color: var(--border-strong);
+/* Hover hanya di perangkat dengan penunjuk halus; di layar sentuh kartu tidak nyangkut terangkat */
+@media (hover: hover) and (pointer: fine) {
+  .card-elevated-hover:hover {
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--border-strong);
+  }
 }
 
 /* Tabular figures for numbers, money, percentages */
@@ -287,6 +297,49 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid var(--focus) !important;
   outline-offset: 2px !important;
+}
+
+/* Batas kolom isian >= 3:1 (WCAG 1.4.11). Kolom yang sedang error (border-danger) dan yang sengaja tanpa batas dibiarkan. */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([class*="border-danger"]):not([class*="border-transparent"]),
+select:not([class*="border-danger"]):not([class*="border-transparent"]),
+textarea:not([class*="border-danger"]):not([class*="border-transparent"]) {
+  border-color: var(--field-border);
+}
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: var(--danger-text);
+}
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--primary);
+}
+
+/* Rasa native di HP (pass mobile-native) */
+html {
+  -webkit-tap-highlight-color: transparent;
+  /* Kula bukan dokumen panjang: tarik-untuk-muat-ulang dan bounce tidak dibutuhkan */
+  overscroll-behavior-y: none;
+}
+/* Kontrol: tanpa seleksi teks/callout saat tekan lama dan tanpa jeda ketuk ganda. Teks isi (catatan, kode undangan) tetap bisa disalin. */
+button,
+[role="button"],
+[role="radio"],
+[role="tab"],
+nav a {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+/* Font 16px di layar sentuh supaya Safari iOS tidak memperbesar halaman saat kolom difokuskan */
+@media (pointer: coarse) {
+  /* Kolom yang sudah sengaja >= 18px (mis. Nominal 28px) dibiarkan */
+  input:not([type="checkbox"]):not([type="radio"]):not([class*="text-[18"]):not([class*="text-[2"]):not([class*="text-[3"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
 }
 
 /* Reduced motion preference */

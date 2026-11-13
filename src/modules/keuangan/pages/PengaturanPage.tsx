@@ -157,7 +157,7 @@ export const PengaturanPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="px-4 min-h-[44px] rounded-full bg-danger-tint hover:bg-danger/20 text-danger text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-1.5"
+            className="px-4 min-h-[44px] rounded-full bg-danger-tint hover:bg-danger/20 text-danger-text text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-1.5"
           >
             <Trash2 className="w-4 h-4" />
             <span>Hapus data keuangan</span>

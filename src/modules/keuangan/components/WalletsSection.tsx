@@ -70,7 +70,7 @@ export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = fa
             <span>Tambah dompet</span>
           </button>
         </div>
-        {error && <p className="text-[12px] text-danger font-medium">{error}</p>}
+        {error && <p className="text-[12px] text-danger-text font-medium">{error}</p>}
       </form>
 
       {/* Wallets List */}
@@ -112,7 +112,7 @@ export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = fa
                         <X className="w-4 h-4" />
                       </button>
                     </div>
-                    {editError && <p className="text-[11px] text-danger">{editError}</p>}
+                    {editError && <p className="text-[11px] text-danger-text">{editError}</p>}
                   </div>
                 ) : (
                   <div className="min-w-0 flex-1">

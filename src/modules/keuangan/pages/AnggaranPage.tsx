@@ -84,7 +84,7 @@ export const AnggaranPage: React.FC = () => {
           <span className="flex-1 min-w-0 space-y-1.5">
             <span className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-1.5 text-[14px] font-medium text-text truncate">
-                {st.state === "over" && <AlertTriangle className="w-4 h-4 text-danger shrink-0" aria-hidden="true" />}
+                {st.state === "over" && <AlertTriangle className="w-4 h-4 text-danger-text shrink-0" aria-hidden="true" />}
                 {cat.name}
               </span>
               <span className="text-[12px] text-text-2 font-tabular shrink-0">
@@ -99,7 +99,7 @@ export const AnggaranPage: React.FC = () => {
             </span>
             <span
               className={`block text-[12px] font-semibold ${
-                st.state === "over" ? "text-danger" : st.state === "warning" ? "text-warning-text" : "text-primary-text"
+                st.state === "over" ? "text-danger-text" : st.state === "warning" ? "text-warning-text" : "text-primary-text"
               }`}
             >
               {st.state === "over"
@@ -222,7 +222,7 @@ export const AnggaranPage: React.FC = () => {
               <button
                 type="button"
                 onClick={hapusBatas}
-                className="px-4 rounded-full border border-danger/40 text-danger text-[14px] font-medium min-h-[48px] cursor-pointer hover:bg-danger-tint transition"
+                className="px-4 rounded-full border border-danger/40 text-danger-text text-[14px] font-medium min-h-[48px] cursor-pointer hover:bg-danger-tint transition"
               >
                 Hapus batas
               </button>

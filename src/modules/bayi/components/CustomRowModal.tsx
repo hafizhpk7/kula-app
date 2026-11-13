@@ -59,7 +59,7 @@ export const CustomRowModal: React.FC<Props> = ({
     <BottomSheet isOpen={isOpen} onClose={onClose} title={rowToEdit ? "Edit baris kustom" : "Tambah jadwal kustom"} titleId="custom-title">
         <form onSubmit={handleSubmit} className="space-y-3.5 text-[14px]">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger-text rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -175,7 +175,7 @@ export const CustomRowModal: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => onDelete(rowToEdit.id)}
-                className="p-2 text-danger hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                className="p-2 text-danger-text hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                 aria-label="Hapus baris kustom"
               >
                 <Trash2 className="w-5 h-5" />

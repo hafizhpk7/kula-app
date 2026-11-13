@@ -49,7 +49,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger-text rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}

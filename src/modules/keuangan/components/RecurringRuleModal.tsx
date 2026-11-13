@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { RecurringFrequency, RecurringRule, TxType } from "../types";
 import { getActiveCategories, resolveCategoryName } from "../utils/categories";
@@ -187,7 +188,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   setCategoryId(activeExp.length > 0 ? activeExp[0].id : "");
                 }}
                 className={`flex-1 py-2 text-[13px] font-medium rounded-chip transition cursor-pointer ${
-                  type === "expense" ? "bg-surface text-danger border border-border shadow-2xs" : "text-text-2"
+                  type === "expense" ? "bg-surface text-danger-text border border-border shadow-2xs" : "text-text-2"
                 }`}
               >
                 Pengeluaran
@@ -229,12 +230,13 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   setErrors(prev => ({ ...prev, amount: undefined }));
                 }}
                 placeholder="0"
+                {...ariaField("rule-amount", errors.amount)}
                 className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
                   errors.amount ? "border-danger" : "border-border hover:border-border-strong"
                 }`}
               />
             </div>
-            {errors.amount && <p className="text-[12px] text-danger mt-1 font-medium">{errors.amount}</p>}
+            <FieldError id="rule-amount">{errors.amount}</FieldError>
           </div>
 
           <div className="space-y-1">
@@ -243,6 +245,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             </label>
             <select
               id="rule-category"
+              {...ariaField("rule-category", errors.categoryId)}
               value={categoryId}
               onChange={(e) => {
                 setCategoryId(e.target.value);
@@ -257,7 +260,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
-            {errors.categoryId && <p className="text-[12px] text-danger mt-1 font-medium">{errors.categoryId}</p>}
+            <FieldError id="rule-category">{errors.categoryId}</FieldError>
           </div>
 
           <div className="space-y-1">
@@ -340,6 +343,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             </label>
             <input
               id="rule-start"
+              {...ariaField("rule-start", errors.startDate)}
               type="date"
               value={startDate}
               onChange={(e) => {
@@ -350,7 +354,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 errors.startDate ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
-            {errors.startDate && <p className="text-[12px] text-danger mt-1 font-medium">{errors.startDate}</p>}
+            <FieldError id="rule-start">{errors.startDate}</FieldError>
           </div>
 
           {duePreview.length > 0 && (

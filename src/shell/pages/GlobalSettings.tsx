@@ -177,7 +177,7 @@ export const GlobalSettingsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-full px-4 min-h-[52px] bg-surface hover:bg-danger-tint text-danger text-[15px] font-semibold rounded-full border border-border-strong transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full px-4 min-h-[52px] bg-surface hover:bg-danger-tint text-danger-text text-[15px] font-semibold rounded-full border border-border-strong transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>Keluar</span>

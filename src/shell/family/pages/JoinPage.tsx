@@ -96,7 +96,7 @@ export const JoinPage: React.FC = () => {
       <div className="max-w-xl space-y-6 animate-fadeIn">
         {isGuest && (
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>
               Tamu tidak dapat membuat atau bergabung ke keluarga. Silakan masuk dengan akun terdaftar di halaman Masuk
               untuk bergabung.
@@ -106,7 +106,7 @@ export const JoinPage: React.FC = () => {
 
         {familyStatus === "active" && (
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>
               Anda sudah tergabung di sebuah keluarga. Keluar dulu untuk bergabung ke keluarga lain.
             </p>
@@ -114,7 +114,7 @@ export const JoinPage: React.FC = () => {
         )}
 
         {errorMsg && (
-          <div className="p-3.5 rounded-xl border border-danger/40 bg-danger-tint text-danger text-[13px] flex items-start gap-2">
+          <div className="p-3.5 rounded-xl border border-danger/40 bg-danger-tint text-danger-text text-[13px] flex items-start gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>

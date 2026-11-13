@@ -146,7 +146,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
         </div>
 
         <div className="space-y-2 pt-3 border-t border-border">
-          <h3 className="flex items-center gap-2 text-[15px] font-semibold text-danger">
+          <h3 className="flex items-center gap-2 text-[15px] font-semibold text-danger-text">
             <Trash2 className="w-4 h-4" />
             <span>Hapus semua data Bayi</span>
           </h3>
@@ -159,7 +159,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
             <button
               type="button"
               onClick={() => setDeleteStep(1)}
-              className="px-4 py-2.5 bg-surface hover:bg-danger-tint text-danger text-[14px] font-medium rounded-full border border-danger/40 transition min-h-[44px] cursor-pointer"
+              className="px-4 py-2.5 bg-surface hover:bg-danger-tint text-danger-text text-[14px] font-medium rounded-full border border-danger/40 transition min-h-[44px] cursor-pointer"
             >
               Hapus Data Modul Bayi
             </button>
@@ -167,7 +167,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
 
           {deleteStep === 1 && (
             <div className="p-3.5 bg-surface rounded-control border border-danger/40 space-y-2">
-              <p className="text-[13px] font-semibold text-danger">
+              <p className="text-[13px] font-semibold text-danger-text">
                 Peringatan tahap 1: Anda yakin ingin menghapus data profil seluruh anak di modul Bayi?
               </p>
               <div className="flex items-center gap-2">
@@ -191,7 +191,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
 
           {deleteStep === 2 && (
             <div className="p-3.5 bg-surface rounded-control border border-danger space-y-2">
-              <p className="text-[13px] font-semibold text-danger">
+              <p className="text-[13px] font-semibold text-danger-text">
                 Konfirmasi terakhir: Data profil dan jadwal anak pada modul Bayi akan terhapus secara permanen!
               </p>
               <div className="flex items-center gap-2">

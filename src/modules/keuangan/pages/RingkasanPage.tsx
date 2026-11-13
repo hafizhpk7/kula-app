@@ -117,7 +117,7 @@ export const RingkasanPage: React.FC = () => {
       <div className="space-y-4">
         {header}
         <div className={`${kartu} text-center space-y-3`}>
-          <p className="text-[14px] text-danger font-medium">Gagal memuat data keuangan.</p>
+          <p className="text-[14px] text-danger-text font-medium">Gagal memuat data keuangan.</p>
           <button
             type="button"
             onClick={() => setSelectedMonth(selectedMonth)}
@@ -141,7 +141,7 @@ export const RingkasanPage: React.FC = () => {
       </p>
       {adaAnggaran ? (
         <>
-          <p className={`font-display text-[32px] leading-none font-tabular ${sisa < 0 ? "text-danger" : "text-text"}`}>
+          <p className={`font-display text-[32px] leading-none font-tabular ${sisa < 0 ? "text-danger-text" : "text-text"}`}>
             {sisa < 0 && <AlertTriangle className="inline w-6 h-6 mr-1.5 -mt-1" aria-hidden="true" />}
             {sisa < 0 ? `Lewat ${formatRupiah(-sisa)}` : formatRupiah(sisa)}
           </p>
@@ -178,7 +178,7 @@ export const RingkasanPage: React.FC = () => {
         </span>
         <span className="text-text-2">
           Selisih{" "}
-          <strong className={`font-semibold ${summary.net < 0 ? "text-danger" : "text-primary-text"}`}>
+          <strong className={`font-semibold ${summary.net < 0 ? "text-danger-text" : "text-primary-text"}`}>
             {formatRupiah(summary.net)}
           </strong>
         </span>
@@ -215,7 +215,7 @@ export const RingkasanPage: React.FC = () => {
               <div className="flex items-center justify-between gap-2 text-[13.5px]">
                 <span className="flex items-center gap-1.5 text-text font-medium min-w-0 truncate">
                   {(lewat || hampir) && (
-                    <AlertTriangle className={`w-4 h-4 shrink-0 ${lewat ? "text-danger" : "text-warning"}`} aria-hidden="true" />
+                    <AlertTriangle className={`w-4 h-4 shrink-0 ${lewat ? "text-danger-text" : "text-warning-text"}`} aria-hidden="true" />
                   )}
                   {resolveCategoryName(config, row.categoryId)}
                 </span>
@@ -303,6 +303,14 @@ export const RingkasanPage: React.FC = () => {
     </section>
   );
 
+  // Teks alternatif grafik: pembaca layar mendapat angkanya, bukan gambar kosong
+  const labelGrafikKategori = `Pengeluaran per kategori bulan ini. ${chartCategoryData
+    .map((d) => `${d.name} ${formatRupiah(d.total)}`)
+    .join("; ")}.`;
+  const labelGrafikTren = `Pemasukan dan pengeluaran ${trendData.length} bulan terakhir. ${trendData
+    .map((d) => `${d.label}: masuk ${formatRupiah(d.income)}, keluar ${formatRupiah(d.expense)}`)
+    .join("; ")}.`;
+
   /* ── Grafik (terlipat di HP) ── */
   const grafikKategori = (
     <Lipat
@@ -313,7 +321,7 @@ export const RingkasanPage: React.FC = () => {
       {chartCategoryData.length === 0 ? (
         <p className="text-[13px] text-text-3 py-8 text-center">Belum ada pengeluaran di bulan ini.</p>
       ) : (
-        <div className="h-64 w-full">
+        <div className="h-64 w-full" role="img" aria-label={labelGrafikKategori}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartCategoryData} layout="vertical" margin={{ top: 5, right: 20, left: 40, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
@@ -330,7 +338,7 @@ export const RingkasanPage: React.FC = () => {
 
   const grafikTren = (
     <Lipat title="Tren 6 bulan" summary="Pemasukan dan pengeluaran" forceOpen={lebar}>
-      <div className="h-64 w-full">
+      <div className="h-64 w-full" role="img" aria-label={labelGrafikTren}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={trendData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -346,7 +354,14 @@ export const RingkasanPage: React.FC = () => {
               )}
             />
             <Bar dataKey="income" fill="var(--primary)" name="income" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="expense" fill="var(--accent)" name="expense" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="expense"
+              fill="var(--accent)"
+              stroke="var(--text)"
+              strokeWidth={1.5}
+              name="expense"
+              radius={[6, 6, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </div>

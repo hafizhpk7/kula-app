@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <title>Kula · Tumbuh sekeluarga</title>
     <meta name="description" content="Kula membantu keluarga merawat yang bertumbuh: jadwal imunisasi, keuangan rumah tangga, dan catatan penting dalam satu tempat yang tenang." />
     <meta property="og:title" content="Kula · Tumbuh sekeluarga" />
@@ -11,7 +11,10 @@
     <meta name="twitter:card" content="summary_large_image" />
     
     <!-- PWA & Mobile Web App Meta Tags -->
-    <meta name="theme-color" content="#0E7F9C" />
+    <!-- Warna bar status = warna header (bukan warna merek); ThemeContext menimpa keduanya saat tema diganti manual -->
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#143644" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -35,11 +38,15 @@
             document.documentElement.setAttribute("data-theme", "light");
             document.documentElement.classList.remove("dark");
           }
+          if (t !== "system") {
+            var c = isDark ? "#143644" : "#FFFFFF";
+            document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) { m.setAttribute("content", c); });
+          }
         } catch (e) {}
       })();
     </script>
   </head>
-  <body class="bg-bg text-text antialiased font-sans selection:bg-primary-tint selection:text-primary-text min-h-screen">
+  <body class="bg-bg text-text antialiased font-sans selection:bg-primary-tint selection:text-primary-text min-h-dvh">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

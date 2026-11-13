@@ -151,7 +151,7 @@ export const ShellHeader: React.FC = () => {
                         await signOut();
                       } catch (e) {}
                     }}
-                    className="w-full text-left px-3.5 py-2 text-[13px] text-danger hover:bg-danger-tint flex items-center gap-2 cursor-pointer"
+                    className="w-full text-left px-3.5 py-2 text-[13px] text-danger-text hover:bg-danger-tint flex items-center gap-2 cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Keluar</span>

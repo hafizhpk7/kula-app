@@ -117,7 +117,7 @@ export const ProfileModal: React.FC<Props> = ({
     >
         <div className="space-y-4 text-[14px]">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger-text rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -182,7 +182,7 @@ export const ProfileModal: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => setConfirmDeleteId(p.id)}
-                            className="p-2 text-danger hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                            className="p-2 text-danger-text hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                             aria-label={`Hapus ${p.panggilan}`}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -197,7 +197,7 @@ export const ProfileModal: React.FC<Props> = ({
               {/* Confirm Delete Subpanel */}
               {confirmDeleteId && (
                 <div className="p-3 bg-danger-tint border border-danger/30 rounded-control space-y-2">
-                  <p className="text-[13px] text-danger font-medium">
+                  <p className="text-[13px] text-danger-text font-medium">
                     Hapus profil ini beserta seluruh catatan imunisasinya?
                   </p>
                   <div className="flex items-center gap-2">

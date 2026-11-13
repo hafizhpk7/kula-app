@@ -63,7 +63,7 @@ export const CategoryManager: React.FC = () => {
               onClick={() => setNewCatType("expense")}
               className={`px-3 py-1.5 text-[12px] font-medium rounded-[6px] transition cursor-pointer ${
                 newCatType === "expense"
-                  ? "bg-danger-tint text-danger font-bold"
+                  ? "bg-danger-tint text-danger-text font-bold"
                   : "text-text-2 hover:text-text"
               }`}
             >
@@ -106,7 +106,7 @@ export const CategoryManager: React.FC = () => {
         </div>
 
         {addCatError && (
-          <p className="text-[12px] text-danger font-medium">{addCatError}</p>
+          <p className="text-[12px] text-danger-text font-medium">{addCatError}</p>
         )}
       </form>
 
@@ -122,7 +122,7 @@ export const CategoryManager: React.FC = () => {
                   className={`text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 ${
                     cat.type === "income"
                       ? "bg-primary-tint text-primary-text"
-                      : "bg-danger-tint text-danger"
+                      : "bg-danger-tint text-danger-text"
                   }`}
                 >
                   {cat.type === "income" ? "Masuk" : "Keluar"}
@@ -218,7 +218,7 @@ export const CategoryManager: React.FC = () => {
       </div>
 
       {renameCatError && (
-        <p className="text-[12px] text-danger font-medium">{renameCatError}</p>
+        <p className="text-[12px] text-danger-text font-medium">{renameCatError}</p>
       )}
     </div>
   );

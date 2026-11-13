@@ -24,7 +24,7 @@ const ACCENT: Record<ModuleAccent, { active: string; border: string; pill: strin
     pill: "bg-mod-uang text-mod-uang-fg"
   },
   laut: {
-    active: "bg-sea-2 text-foam",
+    active: "bg-primary text-primary-fg",
     border: "border-sea-1",
     pill: "bg-primary text-primary-fg"
   }
@@ -75,7 +75,7 @@ export const AppShell: React.FC<AppShellProps> = ({
   const PrimaryIcon = primaryAction?.icon;
 
   return (
-    <div className="min-h-screen bg-bg text-text flex flex-col transition-colors">
+    <div className="min-h-dvh bg-bg text-text flex flex-col transition-colors">
       {/* Bar atas */}
       <header className={`bg-surface border-b-[3px] ${tone.border} sticky top-0 z-30 no-print transition-colors`}>
         <div className="px-3 sm:px-5 h-14 flex items-center gap-2">
@@ -99,7 +99,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       <div className="flex-1 w-full flex">
         {/* Sidebar (≥ md): rail di tablet, penuh di desktop */}
         {adaTab && (
-          <aside className="w-[76px] lg:w-60 shrink-0 hidden md:flex flex-col justify-between gap-4 bg-bg-sidebar border-r border-border p-2.5 lg:p-4 sticky top-14 self-start h-[calc(100vh-3.5rem)] overflow-y-auto no-print">
+          <aside className="w-[76px] lg:w-60 shrink-0 hidden md:flex flex-col justify-between gap-4 bg-bg-sidebar border-r border-border p-2.5 lg:p-4 sticky top-14 self-start h-[calc(100dvh-3.5rem)] overflow-y-auto no-print">
             <div className="space-y-4">
               <nav className="space-y-1" aria-label={`Navigasi ${title}`}>
                 {tabs.map((t) => {
@@ -152,7 +152,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         )}
 
         <main className="flex-1 min-w-0">
-          <div className={`${PAGE_CONTAINER} pt-5 sm:pt-7 ${adaTab ? "pb-40 md:pb-10" : "pb-24"}`}>{children}</div>
+          <div className={`${PAGE_CONTAINER} pt-5 sm:pt-7 ${adaTab ? "pb-[calc(10rem+env(safe-area-inset-bottom))] md:pb-10" : "pb-[calc(6rem+env(safe-area-inset-bottom))]"}`}>{children}</div>
         </main>
       </div>
 
@@ -163,7 +163,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           onClick={primaryAction.onClick}
           aria-label={primaryAction.label}
           title={primaryAction.label}
-          className={`md:hidden fixed right-4 ${adaTab ? "bottom-[92px]" : "bottom-5"} z-40 h-14 pl-4 pr-5 rounded-full flex items-center gap-2 text-[15px] font-semibold shadow-[var(--shadow-float)] active:scale-95 transition cursor-pointer no-print ${tone.pill}`}
+          className={`md:hidden fixed right-4 ${adaTab ? "bottom-[calc(92px+env(safe-area-inset-bottom))]" : "bottom-[max(20px,calc(env(safe-area-inset-bottom)+8px))]"} z-40 h-14 pl-4 pr-5 rounded-full flex items-center gap-2 text-[15px] font-semibold shadow-[var(--shadow-float)] active:scale-95 transition cursor-pointer no-print ${tone.pill}`}
         >
           <PrimaryIcon className="w-5 h-5" strokeWidth={2.5} />
           <span>{primaryAction.shortLabel ?? primaryAction.label}</span>
@@ -173,7 +173,7 @@ export const AppShell: React.FC<AppShellProps> = ({
       {/* Nav bawah di HP */}
       {adaTab && (
         <nav
-          className="md:hidden fixed bottom-3 left-3 right-3 z-30 bg-surface border border-border rounded-full p-1.5 flex items-center justify-around gap-1 no-print shadow-[var(--shadow-popover)]"
+          className="md:hidden fixed bottom-[max(12px,env(safe-area-inset-bottom))] left-3 right-3 z-30 bg-surface border border-border rounded-full p-1.5 flex items-center justify-around gap-1 no-print shadow-[var(--shadow-popover)]"
           aria-label={`Navigasi ${title}`}
         >
           {tabs.map((t) => {

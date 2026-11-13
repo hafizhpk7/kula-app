@@ -67,7 +67,7 @@ export const FamilyPage: React.FC = () => {
     return (
       <AppShell title="Keluarga">
         <div className="max-w-xl p-6 bg-surface border border-warning/40 rounded-card text-center space-y-4">
-          <AlertTriangle className="w-10 h-10 text-warning mx-auto" />
+          <AlertTriangle className="w-10 h-10 text-warning-text mx-auto" />
           <h2 className="text-base font-bold">
             {notice === "family-deleted" ? "Keluarga ini sudah dihapus." : "Keanggotaan keluarga Anda tidak valid."}
           </h2>
@@ -159,7 +159,7 @@ export const FamilyPage: React.FC = () => {
                 Undangan aktif ({invites.length})
               </h2>
               {penuh && (
-                <p className="text-[12px] text-warning bg-warning-tint p-2.5 rounded-control border border-warning/40">
+                <p className="text-[12px] text-warning-text bg-warning-tint p-2.5 rounded-control border border-warning/40">
                   Batas wajar anggota keluarga ({MAX_FAMILY_MEMBERS_SOFT} anggota) telah tercapai.
                 </p>
               )}
@@ -182,7 +182,7 @@ export const FamilyPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setConfirm({ type: "leave" })}
-                className="px-4 bg-danger-tint text-danger hover:bg-danger/20 font-semibold rounded-full text-[13px] transition cursor-pointer shrink-0 min-h-[44px]"
+                className="px-4 bg-danger-tint text-danger-text hover:bg-danger/20 font-semibold rounded-full text-[13px] transition cursor-pointer shrink-0 min-h-[44px]"
               >
                 Keluar
               </button>
@@ -208,7 +208,7 @@ export const FamilyPage: React.FC = () => {
 
               <div className="flex items-center justify-between gap-3 pt-3 border-t border-border">
                 <div>
-                  <span className="font-semibold text-[14px] text-danger">Hapus keluarga</span>
+                  <span className="font-semibold text-[14px] text-danger-text">Hapus keluarga</span>
                   <p className="text-[12px] text-text-2">
                     Menghapus data keuangan, undangan, dan keanggotaan untuk SEMUA anggota.
                   </p>

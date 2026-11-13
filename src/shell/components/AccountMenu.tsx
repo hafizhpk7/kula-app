@@ -113,7 +113,7 @@ export const AccountMenu: React.FC = () => {
                 await signOut();
               } catch (e) {}
             }}
-            className={`${itemCls} ${isGuest ? "" : "text-danger hover:bg-danger-tint"}`}
+            className={`${itemCls} ${isGuest ? "" : "text-danger-text hover:bg-danger-tint"}`}
           >
             {isGuest ? <LogIn className="w-5 h-5 text-text-2" /> : <LogOut className="w-5 h-5" />}
             <span>{isGuest ? "Masuk dengan akun" : "Keluar"}</span>
