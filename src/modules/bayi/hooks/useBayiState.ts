@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 import { AppState, Insurance, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { useAuth } from "../../../context/AuthContext";
@@ -6,6 +7,7 @@ import { useToast } from "../../../components/common/Toast";
 import { todayLocal } from "../../keuangan/utils/dates";
 import * as transitions from "../state/transitions";
 import { useBayiRepository } from "../repository/useBayiRepository";
+import { formatIndonesianDate } from "../../../utils/dates";
 import { rayakan } from "../../../components/common/Perayaan";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
@@ -71,7 +73,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
 
   const assertCanWrite = useCallback((): boolean => {
     if (isReadOnly) {
-      showToast("Mode lihat saja: Hanya admin keluarga yang dapat mengubah data Bayi.");
+      showToast("Mode lihat saja: hanya admin keluarga yang bisa mengubah data Bayi.");
       return false;
     }
     return true;
@@ -84,7 +86,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.addProfile(appState, newProfile);
       setAppState(next);
       repository.saveState(next, appState).catch((err) => {
-        showToast(err.message || "Gagal menyimpan data anak");
+        showToast(pesanPengguna("bayi", err, belum("Data anak", "tersimpan")));
       });
     },
     [appState, assertCanWrite, repository, showToast]
@@ -107,7 +109,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.updateProfile(appState, updatedProfile);
       setAppState(next);
       repository.saveState(next, appState).catch((err) => {
-        showToast(err.message || "Gagal memperbarui profil anak");
+        showToast(pesanPengguna("bayi", err, belum("Perubahan profil anak", "tersimpan")));
       });
     },
     [appState, assertCanWrite, repository, showToast]
@@ -120,7 +122,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.deleteProfile(appState, id);
       setAppState(next);
       repository.saveState(next, appState).catch((err) => {
-        showToast(err.message || "Gagal menghapus profil anak");
+        showToast(pesanPengguna("bayi", err, belum("Profil anak", "terhapus")));
       });
     },
     [appState, assertCanWrite, repository, showToast]
@@ -134,7 +136,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.updateScheduleRow(appState, activeProfile.id, updatedRow);
       setAppState(next);
       repository.updateScheduleRow(activeProfile.id, updatedRow).catch((err) => {
-        showToast(err.message || "Gagal memperbarui jadwal");
+        showToast(pesanPengguna("bayi", err, belum("Perubahan jadwal", "tersimpan")));
       });
     },
     [activeProfile, appState, assertCanWrite, repository, showToast]
@@ -148,7 +150,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.addCustomRow(appState, activeProfile.id, newRow);
       setAppState(next);
       repository.addCustomRow(activeProfile.id, newRow).catch((err) => {
-        showToast(err.message || "Gagal menambah jadwal khusus");
+        showToast(pesanPengguna("bayi", err, belum("Jadwal kustom", "ditambahkan")));
       });
     },
     [activeProfile, appState, assertCanWrite, repository, showToast]
@@ -162,7 +164,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.deleteCustomRow(appState, activeProfile.id, rowId);
       setAppState(next);
       repository.deleteCustomRow(activeProfile.id, rowId).catch((err) => {
-        showToast(err.message || "Gagal menghapus jadwal");
+        showToast(pesanPengguna("bayi", err, belum("Jadwal", "terhapus")));
       });
     },
     [activeProfile, appState, assertCanWrite, repository, showToast]
@@ -175,7 +177,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     const next = transitions.resetSchedule(appState, activeProfile.id);
     setAppState(next);
     repository.resetSchedule(activeProfile.id).catch((err) => {
-      showToast(err.message || "Gagal mereset jadwal");
+      showToast(pesanPengguna("bayi", err, belum("Jadwal", "direset")));
     });
   }, [activeProfile, appState, assertCanWrite, repository, showToast]);
 
@@ -189,7 +191,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.updateRecord(appState, activeProfile.id, updatedRec);
       setAppState(next);
       repository.updateRecord(activeProfile.id, updatedRec).catch((err) => {
-        showToast(err.message || "Gagal menyimpan catatan vaksin");
+        showToast(pesanPengguna("bayi", err, belum("Catatan imunisasi", "tersimpan")));
       });
     },
     [activeProfile, appState, assertCanWrite, repository, showToast]
@@ -206,19 +208,13 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
 
       updateRecord(newRecord);
 
-      showToast(`Ditandai selesai: ${row.vaksin}.`, "Urungkan", () => {
+      showToast(`Ditandai selesai: ${row.vaksin}, ${formatIndonesianDate(newRecord.tanggalDiberikan)}.`, "Urungkan", () => {
         if (!assertCanWrite()) return;
-        if (previousRecord) {
-          updateRecord(previousRecord);
-        } else {
-          // Revert addition
-          const next = transitions.deleteCustomRow(appState, activeProfile.id, row.id);
-          setAppState(next);
-          repository.saveState(next, appState).catch(() => {});
-        }
+        // Kembalikan record ke keadaan sebelumnya. Baris jadwal tidak pernah disentuh.
+        updateRecord(previousRecord ?? { rowId: row.id, diberikan: false });
       });
     },
-    [activeProfile, appState, assertCanWrite, repository, showToast, updateRecord]
+    [activeProfile, assertCanWrite, showToast, updateRecord]
   );
 
   // H11: updateInsurance
@@ -229,7 +225,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       const next = transitions.updateInsurance(appState, activeProfile.id, updatedInsurance);
       setAppState(next);
       repository.saveState(next, appState).catch((err) => {
-        showToast(err.message || "Gagal memperbarui asuransi");
+        showToast(pesanPengguna("bayi", err, belum("Data asuransi", "tersimpan")));
       });
     },
     [activeProfile, appState, assertCanWrite, repository, showToast]
@@ -254,7 +250,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
         onNavigateToBabyHome();
       }
     }).catch((err) => {
-      showToast(err.message || "Gagal menghapus data");
+      showToast(pesanPengguna("bayi", err, belum("Data Bayi", "terhapus")));
     });
   }, [assertCanWrite, onNavigateToBabyHome, repository, showToast]);
 

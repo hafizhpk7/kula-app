@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Search, X, ChevronRight } from "lucide-react";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { EmptyState } from "../../../components/common/EmptyState";
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }) => {
+  const grup1 = useRadioGroup();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
 
@@ -46,8 +48,8 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
   }, [filterCategory, searchQuery]);
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
-      <PageHeader title="Info vaksin" subtitle="Manfaat, anjuran, dan reaksi (KIPI) 15 jenis vaksin anak." />
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} xl:mx-auto`}>
+      <PageHeader title="Info vaksin" subtitle="Manfaat, anjuran, dan reaksi setelah vaksin (KIPI) untuk 15 jenis vaksin anak." />
 
       {/* Pencarian: di layar ini mencari memang tujuannya, jadi tampil langsung */}
       <div className="relative">
@@ -65,14 +67,14 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
             type="button"
             onClick={() => setSearchQuery("")}
             aria-label="Bersihkan pencarian"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-text-2 hover:text-text cursor-pointer"
+            className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-text-2 hover:text-text cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         )}
       </div>
 
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" role="radiogroup" aria-label="Kategori vaksin">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" role="radiogroup" {...grup1} aria-label="Kategori vaksin">
         {[
           { id: "all", label: "Semua" },
           { id: "program", label: "Program pemerintah" },
@@ -87,7 +89,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
               role="radio"
               aria-checked={isSelected}
               onClick={() => setFilterCategory(cat.id)}
-              className={`px-3.5 py-2 rounded-full text-[13px] whitespace-nowrap transition cursor-pointer min-h-[40px] border shrink-0 ${
+              className={`px-3.5 py-2 rounded-full text-[13px] whitespace-nowrap transition cursor-pointer min-h-[44px] border shrink-0 ${
                 isSelected
                   ? "bg-mod-bayi text-mod-bayi-fg border-mod-bayi font-semibold"
                   : "bg-surface text-text-2 hover:text-text border-border font-medium"
@@ -103,7 +105,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
       {filteredVaccines.length === 0 ? (
         <EmptyState
           title="Tidak ada vaksin yang cocok"
-          description={searchQuery ? `Tidak ada hasil untuk "${searchQuery}".` : "Coba kategori lain."}
+          description={searchQuery ? `Tidak ada hasil untuk "${searchQuery}".` : "Ubah kata kunci atau pilih kategori lain."}
         />
       ) : (
         <ul className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">

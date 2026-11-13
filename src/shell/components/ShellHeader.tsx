@@ -36,7 +36,7 @@ export const ShellHeader: React.FC = () => {
         {/* Brand Link */}
         <Link
           to="/"
-          className="flex items-center gap-2 font-display text-[24px] text-text hover:opacity-90 transition cursor-pointer"
+          className="flex items-center gap-2 min-h-[44px] font-display text-[24px] text-text hover:opacity-90 transition cursor-pointer"
         >
           <KulaLogo size={40} alt="" />
           <span>{APP_NAME}</span>
@@ -58,7 +58,7 @@ export const ShellHeader: React.FC = () => {
                   key={mode.id}
                   type="button"
                   onClick={() => setTheme(mode.id as ThemeMode)}
-                  className={`p-1.5 rounded-chip transition cursor-pointer ${
+                  className={`min-h-[44px] min-w-[44px] flex items-center justify-center rounded-chip transition cursor-pointer ${
                     isSelected
                       ? "bg-surface text-text border border-border shadow-2xs"
                       : "text-text-2 hover:text-text"
@@ -151,7 +151,7 @@ export const ShellHeader: React.FC = () => {
                         await signOut();
                       } catch (e) {}
                     }}
-                    className="w-full text-left px-3.5 py-2 text-[13px] text-danger hover:bg-danger-tint flex items-center gap-2 cursor-pointer"
+                    className="w-full text-left px-3.5 py-2 text-[13px] text-danger-text hover:bg-danger-tint flex items-center gap-2 cursor-pointer"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Keluar</span>

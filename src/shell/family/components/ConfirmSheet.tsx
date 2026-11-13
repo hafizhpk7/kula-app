@@ -5,6 +5,7 @@ import { useToast } from "../../../components/common/Toast";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { useFamily } from "../context/FamilyContext";
 import { Member, RELATION_LABELS } from "../types";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 
 export interface ConfirmState {
   type: "leave" | "remove" | "transfer" | "delete";
@@ -48,11 +49,29 @@ export const ConfirmSheet: React.FC<Props> = ({ state, onChange, members }) => {
       }
       onChange(null);
     } catch (err: any) {
-      showToast(err.message || "Gagal melakukan tindakan.");
+      const cadangan =
+        state.type === "leave"
+          ? belum("Anda", "keluar dari keluarga")
+          : state.type === "remove"
+          ? belum("Anggota", "dikeluarkan")
+          : state.type === "transfer"
+          ? belum("Kepemilikan", "dipindahkan")
+          : belum("Keluarga", "terhapus");
+      showToast(pesanPengguna("keluarga", err, cadangan));
     } finally {
       setActionLoading(false);
     }
   };
+
+  // Judul dan tombol menyebut tindakannya (bukan "Konfirmasi" polos)
+  const nama = family?.name ?? "";
+  const copy = {
+    leave: { judul: `Tinggalkan keluarga ${nama}?`, tombol: "Tinggalkan keluarga" },
+    remove: { judul: `Keluarkan ${state?.target?.displayName ?? "anggota"}?`, tombol: "Keluarkan anggota" },
+    transfer: { judul: "Pindahkan kepemilikan?", tombol: "Pindahkan kepemilikan" },
+    delete: { judul: `Hapus keluarga ${nama}?`, tombol: "Hapus keluarga" }
+  } as const;
+  const teks = state ? copy[state.type] : { judul: "Konfirmasi", tombol: "Lanjutkan" };
 
   const nonaktif =
     actionLoading ||
@@ -63,7 +82,7 @@ export const ConfirmSheet: React.FC<Props> = ({ state, onChange, members }) => {
     <BottomSheet
       isOpen={state !== null}
       onClose={() => onChange(null)}
-      title="Konfirmasi Tindakan"
+      title={teks.judul}
       titleId="konfirmasi-title"
       footer={
         <div className="flex gap-2">
@@ -81,7 +100,7 @@ export const ConfirmSheet: React.FC<Props> = ({ state, onChange, members }) => {
             onClick={jalankan}
             className="flex-1 rounded-full bg-danger text-white text-[15px] font-semibold disabled:opacity-50 transition min-h-[48px] cursor-pointer"
           >
-            {actionLoading ? "Memproses..." : "Konfirmasi"}
+            {actionLoading ? "Memproses..." : teks.tombol}
           </button>
         </div>
       }
@@ -90,14 +109,14 @@ export const ConfirmSheet: React.FC<Props> = ({ state, onChange, members }) => {
         <div role="alertdialog" className="space-y-3">
           {state.type === "leave" && (
             <p className="text-[14px] text-text-2 leading-relaxed">
-              Keluar dari keluarga {family?.name}? Anda tidak akan bisa lagi melihat data keuangan keluarga ini. Anda bisa
-              mengunduh datanya dulu dari menu Keuangan Keluarga &gt; Pengaturan.
+              Anda tidak akan bisa lagi melihat data keuangan keluarga ini. Kalau perlu salinannya, unduh dulu dari
+              Keuangan Keluarga &gt; Pengaturan &gt; Ekspor.
             </p>
           )}
 
           {state.type === "remove" && state.target && (
             <p className="text-[14px] text-text-2 leading-relaxed">
-              Keluarkan {state.target.displayName} dari keluarga? Mereka tidak akan bisa melihat data keluarga lagi.
+              {state.target.displayName} tidak akan bisa melihat data keluarga lagi. Anda bisa mengundangnya kembali nanti.
             </p>
           )}
 
@@ -139,8 +158,9 @@ export const ConfirmSheet: React.FC<Props> = ({ state, onChange, members }) => {
           {state.type === "delete" && (
             <div className="space-y-3">
               <p className="text-[14px] text-text-2 leading-relaxed">
-                Hapus keluarga {family?.name}? Semua data keuangan keluarga, undangan, dan keanggotaan akan dihapus permanen
-                untuk SEMUA anggota. Data Bayi tidak ikut terhapus. Ketik nama keluarga untuk mengonfirmasi.
+                Data keuangan keluarga, undangan, dan keanggotaan akan terhapus untuk semua anggota dan tidak bisa
+                dikembalikan. Data Bayi tidak ikut terhapus. Unduh salinan keuangan dulu kalau perlu, lalu ketik nama
+                keluarga untuk melanjutkan.
               </p>
               <input
                 type="text"

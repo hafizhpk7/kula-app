@@ -22,13 +22,13 @@ export const FamilyEmpty: React.FC<Props> = ({ notice, onDismissNotice }) => {
       {notice && (
         <div className="p-4 rounded-card border border-warning/40 bg-warning-tint text-text text-[13px] flex items-center justify-between gap-3">
           <div className="flex items-start gap-2.5">
-            <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <AlertTriangle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>{notice === "removed" ? "Anda tidak lagi tergabung di keluarga ini." : "Keluarga ini sudah dihapus."}</p>
           </div>
           <button
             type="button"
             onClick={onDismissNotice}
-            className="p-1 rounded-md text-text-2 hover:text-text transition cursor-pointer"
+            className="min-h-[44px] min-w-[44px] -my-2 -mr-2 flex items-center justify-center rounded-md text-text-2 hover:text-text transition cursor-pointer"
             aria-label="Tutup pemberitahuan"
           >
             <X className="w-4 h-4" />

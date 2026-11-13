@@ -3,6 +3,7 @@ import { SavingsGoal } from "../types";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 import { formatRupiah } from "../../../utils/calc";
 import { rayakan } from "../../../components/common/Perayaan";
+import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 
 interface ContributionModalProps {
@@ -72,7 +73,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === "deposit" ? "Setor ke Tabungan" : "Tarik dari Tabungan"}
+      title={mode === "deposit" ? "Setor ke tabungan" : "Tarik dari tabungan"}
       titleId="contrib-title"
       footer={
         <div className="flex items-center gap-2">
@@ -116,13 +117,14 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                 setAmountStr(num === null ? "" : formatRupiahInput(num));
                 setError("");
               }}
-              placeholder="0"
+              placeholder="Contoh: 50.000"
+              {...ariaField("contrib-amount", error)}
               className={`w-full pl-10 pr-3 py-2 text-[20px] font-display font-tabular rounded-control border bg-surface text-text min-h-[52px] ${
                 error ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
           </div>
-          {error && <p className="text-[12px] text-danger mt-1 font-medium">{error}</p>}
+          <FieldError id="contrib-amount">{error}</FieldError>
         </div>
 
         <div className="flex flex-wrap gap-2" aria-label="Nominal cepat">
@@ -134,7 +136,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                 setAmountStr(formatRupiahInput(c.nilai));
                 setError("");
               }}
-              className="px-3.5 min-h-[40px] rounded-full border border-border bg-surface text-text-2 hover:text-text text-[13px] font-medium cursor-pointer transition"
+              className="px-3.5 min-h-[44px] rounded-full border border-border bg-surface text-text-2 hover:text-text text-[13px] font-medium cursor-pointer transition"
             >
               {c.label}
             </button>

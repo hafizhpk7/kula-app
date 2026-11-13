@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { todayLocal } from "../utils/dates";
 import { Plus, Trash2, Edit2, ArrowUpRight, ArrowDownRight, Calendar, Check, MoreHorizontal } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
+import { formatIndonesianDate } from "../../../utils/dates";
 import { READING_MAX } from "../../../config/layout";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { EmptyState } from "../../../components/common/EmptyState";
@@ -51,7 +52,7 @@ export const TabunganPage: React.FC = () => {
     }
     const today = todayLocal();
     if (deadline < today) {
-      return { text: "Lewat tenggat", tone: "bg-danger-tint text-danger border border-danger/20" };
+      return { text: "Lewat tenggat", tone: "bg-danger-tint text-danger-text border border-danger/20" };
     }
     const diffTime = new Date(deadline).getTime() - new Date(today).getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -105,7 +106,7 @@ export const TabunganPage: React.FC = () => {
       ) : sortedGoals.length === 0 ? (
         <EmptyState
           title="Belum ada target tabungan"
-          description="Mulai buat target pertama untuk memotivasi menabung secara berkala."
+          description="Tambah target, misalnya Dana darurat, lalu setor sedikit demi sedikit."
           action={
             <button
               type="button"
@@ -113,7 +114,7 @@ export const TabunganPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-5 min-h-[44px] rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[14px] font-semibold cursor-pointer transition"
             >
               <Plus className="w-4 h-4" />
-              <span>Buat target</span>
+              <span>Tambah target</span>
             </button>
           }
         />
@@ -136,12 +137,12 @@ export const TabunganPage: React.FC = () => {
                     {goal.deadline && !tercapai && (
                       <div className="flex items-center gap-1.5 text-[12px] text-text-2 mt-0.5">
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>Tenggat: {goal.deadline}</span>
+                        <span>Tenggat: {formatIndonesianDate(goal.deadline)}</span>
                       </div>
                     )}
                   </div>
                   <span
-                    className={`text-[11px] font-medium px-2.5 py-1 rounded-full shrink-0 inline-flex items-center gap-1 ${deadlineStatus.tone}`}
+                    className={`text-[12px] font-medium px-2.5 py-1 rounded-full shrink-0 inline-flex items-center gap-1 ${deadlineStatus.tone}`}
                   >
                     {tercapai && <Check className="w-3 h-3" aria-hidden="true" />}
                     {deadlineStatus.text}
@@ -157,7 +158,7 @@ export const TabunganPage: React.FC = () => {
 
                 <div className="space-y-1">
                   <div
-                    className="w-full bg-surface-sunken h-2.5 rounded-full overflow-hidden border border-border/60"
+                    className="w-full bg-track h-2.5 rounded-full overflow-hidden border border-field"
                     role="progressbar"
                     aria-valuemin={0}
                     aria-valuemax={goal.targetAmount}
@@ -190,8 +191,8 @@ export const TabunganPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setMenuGoal(goal)}
-                    aria-label={`Aksi lain untuk ${goal.name}`}
-                    title="Aksi lain"
+                    aria-label={`Opsi target ${goal.name}`}
+                    title="Opsi target"
                     className="w-12 min-h-[48px] rounded-full border border-border-strong text-text-2 hover:text-text hover:bg-surface-sunken transition cursor-pointer inline-flex items-center justify-center"
                   >
                     <MoreHorizontal className="w-5 h-5" />
@@ -223,7 +224,7 @@ export const TabunganPage: React.FC = () => {
               }}
             >
               <Edit2 className="w-4 h-4 text-text-2" />
-              <span>Edit target</span>
+              <span>Ubah target</span>
             </button>
             <button
               type="button"
@@ -239,7 +240,7 @@ export const TabunganPage: React.FC = () => {
             </button>
             <button
               type="button"
-              className={`${aksiBaris} text-danger hover:bg-danger-tint`}
+              className={`${aksiBaris} text-danger-text hover:bg-danger-tint`}
               onClick={() => {
                 const g = menuGoal;
                 if (window.confirm(`Hapus target tabungan "${g.name}"?`)) {

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRadioGroup } from "../../hooks/useRadioGroup";
 import { Link } from "react-router-dom";
 import { LogOut, Sun, Moon, Laptop, ChevronRight, Baby, Wallet, Users } from "lucide-react";
 import { AppShell } from "../components/AppShell";
@@ -7,8 +8,9 @@ import { useTheme, ThemeMode } from "../../context/ThemeContext";
 import { PWAInstallButton } from "../../components/common/PWAInstallButton";
 import { PageHeader } from "../../components/common/PageHeader";
 import { BottomSheet } from "../../components/common/BottomSheet";
-import { READING_MAX } from "../../config/layout";
+import { LEBAR_DUA_KOLOM, READING_MAX } from "../../config/layout";
 import { LOGIN_EMAIL_DOMAIN } from "../../config/app";
+import { gerakDikurangi, setGerakDikurangi } from "../../utils/gerak";
 import { getAccountName, emailToUsername } from "../../utils/loginIdentity";
 
 const kartu = "bg-surface rounded-card border border-border shadow-[var(--shadow-card)] overflow-hidden";
@@ -16,9 +18,11 @@ const baris =
   "flex items-center gap-3 px-4 py-3 min-h-[64px] hover:bg-surface-sunken/60 transition cursor-pointer group";
 
 export const GlobalSettingsPage: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { user, isGuest, lastSyncTime, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
 
+  const [kurangiGerak, setKurangiGerak] = useState(gerakDikurangi());
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -44,9 +48,11 @@ export const GlobalSettingsPage: React.FC = () => {
   return (
     <AppShell title="Pengaturan">
       <div>
-        <div className={`${READING_MAX} space-y-4 animate-fadeIn`}>
+        <div className={`${READING_MAX} ${LEBAR_DUA_KOLOM} space-y-4 animate-fadeIn`}>
           <PageHeader title="Pengaturan" subtitle="Akun, keluarga, tampilan, dan pengaturan tiap modul." />
 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          <div className="space-y-4 min-w-0">
           {/* Profil akun */}
           <section className={kartu} aria-label="Profil akun">
             <div className="flex items-center gap-3.5 px-4 py-4 min-w-0">
@@ -80,7 +86,7 @@ export const GlobalSettingsPage: React.FC = () => {
                       {isInternalDomain ? `Username: ${username}` : user?.email}
                     </p>
                     <p className="text-[12px] text-text-3">
-                      {lastSyncTime ? `Sinkronisasi terakhir: ${lastSyncTime}` : "Tersambung ke Cloud Firestore"}
+                      {lastSyncTime ? `Sinkronisasi terakhir: ${lastSyncTime}` : "Tersambung ke cloud"}
                     </p>
                   </>
                 )}
@@ -103,7 +109,7 @@ export const GlobalSettingsPage: React.FC = () => {
 
             <div className="px-4 py-3 space-y-2">
               <h2 className="text-[15px] font-semibold text-text">Tampilan</h2>
-              <div className="inline-flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Tema aplikasi">
+              <div className="inline-flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" {...grup1} aria-label="Tema aplikasi">
                 {[
                   { id: "light", label: "Terang", icon: Sun },
                   { id: "dark", label: "Gelap", icon: Moon },
@@ -118,7 +124,7 @@ export const GlobalSettingsPage: React.FC = () => {
                       role="radio"
                       aria-checked={isSelected}
                       onClick={() => setTheme(item.id as ThemeMode)}
-                      className={`flex items-center gap-1.5 px-3.5 rounded-full text-[13px] transition cursor-pointer min-h-[40px] ${
+                      className={`flex items-center gap-1.5 px-3.5 rounded-full text-[13px] transition cursor-pointer min-h-[44px] ${
                         isSelected
                           ? "bg-surface text-text font-semibold border border-border shadow-2xs"
                           : "text-text-2 hover:text-text border border-transparent"
@@ -131,8 +137,48 @@ export const GlobalSettingsPage: React.FC = () => {
                 })}
               </div>
             </div>
+          
+            <div className="px-4 py-3 flex items-center justify-between gap-4">
+              <span className="min-w-0">
+                <span id="label-gerak" className="block text-[15px] font-semibold text-text">
+                  Kurangi animasi
+                </span>
+                <span id="ket-gerak" className="block text-[12px] text-text-2">
+                  Mematikan gelombang, Kura berenang, dan perayaan.
+                </span>
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={kurangiGerak}
+                aria-labelledby="label-gerak"
+                aria-describedby="ket-gerak"
+                onClick={() => {
+                  setGerakDikurangi(!kurangiGerak);
+                  setKurangiGerak(!kurangiGerak);
+                }}
+                className="relative w-14 h-11 shrink-0 cursor-pointer"
+              >
+                {/* Area sentuh 56×44; trek visualnya 56×32 di tengah */}
+                <span
+                  aria-hidden="true"
+                  className={`absolute inset-x-0 top-1.5 h-8 rounded-full border border-field transition ${
+                    kurangiGerak ? "bg-primary" : "bg-track"
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white border border-field transition-transform ${
+                      kurangiGerak ? "translate-x-6" : ""
+                    }`}
+                  />
+                </span>
+              </button>
+            </div>
           </section>
 
+          </div>
+
+          <div className="space-y-4 min-w-0">
           {/* Pengaturan tiap modul */}
           <section aria-labelledby="blok-modul" className="space-y-2">
             <h2 id="blok-modul" className="text-[12px] font-semibold uppercase tracking-wide text-text-2 px-1">
@@ -177,12 +223,14 @@ export const GlobalSettingsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setShowLogoutConfirm(true)}
-              className="w-full px-4 min-h-[52px] bg-surface hover:bg-danger-tint text-danger text-[15px] font-semibold rounded-full border border-border-strong transition flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full px-4 min-h-[52px] bg-surface hover:bg-danger-tint text-danger-text text-[15px] font-semibold rounded-full border border-border-strong transition flex items-center justify-center gap-2 cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>Keluar</span>
             </button>
           )}
+          </div>
+          </div>
         </div>
       </div>
 

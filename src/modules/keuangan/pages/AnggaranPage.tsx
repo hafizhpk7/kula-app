@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { ChevronRight, AlertTriangle } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
 import { READING_MAX } from "../../../config/layout";
@@ -7,6 +8,7 @@ import { EmptyState } from "../../../components/common/EmptyState";
 import { Lipat } from "../../../components/common/Lipat";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { useLayarLebar } from "../../../hooks/useMediaQuery";
+import { formatPersen } from "../utils/persen";
 import { MonthSelector } from "../components/MonthSelector";
 import { CategoryManager } from "../components/CategoryManager";
 import { useFinance } from "../state/FinanceContext";
@@ -18,6 +20,7 @@ import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 type Segmen = "anggaran" | "kategori";
 
 export const AnggaranPage: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { selectedMonth, setSelectedMonth, config, entries, saveBudget } = useFinance();
   const lebar = useLayarLebar();
   const [segmen, setSegmen] = useState<Segmen>("anggaran");
@@ -84,14 +87,21 @@ export const AnggaranPage: React.FC = () => {
           <span className="flex-1 min-w-0 space-y-1.5">
             <span className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-1.5 text-[14px] font-medium text-text truncate">
-                {st.state === "over" && <AlertTriangle className="w-4 h-4 text-danger shrink-0" aria-hidden="true" />}
+                {st.state === "over" && <AlertTriangle className="w-4 h-4 text-danger-text shrink-0" aria-hidden="true" />}
                 {cat.name}
               </span>
               <span className="text-[12px] text-text-2 font-tabular shrink-0">
                 {formatRupiah(spent)} / {formatRupiah(budget || 0)}
               </span>
             </span>
-            <span className="block w-full h-2 bg-track rounded-full overflow-hidden">
+            <span
+              className="block w-full h-2.5 bg-track border border-field rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.min(100, Math.round(st.ratio * 100))}
+              aria-label={`Anggaran ${cat.name} terpakai`}
+            >
               <span
                 className={`block h-full rounded-full transition-all duration-300 ${warna}`}
                 style={{ width: `${Math.min(100, Math.round(st.ratio * 100))}%` }}
@@ -99,7 +109,7 @@ export const AnggaranPage: React.FC = () => {
             </span>
             <span
               className={`block text-[12px] font-semibold ${
-                st.state === "over" ? "text-danger" : st.state === "warning" ? "text-warning-text" : "text-primary-text"
+                st.state === "over" ? "text-danger-text" : st.state === "warning" ? "text-warning-text" : "text-primary-text"
               }`}
             >
               {st.state === "over"
@@ -121,7 +131,7 @@ export const AnggaranPage: React.FC = () => {
       {berbatas.length > 0 ? (
         <>
           <p className="text-[13px] text-text-2">
-            Total {formatRupiah(totalBatas)} · terpakai {Math.round((totalTerpakai / (totalBatas || 1)) * 100)}%
+            Total {formatRupiah(totalBatas)} · terpakai {formatPersen((totalTerpakai / (totalBatas || 1)) * 100)}
           </p>
           <ul className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">
             {berbatas.map((r) => (
@@ -175,7 +185,7 @@ export const AnggaranPage: React.FC = () => {
       {!lebar && (
         <div
           className="flex items-center gap-1 bg-surface-sunken p-1 rounded-full border border-border w-fit"
-          role="radiogroup"
+          role="radiogroup" {...grup1}
           aria-label="Bagian Anggaran"
         >
           {(
@@ -190,7 +200,7 @@ export const AnggaranPage: React.FC = () => {
               role="radio"
               aria-checked={segmen === s.id}
               onClick={() => setSegmen(s.id)}
-              className={`px-4 min-h-[40px] rounded-full text-[13px] font-medium transition cursor-pointer ${
+              className={`px-4 min-h-[44px] rounded-full text-[13px] font-medium transition cursor-pointer ${
                 segmen === s.id ? "bg-surface text-text border border-border shadow-2xs" : "text-text-2 hover:text-text"
               }`}
             >
@@ -222,7 +232,7 @@ export const AnggaranPage: React.FC = () => {
               <button
                 type="button"
                 onClick={hapusBatas}
-                className="px-4 rounded-full border border-danger/40 text-danger text-[14px] font-medium min-h-[48px] cursor-pointer hover:bg-danger-tint transition"
+                className="px-4 rounded-full border border-danger/40 text-danger-text text-[14px] font-medium min-h-[48px] cursor-pointer hover:bg-danger-tint transition"
               >
                 Hapus batas
               </button>

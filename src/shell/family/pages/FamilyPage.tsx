@@ -53,7 +53,7 @@ export const FamilyPage: React.FC = () => {
       <AppShell title="Keluarga">
         <div className="max-w-xl p-6 bg-surface border border-border rounded-card text-center space-y-3">
           <Users className="w-10 h-10 text-primary mx-auto" />
-          <h2 className="text-lg font-bold">Akun Diperlukan</h2>
+          <h2 className="text-lg font-bold">Akun diperlukan</h2>
           <p className="text-[13px] text-text-2 max-w-sm mx-auto">
             Mode tamu tidak dapat membuat atau bergabung ke keluarga. Masuk dengan akun terdaftar untuk berbagi catatan imunisasi dan keuangan.
           </p>
@@ -67,7 +67,7 @@ export const FamilyPage: React.FC = () => {
     return (
       <AppShell title="Keluarga">
         <div className="max-w-xl p-6 bg-surface border border-warning/40 rounded-card text-center space-y-4">
-          <AlertTriangle className="w-10 h-10 text-warning mx-auto" />
+          <AlertTriangle className="w-10 h-10 text-warning-text mx-auto" />
           <h2 className="text-base font-bold">
             {notice === "family-deleted" ? "Keluarga ini sudah dihapus." : "Keanggotaan keluarga Anda tidak valid."}
           </h2>
@@ -110,14 +110,14 @@ export const FamilyPage: React.FC = () => {
           : null
       }
     >
-      <div className="space-y-4 max-w-3xl animate-fadeIn">
+      <div className="space-y-4 max-w-3xl lg:max-w-5xl lg:mx-auto animate-fadeIn">
         <PageHeader
           title={family.name}
           subtitle={
             <span className="flex items-center gap-1.5">
               <span>{isAdmin ? "Admin" : "Anggota"}</span>
               {isOwner && (
-                <span className="px-1.5 rounded-sm bg-primary-tint text-primary-text font-semibold text-[10px]">Pemilik</span>
+                <span className="px-1.5 rounded-sm bg-primary-tint text-primary-text font-semibold text-[12px]">Pemilik</span>
               )}
             </span>
           }
@@ -138,7 +138,7 @@ export const FamilyPage: React.FC = () => {
           <p className="text-[12px] text-text-2">Anda anggota biasa: hanya admin yang bisa mengundang dan mengelola anggota.</p>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-5 items-start">
           {/* Anggota */}
           <section aria-labelledby="blok-anggota" className="space-y-2">
             <h2 id="blok-anggota" className="text-[12px] font-semibold uppercase tracking-wide text-text-2 px-1">
@@ -159,7 +159,7 @@ export const FamilyPage: React.FC = () => {
                 Undangan aktif ({invites.length})
               </h2>
               {penuh && (
-                <p className="text-[12px] text-warning bg-warning-tint p-2.5 rounded-control border border-warning/40">
+                <p className="text-[12px] text-warning-text bg-warning-tint p-2.5 rounded-control border border-warning/40">
                   Batas wajar anggota keluarga ({MAX_FAMILY_MEMBERS_SOFT} anggota) telah tercapai.
                 </p>
               )}
@@ -182,7 +182,7 @@ export const FamilyPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setConfirm({ type: "leave" })}
-                className="px-4 bg-danger-tint text-danger hover:bg-danger/20 font-semibold rounded-full text-[13px] transition cursor-pointer shrink-0 min-h-[44px]"
+                className="px-4 bg-danger-tint text-danger-text hover:bg-danger/20 font-semibold rounded-full text-[13px] transition cursor-pointer shrink-0 min-h-[44px]"
               >
                 Keluar
               </button>
@@ -208,7 +208,7 @@ export const FamilyPage: React.FC = () => {
 
               <div className="flex items-center justify-between gap-3 pt-3 border-t border-border">
                 <div>
-                  <span className="font-semibold text-[14px] text-danger">Hapus keluarga</span>
+                  <span className="font-semibold text-[14px] text-danger-text">Hapus keluarga</span>
                   <p className="text-[12px] text-text-2">
                     Menghapus data keuangan, undangan, dan keanggotaan untuk SEMUA anggota.
                   </p>
@@ -263,7 +263,7 @@ export const FamilyPage: React.FC = () => {
       <RenameSheet
         isOpen={editingName}
         onClose={() => setEditingName(false)}
-        title="Ubah Nama Keluarga"
+        title="Ubah nama keluarga"
         initialValue={family.name}
         validate={validateFamilyName}
         onSave={(v) => actions.renameFamily(v)}
@@ -271,7 +271,7 @@ export const FamilyPage: React.FC = () => {
       <RenameSheet
         isOpen={selfNameModalOpen}
         onClose={() => setSelfNameModalOpen(false)}
-        title="Ubah Nama Tampilan"
+        title="Ubah nama tampilan"
         initialValue={me?.displayName || ""}
         validate={validateDisplayName}
         onSave={(v) => actions.setOwnDisplayName(v)}

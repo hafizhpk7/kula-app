@@ -50,6 +50,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
 
       setResolvedTheme(active);
+      // Bar status/URL HP mengikuti tema yang dipilih (warna header), termasuk pilihan manual yang beda dari OS
+      const warnaBar = active === "dark" ? "#143644" : "#FFFFFF";
+      document.querySelectorAll('meta[name="theme-color"]').forEach((m) => m.setAttribute("content", warnaBar));
       root.setAttribute("data-theme", active);
       if (active === "dark") {
         root.classList.add("dark");

@@ -165,13 +165,13 @@ export function buildQuickMarkRecord(
     rowId: row.id,
     diberikan: true,
     tanggalDiberikan: previousRecord?.tanggalDiberikan || todayStr,
-    tempat: previousRecord?.tempat || (row.gratis === "Ya" ? "Puskesmas" : "Klinik"),
-    biayaAktual:
-      previousRecord?.biayaAktual !== undefined
-        ? previousRecord.biayaAktual
-        : row.gratis === "Ya"
-        ? 0
-        : row.min
+    tempat: previousRecord?.tempat || (row.gratis === "Ya" ? "Puskesmas" : "Klinik")
   };
+  // Biaya: jangan menjadikan estimasi harga sebagai pengeluaran nyata. Vaksin program = Rp 0;
+  // vaksin berbayar dibiarkan tanpa biaya aktual (diisi lewat form "Tandai sudah diberikan") supaya
+  // tidak masuk ke total riil dan ke Keuangan. Kunci sengaja tidak dibuat (bukan undefined).
+  if (previousRecord?.biayaAktual === undefined && row.gratis === "Ya") {
+    newRecord.biayaAktual = 0;
+  }
   return { newRecord, previousRecord };
 }

@@ -169,17 +169,17 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
 
     // Zona bahaya terlipat (UX-REDESIGN §5A): buka dulu
     fireEvent.click(await screen.findByRole("button", { name: /Zona bahaya/i }));
-    const deleteBtn = await screen.findByText(/Hapus Data Modul Bayi/i);
+    const deleteBtn = await screen.findByRole("button", { name: "Hapus semua data Bayi" });
     fireEvent.click(deleteBtn);
 
-    expect(screen.getByText(/Peringatan tahap 1: Anda yakin/i)).toBeInTheDocument();
+    expect(screen.getByText(/Hapus semua data Bayi\? Profil, jadwal/)).toBeInTheDocument();
 
-    const continueBtn = screen.getByText(/Lanjutkan/i);
+    const continueBtn = screen.getByText(/^Lanjut$/);
     fireEvent.click(continueBtn);
 
-    expect(screen.getByText(/Konfirmasi terakhir: Data profil dan jadwal/i)).toBeInTheDocument();
+    expect(screen.getByText(/Terakhir: data Bayi yang sudah dihapus tidak bisa dikembalikan/i)).toBeInTheDocument();
 
-    const finalConfirm = screen.getByText(/Ya, hapus data Bayi/i);
+    const finalConfirm = screen.getByRole("button", { name: "Hapus semua data Bayi" });
     fireEvent.click(finalConfirm);
 
     await waitFor(() => {

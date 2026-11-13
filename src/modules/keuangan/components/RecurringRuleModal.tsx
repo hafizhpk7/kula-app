@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
+import { judulFormulir } from "../../../config/copy";
+import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { RecurringFrequency, RecurringRule, TxType } from "../types";
 import { getActiveCategories, resolveCategoryName } from "../utils/categories";
@@ -20,6 +23,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
   initialRule,
   onSave
 }) => {
+  const grup1 = useRadioGroup();
   const { config } = useFinance();
   const isEdit = !!initialRule;
 
@@ -129,7 +133,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? "Ubah aturan berulang" : "Tambah aturan berulang"}
+      title={judulFormulir(isEdit, "aturan berulang")}
       titleId="rule-title"
       footer={
         <div className="flex items-center gap-2">
@@ -146,7 +150,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             disabled={submitting}
             className="flex-1 rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[15px] font-semibold min-h-[48px] transition cursor-pointer disabled:opacity-50"
           >
-            Simpan Aturan
+            Simpan aturan
           </button>
         </div>
       }
@@ -176,7 +180,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
 
           <div className="space-y-1">
             <label className="text-[13px] font-medium text-text">Jenis transaksi</label>
-            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup">
+            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup" {...grup1}>
               <button
                 type="button"
                 role="radio"
@@ -187,7 +191,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   setCategoryId(activeExp.length > 0 ? activeExp[0].id : "");
                 }}
                 className={`flex-1 py-2 text-[13px] font-medium rounded-chip transition cursor-pointer ${
-                  type === "expense" ? "bg-surface text-danger border border-border shadow-2xs" : "text-text-2"
+                  type === "expense" ? "bg-surface text-danger-text border border-border shadow-2xs" : "text-text-2"
                 }`}
               >
                 Pengeluaran
@@ -228,13 +232,14 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   setAmountStr(num === null ? "" : formatRupiahInput(num));
                   setErrors(prev => ({ ...prev, amount: undefined }));
                 }}
-                placeholder="0"
+                placeholder="Contoh: 50.000"
+                {...ariaField("rule-amount", errors.amount)}
                 className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
                   errors.amount ? "border-danger" : "border-border hover:border-border-strong"
                 }`}
               />
             </div>
-            {errors.amount && <p className="text-[12px] text-danger mt-1 font-medium">{errors.amount}</p>}
+            <FieldError id="rule-amount">{errors.amount}</FieldError>
           </div>
 
           <div className="space-y-1">
@@ -243,6 +248,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             </label>
             <select
               id="rule-category"
+              {...ariaField("rule-category", errors.categoryId)}
               value={categoryId}
               onChange={(e) => {
                 setCategoryId(e.target.value);
@@ -257,7 +263,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 <option key={cat.id} value={cat.id}>{cat.name}</option>
               ))}
             </select>
-            {errors.categoryId && <p className="text-[12px] text-danger mt-1 font-medium">{errors.categoryId}</p>}
+            <FieldError id="rule-category">{errors.categoryId}</FieldError>
           </div>
 
           <div className="space-y-1">
@@ -340,6 +346,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             </label>
             <input
               id="rule-start"
+              {...ariaField("rule-start", errors.startDate)}
               type="date"
               value={startDate}
               onChange={(e) => {
@@ -350,7 +357,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                 errors.startDate ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
-            {errors.startDate && <p className="text-[12px] text-danger mt-1 font-medium">{errors.startDate}</p>}
+            <FieldError id="rule-start">{errors.startDate}</FieldError>
           </div>
 
           {duePreview.length > 0 && (

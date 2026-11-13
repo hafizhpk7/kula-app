@@ -6,6 +6,7 @@ import { useAuth } from "../../../context/AuthContext";
 import { useFamily } from "../context/FamilyContext";
 import { Invite, RELATION_LABELS, ROLE_LABELS } from "../types";
 import { formatInviteCode, normalizeInviteCode, resolveDefaultDisplayName } from "../utils";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 import * as familyService from "../service/family";
 
 export const JoinPage: React.FC = () => {
@@ -41,7 +42,7 @@ export const JoinPage: React.FC = () => {
   const handlePreview = async (codeToTest?: string) => {
     const code = normalizeInviteCode(codeToTest || rawCode);
     if (!code) {
-      setErrorMsg("Format kode undangan tidak valid (harus 10 karakter).");
+      setErrorMsg("Kode undangan harus 10 karakter, contoh ABCDE-12345.");
       return;
     }
 
@@ -59,7 +60,7 @@ export const JoinPage: React.FC = () => {
         setInvite(loadedInvite);
       }
     } catch (err: any) {
-      setErrorMsg(err.message || "Kode undangan tidak ditemukan.");
+      setErrorMsg(pesanPengguna("gabung", err, "Kode undangan tidak ditemukan. Minta kode baru ke admin keluarga."));
       setInvite(null);
     } finally {
       setPreviewLoading(false);
@@ -68,7 +69,7 @@ export const JoinPage: React.FC = () => {
 
   const handleJoin = async () => {
     if (!user) {
-      setErrorMsg("Silakan masuk terlebih dahulu untuk bergabung ke keluarga.");
+      setErrorMsg("Masuk dulu untuk bergabung ke keluarga.");
       return;
     }
     if (!invite) return;
@@ -79,7 +80,7 @@ export const JoinPage: React.FC = () => {
       await actions.joinFamily(invite.code, displayName);
       navigate("/keluarga");
     } catch (err: any) {
-      setErrorMsg(err.message || "Terjadi kesalahan. Coba lagi.");
+      setErrorMsg(pesanPengguna("gabung", err, belum("Anda", "bergabung ke keluarga")));
     } finally {
       setJoining(false);
     }
@@ -92,13 +93,13 @@ export const JoinPage: React.FC = () => {
   };
 
   return (
-    <AppShell title="Gabung Keluarga" back={{ to: "/keluarga", label: "Keluarga" }}>
+    <AppShell title="Gabung keluarga" back={{ to: "/keluarga", label: "Keluarga" }}>
       <div className="max-w-xl space-y-6 animate-fadeIn">
         {isGuest && (
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>
-              Tamu tidak dapat membuat atau bergabung ke keluarga. Silakan masuk dengan akun terdaftar di halaman Masuk
+              Tamu tidak bisa membuat atau bergabung ke keluarga. Masuk dengan akun terdaftar di halaman Masuk
               untuk bergabung.
             </p>
           </div>
@@ -106,7 +107,7 @@ export const JoinPage: React.FC = () => {
 
         {familyStatus === "active" && (
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
-            <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
+            <AlertCircle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>
               Anda sudah tergabung di sebuah keluarga. Keluar dulu untuk bergabung ke keluarga lain.
             </p>
@@ -114,7 +115,7 @@ export const JoinPage: React.FC = () => {
         )}
 
         {errorMsg && (
-          <div className="p-3.5 rounded-xl border border-danger/40 bg-danger-tint text-danger text-[13px] flex items-start gap-2">
+          <div className="p-3.5 rounded-xl border border-danger/40 bg-danger-tint text-danger-text text-[13px] flex items-start gap-2">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
             <span>{errorMsg}</span>
           </div>
@@ -161,7 +162,7 @@ export const JoinPage: React.FC = () => {
                 <CheckCircle className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h2 className="font-bold text-base">Undangan Ditemukan</h2>
+                <h2 className="font-bold text-base">Undangan ditemukan</h2>
                 <p className="text-[12px] text-text-2">Kode: {formatInviteCode(invite.code)}</p>
               </div>
             </div>

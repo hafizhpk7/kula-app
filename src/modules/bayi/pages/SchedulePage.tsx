@@ -10,6 +10,7 @@ export const SchedulePage: React.FC = () => {
     updatePaymentMode,
     updateScheduleRow,
     updateRecord,
+    quickMarkGiven,
     addCustomRow,
     deleteCustomRow
   } = useBayi();
@@ -24,6 +25,7 @@ export const SchedulePage: React.FC = () => {
       onUpdatePaymentMode={updatePaymentMode}
       onUpdateScheduleRow={updateScheduleRow}
       onUpdateRecord={updateRecord}
+      onQuickMarkGiven={quickMarkGiven}
       onAddCustomRow={addCustomRow}
       onDeleteCustomRow={deleteCustomRow}
       onOpenVaccineDetail={(ref) => setSelectedVaccineRef(ref)}

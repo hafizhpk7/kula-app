@@ -40,12 +40,12 @@ export class ErrorBoundary extends Component<Props, State> {
       }
 
       return (
-        <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+        <div className="min-h-dvh bg-bg flex items-center justify-center p-4">
           <div
             className="max-w-[420px] w-full bg-surface rounded-card border border-border p-6 text-center space-y-4"
             style={{ boxShadow: "var(--shadow-popover)" }}
           >
-            <div className="w-12 h-12 bg-danger-tint text-danger rounded-full flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 bg-danger-tint text-danger-text rounded-full flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
             <h2 className="text-[20px] font-serif font-medium text-text">

@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IconButton } from "../../../components/common/IconButton";
 import { addMonths, currentMonthKey, monthLabel } from "../utils/dates";
 
 interface MonthSelectorProps {
@@ -25,35 +26,18 @@ export const MonthSelector: React.FC<MonthSelectorProps> = ({
   };
 
   return (
-    <div className="flex items-center gap-2 bg-surface-sunken p-1.5 rounded-card border border-border shrink-0">
-      <button
-        type="button"
-        onClick={handlePrev}
-        aria-label="Bulan sebelumnya"
-        title="Bulan sebelumnya"
-        className="p-1.5 rounded-chip hover:bg-surface text-text-2 hover:text-text transition cursor-pointer min-h-[36px] min-w-[36px] flex items-center justify-center"
-      >
+    <div className="flex items-center gap-1 bg-surface-sunken p-1 rounded-card border border-border shrink-0">
+      <IconButton label="Bulan sebelumnya" onClick={handlePrev}>
         <ChevronLeft className="w-4 h-4" />
-      </button>
+      </IconButton>
 
       <span className="text-[14px] font-medium text-text px-2 min-w-[120px] text-center select-none">
         {monthLabel(selectedMonth)}
       </span>
 
-      <button
-        type="button"
-        onClick={handleNext}
-        disabled={isAtCurrentMonth}
-        aria-label="Bulan berikutnya"
-        title="Bulan berikutnya"
-        className={`p-1.5 rounded-chip transition min-h-[36px] min-w-[36px] flex items-center justify-center ${
-          isAtCurrentMonth
-            ? "opacity-40 cursor-not-allowed text-text-3"
-            : "hover:bg-surface text-text-2 hover:text-text cursor-pointer"
-        }`}
-      >
+      <IconButton label="Bulan berikutnya" onClick={handleNext} disabled={isAtCurrentMonth}>
         <ChevronRight className="w-4 h-4" />
-      </button>
+      </IconButton>
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Download, Trash2, UploadCloud } from "lucide-react";
-import { READING_MAX } from "../../../config/layout";
+import { LEBAR_DUA_KOLOM, READING_MAX } from "../../../config/layout";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Lipat } from "../../../components/common/Lipat";
 import { ZonaBahaya } from "../../../components/common/ZonaBahaya";
@@ -47,16 +47,18 @@ export const PengaturanPage: React.FC = () => {
     "flex-1 rounded-full bg-danger hover:bg-danger/90 text-white text-[15px] font-semibold min-h-[48px] transition cursor-pointer";
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} ${LEBAR_DUA_KOLOM}`}>
       <PageHeader title="Pengaturan Keuangan" subtitle="Dompet, transaksi berulang, integrasi, dan ekspor." />
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div className="space-y-4 min-w-0">
       {/* Migrasi data tamu: hanya kalau relevan */}
       {migrationDecision === "prompt" && (
         <div className="bg-primary-tint border border-primary/30 rounded-card p-5 space-y-3 shadow-[var(--shadow-card)]">
           <div className="flex items-start gap-3">
             <UploadCloud className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h2 className="text-[15px] font-bold text-text">Migrasi Data Tamu</h2>
+              <h2 className="text-[15px] font-bold text-text">Migrasi data tamu</h2>
               <p className="text-[13px] text-text-2 leading-relaxed">
                 Ada data keuangan tamu di perangkat ini yang belum diunggah ke akun Anda.
               </p>
@@ -94,10 +96,13 @@ export const PengaturanPage: React.FC = () => {
         <RecurringSection embedded />
       </Lipat>
 
+      </div>
+
+      <div className="space-y-4 min-w-0">
       {/* Integrasi Bayi */}
       <section className={kartu} aria-labelledby="blok-integrasi">
         <h2 id="blok-integrasi" className="font-display text-[16px] text-text">
-          Integrasi Modul Bayi
+          Integrasi modul Bayi
         </h2>
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
@@ -109,20 +114,23 @@ export const PengaturanPage: React.FC = () => {
             </p>
           </div>
 
-          <input
-            id="toggle-vax"
-            type="checkbox"
-            checked={config.includeVaccineCosts}
-            onChange={(e) => setIncludeVaccineCosts(e.target.checked)}
-            className="w-6 h-6 rounded border-border text-primary focus:ring-primary cursor-pointer shrink-0 mt-1"
-          />
+          {/* Area sentuh 44×44 di sekeliling kotak centang */}
+          <label htmlFor="toggle-vax" className="w-11 h-11 -mt-2 -mr-2 shrink-0 flex items-center justify-center cursor-pointer">
+            <input
+              id="toggle-vax"
+              type="checkbox"
+              checked={config.includeVaccineCosts}
+              onChange={(e) => setIncludeVaccineCosts(e.target.checked)}
+              className="w-6 h-6 rounded border-border text-primary focus:ring-primary cursor-pointer"
+            />
+          </label>
         </div>
       </section>
 
       {/* Ekspor */}
       <section className={kartu} aria-labelledby="blok-ekspor">
         <h2 id="blok-ekspor" className="font-display text-[16px] text-text">
-          Ekspor Laporan Keuangan
+          Ekspor laporan keuangan
         </h2>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
@@ -157,18 +165,20 @@ export const PengaturanPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowDeleteConfirm(true)}
-            className="px-4 min-h-[44px] rounded-full bg-danger-tint hover:bg-danger/20 text-danger text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-1.5"
+            className="px-4 min-h-[44px] rounded-full bg-danger-tint hover:bg-danger/20 text-danger-text text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-1.5"
           >
             <Trash2 className="w-4 h-4" />
             <span>Hapus data keuangan</span>
           </button>
         </div>
       </ZonaBahaya>
+      </div>
+      </div>
 
       <BottomSheet
         isOpen={showDeleteConfirm}
         onClose={() => setShowDeleteConfirm(false)}
-        title="Konfirmasi Hapus Data"
+        title="Hapus semua data Keuangan Keluarga?"
         titleId="hapus-keuangan-title"
         footer={
           <div className="flex items-center gap-2">
@@ -183,20 +193,22 @@ export const PengaturanPage: React.FC = () => {
               }}
               className={tombolBahaya}
             >
-              Hapus
+              Hapus semua data keuangan
             </button>
           </div>
         }
       >
-        <p className="text-[14px] text-text-2 leading-relaxed">
-          Hapus semua data Keuangan Keluarga? Semua transaksi, kategori kustom, dan anggaran akan dihapus (termasuk dari akun Anda jika Anda sedang masuk). Data Bayi dan akun Anda tidak ikut terhapus. Biaya vaksin dari modul Bayi tetap ada di modul Bayi.
-        </p>
+        <div className="space-y-3 text-[14px] text-text-2 leading-relaxed">
+          <p>Transaksi, kategori kustom, dan anggaran akan hilang, termasuk dari akun Anda, dan tidak bisa dikembalikan.</p>
+          <p>Data Bayi, akun, dan biaya vaksin di modul Bayi tidak ikut terhapus.</p>
+          <p>Unduh salinannya dulu lewat Ekspor Laporan di halaman ini kalau perlu.</p>
+        </div>
       </BottomSheet>
 
       <BottomSheet
         isOpen={showClearGuestConfirm}
         onClose={() => setShowClearGuestConfirm(false)}
-        title="Hapus Data Tamu?"
+        title="Hapus data tamu di perangkat ini?"
         titleId="hapus-tamu-title"
         footer={
           <div className="flex items-center gap-2">
@@ -211,13 +223,13 @@ export const PengaturanPage: React.FC = () => {
               }}
               className={tombolBahaya}
             >
-              Ya, hapus data tamu
+              Hapus data tamu
             </button>
           </div>
         }
       >
         <p className="text-[14px] text-text-2 leading-relaxed">
-          Apakah Anda yakin ingin menghapus data keuangan tamu lokal di perangkat ini tanpa mengunggahnya ke akun Anda?
+          Data keuangan tamu di perangkat ini akan hilang tanpa diunggah ke akun Anda, dan tidak bisa dikembalikan. Pilih Unggah ke akun kalau data itu ingin disimpan.
         </p>
       </BottomSheet>
     </div>

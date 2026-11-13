@@ -77,7 +77,7 @@ export const ProfileModal: React.FC<Props> = ({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!panggilan.trim()) {
-      setErrorMsg("Nama panggilan anak harus diisi.");
+      setErrorMsg("Isi nama panggilan anak dulu.");
       return;
     }
 
@@ -113,11 +113,11 @@ export const ProfileModal: React.FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       titleId="profil-title"
-      title={mode === "list" ? "Kelola profil anak" : mode === "add" ? "Tambah profil anak" : "Edit profil anak"}
+      title={mode === "list" ? "Kelola profil anak" : mode === "add" ? "Tambah profil anak" : "Ubah profil anak"}
     >
         <div className="space-y-4 text-[14px]">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger-text rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -154,7 +154,7 @@ export const ProfileModal: React.FC<Props> = ({
                           {p.panggilan.slice(0, 1).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[15px] text-text truncate">
+                          <p className="text-[15px] text-text break-words">
                             {p.panggilan}
                             {isActive && (
                               <span className="ml-2 text-[12px] text-primary">
@@ -173,7 +173,7 @@ export const ProfileModal: React.FC<Props> = ({
                           type="button"
                           onClick={() => startEdit(p)}
                           className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
-                          aria-label={`Edit ${p.panggilan}`}
+                          aria-label={`Ubah ${p.panggilan}`}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
@@ -182,7 +182,7 @@ export const ProfileModal: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => setConfirmDeleteId(p.id)}
-                            className="p-2 text-danger hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
+                            className="p-2 text-danger-text hover:bg-danger-tint rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
                             aria-label={`Hapus ${p.panggilan}`}
                           >
                             <Trash2 className="w-4 h-4" />
@@ -197,7 +197,7 @@ export const ProfileModal: React.FC<Props> = ({
               {/* Confirm Delete Subpanel */}
               {confirmDeleteId && (
                 <div className="p-3 bg-danger-tint border border-danger/30 rounded-control space-y-2">
-                  <p className="text-[13px] text-danger font-medium">
+                  <p className="text-[13px] text-danger-text font-medium">
                     Hapus profil ini beserta seluruh catatan imunisasinya?
                   </p>
                   <div className="flex items-center gap-2">
@@ -238,6 +238,7 @@ export const ProfileModal: React.FC<Props> = ({
                   type="text"
                   required
                   value={panggilan}
+                  maxLength={40}
                   onChange={(e) => setPanggilan(e.target.value)}
                   placeholder="Contoh: Kayla / Danis"
                   className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"

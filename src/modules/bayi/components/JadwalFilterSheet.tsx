@@ -42,10 +42,12 @@ interface Props {
   onUpdatePaymentMode: (m: PaymentMode) => void;
   onAddCustom: () => void;
   hasil: number;
+  /** Pilihan Garis waktu/Tabel hanya di layar lebar; HP selalu daftar */
+  tampilkanPilihTampilan?: boolean;
 }
 
 const chip = (aktif: boolean) =>
-  `px-3.5 py-2 rounded-full text-[13px] whitespace-nowrap transition cursor-pointer min-h-[40px] border ${
+  `px-3.5 py-2 rounded-full text-[13px] whitespace-nowrap transition cursor-pointer min-h-[44px] border ${
     aktif
       ? "bg-mod-bayi text-mod-bayi-fg border-mod-bayi font-semibold"
       : "bg-surface text-text-2 hover:text-text border-border font-medium"
@@ -58,6 +60,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
   filters,
   onChange,
   viewMode,
+  tampilkanPilihTampilan = true,
   onViewModeChange,
   paymentMode,
   onUpdatePaymentMode,
@@ -106,7 +109,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => set({ searchQuery: "" })}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 text-text-2 hover:text-text cursor-pointer flex items-center justify-center"
+              className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 text-text-2 hover:text-text cursor-pointer flex items-center justify-center"
               aria-label="Bersihkan pencarian"
             >
               <X className="w-4 h-4" />
@@ -153,6 +156,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
           </div>
         </div>
 
+        {tampilkanPilihTampilan && (
         <div className="space-y-2">
           <p className="text-[13px] font-medium text-text-2">Tampilan</p>
           <div className="flex bg-surface-sunken p-1 rounded-full border border-border">
@@ -160,7 +164,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
               type="button"
               onClick={() => onViewModeChange("timeline")}
               title="Tampilan Garis Waktu"
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-[13px] min-h-[40px] cursor-pointer transition ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-[13px] min-h-[44px] cursor-pointer transition ${
                 viewMode === "timeline" ? "bg-surface text-text font-semibold border border-border shadow-xs" : "text-text-2 font-medium"
               }`}
             >
@@ -171,7 +175,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
               type="button"
               onClick={() => onViewModeChange("table")}
               title="Tampilan Tabel"
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-[13px] min-h-[40px] cursor-pointer transition ${
+              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-full text-[13px] min-h-[44px] cursor-pointer transition ${
                 viewMode === "table" ? "bg-surface text-text font-semibold border border-border shadow-xs" : "text-text-2 font-medium"
               }`}
             >
@@ -180,6 +184,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
             </button>
           </div>
         </div>
+        )}
 
         <div className="space-y-2">
           <p className="text-[13px] font-medium text-text-2">Perkiraan biaya</p>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRadioGroup } from "../../hooks/useRadioGroup";
 import { useNavigate } from "react-router-dom";
 import { LogOut, LogIn, Settings, Users, Sun, Moon, Laptop } from "lucide-react";
 import { LOGIN_EMAIL_DOMAIN } from "../../config/app";
@@ -15,6 +16,7 @@ const TEMA: { id: ThemeMode; icon: React.ElementType; label: string }[] = [
 
 /** Avatar + lembar akun. Sama di semua layar: Keluarga, Pengaturan, Tema, Keluar/Masuk. */
 export const AccountMenu: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { user, isGuest, signOut, cloudSyncStatus } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -82,7 +84,7 @@ export const AccountMenu: React.FC = () => {
 
           <div>
             <p className="text-[12px] font-semibold text-text-3 uppercase tracking-wider mb-2">Tampilan</p>
-            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup" aria-label="Tema">
+            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup" {...grup1} aria-label="Tema">
               {TEMA.map((t) => {
                 const Icon = t.icon;
                 const aktif = theme === t.id;
@@ -93,7 +95,7 @@ export const AccountMenu: React.FC = () => {
                     role="radio"
                     aria-checked={aktif}
                     onClick={() => setTheme(t.id)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-chip text-[13px] font-medium min-h-[40px] transition cursor-pointer ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-chip text-[13px] font-medium min-h-[44px] transition cursor-pointer ${
                       aktif ? "bg-surface text-text border border-border shadow-2xs" : "text-text-2 hover:text-text"
                     }`}
                   >
@@ -113,7 +115,7 @@ export const AccountMenu: React.FC = () => {
                 await signOut();
               } catch (e) {}
             }}
-            className={`${itemCls} ${isGuest ? "" : "text-danger hover:bg-danger-tint"}`}
+            className={`${itemCls} ${isGuest ? "" : "text-danger-text hover:bg-danger-tint"}`}
           >
             {isGuest ? <LogIn className="w-5 h-5 text-text-2" /> : <LogOut className="w-5 h-5" />}
             <span>{isGuest ? "Masuk dengan akun" : "Keluar"}</span>

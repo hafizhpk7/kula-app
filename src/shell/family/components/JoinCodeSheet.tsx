@@ -15,7 +15,7 @@ export const JoinCodeSheet: React.FC<{ isOpen: boolean; onClose: () => void }> =
     if (norm) {
       navigate(`/gabung/${norm}`);
     } else {
-      showToast("Format kode undangan tidak valid.");
+      showToast("Kode undangan harus 10 karakter, contoh ABCDE-12345.");
     }
   };
 
@@ -23,7 +23,7 @@ export const JoinCodeSheet: React.FC<{ isOpen: boolean; onClose: () => void }> =
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title="Gabung dengan Kode"
+      title="Gabung dengan kode"
       titleId="gabung-kode-title"
       footer={
         <button

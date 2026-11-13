@@ -20,7 +20,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!panggilan.trim()) {
-      setErrorMsg("Mohon masukkan nama panggilan anak.");
+      setErrorMsg("Isi nama panggilan anak dulu.");
       return;
     }
     const newId = "child-" + Date.now();
@@ -49,7 +49,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {errorMsg && (
-            <div className="p-3 bg-danger-tint text-danger rounded-control text-[13px]">
+            <div className="p-3 bg-danger-tint text-danger-text rounded-control text-[13px]">
               {errorMsg}
             </div>
           )}
@@ -62,6 +62,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
               type="text"
               required
               value={panggilan}
+              maxLength={40}
               onChange={(e) => setPanggilan(e.target.value)}
               placeholder="Contoh: Kayla / Danis"
               className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"

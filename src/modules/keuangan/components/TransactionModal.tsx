@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Link } from "react-router-dom";
 import { Trash2, ChevronDown } from "lucide-react";
 import { useFinance } from "../state/FinanceContext";
@@ -6,6 +7,8 @@ import { LedgerEntry, TxType } from "../types";
 import { getActiveCategories } from "../utils/categories";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 import { formatDayHeader, todayLocal } from "../utils/dates";
+import { kategoriTerakhir, simpanKategoriTerakhir, urutkanTerakhirDulu } from "../utils/kategoriTerakhir";
+import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 
 interface TransactionModalProps {
@@ -23,6 +26,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   onClose,
   initialEntry
 }) => {
+  const grup1 = useRadioGroup();
+  const grup2 = useRadioGroup();
   const { config, addTransaction, updateTransaction, deleteTransaction } = useFinance();
 
   const isEdit = !!initialEntry;
@@ -44,6 +49,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   const [submitting, setSubmitting] = useState(false);
 
   const amountInputRef = useRef<HTMLInputElement>(null);
+  const chipPertamaRef = useRef<HTMLButtonElement>(null);
 
   // Sync state when modal opens or initialEntry changes
   useEffect(() => {
@@ -62,8 +68,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
       } else {
         setType("expense");
         setAmountStr("");
-        const activeExp = getActiveCategories(config, "expense");
-        setCategoryId(activeExp.length > 0 ? activeExp[0].id : "");
+        // Tanpa pra-pilih: lupa memilih tidak boleh diam-diam tersimpan di kategori yang salah
+        setCategoryId("");
         setWalletId("default");
         setDate(todayLocal());
         setNote("");
@@ -85,7 +91,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     setType(newType);
     const activeCats = getActiveCategories(config, newType);
     if (!activeCats.some((c) => c.id === categoryId)) {
-      setCategoryId(activeCats.length > 0 ? activeCats[0].id : "");
+      setCategoryId("");
     }
   };
 
@@ -110,10 +116,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     setSubmitting(false);
 
     if (res.ok) {
+      simpanKategoriTerakhir(type, categoryId);
       onClose();
     } else if (res.errors) {
       setErrors(res.errors);
       if (res.errors.amount) amountInputRef.current?.focus();
+      else if (res.errors.categoryId) chipPertamaRef.current?.focus();
     }
   };
 
@@ -123,7 +131,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     onClose();
   };
 
-  const activeCategories = getActiveCategories(config, type);
+  const idTerakhir = isEdit ? undefined : kategoriTerakhir(type);
+  const activeCategories = urutkanTerakhirDulu(getActiveCategories(config, type), idTerakhir);
   const wallets = Object.values(config.wallets || {}).filter((w) => !w.archived || w.id === walletId);
   const walletName = config.wallets?.[walletId]?.name ?? "Dompet";
   const tanggalLabel = date === todayLocal() ? "Hari ini" : formatDayHeader(date);
@@ -146,7 +155,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
             <button
               type="button"
               onClick={handleDelete}
-              className="px-3.5 rounded-full bg-danger-tint hover:bg-danger/20 text-danger font-medium text-[14px] transition cursor-pointer min-h-[48px] flex items-center gap-1.5"
+              className="px-3.5 rounded-full bg-danger-tint hover:bg-danger/20 text-danger-text font-medium text-[14px] transition cursor-pointer min-h-[48px] flex items-center gap-1.5"
             >
               <Trash2 className="w-4 h-4" />
               <span>Hapus</span>
@@ -167,12 +176,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         {/* Jenis */}
         <div
           className="flex bg-surface-sunken p-1 rounded-full border border-border"
-          role="radiogroup"
+          role="radiogroup" {...grup1}
           aria-label="Jenis transaksi"
         >
           {(
             [
-              { id: "expense", label: "Pengeluaran", sign: "−", aktif: "text-danger" },
+              { id: "expense", label: "Pengeluaran", sign: "−", aktif: "text-danger-text" },
               { id: "income", label: "Pemasukan", sign: "+", aktif: "text-primary-text" }
             ] as const
           ).map((j) => (
@@ -182,7 +191,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               role="radio"
               aria-checked={type === j.id}
               onClick={() => handleTypeChange(j.id)}
-              className={`flex-1 py-2 text-[14px] font-semibold rounded-full transition cursor-pointer min-h-[40px] ${
+              className={`flex-1 py-2 text-[14px] font-semibold rounded-full transition cursor-pointer min-h-[44px] ${
                 type === j.id ? `bg-surface border border-border shadow-2xs ${j.aktif}` : "text-text-2 hover:text-text"
               }`}
             >
@@ -207,13 +216,14 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               inputMode="numeric"
               value={amountStr}
               onChange={handleAmountChange}
-              placeholder="0"
+              placeholder="Contoh: 50.000"
+              {...ariaField("tx-amount", errors.amount)}
               className={`w-full pl-14 pr-4 py-3 text-[28px] font-semibold font-tabular rounded-control border bg-surface text-text min-h-[64px] ${
                 errors.amount ? "border-danger" : "border-border hover:border-border-strong"
               }`}
             />
           </div>
-          {errors.amount && <p className="text-[12px] text-danger font-medium">{errors.amount}</p>}
+          <FieldError id="tx-amount">{errors.amount}</FieldError>
         </div>
 
         {/* Kategori sebagai chip */}
@@ -221,12 +231,14 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           <p id="tx-category-label" className="text-[13px] font-medium text-text-2">
             Kategori
           </p>
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="tx-category-label">
-            {activeCategories.map((cat) => {
+          <div className="flex flex-wrap gap-2" role="radiogroup" {...grup2} aria-labelledby="tx-category-label" {...ariaField("tx-category", errors.categoryId)}>
+            {activeCategories.map((cat, i) => {
               const dipilih = categoryId === cat.id;
+              const terakhir = cat.id === idTerakhir && i === 0;
               return (
                 <button
                   key={cat.id}
+                  ref={i === 0 ? chipPertamaRef : undefined}
                   type="button"
                   role="radio"
                   aria-checked={dipilih}
@@ -234,18 +246,19 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setCategoryId(cat.id);
                     setErrors((prev) => ({ ...prev, categoryId: undefined }));
                   }}
-                  className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition cursor-pointer min-h-[40px] ${
+                  className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition cursor-pointer min-h-[44px] ${
                     dipilih
                       ? "bg-mod-uang text-mod-uang-fg border-mod-uang"
                       : "bg-surface text-text border-border hover:border-border-strong"
                   }`}
                 >
                   {cat.name}
+                  {terakhir && <span className="ml-1.5 text-[12px] font-normal opacity-70">Terakhir</span>}
                 </button>
               );
             })}
           </div>
-          {errors.categoryId && <p className="text-[12px] text-danger font-medium">{errors.categoryId}</p>}
+          <FieldError id="tx-category">{errors.categoryId}</FieldError>
         </div>
 
         {/* Detail lain: tanggal, dompet, catatan */}
@@ -279,9 +292,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setDate(e.target.value);
                     setErrors((prev) => ({ ...prev, date: undefined }));
                   }}
+                  {...ariaField("tx-date", errors.date)}
                   className={inputCls(errors.date)}
                 />
-                {errors.date && <p className="text-[12px] text-danger font-medium">{errors.date}</p>}
+                <FieldError id="tx-date">{errors.date}</FieldError>
               </div>
 
               <div className="space-y-1">
@@ -295,6 +309,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setWalletId(e.target.value);
                     setErrors((prev) => ({ ...prev, walletId: undefined }));
                   }}
+                  {...ariaField("tx-wallet", errors.walletId)}
                   className={inputCls(errors.walletId)}
                 >
                   {wallets.map((w) => (
@@ -303,7 +318,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     </option>
                   ))}
                 </select>
-                {errors.walletId && <p className="text-[12px] text-danger font-medium">{errors.walletId}</p>}
+                <FieldError id="tx-wallet">{errors.walletId}</FieldError>
                 <Link
                   to="/keuangan-keluarga/pengaturan"
                   onClick={onClose}
@@ -327,9 +342,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setErrors((prev) => ({ ...prev, note: undefined }));
                   }}
                   placeholder="Contoh: Belanja mingguan di pasar"
+                  {...ariaField("tx-note", errors.note)}
                   className={inputCls(errors.note)}
                 />
-                {errors.note && <p className="text-[12px] text-danger font-medium">{errors.note}</p>}
+                <FieldError id="tx-note">{errors.note}</FieldError>
               </div>
             </div>
           )}

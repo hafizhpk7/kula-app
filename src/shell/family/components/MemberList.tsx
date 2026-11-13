@@ -25,12 +25,12 @@ export const MemberList: React.FC<Props> = ({ members, myUid, canManage, onManag
             <span className="flex items-center gap-1.5 flex-wrap">
               <span className="font-semibold text-[15px] text-text truncate max-w-[170px]">{member.displayName}</span>
               {isMe && (
-                <span className="px-1.5 rounded-sm bg-surface-sunken text-text-2 font-medium text-[10px] border border-border">
+                <span className="px-1.5 rounded-sm bg-surface-sunken text-text-2 font-medium text-[12px] border border-border">
                   Anda
                 </span>
               )}
               {member.isOwner && (
-                <span className="px-1.5 rounded-sm bg-primary-tint text-primary-text font-semibold text-[10px] flex items-center gap-0.5">
+                <span className="px-1.5 rounded-sm bg-primary-tint text-primary-text font-semibold text-[12px] flex items-center gap-0.5">
                   <Crown className="w-2.5 h-2.5" />
                   <span>Pemilik</span>
                 </span>

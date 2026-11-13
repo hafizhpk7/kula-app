@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { SavingsGoal } from "../types";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
+import { FieldError, ariaField } from "../../../components/common/FieldError";
+import { judulFormulir } from "../../../config/copy";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { Lipat } from "../../../components/common/Lipat";
 
@@ -82,7 +84,7 @@ export const SavingsGoalModal: React.FC<SavingsGoalModalProps> = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? "Ubah target tabungan" : "Tambah target tabungan"}
+      title={judulFormulir(isEdit, "target tabungan")}
       titleId="goal-title"
       footer={
         <div className="flex items-center gap-2">
@@ -120,9 +122,10 @@ export const SavingsGoalModal: React.FC<SavingsGoalModalProps> = ({
               setErrors((prev) => ({ ...prev, name: undefined }));
             }}
             placeholder="Contoh: Dana Darurat, Pendidikan Anak"
+            {...ariaField("goal-name", errors.name)}
             className={inp(errors.name)}
           />
-          {errors.name && <p className="text-[12px] text-danger mt-1 font-medium">{errors.name}</p>}
+          <FieldError id="goal-name">{errors.name}</FieldError>
         </div>
 
         <div className="space-y-1">
@@ -141,11 +144,12 @@ export const SavingsGoalModal: React.FC<SavingsGoalModalProps> = ({
                 setTargetStr(num === null ? "" : formatRupiahInput(num));
                 setErrors((prev) => ({ ...prev, targetAmount: undefined }));
               }}
-              placeholder="0"
+              placeholder="Contoh: 50.000"
+              {...ariaField("goal-target", errors.targetAmount)}
               className={`${inp(errors.targetAmount)} pl-10`}
             />
           </div>
-          {errors.targetAmount && <p className="text-[12px] text-danger mt-1 font-medium">{errors.targetAmount}</p>}
+          <FieldError id="goal-target">{errors.targetAmount}</FieldError>
         </div>
 
         <Lipat
@@ -166,9 +170,10 @@ export const SavingsGoalModal: React.FC<SavingsGoalModalProps> = ({
                 setDeadline(e.target.value);
                 setErrors((prev) => ({ ...prev, deadline: undefined }));
               }}
+              {...ariaField("goal-deadline", errors.deadline)}
               className={inp(errors.deadline)}
             />
-            {errors.deadline && <p className="text-[12px] text-danger mt-1 font-medium">{errors.deadline}</p>}
+            <FieldError id="goal-deadline">{errors.deadline}</FieldError>
           </div>
         </Lipat>
       </form>

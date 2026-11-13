@@ -3,7 +3,7 @@ import { ExternalLink, Download, Calendar, FileSpreadsheet, RotateCcw, ChevronRi
 import { ASSUMPTIONS_AND_NOTES, OFFICIAL_SOURCES } from "../../../data/seed";
 import { useBayi } from "../context/BayiContext";
 import { exportToExcel, exportToIcs, downloadJsonBackup } from "../../../utils/export";
-import { READING_MAX } from "../../../config/layout";
+import { LEBAR_DUA_KOLOM, READING_MAX } from "../../../config/layout";
 import { getChildAge } from "../../../utils/dates";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Lipat } from "../../../components/common/Lipat";
@@ -41,9 +41,11 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
   };
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} ${LEBAR_DUA_KOLOM}`}>
       <PageHeader title="Pengaturan Bayi" subtitle="Anak, ekspor data, dan rujukan medis resmi." />
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div className="space-y-4 min-w-0">
       {/* Anak */}
       <section className={kartu} aria-labelledby="blok-anak">
         <h2 id="blok-anak" className="font-display text-[16px] text-text">
@@ -101,7 +103,9 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
           </div>
         )}
       </section>
+      </div>
 
+      <div className="space-y-4 min-w-0">
       {/* Rujukan medis (terlipat) */}
       <Lipat title="Rujukan medis resmi" summary={`${OFFICIAL_SOURCES.length} sumber resmi dan catatan asumsi`}>
         <div className="space-y-4">
@@ -146,7 +150,7 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
         </div>
 
         <div className="space-y-2 pt-3 border-t border-border">
-          <h3 className="flex items-center gap-2 text-[15px] font-semibold text-danger">
+          <h3 className="flex items-center gap-2 text-[15px] font-semibold text-danger-text">
             <Trash2 className="w-4 h-4" />
             <span>Hapus semua data Bayi</span>
           </h3>
@@ -159,31 +163,31 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
             <button
               type="button"
               onClick={() => setDeleteStep(1)}
-              className="px-4 py-2.5 bg-surface hover:bg-danger-tint text-danger text-[14px] font-medium rounded-full border border-danger/40 transition min-h-[44px] cursor-pointer"
+              className="px-4 py-2.5 bg-surface hover:bg-danger-tint text-danger-text text-[14px] font-medium rounded-full border border-danger/40 transition min-h-[44px] cursor-pointer"
             >
-              Hapus Data Modul Bayi
+              Hapus semua data Bayi
             </button>
           )}
 
           {deleteStep === 1 && (
             <div className="p-3.5 bg-surface rounded-control border border-danger/40 space-y-2">
-              <p className="text-[13px] font-semibold text-danger">
-                Peringatan tahap 1: Anda yakin ingin menghapus data profil seluruh anak di modul Bayi?
+              <p className="text-[13px] font-semibold text-danger-text">
+                Hapus semua data Bayi? Profil, jadwal, dan catatan imunisasi semua anak akan hilang. Unduh ekspor di atas dulu kalau perlu.
               </p>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setDeleteStep(0)}
-                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
-                  Lanjutkan
+                  Lanjut
                 </button>
               </div>
             </div>
@@ -191,29 +195,31 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
 
           {deleteStep === 2 && (
             <div className="p-3.5 bg-surface rounded-control border border-danger space-y-2">
-              <p className="text-[13px] font-semibold text-danger">
-                Konfirmasi terakhir: Data profil dan jadwal anak pada modul Bayi akan terhapus secara permanen!
+              <p className="text-[13px] font-semibold text-danger-text">
+                Terakhir: data Bayi yang sudah dihapus tidak bisa dikembalikan.
               </p>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setDeleteStep(0)}
-                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
-                  Batalkan
+                  Batal
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
-                  Ya, hapus data Bayi
+                  Hapus semua data Bayi
                 </button>
               </div>
             </div>
           )}
         </div>
       </ZonaBahaya>
+      </div>
+      </div>
     </div>
   );
 };

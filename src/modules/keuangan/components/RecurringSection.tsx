@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Repeat, Trash2, Edit2, AlertCircle } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
+import { IconButton } from "../../../components/common/IconButton";
 import { useFinance } from "../state/FinanceContext";
 import { RecurringRule } from "../types";
 import { getAllCategories, resolveCategoryName } from "../utils/categories";
@@ -74,13 +75,13 @@ export const RecurringSection: React.FC<{ embedded?: boolean }> = ({ embedded = 
                       <span className="text-[14px] font-medium text-text">
                         {rule.name || resolveCategoryName(config, rule.categoryId)}
                       </span>
-                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
-                        rule.type === "income" ? "bg-primary-tint text-primary-text" : "bg-danger-tint text-danger"
+                      <span className={`text-[12px] font-medium px-2 py-0.5 rounded-full ${
+                        rule.type === "income" ? "bg-primary-tint text-primary-text" : "bg-danger-tint text-danger-text"
                       }`}>
                         {rule.type === "income" ? "Pemasukan" : "Pengeluaran"}
                       </span>
                       {needsInspection && (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-danger-tint text-danger border border-danger/20">
+                        <span className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-0.5 rounded-full bg-danger-tint text-danger-text border border-danger/20">
                           <AlertCircle className="w-3 h-3" />
                           <span>Perlu diperiksa</span>
                         </span>
@@ -100,31 +101,26 @@ export const RecurringSection: React.FC<{ embedded?: boolean }> = ({ embedded = 
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    type="button"
+                  <IconButton
+                    label={`Ubah aturan ${rule.name || resolveCategoryName(config, rule.categoryId)}`}
                     onClick={() => {
                       setEditingRule(rule);
                       setModalOpen(true);
                     }}
-                    title="Ubah aturan"
-                    aria-label="Ubah aturan"
-                    className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                   >
                     <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
+                  </IconButton>
+                  <IconButton
+                    label={`Hapus aturan ${rule.name || resolveCategoryName(config, rule.categoryId)}`}
+                    nada="bahaya"
                     onClick={() => {
                       if (window.confirm("Hapus aturan berulang ini? Transaksi yang sudah dibuat tidak ikut terhapus.")) {
                         deleteRecurringRule(rule.id);
                       }
                     }}
-                    title="Hapus aturan"
-                    aria-label="Hapus aturan"
-                    className="p-1.5 rounded-chip hover:bg-danger-tint text-danger transition cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </IconButton>
                 </div>
               </div>
             );

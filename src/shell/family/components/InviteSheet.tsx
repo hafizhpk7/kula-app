@@ -7,6 +7,7 @@ import { useFamily } from "../context/FamilyContext";
 import { Invite, Relation, Role, RELATIONS, RELATION_LABELS } from "../types";
 import { buildInviteLink, defaultRoleForRelation, formatInviteCode } from "../utils";
 import * as familyService from "../service/family";
+import { belum, pesanPengguna } from "../../../utils/pesanError";
 import { useCopy } from "./useCopy";
 
 const sel = "w-full px-3 py-2 bg-surface-sunken border border-border rounded-control text-[14px] min-h-[48px]";
@@ -45,7 +46,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
       setCreatedInvite(inv);
       showToast("Undangan dibuat.");
     } catch (err: any) {
-      showToast(err.message || "Gagal membuat undangan.");
+      showToast(pesanPengguna("keluarga", err, belum("Undangan", "dibuat")));
     } finally {
       setCreatingInvite(false);
     }
@@ -55,7 +56,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title="Buat Undangan Baru"
+      title="Buat undangan"
       titleId="buat-undangan-title"
       footer={
         !createdInvite ? (
@@ -73,7 +74,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
               disabled={creatingInvite}
               className="flex-1 rounded-full bg-primary text-primary-fg text-[15px] font-semibold min-h-[48px] cursor-pointer disabled:opacity-60"
             >
-              {creatingInvite ? "Membuat..." : "Buat"}
+              {creatingInvite ? "Membuat..." : "Buat undangan"}
             </button>
           </div>
         ) : (
@@ -143,7 +144,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
           <div>
             <span className="text-[12px] text-text-2">Kode Undangan:</span>
             <p className="text-2xl font-mono font-bold tracking-widest text-text">{formatInviteCode(createdInvite.code)}</p>
-            <p className="text-[11px] text-text-2 mt-1">
+            <p className="text-[12px] text-text-2 mt-1">
               Berlaku sampai{" "}
               {new Date(createdInvite.expiresAt).toLocaleDateString("id-ID", {
                 day: "numeric",

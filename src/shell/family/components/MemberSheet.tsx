@@ -29,7 +29,7 @@ export const MemberSheet: React.FC<Props> = ({ member, onClose, onRemove }) => {
     <BottomSheet
       isOpen={member !== null}
       onClose={onClose}
-      title="Kelola Anggota"
+      title="Kelola anggota"
       titleId="kelola-anggota-title"
       footer={
         member && (
@@ -42,7 +42,7 @@ export const MemberSheet: React.FC<Props> = ({ member, onClose, onRemove }) => {
               }}
               className="w-full rounded-full bg-primary text-primary-fg text-[15px] font-semibold min-h-[48px] cursor-pointer"
             >
-              Simpan Perubahan
+              Simpan perubahan
             </button>
             <button
               type="button"
@@ -50,9 +50,9 @@ export const MemberSheet: React.FC<Props> = ({ member, onClose, onRemove }) => {
                 onClose();
                 onRemove(member);
               }}
-              className="w-full text-danger hover:bg-danger-tint rounded-full text-[14px] font-semibold transition cursor-pointer min-h-[44px]"
+              className="w-full text-danger-text hover:bg-danger-tint rounded-full text-[14px] font-semibold transition cursor-pointer min-h-[44px]"
             >
-              Keluarkan Anggota
+              Keluarkan anggota
             </button>
           </div>
         )

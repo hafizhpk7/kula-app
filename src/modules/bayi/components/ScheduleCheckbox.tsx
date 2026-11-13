@@ -37,7 +37,7 @@ export const ScheduleCheckbox: React.FC<ScheduleCheckboxProps> = ({
         } ${
           checked
             ? "bg-primary border-primary text-primary-fg"
-            : "border-border-strong hover:border-text bg-surface shadow-2xs"
+            : "border-field hover:border-text bg-surface shadow-2xs"
         }`}
       >
         {checked && (

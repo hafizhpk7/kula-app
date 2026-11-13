@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from "react";
-import { ChevronDown, SlidersHorizontal } from "lucide-react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
+import { ChevronDown, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
+import { buildQuickMarkRecord } from "../state/transitions";
+import { todayLocal } from "../../keuangan/utils/dates";
 import { calculateDueDate, formatIndonesianDate, getScheduleStatus } from "../../../utils/dates";
 import { formatRupiahRange, getVaccinePriceDisplay } from "../../../utils/calc";
 import { CategoryTag, StatusIndicator } from "../../../components/common/Badges";
@@ -23,6 +26,8 @@ interface Props {
   onUpdatePaymentMode: (mode: PaymentMode) => void;
   onUpdateScheduleRow: (row: ScheduleRow) => void;
   onUpdateRecord: (record: Record) => void;
+  /** Jalur 1-tap yang sama dengan Ringkasan (tanggal lokal, tanpa biaya estimasi, toast + Urungkan) */
+  onQuickMarkGiven?: (row: ScheduleRow) => void;
   onAddCustomRow: (row: ScheduleRow) => void;
   onDeleteCustomRow: (rowId: string) => void;
   onOpenVaccineDetail: (ref: string) => void;
@@ -45,17 +50,19 @@ export const ScheduleTab: React.FC<Props> = ({
   onUpdatePaymentMode,
   onUpdateScheduleRow,
   onUpdateRecord,
+  onQuickMarkGiven,
   onAddCustomRow,
   onDeleteCustomRow,
   onOpenVaccineDetail
 }) => {
+  const grup1 = useRadioGroup();
   const lebar = useLayarLebar();
   const [filters, setFilters] = useState<JadwalFilters>(FILTER_AWAL);
   const [segmen, setSegmen] = useState<Segmen>("perlu");
   const [filterOpen, setFilterOpen] = useState(false);
   // Desktop mulai di Tabel (lebih padat); HP di garis waktu. Pilihan pengguna menang setelahnya.
   const [viewModeDipilih, setViewModeDipilih] = useState<ViewMode | null>(null);
-  const viewMode: ViewMode = viewModeDipilih ?? (lebar ? "table" : "timeline");
+  const viewMode: ViewMode = lebar ? (viewModeDipilih ?? "table") : "timeline";
   const setViewMode = (m: ViewMode) => setViewModeDipilih(m);
   const { searchQuery, selectedYear } = filters;
   const filterAktif = hitungFilterAktif(filters);
@@ -140,18 +147,19 @@ export const ScheduleTab: React.FC<Props> = ({
 
   const handleToggleGiven = (row: ScheduleRow, currentGiven: boolean) => {
     const existingRec = recordMap.get(row.id);
-    const todayStr = new Date().toISOString().split("T")[0];
 
-    const updatedRec: Record = {
-      ...(existingRec || { rowId: row.id }),
-      rowId: row.id,
-      diberikan: !currentGiven,
-      tanggalDiberikan: !currentGiven ? (existingRec?.tanggalDiberikan || todayStr) : existingRec?.tanggalDiberikan,
-      tempat: existingRec?.tempat || (row.gratis === "Ya" ? "Puskesmas" : "Klinik"),
-      biayaAktual: existingRec?.biayaAktual !== undefined ? existingRec.biayaAktual : row.gratis === "Ya" ? 0 : row.min
-    };
+    if (!currentGiven) {
+      // Menandai selesai: satu jalur dengan Ringkasan (UI-3)
+      if (onQuickMarkGiven) {
+        onQuickMarkGiven(row);
+      } else {
+        onUpdateRecord(buildQuickMarkRecord(profile, row, todayLocal()).newRecord);
+      }
+      return;
+    }
 
-    onUpdateRecord(updatedRec);
+    // Membatalkan tanda: catatan lain (tanggal, tempat, biaya) dibiarkan
+    onUpdateRecord({ ...(existingRec || { rowId: row.id }), rowId: row.id, diberikan: false });
   };
 
   return (
@@ -178,7 +186,7 @@ export const ScheduleTab: React.FC<Props> = ({
       />
 
       {/* 2. Tiga segmen status */}
-      <div className="flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Status jadwal">
+      <div className="flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" {...grup1} aria-label="Status jadwal">
         {(
           [
             { id: "perlu", label: "Perlu dilakukan" },
@@ -192,7 +200,7 @@ export const ScheduleTab: React.FC<Props> = ({
             role="radio"
             aria-checked={segmen === s.id}
             onClick={() => setSegmen(s.id)}
-            className={`flex-1 py-2 rounded-full text-[13px] min-h-[42px] transition cursor-pointer ${
+            className={`flex-1 py-2 rounded-full text-[13px] min-h-[44px] transition cursor-pointer ${
               segmen === s.id ? "bg-surface text-text font-semibold border border-border shadow-xs" : "text-text-2 hover:text-text font-medium"
             }`}
           >
@@ -207,6 +215,7 @@ export const ScheduleTab: React.FC<Props> = ({
         filters={filters}
         onChange={setFilters}
         viewMode={viewMode}
+        tampilkanPilihTampilan={lebar}
         onViewModeChange={setViewMode}
         paymentMode={paymentMode}
         onUpdatePaymentMode={onUpdatePaymentMode}
@@ -227,8 +236,8 @@ export const ScheduleTab: React.FC<Props> = ({
           }
           description={
             segmen === "perlu" && filterAktif === 0
-              ? "Semua imunisasi yang jatuh tempo sudah selesai. Lihat tab Semua untuk seluruh jadwal."
-              : "Coba ubah segmen atau reset filter."
+              ? "Semua imunisasi yang jatuh tempo sudah selesai. Kerja bagus! Lihat tab Semua untuk seluruh jadwal."
+              : "Filter atau segmen yang dipilih menyembunyikan semua jadwal."
           }
           action={
             filterAktif > 0 ? (
@@ -237,7 +246,7 @@ export const ScheduleTab: React.FC<Props> = ({
                 onClick={() => setFilters(FILTER_AWAL)}
                 className="px-5 py-2.5 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[44px] hover:bg-surface-sunken transition cursor-pointer"
               >
-                Reset filter
+                Hapus filter
               </button>
             ) : undefined
           }
@@ -276,9 +285,8 @@ export const ScheduleTab: React.FC<Props> = ({
                     return (
                       <div
                         key={item.row.id}
-                        className="grid grid-cols-[auto_minmax(0,1fr)] sm:grid-cols-[auto_minmax(0,1fr)_auto] gap-x-3 gap-y-2 items-start px-4 py-4 sm:px-5 hover:bg-surface-sunken/40 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 min-h-[68px] hover:bg-surface-sunken/40 transition-colors"
                       >
-                        {/* Column 1: Checkbox */}
                         <ScheduleCheckbox
                           size="md"
                           checked={isDone}
@@ -286,68 +294,32 @@ export const ScheduleTab: React.FC<Props> = ({
                           label={`Tandai ${item.row.vaksin} selesai`}
                         />
 
-                        {/* Column 2: Text block.
-                            Vertical alignment: checkbox height = 44px (center at 22px).
-                            Title line-height (leading-snug at text-base/16px) = 22px (center at 11px).
-                            Text block top padding = (44px - 22px) / 2 = 11px (pt-[11px]). */}
-                        <div className="space-y-1.5 min-w-0 pt-[11px]">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <button
-                              type="button"
-                              onClick={() => onOpenVaccineDetail(item.row.ref)}
-                              className={`text-[15px] sm:text-base font-semibold leading-snug hover:text-primary hover:underline text-left cursor-pointer break-words ${
+                        {/* Seluruh badan baris membuka detail; ringkas: nama, usia + tanggal, status */}
+                        <button
+                          type="button"
+                          onClick={() => onOpenVaccineDetail(item.row.ref)}
+                          aria-label={`Detail ${item.row.vaksin}`}
+                          className="flex-1 min-w-0 min-h-[44px] flex items-center gap-2 text-left cursor-pointer"
+                        >
+                          <span className="flex-1 min-w-0 space-y-0.5">
+                            <span
+                              className={`block text-[15px] font-semibold leading-snug break-words ${
                                 isDone ? "text-text-2 line-through" : "text-text"
                               }`}
                             >
                               {item.row.vaksin}
-                            </button>
-                            <CategoryTag gratis={item.row.gratis} />
-                          </div>
-
-                          <div className="flex items-center gap-x-2 gap-y-1.5 flex-wrap text-[13px] text-text-2">
-                            <span className="font-medium text-text">Usia {item.row.usia}</span>
-                            <span className="text-text-2">·</span>
-                            <StatusIndicator status={item.status} />
-                            {item.dueDateStr && (
-                              <>
-                                <span className="text-text-2">·</span>
-                                <span className="font-medium">{item.dueDateStr}</span>
-                              </>
-                            )}
-                          </div>
-
-                          {item.row.catatan && (
-                            <p className="text-[12.5px] leading-relaxed text-text-2 line-clamp-2 lg:line-clamp-3 break-words pt-0.5">
-                              {item.row.catatan}
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Column 3 on sm+, Column 2 row 2 on mobile: Price & Info Detail */}
-                        <div className="col-start-2 sm:col-start-auto flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2.5 sm:pt-0 border-t border-border/40 sm:border-t-0 sm:min-w-[11rem] sm:text-right font-tabular">
-                          <div className="text-left sm:text-right">
-                            <span
-                              className={`text-[13px] font-medium font-tabular block ${
-                                priceInfo.isFree ? "text-primary font-semibold" : "text-text"
-                              }`}
-                            >
-                              {priceInfo.text}
                             </span>
-                            {priceInfo.warningNote && (
-                              <span className="inline-block text-[10px] text-warning-text bg-warning-tint border border-warning/20 rounded px-1.5 py-0.5 mt-0.5 font-medium">
-                                {priceInfo.warningNote}
-                              </span>
-                            )}
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => onOpenVaccineDetail(item.row.ref)}
-                            className="px-3.5 py-2 rounded-chip bg-surface-sunken hover:bg-border text-[13px] text-primary hover:text-primary-hover font-semibold transition cursor-pointer min-h-[40px] sm:min-h-[36px] flex items-center justify-center border border-border shrink-0 active:scale-95"
-                          >
-                            Info Detail
-                          </button>
-                        </div>
+                            <span className="block text-[12.5px] text-text-2">
+                              {item.row.usia}
+                              {item.dueDateStr ? ` · ${item.dueDateStr}` : ""}
+                              {!priceInfo.isFree ? ` · ${priceInfo.text}` : ""}
+                            </span>
+                          </span>
+                          <span className="shrink-0">
+                            <StatusIndicator status={item.status} />
+                          </span>
+                          <ChevronRight className="w-4 h-4 text-text-3 shrink-0" aria-hidden="true" />
+                        </button>
                       </div>
                     );
                   })}
@@ -370,7 +342,7 @@ export const ScheduleTab: React.FC<Props> = ({
                 <col className="w-[168px]" />
                 <col className="w-[88px]" />
               </colgroup>
-              <thead className="bg-surface-sunken border-b border-border text-[11px] font-semibold text-text-2 uppercase tracking-wider">
+              <thead className="bg-surface-sunken border-b border-border text-[12px] font-semibold text-text-2 uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="py-3 px-4 text-left">
                     Status
@@ -469,7 +441,7 @@ export const ScheduleTab: React.FC<Props> = ({
                             <div>
                               <span className="text-text">{priceInfo.text}</span>
                               {priceInfo.warningNote && (
-                                <span className="block text-[10px] text-warning-text bg-warning-tint border border-warning/20 rounded px-1.5 py-0.5 mt-0.5 w-max font-medium">
+                                <span className="block text-[12px] text-warning-text bg-warning-tint border border-warning/20 rounded px-1.5 py-0.5 mt-0.5 w-max font-medium">
                                   {priceInfo.warningNote}
                                 </span>
                               )}
@@ -482,7 +454,7 @@ export const ScheduleTab: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => onOpenVaccineDetail(item.row.ref)}
-                            className="px-2.5 py-1 text-[13px] text-primary hover:text-primary-hover hover:bg-primary-tint font-semibold rounded-[6px] transition cursor-pointer min-h-[32px] inline-flex items-center justify-center border border-transparent hover:border-primary/20"
+                            className="px-2.5 py-1 text-[13px] text-primary hover:text-primary-hover hover:bg-primary-tint font-semibold rounded-[6px] transition cursor-pointer min-h-[44px] inline-flex items-center justify-center border border-transparent hover:border-primary/20"
                           >
                             Detail
                           </button>

@@ -70,7 +70,7 @@ export const AuthScreen: React.FC = () => {
       }
 
       if (!password) {
-        setErrorMessage("Silakan masukkan kata sandi Anda.");
+        setErrorMessage("Isi kata sandi dulu.");
         return;
       }
 
@@ -99,15 +99,15 @@ export const AuthScreen: React.FC = () => {
       // Register mode (only when AUTH_ENABLE_SIGNUP is true)
       const cleanEmail = email.trim();
       if (!cleanEmail) {
-        setErrorMessage("Silakan masukkan alamat email Anda.");
+        setErrorMessage("Isi alamat email dulu.");
         return;
       }
       if (!password) {
-        setErrorMessage("Silakan masukkan kata sandi Anda.");
+        setErrorMessage("Isi kata sandi dulu.");
         return;
       }
       if (!displayName.trim()) {
-        setErrorMessage("Silakan masukkan nama lengkap atau panggilan Anda.");
+        setErrorMessage("Isi nama atau panggilan dulu.");
         return;
       }
       if (password.length < 6) {
@@ -115,7 +115,7 @@ export const AuthScreen: React.FC = () => {
         return;
       }
       if (password !== confirmPassword) {
-        setErrorMessage("Konfirmasi kata sandi tidak cocok. Mohon periksa kembali.");
+        setErrorMessage("Kata sandi belum sama. Cek lagi.");
         return;
       }
 
@@ -144,7 +144,7 @@ export const AuthScreen: React.FC = () => {
   const effectiveMode = AUTH_ENABLE_SIGNUP ? mode : "login";
 
   return (
-    <div className="relative min-h-screen bg-sky flex flex-col justify-center items-center p-4 sm:p-6 pb-[150px] sm:pb-[170px] font-sans overflow-hidden">
+    <div className="relative min-h-dvh bg-sky flex flex-col justify-center items-center p-4 sm:p-6 pb-[150px] sm:pb-[170px] font-sans overflow-hidden">
       {/* Laut dekoratif di dasar layar */}
       <div className="absolute inset-x-0 bottom-0 h-[130px] pointer-events-none" aria-hidden="true">
         <Ombak className="absolute inset-x-0 bottom-0 h-[96px]" />
@@ -266,7 +266,7 @@ export const AuthScreen: React.FC = () => {
                     required
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Nama orang tua"
+                    placeholder="Nama panggilan Anda"
                     className="w-full pl-9 pr-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>
@@ -282,7 +282,9 @@ export const AuthScreen: React.FC = () => {
                   <UserIcon className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="auth-identifier"
-                    type="text"
+                    aria-invalid={isCredentialError ? true : undefined}
+                    aria-describedby={errorMessage ? "auth-error" : undefined}
+                                        type="text"
                     required
                     autoComplete="username"
                     autoCapitalize="none"
@@ -302,7 +304,9 @@ export const AuthScreen: React.FC = () => {
                   <Mail className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2" />
                   <input
                     id="auth-email"
-                    type="email"
+                    aria-invalid={isCredentialError ? true : undefined}
+                    aria-describedby={errorMessage ? "auth-error" : undefined}
+                                        type="email"
                     required
                     autoComplete="email"
                     value={email}
@@ -320,10 +324,13 @@ export const AuthScreen: React.FC = () => {
                 <Lock className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   id="auth-password"
-                  ref={passwordRef}
+                  aria-invalid={isCredentialError ? true : undefined}
+                    aria-describedby={errorMessage ? "auth-error" : undefined}
+                                    ref={passwordRef}
                   type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
+                  enterKeyHint="go"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 6 karakter"
@@ -333,7 +340,7 @@ export const AuthScreen: React.FC = () => {
                   type="button"
                   onClick={() => setShowPassword((p) => !p)}
                   aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-2 hover:text-text p-1 cursor-pointer min-h-[32px] min-w-[32px] flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-2 hover:text-text p-1 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
@@ -363,8 +370,9 @@ export const AuthScreen: React.FC = () => {
 
             {errorMessage && (
               <div
-                role="alert"
-                className="p-3 bg-danger-tint border border-danger/20 text-danger rounded-control text-[13px] space-y-2"
+                id="auth-error"
+              role="alert"
+                className="p-3 bg-danger-tint border border-danger/20 text-danger-text rounded-control text-[13px] space-y-2"
               >
                 <div className="flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -372,7 +380,7 @@ export const AuthScreen: React.FC = () => {
                 </div>
                 {isCredentialError && effectiveMode === "login" && AUTH_ENABLE_SIGNUP && (
                   <div className="pt-1 border-t border-danger/15 flex items-center justify-between">
-                    <span className="text-[12px] text-danger/90">Belum pernah mendaftar?</span>
+                    <span className="text-[12px] text-danger-text/90">Belum pernah mendaftar?</span>
                     <button
                       type="button"
                       onClick={switchToRegisterWithEmail}
@@ -410,7 +418,7 @@ export const AuthScreen: React.FC = () => {
               <Sparkles className="w-4 h-4" />
               <span>Lanjutkan sebagai Tamu (Mode Demo Offline)</span>
             </button>
-            <p className="text-[11px] text-sky-ink-2">Data tetap tersimpan di browser Anda tanpa perlu mendaftar akun.</p>
+            <p className="text-[12px] text-sky-ink-2">Data tetap tersimpan di browser Anda tanpa perlu mendaftar akun.</p>
           </div>
         )}
       </div>
