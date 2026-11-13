@@ -81,6 +81,7 @@ export const BayiLayout: React.FC = () => {
             ? {
                 label: "Tandai selesai",
                 shortLabel: "Tandai",
+                detail: barisBerikutnya.vaksin,
                 icon: CheckCheck,
                 onClick: () => setRecordModalRow(barisBerikutnya)
               }

@@ -7,6 +7,7 @@ import { EmptyState } from "../../../components/common/EmptyState";
 import { Lipat } from "../../../components/common/Lipat";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { useLayarLebar } from "../../../hooks/useMediaQuery";
+import { formatPersen } from "../utils/persen";
 import { MonthSelector } from "../components/MonthSelector";
 import { CategoryManager } from "../components/CategoryManager";
 import { useFinance } from "../state/FinanceContext";
@@ -121,7 +122,7 @@ export const AnggaranPage: React.FC = () => {
       {berbatas.length > 0 ? (
         <>
           <p className="text-[13px] text-text-2">
-            Total {formatRupiah(totalBatas)} · terpakai {Math.round((totalTerpakai / (totalBatas || 1)) * 100)}%
+            Total {formatRupiah(totalBatas)} · terpakai {formatPersen((totalTerpakai / (totalBatas || 1)) * 100)}
           </p>
           <ul className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">
             {berbatas.map((r) => (

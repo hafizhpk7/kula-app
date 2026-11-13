@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { todayLocal } from "../utils/dates";
 import { Plus, Trash2, Edit2, ArrowUpRight, ArrowDownRight, Calendar, Check, MoreHorizontal } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
+import { formatIndonesianDate } from "../../../utils/dates";
 import { READING_MAX } from "../../../config/layout";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { EmptyState } from "../../../components/common/EmptyState";
@@ -136,7 +137,7 @@ export const TabunganPage: React.FC = () => {
                     {goal.deadline && !tercapai && (
                       <div className="flex items-center gap-1.5 text-[12px] text-text-2 mt-0.5">
                         <Calendar className="w-3.5 h-3.5" />
-                        <span>Tenggat: {goal.deadline}</span>
+                        <span>Tenggat: {formatIndonesianDate(goal.deadline)}</span>
                       </div>
                     )}
                   </div>

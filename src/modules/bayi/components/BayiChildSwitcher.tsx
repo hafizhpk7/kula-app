@@ -23,7 +23,8 @@ export const BayiChildSwitcher: React.FC<Props> = ({ profile, profiles, onSelect
         type="button"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        aria-label="Pilih atau kelola profil anak"
+        aria-label={`Anak aktif ${profile.panggilan}. Pilih atau kelola profil anak`}
+        title={profile.panggilan}
         className="flex items-center gap-1.5 h-11 pl-1.5 pr-2.5 rounded-full bg-mod-bayi-tint text-text hover:brightness-95 transition cursor-pointer min-w-0"
       >
         <span className="w-8 h-8 rounded-full bg-mod-bayi text-mod-bayi-fg flex items-center justify-center text-[13px] font-semibold shrink-0">
@@ -62,7 +63,7 @@ export const BayiChildSwitcher: React.FC<Props> = ({ profile, profiles, onSelect
                         {p.panggilan.slice(0, 1).toUpperCase()}
                       </span>
                       <span className="min-w-0">
-                        <span className="block text-[15px] truncate">{p.panggilan}</span>
+                        <span className="block text-[15px] break-words">{p.panggilan}</span>
                         <span className="block text-[12px] text-text-2 font-normal truncate">
                           {getChildAge(p.tanggalLahir).text}
                         </span>

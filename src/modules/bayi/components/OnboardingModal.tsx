@@ -62,6 +62,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
               type="text"
               required
               value={panggilan}
+              maxLength={40}
               onChange={(e) => setPanggilan(e.target.value)}
               placeholder="Contoh: Kayla / Danis"
               className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"

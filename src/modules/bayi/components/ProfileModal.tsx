@@ -154,7 +154,7 @@ export const ProfileModal: React.FC<Props> = ({
                           {p.panggilan.slice(0, 1).toUpperCase()}
                         </div>
                         <div className="min-w-0">
-                          <p className="text-[15px] text-text truncate">
+                          <p className="text-[15px] text-text break-words">
                             {p.panggilan}
                             {isActive && (
                               <span className="ml-2 text-[12px] text-primary">
@@ -238,6 +238,7 @@ export const ProfileModal: React.FC<Props> = ({
                   type="text"
                   required
                   value={panggilan}
+                  maxLength={40}
                   onChange={(e) => setPanggilan(e.target.value)}
                   placeholder="Contoh: Kayla / Danis"
                   className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"

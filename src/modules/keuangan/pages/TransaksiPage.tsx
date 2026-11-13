@@ -181,7 +181,13 @@ export const TransaksiPage: React.FC = () => {
                     <div className="divide-y divide-border">
                       {group.entries.map((entry) => {
                         const catName = resolveCategoryName(config, entry.categoryId);
-                        const creator = members.find((m: any) => m.uid === entry.createdBy)?.displayName || "Unknown";
+                        // Nama pencatat hanya tampil kalau memang ada lebih dari satu anggota; tidak pernah "Unknown"
+                        const pencatat =
+                          members.length > 1
+                            ? entry.createdBy === user?.uid
+                              ? "Anda"
+                              : members.find((m: any) => m.uid === entry.createdBy)?.displayName
+                            : undefined;
                         const isIncome = entry.type === "income";
 
                         return (
@@ -222,8 +228,8 @@ export const TransaksiPage: React.FC = () => {
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[12px] text-text-2 truncate">
-                                {entry.note ? `${entry.note} · ` : ""}Dicatat oleh {creator}
+                              <p className="text-[12px] text-text-2 line-clamp-2 break-words" title={entry.note || undefined}>
+                                {[entry.note, pencatat ? `Dicatat oleh ${pencatat}` : ""].filter(Boolean).join(" · ")}
                               </p>
                             </div>
 

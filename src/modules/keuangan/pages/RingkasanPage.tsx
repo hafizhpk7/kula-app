@@ -13,6 +13,7 @@ import {
 import { ShieldAlert, Info, Plus, ArrowRight, RefreshCw, AlertTriangle, ChevronRight } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
 import { MODULE_REGISTRY } from "../../registry";
+import { formatPersen } from "../utils/persen";
 import { MonthSelector } from "../components/MonthSelector";
 import { useCatatTransaksi } from "../components/FinanceLayout";
 import { useFinance } from "../state/FinanceContext";
@@ -162,7 +163,7 @@ export const RingkasanPage: React.FC = () => {
               />
             </div>
             <p className="text-[12.5px] text-text-2 font-tabular">
-              Terpakai {persenTerpakai}% dari {formatRupiah(budgetSummary.totalBudget)}
+              Terpakai {formatPersen(persenTerpakai)} dari {formatRupiah(budgetSummary.totalBudget)}
             </p>
           </div>
         </>
@@ -185,7 +186,7 @@ export const RingkasanPage: React.FC = () => {
       </div>
       {expDelta !== null && expDelta !== 0 && (
         <p className="text-[12px] text-text-2">
-          Pengeluaran {expDelta > 0 ? "↑ naik" : "↓ turun"} {Math.abs(expDelta)}% dari bulan lalu
+          Pengeluaran {expDelta > 0 ? "↑ naik" : "↓ turun"} {formatPersen(Math.abs(expDelta))} dari bulan lalu
         </p>
       )}
       {!adaAnggaran && (
@@ -220,7 +221,7 @@ export const RingkasanPage: React.FC = () => {
                   {resolveCategoryName(config, row.categoryId)}
                 </span>
                 <span className="font-tabular text-text-2 shrink-0">
-                  {persen}%{lewat ? " · lewat batas" : hampir ? " · hampir habis" : ""}
+                  {formatPersen(persen)}{lewat ? " · lewat batas" : hampir ? " · hampir habis" : ""}
                 </span>
               </div>
               <div className="w-full h-2 bg-track rounded-full overflow-hidden">

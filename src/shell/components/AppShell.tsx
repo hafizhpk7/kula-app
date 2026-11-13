@@ -41,6 +41,8 @@ export interface PrimaryAction {
   /** Label pendek untuk pil di HP; default = label */
   shortLabel?: string;
   icon: React.ElementType;
+  /** Baris kedua kecil di pil HP, mis. nama vaksin yang akan ditandai */
+  detail?: string;
   onClick: () => void;
 }
 
@@ -86,7 +88,7 @@ export const AppShell: React.FC<AppShellProps> = ({
             title={`Kembali ke ${back.label}`}
           >
             <ChevronLeft className="w-5 h-5" />
-            <span className="hidden min-[380px]:inline">{back.label}</span>
+            <span className="hidden min-[340px]:inline">{back.label}</span>
           </Link>
           <span className="flex-1 min-w-0 text-center md:text-left font-display text-[17px] text-text truncate">
             {title}
@@ -125,8 +127,8 @@ export const AppShell: React.FC<AppShellProps> = ({
                 <button
                   type="button"
                   onClick={primaryAction.onClick}
-                  aria-label={primaryAction.label}
-                  title={primaryAction.label}
+                  aria-label={primaryAction.detail ? `${primaryAction.label}: ${primaryAction.detail}` : primaryAction.label}
+                  title={primaryAction.detail ? `${primaryAction.label}: ${primaryAction.detail}` : primaryAction.label}
                   className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-[14px] font-semibold shadow-[var(--shadow-card)] hover:brightness-95 transition cursor-pointer ${tone.pill}`}
                 >
                   <PrimaryIcon className="w-5 h-5 shrink-0" />
@@ -161,12 +163,19 @@ export const AppShell: React.FC<AppShellProps> = ({
         <button
           type="button"
           onClick={primaryAction.onClick}
-          aria-label={primaryAction.label}
-          title={primaryAction.label}
+          aria-label={primaryAction.detail ? `${primaryAction.label}: ${primaryAction.detail}` : primaryAction.label}
+          title={primaryAction.detail ? `${primaryAction.label}: ${primaryAction.detail}` : primaryAction.label}
           className={`md:hidden fixed right-4 ${adaTab ? "bottom-[calc(92px+env(safe-area-inset-bottom))]" : "bottom-[max(20px,calc(env(safe-area-inset-bottom)+8px))]"} z-40 h-14 pl-4 pr-5 rounded-full flex items-center gap-2 text-[15px] font-semibold shadow-[var(--shadow-float)] active:scale-95 transition cursor-pointer no-print ${tone.pill}`}
         >
           <PrimaryIcon className="w-5 h-5" strokeWidth={2.5} />
-          <span>{primaryAction.shortLabel ?? primaryAction.label}</span>
+          {primaryAction.detail ? (
+            <span className="flex flex-col items-start leading-tight min-w-0">
+              <span>{primaryAction.shortLabel ?? primaryAction.label}</span>
+              <span className="text-[11px] font-medium opacity-80 truncate max-w-[150px]">{primaryAction.detail}</span>
+            </span>
+          ) : (
+            <span>{primaryAction.shortLabel ?? primaryAction.label}</span>
+          )}
         </button>
       )}
 
