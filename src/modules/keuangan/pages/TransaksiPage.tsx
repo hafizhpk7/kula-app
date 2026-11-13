@@ -94,8 +94,8 @@ export const TransaksiPage: React.FC = () => {
 
       {isMonthEmpty ? (
         <EmptyState
-          title="Belum ada transaksi bulan ini"
-          description="Tidak ada catatan transaksi pada bulan yang dipilih."
+          title="Belum ada transaksi di bulan ini"
+          description="Catat pengeluaran atau pemasukan pertama untuk bulan ini."
           action={
             <button
               type="button"

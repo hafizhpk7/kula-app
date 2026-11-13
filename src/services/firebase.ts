@@ -177,7 +177,7 @@ export function formatAuthErrorMessage(error: any): string {
   const code = error?.code || "";
   switch (code) {
     case "auth/email-already-in-use":
-      return "Alamat email ini sudah terdaftar. Silakan pilih tab 'Masuk' dengan kata sandi Anda.";
+      return "Email ini sudah terdaftar. Pilih tab Masuk, lalu isi kata sandi Anda.";
     case "auth/invalid-email":
       return "Format alamat email tidak valid. Periksa kembali penulisan email Anda.";
     case "auth/weak-password":
@@ -185,15 +185,16 @@ export function formatAuthErrorMessage(error: any): string {
     case "auth/wrong-password":
     case "auth/invalid-credential":
     case "auth/user-not-found":
-      return "Email atau kata sandi tidak cocok. Belum mendaftar? Silakan pilih tab 'Daftar' untuk membuat akun baru.";
+      return "Email atau kata sandi belum cocok. Belum punya akun? Pilih tab Daftar.";
     case "auth/popup-closed-by-user":
       return "Jendela masuk Google ditutup sebelum selesai.";
     case "auth/too-many-requests":
-      return "Terlalu banyak percobaan gagal. Silakan tunggu beberapa saat sebelum mencoba lagi.";
+      return "Terlalu banyak percobaan gagal. Tunggu sebentar, lalu coba lagi.";
     case "auth/network-request-failed":
       return "Koneksi internet bermasalah. Periksa jaringan Anda dan coba lagi.";
     default:
-      return error?.message || "Terjadi kendala saat proses autentikasi. Silakan coba lagi.";
+      console.warn("[auth]", error);
+      return "Proses masuk belum berhasil. Coba lagi.";
   }
 }
 

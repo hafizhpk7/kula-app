@@ -73,7 +73,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === "deposit" ? "Setor ke Tabungan" : "Tarik dari Tabungan"}
+      title={mode === "deposit" ? "Setor ke tabungan" : "Tarik dari tabungan"}
       titleId="contrib-title"
       footer={
         <div className="flex items-center gap-2">

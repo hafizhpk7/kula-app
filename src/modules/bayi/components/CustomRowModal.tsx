@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { judulFormulir } from "../../../config/copy";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { FacilityType, Gratis, ScheduleRow, Status } from "../../../types";
 
@@ -32,7 +33,7 @@ export const CustomRowModal: React.FC<Props> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!vaksin.trim()) {
-      setErrorMsg("Nama vaksin harus diisi.");
+      setErrorMsg("Isi nama vaksin dulu.");
       return;
     }
 
@@ -56,7 +57,7 @@ export const CustomRowModal: React.FC<Props> = ({
   };
 
   return (
-    <BottomSheet isOpen={isOpen} onClose={onClose} title={rowToEdit ? "Edit baris kustom" : "Tambah jadwal kustom"} titleId="custom-title">
+    <BottomSheet isOpen={isOpen} onClose={onClose} title={judulFormulir(Boolean(rowToEdit), "jadwal kustom")} titleId="custom-title">
         <form onSubmit={handleSubmit} className="space-y-3.5 text-[14px]">
           {errorMsg && (
             <div className="p-3 bg-danger-tint text-danger-text rounded-control text-[13px]">

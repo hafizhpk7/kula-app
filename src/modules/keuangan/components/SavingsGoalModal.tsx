@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { SavingsGoal } from "../types";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 import { FieldError, ariaField } from "../../../components/common/FieldError";
+import { judulFormulir } from "../../../config/copy";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { Lipat } from "../../../components/common/Lipat";
 
@@ -83,7 +84,7 @@ export const SavingsGoalModal: React.FC<SavingsGoalModalProps> = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? "Ubah target tabungan" : "Tambah target tabungan"}
+      title={judulFormulir(isEdit, "target tabungan")}
       titleId="goal-title"
       footer={
         <div className="flex items-center gap-2">

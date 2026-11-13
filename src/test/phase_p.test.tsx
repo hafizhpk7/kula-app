@@ -29,7 +29,7 @@ describe("Phase P: Private Access Mode Tests", () => {
     });
 
     it("validates username boundaries and rules", () => {
-      expect(validateUsername("")).toBe("Silakan masukkan username Anda.");
+      expect(validateUsername("")).toBe("Isi username dulu.");
       // < 3 chars
       expect(validateUsername("ab")).toBe(
         "Username hanya boleh berisi huruf, angka, titik, garis bawah, atau strip (3–32 karakter)."
@@ -94,13 +94,13 @@ describe("Phase P: Private Access Mode Tests", () => {
       const err = { code: "auth/wrong-password", message: "Firebase raw error" };
       expect(formatLoginErrorMessage(err, false)).toBe("Username atau kata sandi tidak cocok.");
       expect(formatLoginErrorMessage({ code: "auth/too-many-requests" }, false)).toBe(
-        "Terlalu banyak percobaan gagal. Silakan tunggu beberapa saat sebelum mencoba lagi."
+        "Terlalu banyak percobaan gagal. Tunggu sebentar, lalu coba lagi."
       );
       expect(formatLoginErrorMessage({ code: "app/auth-disabled" }, false)).toBe(
         "Fitur ini sedang dinonaktifkan."
       );
       expect(formatLoginErrorMessage({ code: "unknown-code" }, false)).toBe(
-        "Terjadi kendala saat masuk. Silakan coba lagi."
+        "Terjadi kendala saat masuk. Coba lagi."
       );
 
       // When signupEnabled is true, delegates to formatAuthErrorMessage
@@ -146,7 +146,7 @@ describe("Phase P: Private Access Mode Tests", () => {
       fireEvent.click(submitBtn);
 
       await waitFor(() => {
-        expect(screen.getByRole("alert")).toHaveTextContent("Silakan masukkan username Anda.");
+        expect(screen.getByRole("alert")).toHaveTextContent("Isi username dulu.");
       });
     });
 

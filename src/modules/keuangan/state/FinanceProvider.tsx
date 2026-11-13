@@ -518,7 +518,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [config, repository, showToast]);
 
   const renameWallet = useCallback(async (id: string, name: string) => {
-    if (id === "default") return { ok: false, error: "Dompet utama tidak dapat diubah namanya" };
+    if (id === "default") return { ok: false, error: "Nama dompet utama tidak bisa diubah" };
     const wallets = config.wallets || {};
     const target = wallets[id];
     if (!target) return { ok: false, error: "Dompet tidak ditemukan" };
@@ -542,7 +542,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const setWalletArchived = useCallback(async (id: string, archived: boolean) => {
     if (id === "default" && archived) {
-      showToast("Kas Utama tidak dapat diarsipkan.");
+      showToast("Kas Utama tidak bisa diarsipkan karena menjadi dompet bawaan.");
       return;
     }
     const wallets = config.wallets || {};

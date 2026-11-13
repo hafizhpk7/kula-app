@@ -70,7 +70,7 @@ export const AuthScreen: React.FC = () => {
       }
 
       if (!password) {
-        setErrorMessage("Silakan masukkan kata sandi Anda.");
+        setErrorMessage("Isi kata sandi dulu.");
         return;
       }
 
@@ -99,15 +99,15 @@ export const AuthScreen: React.FC = () => {
       // Register mode (only when AUTH_ENABLE_SIGNUP is true)
       const cleanEmail = email.trim();
       if (!cleanEmail) {
-        setErrorMessage("Silakan masukkan alamat email Anda.");
+        setErrorMessage("Isi alamat email dulu.");
         return;
       }
       if (!password) {
-        setErrorMessage("Silakan masukkan kata sandi Anda.");
+        setErrorMessage("Isi kata sandi dulu.");
         return;
       }
       if (!displayName.trim()) {
-        setErrorMessage("Silakan masukkan nama lengkap atau panggilan Anda.");
+        setErrorMessage("Isi nama atau panggilan dulu.");
         return;
       }
       if (password.length < 6) {
@@ -115,7 +115,7 @@ export const AuthScreen: React.FC = () => {
         return;
       }
       if (password !== confirmPassword) {
-        setErrorMessage("Konfirmasi kata sandi tidak cocok. Mohon periksa kembali.");
+        setErrorMessage("Kata sandi belum sama. Cek lagi.");
         return;
       }
 
@@ -266,7 +266,7 @@ export const AuthScreen: React.FC = () => {
                     required
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Nama orang tua"
+                    placeholder="Nama panggilan Anda"
                     className="w-full pl-9 pr-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                   />
                 </div>

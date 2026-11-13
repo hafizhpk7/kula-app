@@ -49,7 +49,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
 
   return (
     <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
-      <PageHeader title="Info vaksin" subtitle="Manfaat, anjuran, dan reaksi (KIPI) 15 jenis vaksin anak." />
+      <PageHeader title="Info vaksin" subtitle="Manfaat, anjuran, dan reaksi setelah vaksin (KIPI) untuk 15 jenis vaksin anak." />
 
       {/* Pencarian: di layar ini mencari memang tujuannya, jadi tampil langsung */}
       <div className="relative">
@@ -105,7 +105,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
       {filteredVaccines.length === 0 ? (
         <EmptyState
           title="Tidak ada vaksin yang cocok"
-          description={searchQuery ? `Tidak ada hasil untuk "${searchQuery}".` : "Coba kategori lain."}
+          description={searchQuery ? `Tidak ada hasil untuk "${searchQuery}".` : "Ubah kata kunci atau pilih kategori lain."}
         />
       ) : (
         <ul className="bg-surface rounded-card border border-border shadow-[var(--shadow-card)] divide-y divide-border overflow-hidden">

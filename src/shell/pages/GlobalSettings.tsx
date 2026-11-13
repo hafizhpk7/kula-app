@@ -84,7 +84,7 @@ export const GlobalSettingsPage: React.FC = () => {
                       {isInternalDomain ? `Username: ${username}` : user?.email}
                     </p>
                     <p className="text-[12px] text-text-3">
-                      {lastSyncTime ? `Sinkronisasi terakhir: ${lastSyncTime}` : "Tersambung ke Cloud Firestore"}
+                      {lastSyncTime ? `Sinkronisasi terakhir: ${lastSyncTime}` : "Tersambung ke cloud"}
                     </p>
                   </>
                 )}

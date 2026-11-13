@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
+import { AKSI } from "../../config/copy";
 
 /**
  * Lembar bawah di HP, dialog tengah di ≥ sm. Dipakai semua modal baru (lihat docs/ux/UX-REDESIGN.md §3).
@@ -47,7 +48,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
   titleId = "sheet-title",
   children,
   footer,
-  closeLabel = "Tutup"
+  closeLabel = AKSI.tutup
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);

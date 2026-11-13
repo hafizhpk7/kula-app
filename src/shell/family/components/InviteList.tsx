@@ -54,13 +54,13 @@ export const InviteList: React.FC<{ invites: Invite[] }> = ({ invites }) => {
             <button
               type="button"
               onClick={async () => {
-                if (confirm("Cabut undangan ini?")) {
+                if (confirm("Batalkan undangan ini? Kodenya tidak bisa dipakai lagi.")) {
                   await familyService.revokeInvite(inv.code);
-                  showToast("Undangan dicabut.");
+                  showToast("Undangan dibatalkan.");
                 }
               }}
-              title="Cabut undangan"
-              aria-label="Cabut undangan"
+              title="Batalkan undangan"
+              aria-label="Batalkan undangan"
               className="w-11 h-11 flex items-center justify-center rounded-full hover:bg-danger-tint text-danger-text transition cursor-pointer"
             >
               <Trash2 className="w-4 h-4" />

@@ -56,7 +56,7 @@ export const PengaturanPage: React.FC = () => {
           <div className="flex items-start gap-3">
             <UploadCloud className="w-5 h-5 text-primary shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <h2 className="text-[15px] font-bold text-text">Migrasi Data Tamu</h2>
+              <h2 className="text-[15px] font-bold text-text">Migrasi data tamu</h2>
               <p className="text-[13px] text-text-2 leading-relaxed">
                 Ada data keuangan tamu di perangkat ini yang belum diunggah ke akun Anda.
               </p>
@@ -97,7 +97,7 @@ export const PengaturanPage: React.FC = () => {
       {/* Integrasi Bayi */}
       <section className={kartu} aria-labelledby="blok-integrasi">
         <h2 id="blok-integrasi" className="font-display text-[16px] text-text">
-          Integrasi Modul Bayi
+          Integrasi modul Bayi
         </h2>
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
@@ -125,7 +125,7 @@ export const PengaturanPage: React.FC = () => {
       {/* Ekspor */}
       <section className={kartu} aria-labelledby="blok-ekspor">
         <h2 id="blok-ekspor" className="font-display text-[16px] text-text">
-          Ekspor Laporan Keuangan
+          Ekspor laporan keuangan
         </h2>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">

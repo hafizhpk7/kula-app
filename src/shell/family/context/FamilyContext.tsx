@@ -225,7 +225,7 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     if (!user || !family) return;
     selfInitiatedExitRef.current = true;
     await familyService.leaveFamily(user.uid, family.id);
-    showToast("Anda keluar dari keluarga.");
+    showToast("Anda sudah meninggalkan keluarga.");
   }, [user, family, showToast]);
 
   const handleRemoveMember = useCallback(
@@ -250,7 +250,7 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     async (name: string) => {
       if (!user || !family) return;
       await familyService.setOwnDisplayName(family.id, user.uid, name);
-      showToast("Nama diperbarui.");
+      showToast("Nama tampilan diperbarui.");
     },
     [user, family, showToast]
   );
@@ -259,7 +259,7 @@ export const FamilyProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     async (name: string) => {
       if (!family) return;
       await familyService.renameFamily(family.id, name);
-      showToast("Nama diperbarui.");
+      showToast("Nama keluarga diperbarui.");
     },
     [family, showToast]
   );

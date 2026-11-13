@@ -56,7 +56,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title="Buat Undangan Baru"
+      title="Buat undangan"
       titleId="buat-undangan-title"
       footer={
         !createdInvite ? (
@@ -74,7 +74,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
               disabled={creatingInvite}
               className="flex-1 rounded-full bg-primary text-primary-fg text-[15px] font-semibold min-h-[48px] cursor-pointer disabled:opacity-60"
             >
-              {creatingInvite ? "Membuat..." : "Buat"}
+              {creatingInvite ? "Membuat..." : "Buat undangan"}
             </button>
           </div>
         ) : (

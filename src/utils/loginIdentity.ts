@@ -8,7 +8,7 @@ export function normalizeUsername(input: string): string {
 export function validateUsername(input: string): string | null {
   const normalized = normalizeUsername(input);
   if (!normalized) {
-    return "Silakan masukkan username Anda.";
+    return "Isi username dulu.";
   }
   const regex = /^[a-z0-9._-]{3,32}$/;
   if (!regex.test(normalized)) {
@@ -23,7 +23,7 @@ export function resolveLoginEmail(
 ): { email: string } | { error: string } {
   const trimmed = (input || "").trim();
   if (!trimmed) {
-    return { error: "Silakan masukkan username Anda." };
+    return { error: "Isi username dulu." };
   }
 
   if (allowEmail && trimmed.includes("@")) {
@@ -79,7 +79,7 @@ export function formatLoginErrorMessage(err: any, signupEnabled: boolean): strin
     case "auth/invalid-email":
       return "Username atau kata sandi tidak cocok.";
     case "auth/too-many-requests":
-      return "Terlalu banyak percobaan gagal. Silakan tunggu beberapa saat sebelum mencoba lagi.";
+      return "Terlalu banyak percobaan gagal. Tunggu sebentar, lalu coba lagi.";
     case "auth/network-request-failed":
       return "Koneksi internet bermasalah. Periksa jaringan Anda dan coba lagi.";
     case "auth/user-disabled":
@@ -89,6 +89,6 @@ export function formatLoginErrorMessage(err: any, signupEnabled: boolean): strin
     case "app/auth-disabled":
       return "Fitur ini sedang dinonaktifkan.";
     default:
-      return "Terjadi kendala saat masuk. Silakan coba lagi.";
+      return "Terjadi kendala saat masuk. Coba lagi.";
   }
 }

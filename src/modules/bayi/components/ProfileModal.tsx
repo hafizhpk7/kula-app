@@ -77,7 +77,7 @@ export const ProfileModal: React.FC<Props> = ({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!panggilan.trim()) {
-      setErrorMsg("Nama panggilan anak harus diisi.");
+      setErrorMsg("Isi nama panggilan anak dulu.");
       return;
     }
 
@@ -113,7 +113,7 @@ export const ProfileModal: React.FC<Props> = ({
       isOpen={isOpen}
       onClose={onClose}
       titleId="profil-title"
-      title={mode === "list" ? "Kelola profil anak" : mode === "add" ? "Tambah profil anak" : "Edit profil anak"}
+      title={mode === "list" ? "Kelola profil anak" : mode === "add" ? "Tambah profil anak" : "Ubah profil anak"}
     >
         <div className="space-y-4 text-[14px]">
           {errorMsg && (
@@ -173,7 +173,7 @@ export const ProfileModal: React.FC<Props> = ({
                           type="button"
                           onClick={() => startEdit(p)}
                           className="p-2 text-text-2 hover:text-text rounded-control min-h-[44px] min-w-[44px] flex items-center justify-center cursor-pointer"
-                          aria-label={`Edit ${p.panggilan}`}
+                          aria-label={`Ubah ${p.panggilan}`}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>

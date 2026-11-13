@@ -92,7 +92,7 @@ export const CreateFamilySheet: React.FC<{ isOpen: boolean; onClose: () => void 
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title="Buat Keluarga"
+      title="Buat keluarga"
       titleId="buat-keluarga-title"
       footer={
         <button

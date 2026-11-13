@@ -42,7 +42,7 @@ export const JoinPage: React.FC = () => {
   const handlePreview = async (codeToTest?: string) => {
     const code = normalizeInviteCode(codeToTest || rawCode);
     if (!code) {
-      setErrorMsg("Format kode undangan tidak valid (harus 10 karakter).");
+      setErrorMsg("Kode undangan harus 10 karakter, contoh ABCDE-12345.");
       return;
     }
 
@@ -69,7 +69,7 @@ export const JoinPage: React.FC = () => {
 
   const handleJoin = async () => {
     if (!user) {
-      setErrorMsg("Silakan masuk terlebih dahulu untuk bergabung ke keluarga.");
+      setErrorMsg("Masuk dulu untuk bergabung ke keluarga.");
       return;
     }
     if (!invite) return;
@@ -93,13 +93,13 @@ export const JoinPage: React.FC = () => {
   };
 
   return (
-    <AppShell title="Gabung Keluarga" back={{ to: "/keluarga", label: "Keluarga" }}>
+    <AppShell title="Gabung keluarga" back={{ to: "/keluarga", label: "Keluarga" }}>
       <div className="max-w-xl space-y-6 animate-fadeIn">
         {isGuest && (
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
             <AlertCircle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>
-              Tamu tidak dapat membuat atau bergabung ke keluarga. Silakan masuk dengan akun terdaftar di halaman Masuk
+              Tamu tidak bisa membuat atau bergabung ke keluarga. Silakan masuk dengan akun terdaftar di halaman Masuk
               untuk bergabung.
             </p>
           </div>
@@ -162,7 +162,7 @@ export const JoinPage: React.FC = () => {
                 <CheckCircle className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h2 className="font-bold text-base">Undangan Ditemukan</h2>
+                <h2 className="font-bold text-base">Undangan ditemukan</h2>
                 <p className="text-[12px] text-text-2">Kode: {formatInviteCode(invite.code)}</p>
               </div>
             </div>

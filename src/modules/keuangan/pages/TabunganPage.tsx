@@ -106,7 +106,7 @@ export const TabunganPage: React.FC = () => {
       ) : sortedGoals.length === 0 ? (
         <EmptyState
           title="Belum ada target tabungan"
-          description="Mulai buat target pertama untuk memotivasi menabung secara berkala."
+          description="Tambah target, misalnya Dana darurat, lalu setor sedikit demi sedikit."
           action={
             <button
               type="button"
@@ -114,7 +114,7 @@ export const TabunganPage: React.FC = () => {
               className="inline-flex items-center gap-2 px-5 min-h-[44px] rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[14px] font-semibold cursor-pointer transition"
             >
               <Plus className="w-4 h-4" />
-              <span>Buat target</span>
+              <span>Tambah target</span>
             </button>
           }
         />
@@ -191,8 +191,8 @@ export const TabunganPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setMenuGoal(goal)}
-                    aria-label={`Aksi lain untuk ${goal.name}`}
-                    title="Aksi lain"
+                    aria-label={`Opsi target ${goal.name}`}
+                    title="Opsi target"
                     className="w-12 min-h-[48px] rounded-full border border-border-strong text-text-2 hover:text-text hover:bg-surface-sunken transition cursor-pointer inline-flex items-center justify-center"
                   >
                     <MoreHorizontal className="w-5 h-5" />
@@ -224,7 +224,7 @@ export const TabunganPage: React.FC = () => {
               }}
             >
               <Edit2 className="w-4 h-4 text-text-2" />
-              <span>Edit target</span>
+              <span>Ubah target</span>
             </button>
             <button
               type="button"

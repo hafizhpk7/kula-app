@@ -49,7 +49,7 @@ export const CategoryManager: React.FC = () => {
       <div>
         <h2 className="text-[16px] font-display text-text">Kategori transaksi</h2>
         <p className="text-[12px] text-text-2">
-          Kategori bawaan sistem tidak dapat diubah. Anda dapat menambah atau mengarsipkan kategori kustom.
+          Kategori bawaan tidak bisa diubah. Anda bisa menambah atau mengarsipkan kategori kustom.
         </p>
       </div>
 

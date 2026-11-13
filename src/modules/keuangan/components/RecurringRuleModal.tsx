@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
+import { judulFormulir } from "../../../config/copy";
 import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { RecurringFrequency, RecurringRule, TxType } from "../types";
@@ -132,7 +133,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
-      title={isEdit ? "Ubah aturan berulang" : "Tambah aturan berulang"}
+      title={judulFormulir(isEdit, "aturan berulang")}
       titleId="rule-title"
       footer={
         <div className="flex items-center gap-2">
@@ -149,7 +150,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             disabled={submitting}
             className="flex-1 rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[15px] font-semibold min-h-[48px] transition cursor-pointer disabled:opacity-50"
           >
-            Simpan Aturan
+            Simpan aturan
           </button>
         </div>
       }

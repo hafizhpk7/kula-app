@@ -236,8 +236,8 @@ export const ScheduleTab: React.FC<Props> = ({
           }
           description={
             segmen === "perlu" && filterAktif === 0
-              ? "Semua imunisasi yang jatuh tempo sudah selesai. Lihat tab Semua untuk seluruh jadwal."
-              : "Coba ubah segmen atau reset filter."
+              ? "Semua imunisasi yang jatuh tempo sudah selesai. Kerja bagus! Lihat tab Semua untuk seluruh jadwal."
+              : "Filter atau segmen yang dipilih menyembunyikan semua jadwal."
           }
           action={
             filterAktif > 0 ? (
@@ -246,7 +246,7 @@ export const ScheduleTab: React.FC<Props> = ({
                 onClick={() => setFilters(FILTER_AWAL)}
                 className="px-5 py-2.5 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[44px] hover:bg-surface-sunken transition cursor-pointer"
               >
-                Reset filter
+                Hapus filter
               </button>
             ) : undefined
           }

@@ -53,7 +53,7 @@ export const FamilyPage: React.FC = () => {
       <AppShell title="Keluarga">
         <div className="max-w-xl p-6 bg-surface border border-border rounded-card text-center space-y-3">
           <Users className="w-10 h-10 text-primary mx-auto" />
-          <h2 className="text-lg font-bold">Akun Diperlukan</h2>
+          <h2 className="text-lg font-bold">Akun diperlukan</h2>
           <p className="text-[13px] text-text-2 max-w-sm mx-auto">
             Mode tamu tidak dapat membuat atau bergabung ke keluarga. Masuk dengan akun terdaftar untuk berbagi catatan imunisasi dan keuangan.
           </p>
@@ -263,7 +263,7 @@ export const FamilyPage: React.FC = () => {
       <RenameSheet
         isOpen={editingName}
         onClose={() => setEditingName(false)}
-        title="Ubah Nama Keluarga"
+        title="Ubah nama keluarga"
         initialValue={family.name}
         validate={validateFamilyName}
         onSave={(v) => actions.renameFamily(v)}
@@ -271,7 +271,7 @@ export const FamilyPage: React.FC = () => {
       <RenameSheet
         isOpen={selfNameModalOpen}
         onClose={() => setSelfNameModalOpen(false)}
-        title="Ubah Nama Tampilan"
+        title="Ubah nama tampilan"
         initialValue={me?.displayName || ""}
         validate={validateDisplayName}
         onSave={(v) => actions.setOwnDisplayName(v)}

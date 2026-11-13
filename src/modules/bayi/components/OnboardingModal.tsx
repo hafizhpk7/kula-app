@@ -20,7 +20,7 @@ export const OnboardingModal: React.FC<Props> = ({ isOpen, onComplete }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!panggilan.trim()) {
-      setErrorMsg("Mohon masukkan nama panggilan anak.");
+      setErrorMsg("Isi nama panggilan anak dulu.");
       return;
     }
     const newId = "child-" + Date.now();
