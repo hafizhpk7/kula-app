@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { ChevronDown, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { buildQuickMarkRecord } from "../state/transitions";
@@ -54,6 +55,7 @@ export const ScheduleTab: React.FC<Props> = ({
   onDeleteCustomRow,
   onOpenVaccineDetail
 }) => {
+  const grup1 = useRadioGroup();
   const lebar = useLayarLebar();
   const [filters, setFilters] = useState<JadwalFilters>(FILTER_AWAL);
   const [segmen, setSegmen] = useState<Segmen>("perlu");
@@ -184,7 +186,7 @@ export const ScheduleTab: React.FC<Props> = ({
       />
 
       {/* 2. Tiga segmen status */}
-      <div className="flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Status jadwal">
+      <div className="flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" {...grup1} aria-label="Status jadwal">
         {(
           [
             { id: "perlu", label: "Perlu dilakukan" },
@@ -340,7 +342,7 @@ export const ScheduleTab: React.FC<Props> = ({
                 <col className="w-[168px]" />
                 <col className="w-[88px]" />
               </colgroup>
-              <thead className="bg-surface-sunken border-b border-border text-[11px] font-semibold text-text-2 uppercase tracking-wider">
+              <thead className="bg-surface-sunken border-b border-border text-[12px] font-semibold text-text-2 uppercase tracking-wider">
                 <tr>
                   <th scope="col" className="py-3 px-4 text-left">
                     Status
@@ -439,7 +441,7 @@ export const ScheduleTab: React.FC<Props> = ({
                             <div>
                               <span className="text-text">{priceInfo.text}</span>
                               {priceInfo.warningNote && (
-                                <span className="block text-[10px] text-warning-text bg-warning-tint border border-warning/20 rounded px-1.5 py-0.5 mt-0.5 w-max font-medium">
+                                <span className="block text-[12px] text-warning-text bg-warning-tint border border-warning/20 rounded px-1.5 py-0.5 mt-0.5 w-max font-medium">
                                   {priceInfo.warningNote}
                                 </span>
                               )}

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Link } from "react-router-dom";
 import { ExternalLink, Plus, SlidersHorizontal } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
@@ -44,6 +45,7 @@ function labelHari(date: string): string {
 const signed = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${formatRupiah(Math.abs(n))}`;
 
 export const TransaksiPage: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { selectedMonth, setSelectedMonth, config, entries } = useFinance();
   const { members } = useFamily();
   const { user } = useAuth();
@@ -109,7 +111,7 @@ export const TransaksiPage: React.FC = () => {
         <>
           {/* Segmen jenis + tombol Filter */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1 bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Jenis transaksi">
+            <div className="flex items-center gap-1 bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" {...grup1} aria-label="Jenis transaksi">
               {SEGMEN.map((s) => (
                 <button
                   key={s.id}
@@ -133,7 +135,7 @@ export const TransaksiPage: React.FC = () => {
               <SlidersHorizontal className="w-4 h-4" />
               <span>Filter</span>
               {filterAktif > 0 && (
-                <span className="min-w-5 h-5 px-1 rounded-full bg-mod-uang text-mod-uang-fg text-[11px] font-semibold flex items-center justify-center">
+                <span className="min-w-5 h-5 px-1 rounded-full bg-mod-uang text-mod-uang-fg text-[12px] font-semibold flex items-center justify-center">
                   {filterAktif}
                 </span>
               )}
@@ -206,7 +208,7 @@ export const TransaksiPage: React.FC = () => {
                             }}
                             className={`px-4 py-3 min-h-[56px] flex items-center justify-between gap-3 ${
                               !entry.readOnly
-                                ? "hover:bg-surface-sunken/60 cursor-pointer focus:outline-none focus:bg-surface-sunken/80"
+                                ? "hover:bg-surface-sunken/60 cursor-pointer focus-visible:bg-surface-sunken/80"
                                 : ""
                             } transition`}
                           >
@@ -214,7 +216,7 @@ export const TransaksiPage: React.FC = () => {
                               <div className="flex items-center gap-2 flex-wrap">
                                 <span className="text-[14px] font-medium text-text truncate">{catName}</span>
                                 {entry.source === "vaccine" && (
-                                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-info-tint text-info font-medium border border-info/20 flex items-center gap-1">
+                                  <span className="text-[12px] px-2 py-0.5 rounded-full bg-info-tint text-info font-medium border border-info/20 flex items-center gap-1">
                                     <span>Dari jadwal vaksin</span>
                                     <Link
                                       to={bayiBiayaPath}

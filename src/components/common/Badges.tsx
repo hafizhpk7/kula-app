@@ -1,4 +1,5 @@
 import React from "react";
+import { AlertTriangle, Check, Circle, Clock } from "lucide-react";
 import { Gratis, ScheduleItemStatus, Status } from "../../types";
 
 interface StatusDotProps {
@@ -18,21 +19,21 @@ export const StatusIndicator: React.FC<StatusDotProps> = ({ status, label }) => 
     case "Selesai":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] text-[12px] bg-primary-tint text-primary-text font-medium border border-primary/20">
-          <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+          <Check className="w-3 h-3 shrink-0" strokeWidth={3} aria-hidden="true" />
           <span>{label || "Selesai"}</span>
         </span>
       );
     case "Segera":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] text-[12px] bg-warning-tint text-warning-text font-medium border border-warning/25">
-          <span className="w-1.5 h-1.5 rounded-full bg-warning shrink-0" />
+          <Clock className="w-3 h-3 shrink-0" strokeWidth={2.5} aria-hidden="true" />
           <span>{label || "Segera (≤30 hr)"}</span>
         </span>
       );
     case "Terlambat":
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] text-[12px] bg-danger-tint text-danger-text font-medium border border-danger/25">
-          <span className="w-1.5 h-1.5 rounded-full bg-danger shrink-0" />
+          <AlertTriangle className="w-3 h-3 shrink-0" strokeWidth={2.5} aria-hidden="true" />
           <span>{label || "Terlambat"}</span>
         </span>
       );
@@ -40,7 +41,7 @@ export const StatusIndicator: React.FC<StatusDotProps> = ({ status, label }) => 
     default:
       return (
         <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[6px] text-[12px] bg-surface-sunken text-text-2 border border-border">
-          <span className="w-1.5 h-1.5 rounded-full bg-border-strong shrink-0" />
+          <Circle className="w-3 h-3 shrink-0" strokeWidth={2.5} aria-hidden="true" />
           <span>{label || "Terjadwal"}</span>
         </span>
       );

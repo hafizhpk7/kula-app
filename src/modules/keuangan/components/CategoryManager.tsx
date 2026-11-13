@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Plus, Archive, ArchiveRestore, Edit2, Check, X, Shield } from "lucide-react";
 import { IconButton } from "../../../components/common/IconButton";
 import { useFinance } from "../state/FinanceContext";
@@ -7,6 +8,7 @@ import { getAllCategories } from "../utils/categories";
 
 /** Daftar kategori + tambah/ubah nama/arsip (isi lama halaman Anggaran, tidak diubah perilakunya). */
 export const CategoryManager: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { config, addCategory, renameCategory, setCategoryArchived } = useFinance();
 
   const [newCatName, setNewCatName] = useState("");
@@ -56,7 +58,7 @@ export const CategoryManager: React.FC = () => {
         <p className="text-[13px] font-medium text-text">Tambah kategori kustom</p>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <div className="flex bg-surface p-1 rounded-chip border border-border shrink-0" role="radiogroup">
+          <div className="flex bg-surface p-1 rounded-chip border border-border shrink-0" role="radiogroup" {...grup1}>
             <button
               type="button"
               role="radio"
@@ -120,7 +122,7 @@ export const CategoryManager: React.FC = () => {
             <div key={cat.id} className="py-3 flex items-center justify-between gap-3">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <span
-                  className={`text-[11px] px-2 py-0.5 rounded-full font-medium shrink-0 ${
+                  className={`text-[12px] px-2 py-0.5 rounded-full font-medium shrink-0 ${
                     cat.type === "income"
                       ? "bg-primary-tint text-primary-text"
                       : "bg-danger-tint text-danger-text"
@@ -156,7 +158,7 @@ export const CategoryManager: React.FC = () => {
                 )}
 
                 {cat.isSystem && (
-                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-surface-sunken text-text-3 font-medium border border-border shrink-0 flex items-center gap-0.5">
+                  <span className="text-[12px] px-1.5 py-0.5 rounded bg-surface-sunken text-text-3 font-medium border border-border shrink-0 flex items-center gap-0.5">
                     <Shield className="w-2.5 h-2.5" />
                     <span>Bawaan</span>
                   </span>

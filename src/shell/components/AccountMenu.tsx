@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRadioGroup } from "../../hooks/useRadioGroup";
 import { useNavigate } from "react-router-dom";
 import { LogOut, LogIn, Settings, Users, Sun, Moon, Laptop } from "lucide-react";
 import { LOGIN_EMAIL_DOMAIN } from "../../config/app";
@@ -15,6 +16,7 @@ const TEMA: { id: ThemeMode; icon: React.ElementType; label: string }[] = [
 
 /** Avatar + lembar akun. Sama di semua layar: Keluarga, Pengaturan, Tema, Keluar/Masuk. */
 export const AccountMenu: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { user, isGuest, signOut, cloudSyncStatus } = useAuth();
   const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
@@ -82,7 +84,7 @@ export const AccountMenu: React.FC = () => {
 
           <div>
             <p className="text-[12px] font-semibold text-text-3 uppercase tracking-wider mb-2">Tampilan</p>
-            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup" aria-label="Tema">
+            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup" {...grup1} aria-label="Tema">
               {TEMA.map((t) => {
                 const Icon = t.icon;
                 const aktif = theme === t.id;

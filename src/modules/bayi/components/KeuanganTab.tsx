@@ -196,7 +196,7 @@ export const KeuanganTab: React.FC<Props> = ({
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
             <XAxis dataKey="name" tick={{ fontSize: 12, fill: "var(--text-2)" }} />
-            <YAxis tick={{ fontSize: 11, fill: "var(--text-2)" }} tickFormatter={(v) => `${Math.round(v / 1000000)}jt`} />
+            <YAxis tick={{ fontSize: 12, fill: "var(--text-2)" }} tickFormatter={(v) => `${Math.round(v / 1000000)}jt`} />
             <Tooltip
               formatter={(val: any) => [formatRupiah(Number(val)), ""]}
               contentStyle={{
@@ -265,7 +265,7 @@ export const KeuanganTab: React.FC<Props> = ({
                             <span>·</span>
                             <CategoryTag gratis={row.gratis} />
                             {priceDisplay.warningNote && (
-                              <span className="inline-block text-[10px] text-warning-text bg-warning-tint border border-warning/30 rounded px-1.5 py-0.5 font-medium">
+                              <span className="inline-block text-[12px] text-warning-text bg-warning-tint border border-warning/30 rounded px-1.5 py-0.5 font-medium">
                                 {priceDisplay.warningNote}
                               </span>
                             )}

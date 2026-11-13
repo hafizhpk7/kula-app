@@ -103,19 +103,19 @@ export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = fa
                         <X className="w-4 h-4" />
                       </IconButton>
                     </div>
-                    {editError && <p className="text-[11px] text-danger-text">{editError}</p>}
+                    {editError && <p className="text-[12px] text-danger-text">{editError}</p>}
                   </div>
                 ) : (
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-[14px] font-medium text-text truncate">{w.name}</span>
                       {isDefault && (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-primary-tint text-primary-text border border-primary/20">
+                        <span className="text-[12px] font-medium px-2 py-0.5 rounded-full bg-primary-tint text-primary-text border border-primary/20">
                           Utama
                         </span>
                       )}
                       {w.archived && (
-                        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-surface-sunken text-text-3 border border-border">
+                        <span className="text-[12px] font-medium px-2 py-0.5 rounded-full bg-surface-sunken text-text-3 border border-border">
                           Diarsipkan
                         </span>
                       )}

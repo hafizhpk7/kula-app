@@ -86,7 +86,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
         return;
       }
       if (e.key !== "Tab") return;
-      const daftar = Array.from(panel.querySelectorAll<HTMLElement>(FOKUSABLE));
+      const daftar = Array.from(panel.querySelectorAll<HTMLElement>(FOKUSABLE)).filter((el) => el.tabIndex >= 0);
       if (daftar.length === 0) {
         e.preventDefault();
         panel.focus();
@@ -105,8 +105,48 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
     };
     document.addEventListener("keydown", onKey);
 
+    // MOB-6: keyboard layar (iOS Safari tidak ikut mengecilkan layout viewport). Saat keyboard terbuka,
+    // lapisan lembar mengikuti visualViewport supaya footer (Simpan) tidak tertutup.
+    const vv = window.visualViewport;
+    const ikutiViewport = () => {
+      if (!vv) return;
+      const keyboardTerbuka = vv.height < window.innerHeight - 80;
+      if (keyboardTerbuka) {
+        overlay.style.top = `${vv.offsetTop}px`;
+        overlay.style.height = `${vv.height}px`;
+        overlay.style.bottom = "auto";
+      } else {
+        overlay.style.top = "";
+        overlay.style.height = "";
+        overlay.style.bottom = "";
+      }
+    };
+    vv?.addEventListener("resize", ikutiViewport);
+    vv?.addEventListener("scroll", ikutiViewport);
+    ikutiViewport();
+    // Kolom yang difokuskan harus kelihatan di atas keyboard
+    const onFokus = (e: FocusEvent) => {
+      const el = e.target as HTMLElement | null;
+      if (el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName)) {
+        setTimeout(() => el.scrollIntoView({ block: "nearest" }), 250);
+      }
+    };
+    panel.addEventListener("focusin", onFokus);
+
+    // MOB-7: iOS tidak menghormati overflow:hidden pada body. Gulir di luar area isi tidak boleh
+    // menggeser halaman di belakang; gulir di dalam isi dijaga overscroll-contain.
+    const cegahGulir = (e: TouchEvent) => {
+      if (tumpukan[tumpukan.length - 1] !== overlay) return;
+      if (!bodyRef.current?.contains(e.target as Node)) e.preventDefault();
+    };
+    overlay.addEventListener("touchmove", cegahGulir, { passive: false });
+
     return () => {
       document.removeEventListener("keydown", onKey);
+      vv?.removeEventListener("resize", ikutiViewport);
+      vv?.removeEventListener("scroll", ikutiViewport);
+      panel.removeEventListener("focusin", onFokus);
+      overlay.removeEventListener("touchmove", cegahGulir);
       const i = tumpukan.indexOf(overlay);
       if (i >= 0) tumpukan.splice(i, 1);
       if (tumpukan.length === 0) document.body.style.overflow = overflowAsli;

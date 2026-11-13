@@ -138,7 +138,7 @@ export const LauncherPage: React.FC = () => {
           <p className="text-[13px] text-sky-ink-2 leading-snug mt-0.5 truncate">{ringkasan[mod.id] ?? mod.description}</p>
         </div>
         {redup ? (
-          <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface-sunken text-text-2 shrink-0">
+          <span className="inline-flex items-center gap-1 text-[12px] font-semibold px-2.5 py-1 rounded-full bg-surface-sunken text-text-2 shrink-0">
             <Sparkles className="w-3 h-3 text-warning-text shrink-0" />
             Segera hadir
           </span>

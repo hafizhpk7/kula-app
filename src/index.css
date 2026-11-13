@@ -294,7 +294,9 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
-textarea:focus-visible {
+textarea:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible,
+summary:focus-visible {
   outline: 2px solid var(--focus) !important;
   outline-offset: 2px !important;
 }
@@ -342,7 +344,7 @@ nav a {
   }
 }
 
-/* Reduced motion preference */
+/* Reduced motion: dari sistem (prefers-reduced-motion) atau pilihan "Kurangi animasi" di Pengaturan */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
     animation-duration: 0.01ms !important;
@@ -350,6 +352,14 @@ nav a {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+[data-motion="reduce"] *,
+[data-motion="reduce"] ::before,
+[data-motion="reduce"] ::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
 }
 
 /* Custom scrollbars matching theme tokens */

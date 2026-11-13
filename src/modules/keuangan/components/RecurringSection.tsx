@@ -75,13 +75,13 @@ export const RecurringSection: React.FC<{ embedded?: boolean }> = ({ embedded = 
                       <span className="text-[14px] font-medium text-text">
                         {rule.name || resolveCategoryName(config, rule.categoryId)}
                       </span>
-                      <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${
+                      <span className={`text-[12px] font-medium px-2 py-0.5 rounded-full ${
                         rule.type === "income" ? "bg-primary-tint text-primary-text" : "bg-danger-tint text-danger-text"
                       }`}>
                         {rule.type === "income" ? "Pemasukan" : "Pengeluaran"}
                       </span>
                       {needsInspection && (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-medium px-2 py-0.5 rounded-full bg-danger-tint text-danger-text border border-danger/20">
+                        <span className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-0.5 rounded-full bg-danger-tint text-danger-text border border-danger/20">
                           <AlertCircle className="w-3 h-3" />
                           <span>Perlu diperiksa</span>
                         </span>

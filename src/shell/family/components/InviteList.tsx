@@ -21,7 +21,7 @@ export const InviteList: React.FC<{ invites: Invite[] }> = ({ invites }) => {
         <li key={inv.code} className="px-4 py-3 flex items-center justify-between gap-3">
           <div className="min-w-0">
             <span className="font-mono font-bold text-[15px] tracking-wider text-text">{formatInviteCode(inv.code)}</span>
-            <p className="text-[11px] text-text-2">
+            <p className="text-[12px] text-text-2">
               Sebagai {RELATION_LABELS[inv.relation]} ({ROLE_LABELS[inv.role]}) • Berlaku sampai{" "}
               {new Date(inv.expiresAt).toLocaleDateString("id-ID", {
                 day: "numeric",

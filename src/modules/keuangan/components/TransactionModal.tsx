@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Link } from "react-router-dom";
 import { Trash2, ChevronDown } from "lucide-react";
 import { useFinance } from "../state/FinanceContext";
@@ -25,6 +26,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   onClose,
   initialEntry
 }) => {
+  const grup1 = useRadioGroup();
+  const grup2 = useRadioGroup();
   const { config, addTransaction, updateTransaction, deleteTransaction } = useFinance();
 
   const isEdit = !!initialEntry;
@@ -173,7 +176,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         {/* Jenis */}
         <div
           className="flex bg-surface-sunken p-1 rounded-full border border-border"
-          role="radiogroup"
+          role="radiogroup" {...grup1}
           aria-label="Jenis transaksi"
         >
           {(
@@ -228,7 +231,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           <p id="tx-category-label" className="text-[13px] font-medium text-text-2">
             Kategori
           </p>
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="tx-category-label" {...ariaField("tx-category", errors.categoryId)}>
+          <div className="flex flex-wrap gap-2" role="radiogroup" {...grup2} aria-labelledby="tx-category-label" {...ariaField("tx-category", errors.categoryId)}>
             {activeCategories.map((cat, i) => {
               const dipilih = categoryId === cat.id;
               const terakhir = cat.id === idTerakhir && i === 0;
@@ -250,7 +253,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   }`}
                 >
                   {cat.name}
-                  {terakhir && <span className="ml-1.5 text-[11px] font-normal opacity-70">Terakhir</span>}
+                  {terakhir && <span className="ml-1.5 text-[12px] font-normal opacity-70">Terakhir</span>}
                 </button>
               );
             })}

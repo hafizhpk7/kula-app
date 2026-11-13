@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Search, X, ChevronRight } from "lucide-react";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { EmptyState } from "../../../components/common/EmptyState";
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }) => {
+  const grup1 = useRadioGroup();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
 
@@ -72,7 +74,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
         )}
       </div>
 
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" role="radiogroup" aria-label="Kategori vaksin">
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" role="radiogroup" {...grup1} aria-label="Kategori vaksin">
         {[
           { id: "all", label: "Semua" },
           { id: "program", label: "Program pemerintah" },

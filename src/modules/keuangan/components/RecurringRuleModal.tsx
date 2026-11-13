@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { RecurringFrequency, RecurringRule, TxType } from "../types";
@@ -21,6 +22,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
   initialRule,
   onSave
 }) => {
+  const grup1 = useRadioGroup();
   const { config } = useFinance();
   const isEdit = !!initialRule;
 
@@ -177,7 +179,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
 
           <div className="space-y-1">
             <label className="text-[13px] font-medium text-text">Jenis transaksi</label>
-            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup">
+            <div className="flex bg-surface-sunken p-1 rounded-control border border-border" role="radiogroup" {...grup1}>
               <button
                 type="button"
                 role="radio"

@@ -417,7 +417,7 @@ export const AuthScreen: React.FC = () => {
               <Sparkles className="w-4 h-4" />
               <span>Lanjutkan sebagai Tamu (Mode Demo Offline)</span>
             </button>
-            <p className="text-[11px] text-sky-ink-2">Data tetap tersimpan di browser Anda tanpa perlu mendaftar akun.</p>
+            <p className="text-[12px] text-sky-ink-2">Data tetap tersimpan di browser Anda tanpa perlu mendaftar akun.</p>
           </div>
         )}
       </div>

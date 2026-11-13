@@ -142,7 +142,7 @@ export const TabunganPage: React.FC = () => {
                     )}
                   </div>
                   <span
-                    className={`text-[11px] font-medium px-2.5 py-1 rounded-full shrink-0 inline-flex items-center gap-1 ${deadlineStatus.tone}`}
+                    className={`text-[12px] font-medium px-2.5 py-1 rounded-full shrink-0 inline-flex items-center gap-1 ${deadlineStatus.tone}`}
                   >
                     {tercapai && <Check className="w-3 h-3" aria-hidden="true" />}
                     {deadlineStatus.text}
@@ -158,7 +158,7 @@ export const TabunganPage: React.FC = () => {
 
                 <div className="space-y-1">
                   <div
-                    className="w-full bg-surface-sunken h-2.5 rounded-full overflow-hidden border border-border/60"
+                    className="w-full bg-track h-2.5 rounded-full overflow-hidden border border-field"
                     role="progressbar"
                     aria-valuemin={0}
                     aria-valuemax={goal.targetAmount}

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { ChevronRight, AlertTriangle } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
 import { READING_MAX } from "../../../config/layout";
@@ -19,6 +20,7 @@ import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 type Segmen = "anggaran" | "kategori";
 
 export const AnggaranPage: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { selectedMonth, setSelectedMonth, config, entries, saveBudget } = useFinance();
   const lebar = useLayarLebar();
   const [segmen, setSegmen] = useState<Segmen>("anggaran");
@@ -92,7 +94,14 @@ export const AnggaranPage: React.FC = () => {
                 {formatRupiah(spent)} / {formatRupiah(budget || 0)}
               </span>
             </span>
-            <span className="block w-full h-2 bg-track rounded-full overflow-hidden">
+            <span
+              className="block w-full h-2.5 bg-track border border-field rounded-full overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.min(100, Math.round(st.ratio * 100))}
+              aria-label={`Anggaran ${cat.name} terpakai`}
+            >
               <span
                 className={`block h-full rounded-full transition-all duration-300 ${warna}`}
                 style={{ width: `${Math.min(100, Math.round(st.ratio * 100))}%` }}
@@ -176,7 +185,7 @@ export const AnggaranPage: React.FC = () => {
       {!lebar && (
         <div
           className="flex items-center gap-1 bg-surface-sunken p-1 rounded-full border border-border w-fit"
-          role="radiogroup"
+          role="radiogroup" {...grup1}
           aria-label="Bagian Anggaran"
         >
           {(

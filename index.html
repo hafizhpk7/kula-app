@@ -38,6 +38,9 @@
             document.documentElement.setAttribute("data-theme", "light");
             document.documentElement.classList.remove("dark");
           }
+          if (localStorage.getItem("kula_gerak") === "kurangi") {
+            document.documentElement.setAttribute("data-motion", "reduce");
+          }
           if (t !== "system") {
             var c = isDark ? "#143644" : "#FFFFFF";
             document.querySelectorAll('meta[name="theme-color"]').forEach(function (m) { m.setAttribute("content", c); });

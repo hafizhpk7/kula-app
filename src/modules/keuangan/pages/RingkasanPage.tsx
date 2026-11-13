@@ -148,7 +148,7 @@ export const RingkasanPage: React.FC = () => {
           </p>
           <div className="space-y-1">
             <div
-              className="w-full h-3 bg-track rounded-full overflow-hidden"
+              className="w-full h-3 bg-track border border-field rounded-full overflow-hidden"
               role="progressbar"
               aria-valuenow={persenTerpakai}
               aria-valuemin={0}
@@ -224,7 +224,14 @@ export const RingkasanPage: React.FC = () => {
                   {formatPersen(persen)}{lewat ? " · lewat batas" : hampir ? " · hampir habis" : ""}
                 </span>
               </div>
-              <div className="w-full h-2 bg-track rounded-full overflow-hidden">
+              <div
+                className="w-full h-2.5 bg-track border border-field rounded-full overflow-hidden"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.min(100, persen)}
+                aria-label={`Anggaran ${resolveCategoryName(config, row.categoryId)} terpakai`}
+              >
                 <div
                   className={`h-full rounded-full ${lewat ? "bg-danger" : hampir ? "bg-warning" : "bg-primary"}`}
                   style={{ width: `${Math.min(100, persen)}%` }}
@@ -269,7 +276,7 @@ export const RingkasanPage: React.FC = () => {
                     {resolveCategoryName(config, entry.categoryId)}
                   </span>
                   {entry.source === "vaccine" && (
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-info-tint text-info font-medium border border-info/20">
+                    <span className="text-[12px] px-2 py-0.5 rounded-full bg-info-tint text-info font-medium border border-info/20">
                       Dari jadwal vaksin
                     </span>
                   )}
@@ -326,8 +333,8 @@ export const RingkasanPage: React.FC = () => {
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartCategoryData} layout="vertical" margin={{ top: 5, right: 20, left: 40, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-              <XAxis type="number" tick={{ fill: "var(--text-2)", fontSize: 11 }} tickFormatter={(val) => `Rp ${val / 1000}k`} />
-              <YAxis type="category" dataKey="name" width={90} tick={{ fill: "var(--text)", fontSize: 11 }} />
+              <XAxis type="number" tick={{ fill: "var(--text-2)", fontSize: 12 }} tickFormatter={(val) => `Rp ${val / 1000}k`} />
+              <YAxis type="category" dataKey="name" width={90} tick={{ fill: "var(--text)", fontSize: 12 }} />
               <Tooltip formatter={(val: any) => [formatRupiah(Number(val) || 0), "Total"]} contentStyle={TOOLTIP_STYLE} />
               <Bar dataKey="total" fill="var(--primary)" radius={[0, 6, 6, 0]} />
             </BarChart>
@@ -343,8 +350,8 @@ export const RingkasanPage: React.FC = () => {
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={trendData} margin={{ top: 5, right: 10, left: 10, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
-            <XAxis dataKey="label" tick={{ fill: "var(--text-2)", fontSize: 11 }} />
-            <YAxis tick={{ fill: "var(--text-2)", fontSize: 11 }} tickFormatter={(val) => `${val / 1000}k`} />
+            <XAxis dataKey="label" tick={{ fill: "var(--text-2)", fontSize: 12 }} />
+            <YAxis tick={{ fill: "var(--text-2)", fontSize: 12 }} tickFormatter={(val) => `${val / 1000}k`} />
             <Tooltip
               formatter={(val: any, name: any) => [formatRupiah(Number(val) || 0), name === "income" ? "Pemasukan" : "Pengeluaran"]}
               contentStyle={TOOLTIP_STYLE}

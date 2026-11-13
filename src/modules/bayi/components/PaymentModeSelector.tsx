@@ -82,7 +82,7 @@ export const PaymentModeSelector: React.FC<Props> = ({
         <select
           value={paymentMode}
           onChange={(e) => onChange(e.target.value as PaymentMode)}
-          className="appearance-none bg-surface border border-border hover:border-border-strong rounded-chip pl-8 pr-8 py-1.5 min-h-[44px] text-[12px] sm:text-[13px] font-semibold text-text cursor-pointer shadow-xs focus:outline-none focus:border-primary transition"
+          className="appearance-none bg-surface border border-border hover:border-border-strong rounded-chip pl-8 pr-8 py-1.5 min-h-[44px] text-[12px] sm:text-[13px] font-semibold text-text cursor-pointer shadow-xs focus:border-primary transition"
           aria-label="Mode Simulasi Biaya"
         >
           <option value="HYBRID">Mode: Hybrid (Puskesmas & Swasta)</option>
@@ -132,13 +132,13 @@ export const PaymentModeSelector: React.FC<Props> = ({
                     </span>
                   </div>
                 </div>
-                <p className="text-[11px] text-text-2 leading-relaxed">
+                <p className="text-[12px] text-text-2 leading-relaxed">
                   {info.description}
                 </p>
               </div>
 
               <div className="pt-1 flex items-center justify-between">
-                <span className={`inline-block px-2 py-0.5 rounded-[5px] text-[10px] font-medium ${
+                <span className={`inline-block px-2 py-0.5 rounded-[5px] text-[12px] font-medium ${
                   isSelected
                     ? "bg-primary-tint text-primary-text border border-primary/20"
                     : "bg-surface text-text-3 border border-border"
@@ -147,7 +147,7 @@ export const PaymentModeSelector: React.FC<Props> = ({
                 </span>
 
                 {isSelected && (
-                  <span className="text-[11px] font-semibold text-primary">
+                  <span className="text-[12px] font-semibold text-primary">
                     Aktif
                   </span>
                 )}

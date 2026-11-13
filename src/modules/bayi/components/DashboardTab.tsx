@@ -203,7 +203,7 @@ export const DashboardTab: React.FC<Props> = ({
       </div>
       <div className="relative pt-5">
         <div
-          className="w-full bg-track rounded-full h-3 overflow-hidden"
+          className="w-full bg-track border border-field rounded-full h-3 overflow-hidden"
           role="progressbar"
           aria-valuenow={progressPercent}
           aria-valuemin={0}

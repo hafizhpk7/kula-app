@@ -112,8 +112,8 @@ export const AppShell: React.FC<AppShellProps> = ({
                       to={t.path}
                       title={t.label}
                       className={({ isActive }) =>
-                        `flex flex-col lg:flex-row items-center gap-1 lg:gap-2.5 px-2 lg:px-3 py-2.5 rounded-control text-[11px] lg:text-[14px] font-medium transition ${
-                          isActive ? `${tone.active} font-semibold` : "text-text-2 hover:text-text hover:bg-surface-sunken"
+                        `flex flex-col lg:flex-row items-center gap-1 lg:gap-2.5 px-2 lg:px-3 py-2.5 rounded-control text-[12px] lg:text-[14px] font-medium transition ${
+                          isActive ? `${tone.active} font-semibold shadow-[inset_3px_0_0_0_currentColor]` : "text-text-2 hover:text-text hover:bg-surface-sunken"
                         }`
                       }
                     >
@@ -141,7 +141,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 to={settings.path}
                 title={settings.label}
                 className={({ isActive }) =>
-                  `flex flex-col lg:flex-row items-center gap-1 lg:gap-2.5 px-2 lg:px-3 py-2.5 rounded-control text-[11px] lg:text-[13px] font-medium transition ${
+                  `flex flex-col lg:flex-row items-center gap-1 lg:gap-2.5 px-2 lg:px-3 py-2.5 rounded-control text-[12px] lg:text-[13px] font-medium transition ${
                     isActive ? "bg-surface text-text" : "text-text-2 hover:text-text hover:bg-surface-sunken"
                   }`
                 }
@@ -171,7 +171,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           {primaryAction.detail ? (
             <span className="flex flex-col items-start leading-tight min-w-0">
               <span>{primaryAction.shortLabel ?? primaryAction.label}</span>
-              <span className="text-[11px] font-medium opacity-80 truncate max-w-[150px]">{primaryAction.detail}</span>
+              <span className="text-[12px] font-medium opacity-80 truncate max-w-[150px]">{primaryAction.detail}</span>
             </span>
           ) : (
             <span>{primaryAction.shortLabel ?? primaryAction.label}</span>
@@ -192,8 +192,8 @@ export const AppShell: React.FC<AppShellProps> = ({
                 key={t.path}
                 to={t.path}
                 className={({ isActive }) =>
-                  `flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-full min-h-[52px] min-w-[44px] text-[11px] font-medium transition active:scale-95 ${
-                    isActive ? `${tone.active} font-bold` : "text-text-2 hover:text-text"
+                  `flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-full min-h-[52px] min-w-[44px] text-[12px] font-medium transition active:scale-95 ${
+                    isActive ? `${tone.active} font-bold shadow-[inset_0_-3px_0_0_currentColor]` : "text-text-2 hover:text-text"
                   }`
                 }
               >

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { KuraBerenang } from "./LautKura";
+import { gerakDikurangi } from "../../utils/gerak";
 
 /**
  * Perayaan kecil (gelembung warna-warni + Kura melompat) untuk momen seperti
@@ -45,7 +46,7 @@ export const PerayaanLayer: React.FC = () => {
       const kurangiGerak =
         typeof window.matchMedia === "function" &&
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (kurangiGerak) return;
+      if (kurangiGerak || gerakDikurangi()) return;
       setPutaran((n) => n + 1);
       setAktif(true);
       if (timer) clearTimeout(timer);

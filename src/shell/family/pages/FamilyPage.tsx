@@ -117,7 +117,7 @@ export const FamilyPage: React.FC = () => {
             <span className="flex items-center gap-1.5">
               <span>{isAdmin ? "Admin" : "Anggota"}</span>
               {isOwner && (
-                <span className="px-1.5 rounded-sm bg-primary-tint text-primary-text font-semibold text-[10px]">Pemilik</span>
+                <span className="px-1.5 rounded-sm bg-primary-tint text-primary-text font-semibold text-[12px]">Pemilik</span>
               )}
             </span>
           }

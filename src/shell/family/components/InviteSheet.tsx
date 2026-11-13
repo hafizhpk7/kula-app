@@ -144,7 +144,7 @@ export const InviteSheet: React.FC<{ isOpen: boolean; onClose: () => void }> = (
           <div>
             <span className="text-[12px] text-text-2">Kode Undangan:</span>
             <p className="text-2xl font-mono font-bold tracking-widest text-text">{formatInviteCode(createdInvite.code)}</p>
-            <p className="text-[11px] text-text-2 mt-1">
+            <p className="text-[12px] text-text-2 mt-1">
               Berlaku sampai{" "}
               {new Date(createdInvite.expiresAt).toLocaleDateString("id-ID", {
                 day: "numeric",

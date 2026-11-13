@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRadioGroup } from "../../hooks/useRadioGroup";
 import { Link } from "react-router-dom";
 import { LogOut, Sun, Moon, Laptop, ChevronRight, Baby, Wallet, Users } from "lucide-react";
 import { AppShell } from "../components/AppShell";
@@ -9,6 +10,7 @@ import { PageHeader } from "../../components/common/PageHeader";
 import { BottomSheet } from "../../components/common/BottomSheet";
 import { READING_MAX } from "../../config/layout";
 import { LOGIN_EMAIL_DOMAIN } from "../../config/app";
+import { gerakDikurangi, setGerakDikurangi } from "../../utils/gerak";
 import { getAccountName, emailToUsername } from "../../utils/loginIdentity";
 
 const kartu = "bg-surface rounded-card border border-border shadow-[var(--shadow-card)] overflow-hidden";
@@ -16,9 +18,11 @@ const baris =
   "flex items-center gap-3 px-4 py-3 min-h-[64px] hover:bg-surface-sunken/60 transition cursor-pointer group";
 
 export const GlobalSettingsPage: React.FC = () => {
+  const grup1 = useRadioGroup();
   const { user, isGuest, lastSyncTime, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
 
+  const [kurangiGerak, setKurangiGerak] = useState(gerakDikurangi());
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -103,7 +107,7 @@ export const GlobalSettingsPage: React.FC = () => {
 
             <div className="px-4 py-3 space-y-2">
               <h2 className="text-[15px] font-semibold text-text">Tampilan</h2>
-              <div className="inline-flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Tema aplikasi">
+              <div className="inline-flex bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" {...grup1} aria-label="Tema aplikasi">
                 {[
                   { id: "light", label: "Terang", icon: Sun },
                   { id: "dark", label: "Gelap", icon: Moon },
@@ -130,6 +134,38 @@ export const GlobalSettingsPage: React.FC = () => {
                   );
                 })}
               </div>
+            </div>
+          
+            <div className="px-4 py-3 flex items-center justify-between gap-4">
+              <span className="min-w-0">
+                <span id="label-gerak" className="block text-[15px] font-semibold text-text">
+                  Kurangi animasi
+                </span>
+                <span id="ket-gerak" className="block text-[12px] text-text-2">
+                  Mematikan gelombang, Kura berenang, dan perayaan.
+                </span>
+              </span>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={kurangiGerak}
+                aria-labelledby="label-gerak"
+                aria-describedby="ket-gerak"
+                onClick={() => {
+                  setGerakDikurangi(!kurangiGerak);
+                  setKurangiGerak(!kurangiGerak);
+                }}
+                className={`relative w-14 h-8 rounded-full shrink-0 border border-field transition cursor-pointer ${
+                  kurangiGerak ? "bg-primary" : "bg-track"
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white border border-field transition-transform ${
+                    kurangiGerak ? "translate-x-6" : ""
+                  }`}
+                />
+              </button>
             </div>
           </section>
 
