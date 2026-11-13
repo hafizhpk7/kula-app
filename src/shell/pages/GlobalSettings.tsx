@@ -8,7 +8,7 @@ import { useTheme, ThemeMode } from "../../context/ThemeContext";
 import { PWAInstallButton } from "../../components/common/PWAInstallButton";
 import { PageHeader } from "../../components/common/PageHeader";
 import { BottomSheet } from "../../components/common/BottomSheet";
-import { READING_MAX } from "../../config/layout";
+import { LEBAR_DUA_KOLOM, READING_MAX } from "../../config/layout";
 import { LOGIN_EMAIL_DOMAIN } from "../../config/app";
 import { gerakDikurangi, setGerakDikurangi } from "../../utils/gerak";
 import { getAccountName, emailToUsername } from "../../utils/loginIdentity";
@@ -48,9 +48,11 @@ export const GlobalSettingsPage: React.FC = () => {
   return (
     <AppShell title="Pengaturan">
       <div>
-        <div className={`${READING_MAX} space-y-4 animate-fadeIn`}>
+        <div className={`${READING_MAX} ${LEBAR_DUA_KOLOM} space-y-4 animate-fadeIn`}>
           <PageHeader title="Pengaturan" subtitle="Akun, keluarga, tampilan, dan pengaturan tiap modul." />
 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          <div className="space-y-4 min-w-0">
           {/* Profil akun */}
           <section className={kartu} aria-label="Profil akun">
             <div className="flex items-center gap-3.5 px-4 py-4 min-w-0">
@@ -169,6 +171,9 @@ export const GlobalSettingsPage: React.FC = () => {
             </div>
           </section>
 
+          </div>
+
+          <div className="space-y-4 min-w-0">
           {/* Pengaturan tiap modul */}
           <section aria-labelledby="blok-modul" className="space-y-2">
             <h2 id="blok-modul" className="text-[12px] font-semibold uppercase tracking-wide text-text-2 px-1">
@@ -219,6 +224,8 @@ export const GlobalSettingsPage: React.FC = () => {
               <span>Keluar</span>
             </button>
           )}
+          </div>
+          </div>
         </div>
       </div>
 

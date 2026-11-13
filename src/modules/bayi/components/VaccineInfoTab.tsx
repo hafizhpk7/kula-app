@@ -48,7 +48,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
   }, [filterCategory, searchQuery]);
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} xl:mx-auto`}>
       <PageHeader title="Info vaksin" subtitle="Manfaat, anjuran, dan reaksi setelah vaksin (KIPI) untuk 15 jenis vaksin anak." />
 
       {/* Pencarian: di layar ini mencari memang tujuannya, jadi tampil langsung */}

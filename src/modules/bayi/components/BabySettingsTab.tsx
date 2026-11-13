@@ -3,7 +3,7 @@ import { ExternalLink, Download, Calendar, FileSpreadsheet, RotateCcw, ChevronRi
 import { ASSUMPTIONS_AND_NOTES, OFFICIAL_SOURCES } from "../../../data/seed";
 import { useBayi } from "../context/BayiContext";
 import { exportToExcel, exportToIcs, downloadJsonBackup } from "../../../utils/export";
-import { READING_MAX } from "../../../config/layout";
+import { LEBAR_DUA_KOLOM, READING_MAX } from "../../../config/layout";
 import { getChildAge } from "../../../utils/dates";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Lipat } from "../../../components/common/Lipat";
@@ -41,9 +41,11 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
   };
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} ${LEBAR_DUA_KOLOM}`}>
       <PageHeader title="Pengaturan Bayi" subtitle="Anak, ekspor data, dan rujukan medis resmi." />
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div className="space-y-4 min-w-0">
       {/* Anak */}
       <section className={kartu} aria-labelledby="blok-anak">
         <h2 id="blok-anak" className="font-display text-[16px] text-text">
@@ -101,7 +103,9 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
           </div>
         )}
       </section>
+      </div>
 
+      <div className="space-y-4 min-w-0">
       {/* Rujukan medis (terlipat) */}
       <Lipat title="Rujukan medis resmi" summary={`${OFFICIAL_SOURCES.length} sumber resmi dan catatan asumsi`}>
         <div className="space-y-4">
@@ -214,6 +218,8 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
           )}
         </div>
       </ZonaBahaya>
+      </div>
+      </div>
     </div>
   );
 };

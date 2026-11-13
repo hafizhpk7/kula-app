@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Download, Trash2, UploadCloud } from "lucide-react";
-import { READING_MAX } from "../../../config/layout";
+import { LEBAR_DUA_KOLOM, READING_MAX } from "../../../config/layout";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Lipat } from "../../../components/common/Lipat";
 import { ZonaBahaya } from "../../../components/common/ZonaBahaya";
@@ -47,9 +47,11 @@ export const PengaturanPage: React.FC = () => {
     "flex-1 rounded-full bg-danger hover:bg-danger/90 text-white text-[15px] font-semibold min-h-[48px] transition cursor-pointer";
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} ${LEBAR_DUA_KOLOM}`}>
       <PageHeader title="Pengaturan Keuangan" subtitle="Dompet, transaksi berulang, integrasi, dan ekspor." />
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+      <div className="space-y-4 min-w-0">
       {/* Migrasi data tamu: hanya kalau relevan */}
       {migrationDecision === "prompt" && (
         <div className="bg-primary-tint border border-primary/30 rounded-card p-5 space-y-3 shadow-[var(--shadow-card)]">
@@ -94,6 +96,9 @@ export const PengaturanPage: React.FC = () => {
         <RecurringSection embedded />
       </Lipat>
 
+      </div>
+
+      <div className="space-y-4 min-w-0">
       {/* Integrasi Bayi */}
       <section className={kartu} aria-labelledby="blok-integrasi">
         <h2 id="blok-integrasi" className="font-display text-[16px] text-text">
@@ -167,6 +172,8 @@ export const PengaturanPage: React.FC = () => {
           </button>
         </div>
       </ZonaBahaya>
+      </div>
+      </div>
 
       <BottomSheet
         isOpen={showDeleteConfirm}

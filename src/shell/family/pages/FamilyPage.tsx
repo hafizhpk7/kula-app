@@ -110,7 +110,7 @@ export const FamilyPage: React.FC = () => {
           : null
       }
     >
-      <div className="space-y-4 max-w-3xl animate-fadeIn">
+      <div className="space-y-4 max-w-3xl lg:max-w-5xl lg:mx-auto animate-fadeIn">
         <PageHeader
           title={family.name}
           subtitle={
@@ -138,7 +138,7 @@ export const FamilyPage: React.FC = () => {
           <p className="text-[12px] text-text-2">Anda anggota biasa: hanya admin yang bisa mengundang dan mengelola anggota.</p>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-5 items-start">
           {/* Anggota */}
           <section aria-labelledby="blok-anggota" className="space-y-2">
             <h2 id="blok-anggota" className="text-[12px] font-semibold uppercase tracking-wide text-text-2 px-1">

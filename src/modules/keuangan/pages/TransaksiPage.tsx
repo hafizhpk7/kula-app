@@ -12,6 +12,7 @@ import { useCatatTransaksi } from "../components/FinanceLayout";
 import {
   FILTER_TRANSAKSI_AWAL,
   TransaksiFilters,
+  TransaksiFilterFields,
   TransaksiFilterSheet,
   hitungFilterTransaksi
 } from "../components/TransaksiFilterSheet";
@@ -86,7 +87,7 @@ export const TransaksiPage: React.FC = () => {
   const isMonthEmpty = monthEntries.length === 0;
 
   return (
-    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX} lg:max-w-[1200px]`}>
       <PageHeader
         title="Transaksi"
         subtitle={<MonthSelector selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />}
@@ -108,7 +109,8 @@ export const TransaksiPage: React.FC = () => {
           }
         />
       ) : (
-        <>
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 lg:items-start space-y-4 lg:space-y-0">
+        <div className="space-y-4 min-w-0">
           {/* Segmen jenis + tombol Filter */}
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1 bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" {...grup1} aria-label="Jenis transaksi">
@@ -130,7 +132,7 @@ export const TransaksiPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setFilterOpen(true)}
-              className="px-3.5 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 cursor-pointer hover:bg-surface-sunken transition"
+              className="lg:hidden px-3.5 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 cursor-pointer hover:bg-surface-sunken transition"
             >
               <SlidersHorizontal className="w-4 h-4" />
               <span>Filter</span>
@@ -143,7 +145,7 @@ export const TransaksiPage: React.FC = () => {
           </div>
 
           {/* Total sesuai filter */}
-          <p className="text-[13px] text-text-2">
+          <p className="text-[13px] text-text-2 lg:hidden">
             Keluar <strong className="text-text font-semibold font-tabular">−{formatRupiah(totalKeluar)}</strong> · Masuk{" "}
             <strong className="text-primary-text font-semibold font-tabular">+{formatRupiah(totalMasuk)}</strong>
           </p>
@@ -252,7 +254,55 @@ export const TransaksiPage: React.FC = () => {
               })}
             </div>
           )}
-        </>
+        </div>
+
+        {/* Panel samping (desktop): ringkasan sesuai filter dan filter langsung, tanpa lembar */}
+        <aside
+          aria-label="Ringkasan dan filter"
+          className="hidden lg:block sticky top-4 bg-surface rounded-card border border-border p-5 space-y-4 shadow-[var(--shadow-card)]"
+        >
+          <h2 className="font-display text-[16px] text-text">Ringkasan</h2>
+          <dl className="space-y-1.5 text-[13px]">
+            <div className="flex justify-between gap-3">
+              <dt className="text-text-2">Keluar</dt>
+              <dd className="font-semibold text-text font-tabular">−{formatRupiah(totalKeluar)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-text-2">Masuk</dt>
+              <dd className="font-semibold text-primary-text font-tabular">+{formatRupiah(totalMasuk)}</dd>
+            </div>
+            <div className="flex justify-between gap-3 pt-1.5 border-t border-border">
+              <dt className="text-text-2">Selisih</dt>
+              <dd className="font-semibold text-text font-tabular">{signed(totalMasuk - totalKeluar)}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-text-2">Jumlah transaksi</dt>
+              <dd className="font-semibold text-text font-tabular">{filteredList.length}</dd>
+            </div>
+          </dl>
+          <div className="pt-4 border-t border-border space-y-3">
+            <TransaksiFilterFields
+              filters={filters}
+              onChange={setFilters}
+              categories={allCategories}
+              members={members}
+              idAwal="tfp"
+            />
+            {(filterAktif > 0 || typeFilter !== "all") && (
+              <button
+                type="button"
+                onClick={() => {
+                  setTypeFilter("all");
+                  setFilters(FILTER_TRANSAKSI_AWAL);
+                }}
+                className="px-4 min-h-[44px] rounded-full border border-border-strong text-text text-[13px] font-medium cursor-pointer hover:bg-surface-sunken transition"
+              >
+                Hapus filter
+              </button>
+            )}
+          </div>
+        </aside>
+        </div>
       )}
 
       <TransaksiFilterSheet
