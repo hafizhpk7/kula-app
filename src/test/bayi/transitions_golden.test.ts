@@ -245,7 +245,7 @@ describe("Bayi pure state transitions (Golden Tests)", () => {
     expect(res.newRecord.biayaAktual).toBe(0);
   });
 
-  it("buildQuickMarkRecord defaults paid to Klinik and min cost", () => {
+  it("buildQuickMarkRecord: vaksin berbayar default ke Klinik tanpa biaya aktual (estimasi bukan pengeluaran nyata, UI-3)", () => {
     const rowBayar: ScheduleRow = {
       ...sampleRow,
       id: "r10",
@@ -257,6 +257,6 @@ describe("Bayi pure state transitions (Golden Tests)", () => {
     const res = transitions.buildQuickMarkRecord(sampleProfile1, rowBayar, "2024-03-01");
     expect(res.newRecord.diberikan).toBe(true);
     expect(res.newRecord.tempat).toBe("Klinik");
-    expect(res.newRecord.biayaAktual).toBe(350000);
+    expect("biayaAktual" in res.newRecord).toBe(false);
   });
 });

@@ -116,6 +116,12 @@ describe("9.4 Keuangan Keluarga UI Tests (T-UI-1 .. T-UI-20)", () => {
     const amountInput = screen.getByLabelText("Nominal");
     fireEvent.change(amountInput, { target: { value: "50000" } });
 
+    // Kategori tidak lagi pra-pilih (UI-5): tanpa memilih, Simpan ditolak
+    fireEvent.click(simpanBtn);
+    expect(await screen.findByText("Pilih kategori")).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("radio", { name: "Makan & Minum" }));
     fireEvent.click(simpanBtn);
 
     await waitFor(() => {

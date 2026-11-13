@@ -7,6 +7,7 @@ import { useToast } from "../../../components/common/Toast";
 import { todayLocal } from "../../keuangan/utils/dates";
 import * as transitions from "../state/transitions";
 import { useBayiRepository } from "../repository/useBayiRepository";
+import { formatIndonesianDate } from "../../../utils/dates";
 import { rayakan } from "../../../components/common/Perayaan";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
@@ -207,7 +208,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
 
       updateRecord(newRecord);
 
-      showToast(`Ditandai selesai: ${row.vaksin}.`, "Urungkan", () => {
+      showToast(`Ditandai selesai: ${row.vaksin}, ${formatIndonesianDate(newRecord.tanggalDiberikan)}.`, "Urungkan", () => {
         if (!assertCanWrite()) return;
         // Kembalikan record ke keadaan sebelumnya. Baris jadwal tidak pernah disentuh.
         updateRecord(previousRecord ?? { rowId: row.id, diberikan: false });

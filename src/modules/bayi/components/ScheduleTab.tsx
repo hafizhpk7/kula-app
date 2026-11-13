@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
 import { ChevronDown, ChevronRight, SlidersHorizontal } from "lucide-react";
 import { PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
+import { buildQuickMarkRecord } from "../state/transitions";
+import { todayLocal } from "../../keuangan/utils/dates";
 import { calculateDueDate, formatIndonesianDate, getScheduleStatus } from "../../../utils/dates";
 import { formatRupiahRange, getVaccinePriceDisplay } from "../../../utils/calc";
 import { CategoryTag, StatusIndicator } from "../../../components/common/Badges";
@@ -23,6 +25,8 @@ interface Props {
   onUpdatePaymentMode: (mode: PaymentMode) => void;
   onUpdateScheduleRow: (row: ScheduleRow) => void;
   onUpdateRecord: (record: Record) => void;
+  /** Jalur 1-tap yang sama dengan Ringkasan (tanggal lokal, tanpa biaya estimasi, toast + Urungkan) */
+  onQuickMarkGiven?: (row: ScheduleRow) => void;
   onAddCustomRow: (row: ScheduleRow) => void;
   onDeleteCustomRow: (rowId: string) => void;
   onOpenVaccineDetail: (ref: string) => void;
@@ -45,6 +49,7 @@ export const ScheduleTab: React.FC<Props> = ({
   onUpdatePaymentMode,
   onUpdateScheduleRow,
   onUpdateRecord,
+  onQuickMarkGiven,
   onAddCustomRow,
   onDeleteCustomRow,
   onOpenVaccineDetail
@@ -140,18 +145,19 @@ export const ScheduleTab: React.FC<Props> = ({
 
   const handleToggleGiven = (row: ScheduleRow, currentGiven: boolean) => {
     const existingRec = recordMap.get(row.id);
-    const todayStr = new Date().toISOString().split("T")[0];
 
-    const updatedRec: Record = {
-      ...(existingRec || { rowId: row.id }),
-      rowId: row.id,
-      diberikan: !currentGiven,
-      tanggalDiberikan: !currentGiven ? (existingRec?.tanggalDiberikan || todayStr) : existingRec?.tanggalDiberikan,
-      tempat: existingRec?.tempat || (row.gratis === "Ya" ? "Puskesmas" : "Klinik"),
-      biayaAktual: existingRec?.biayaAktual !== undefined ? existingRec.biayaAktual : row.gratis === "Ya" ? 0 : row.min
-    };
+    if (!currentGiven) {
+      // Menandai selesai: satu jalur dengan Ringkasan (UI-3)
+      if (onQuickMarkGiven) {
+        onQuickMarkGiven(row);
+      } else {
+        onUpdateRecord(buildQuickMarkRecord(profile, row, todayLocal()).newRecord);
+      }
+      return;
+    }
 
-    onUpdateRecord(updatedRec);
+    // Membatalkan tanda: catatan lain (tanggal, tempat, biaya) dibiarkan
+    onUpdateRecord({ ...(existingRec || { rowId: row.id }), rowId: row.id, diberikan: false });
   };
 
   return (

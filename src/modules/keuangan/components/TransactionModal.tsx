@@ -6,6 +6,7 @@ import { LedgerEntry, TxType } from "../types";
 import { getActiveCategories } from "../utils/categories";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 import { formatDayHeader, todayLocal } from "../utils/dates";
+import { kategoriTerakhir, simpanKategoriTerakhir, urutkanTerakhirDulu } from "../utils/kategoriTerakhir";
 import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 
@@ -45,6 +46,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
   const [submitting, setSubmitting] = useState(false);
 
   const amountInputRef = useRef<HTMLInputElement>(null);
+  const chipPertamaRef = useRef<HTMLButtonElement>(null);
 
   // Sync state when modal opens or initialEntry changes
   useEffect(() => {
@@ -63,8 +65,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
       } else {
         setType("expense");
         setAmountStr("");
-        const activeExp = getActiveCategories(config, "expense");
-        setCategoryId(activeExp.length > 0 ? activeExp[0].id : "");
+        // Tanpa pra-pilih: lupa memilih tidak boleh diam-diam tersimpan di kategori yang salah
+        setCategoryId("");
         setWalletId("default");
         setDate(todayLocal());
         setNote("");
@@ -86,7 +88,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     setType(newType);
     const activeCats = getActiveCategories(config, newType);
     if (!activeCats.some((c) => c.id === categoryId)) {
-      setCategoryId(activeCats.length > 0 ? activeCats[0].id : "");
+      setCategoryId("");
     }
   };
 
@@ -111,10 +113,12 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     setSubmitting(false);
 
     if (res.ok) {
+      simpanKategoriTerakhir(type, categoryId);
       onClose();
     } else if (res.errors) {
       setErrors(res.errors);
       if (res.errors.amount) amountInputRef.current?.focus();
+      else if (res.errors.categoryId) chipPertamaRef.current?.focus();
     }
   };
 
@@ -124,7 +128,8 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     onClose();
   };
 
-  const activeCategories = getActiveCategories(config, type);
+  const idTerakhir = isEdit ? undefined : kategoriTerakhir(type);
+  const activeCategories = urutkanTerakhirDulu(getActiveCategories(config, type), idTerakhir);
   const wallets = Object.values(config.wallets || {}).filter((w) => !w.archived || w.id === walletId);
   const walletName = config.wallets?.[walletId]?.name ?? "Dompet";
   const tanggalLabel = date === todayLocal() ? "Hari ini" : formatDayHeader(date);
@@ -223,12 +228,14 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
           <p id="tx-category-label" className="text-[13px] font-medium text-text-2">
             Kategori
           </p>
-          <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="tx-category-label">
-            {activeCategories.map((cat) => {
+          <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby="tx-category-label" {...ariaField("tx-category", errors.categoryId)}>
+            {activeCategories.map((cat, i) => {
               const dipilih = categoryId === cat.id;
+              const terakhir = cat.id === idTerakhir && i === 0;
               return (
                 <button
                   key={cat.id}
+                  ref={i === 0 ? chipPertamaRef : undefined}
                   type="button"
                   role="radio"
                   aria-checked={dipilih}
@@ -243,6 +250,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   }`}
                 >
                   {cat.name}
+                  {terakhir && <span className="ml-1.5 text-[11px] font-normal opacity-70">Terakhir</span>}
                 </button>
               );
             })}
