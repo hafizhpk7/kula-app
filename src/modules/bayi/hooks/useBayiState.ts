@@ -208,17 +208,11 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
 
       showToast(`Ditandai selesai: ${row.vaksin}.`, "Urungkan", () => {
         if (!assertCanWrite()) return;
-        if (previousRecord) {
-          updateRecord(previousRecord);
-        } else {
-          // Revert addition
-          const next = transitions.deleteCustomRow(appState, activeProfile.id, row.id);
-          setAppState(next);
-          repository.saveState(next, appState).catch(() => {});
-        }
+        // Kembalikan record ke keadaan sebelumnya. Baris jadwal tidak pernah disentuh.
+        updateRecord(previousRecord ?? { rowId: row.id, diberikan: false });
       });
     },
-    [activeProfile, appState, assertCanWrite, repository, showToast, updateRecord]
+    [activeProfile, assertCanWrite, showToast, updateRecord]
   );
 
   // H11: updateInsurance
