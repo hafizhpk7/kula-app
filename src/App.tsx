@@ -22,7 +22,7 @@ import { KeuanganPage } from "./modules/bayi/pages/KeuanganPage";
 import { VaccineInfoPage } from "./modules/bayi/pages/VaccineInfoPage";
 import { BabySettingsPage } from "./modules/bayi/pages/BabySettingsPage";
 import { FamilyPage } from "./shell/family/pages/FamilyPage";
-import { JoinFamilyPage } from "./shell/family/pages/JoinFamilyPage";
+import { JoinPage as JoinFamilyPage } from "./shell/family/pages/JoinPage";
 import { PerayaanLayer } from "./components/common/Perayaan";
 
 function AppRoutes() {

@@ -252,30 +252,6 @@ export const AuthScreen: React.FC = () => {
             </>
           )}
 
-          {errorMessage && (
-            <div
-              role="alert"
-              className="p-3 bg-danger-tint border border-danger/20 text-danger rounded-control text-[13px] space-y-2"
-            >
-              <div className="flex items-start gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{errorMessage}</span>
-              </div>
-              {isCredentialError && effectiveMode === "login" && AUTH_ENABLE_SIGNUP && (
-                <div className="pt-1 border-t border-danger/15 flex items-center justify-between">
-                  <span className="text-[12px] text-danger/90">Belum pernah mendaftar?</span>
-                  <button
-                    type="button"
-                    onClick={switchToRegisterWithEmail}
-                    className="text-[12px] font-semibold underline hover:no-underline cursor-pointer flex items-center gap-1"
-                  >
-                    Daftar akun sekarang <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
           {/* Form */}
           <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
             {effectiveMode === "register" && AUTH_ENABLE_SIGNUP && (
@@ -385,6 +361,30 @@ export const AuthScreen: React.FC = () => {
               </div>
             )}
 
+            {errorMessage && (
+              <div
+                role="alert"
+                className="p-3 bg-danger-tint border border-danger/20 text-danger rounded-control text-[13px] space-y-2"
+              >
+                <div className="flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                  <span>{errorMessage}</span>
+                </div>
+                {isCredentialError && effectiveMode === "login" && AUTH_ENABLE_SIGNUP && (
+                  <div className="pt-1 border-t border-danger/15 flex items-center justify-between">
+                    <span className="text-[12px] text-danger/90">Belum pernah mendaftar?</span>
+                    <button
+                      type="button"
+                      onClick={switchToRegisterWithEmail}
+                      className="text-[12px] font-semibold underline hover:no-underline cursor-pointer flex items-center gap-1"
+                    >
+                      Daftar akun sekarang <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={loading || googleLoading}
@@ -397,24 +397,22 @@ export const AuthScreen: React.FC = () => {
                 : "Buat akun baru"}
             </button>
           </form>
-
-          {/* Guest / Offline Mode Entry (Only when AUTH_ENABLE_GUEST is true) */}
-          {AUTH_ENABLE_GUEST && (
-            <div className="pt-2 border-t border-border text-center space-y-2">
-              <button
-                type="button"
-                onClick={continueAsGuest}
-                className="w-full py-2.5 px-3 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer flex items-center justify-center gap-2"
-              >
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span>Lanjutkan sebagai Tamu (Mode Demo Offline)</span>
-              </button>
-              <p className="text-[11px] text-text-3">
-                Data tetap tersimpan di browser Anda tanpa perlu mendaftar akun.
-              </p>
-            </div>
-          )}
         </div>
+
+        {/* Tamu: tautan teks di bawah kartu (hanya bila AUTH_ENABLE_GUEST aktif) */}
+        {AUTH_ENABLE_GUEST && (
+          <div className="text-center space-y-1">
+            <button
+              type="button"
+              onClick={continueAsGuest}
+              className="inline-flex items-center justify-center gap-2 px-3 min-h-[44px] rounded-full text-sky-ink text-[13px] font-medium underline underline-offset-2 hover:no-underline cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Lanjutkan sebagai Tamu (Mode Demo Offline)</span>
+            </button>
+            <p className="text-[11px] text-sky-ink-2">Data tetap tersimpan di browser Anda tanpa perlu mendaftar akun.</p>
+          </div>
+        )}
       </div>
     </div>
   );

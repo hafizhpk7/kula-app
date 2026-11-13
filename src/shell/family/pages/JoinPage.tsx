@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
-import { ArrowLeft, UserPlus, CheckCircle, AlertCircle } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import { UserPlus, CheckCircle, AlertCircle } from "lucide-react";
+import { AppShell } from "../../components/AppShell";
 import { useAuth } from "../../../context/AuthContext";
 import { useFamily } from "../context/FamilyContext";
 import { Invite, RELATION_LABELS, ROLE_LABELS } from "../types";
@@ -91,21 +92,8 @@ export const JoinPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg text-text pb-12">
-      <header className="sticky top-0 z-30 bg-bg/80 backdrop-blur-md border-b border-border">
-        <div className="max-w-xl mx-auto px-4 h-14 flex items-center gap-3">
-          <Link
-            to="/keluarga"
-            className="p-2 -ml-2 text-text-2 hover:text-text rounded-full hover:bg-surface transition"
-            aria-label="Kembali ke Beranda Kula"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </Link>
-          <h1 className="text-lg font-bold">Gabung Keluarga</h1>
-        </div>
-      </header>
-
-      <main className="max-w-xl mx-auto px-4 pt-6 space-y-6">
+    <AppShell title="Gabung Keluarga" back={{ to: "/keluarga", label: "Keluarga" }}>
+      <div className="max-w-xl space-y-6 animate-fadeIn">
         {isGuest && (
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
             <AlertCircle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
@@ -230,8 +218,8 @@ export const JoinPage: React.FC = () => {
             </div>
           </div>
         )}
-      </main>
-    </div>
+      </div>
+    </AppShell>
   );
 };
 

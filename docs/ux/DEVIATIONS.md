@@ -30,3 +30,15 @@
 - Keuangan · Pengaturan: Dompet dan Transaksi berulang berupa `Lipat` di halaman (spec: sheet di HP), karena `RecurringRuleModal` sendiri sudah sheet dan sheet bersarang tidak dipakai. Kartu "Pengaturan Akun & Sinkronisasi" dibuang (ada di hub). Pemilih bulan dipindah ke blok Ekspor.
 - Keuangan · Modal: `ContributionModal`, `SavingsGoalModal`, `RecurringRuleModal` jadi `BottomSheet`; konfirmasi hapus data keuangan dan hapus data tamu juga lembar. Tenggat tabungan ke "Detail lain". "Kelola dompet" ditambah di `TransactionModal`.
 - Tidak dibuat: kategori "terakhir dipakai di depan" dan key `kula_*` (sudah tercatat di Batch 1).
+
+## Batch 4 (Shell, Pengaturan, Keluarga)
+
+- Launcher: tetap memakai `ShellHeader` dan latar langit (bukan `AppShell` tanpa nav); tema Laut Kura launcher dipertahankan. Chip anak memakai `BayiChildSwitcher`; "Tambah anak"/"Kelola" mengarah ke Pengaturan Bayi.
+- Launcher: kartu Hari ini kosong-anak mengarah ke `/bayi/beranda` (onboarding Bayi). Sisa anggaran di kartu Keuangan tidak dibuat (#18 opsional; `FinanceProvider` hanya hidup di dalam modul).
+- Pengaturan: edit profil (nama/foto) tidak ada di halaman lama, jadi tidak dibuat; baris profil hanya menampilkan akun. Dua kolom desktop tidak dibuat (satu kolom maks 880px, dibolehkan spec).
+- Pengaturan: baris Keluar dengan konfirmasi sheet; tamu tidak punya baris Keluar.
+- Keluarga: "⋯" membuka menu sheet (ubah nama keluarga untuk pemilik, ubah nama tampilan, pengaturan aplikasi). Pil Undang hilang kalau batas anggota tercapai. Konfirmasi tindakan berisiko jadi satu `ConfirmSheet`.
+- Keluarga: `FamilyPage` dipecah ke `CreateFamilySheet`, `JoinCodeSheet`, `FamilyEmpty`, `MemberList`, `MemberSheet`, `InviteList`, `InviteSheet`, `RenameSheet`, `ConfirmSheet`, `useCopy`; logika service/context dipindah apa adanya.
+- Gabung: `JoinFamilyPage.tsx` (alias satu baris) dihapus, `App.tsx` memakai `JoinPage` langsung; header diganti `AppShell`. Kode salah/kedaluwarsa tetap memakai pesan lama.
+- Login: pesan error dipindah ke tepat di atas tombol Masuk (bukan per-field, karena error berasal dari satu pemeriksaan); tombol tamu jadi tautan teks di bawah kartu.
+- Dihapus: `src/components/KulaLogo.tsx` (re-export tak terpakai). Banner PWA/toast belum diubah (opsional batch 8).

@@ -25,6 +25,12 @@ Kula adalah aplikasi keluarga yang dirancang untuk dipakai bersama, tenang, dan 
 
 ---
 
+## 🧭 Struktur UX
+
+Semua modul memakai satu kerangka (`AppShell`): bar atas dengan "Beranda Kula" dan menu akun, nav bawah melayang di HP, sidebar di layar lebar, satu aksi utama per layar, dan lembar bawah (`BottomSheet`) untuk form. Pengaturan adalah hub di `/pengaturan`; pengaturan tiap modul tetap di rutenya sendiri. Spesifikasi dan keputusan ada di [`docs/ux/UX-REDESIGN.md`](docs/ux/UX-REDESIGN.md); penyimpangan dari spec dicatat di [`docs/ux/DEVIATIONS.md`](docs/ux/DEVIATIONS.md).
+
+---
+
 ## 🔒 Akses Privat (Private Access Mode)
 
 Aplikasi ini dikonfigurasi untuk penggunaan privat keluarga dengan akun bersama. 

@@ -191,9 +191,9 @@ describe("6E: Routing, Integration, & UI Tests (R1-R17)", () => {
     window.location.hash = "#/pengaturan";
     render(<App />);
 
-    expect(await screen.findByText(/Pengaturan Spesifik Modul/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Pengaturan modul/i)).toBeInTheDocument();
 
-    const babySettingsLink = screen.getByText(/Pengaturan Modul Bayi/i);
+    const babySettingsLink = screen.getByText("Bayi");
     fireEvent.click(babySettingsLink);
 
     await waitFor(() => {
