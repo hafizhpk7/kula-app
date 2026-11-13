@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
 import { SavingsGoal } from "../types";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
+import { formatRupiah } from "../../../utils/calc";
 import { rayakan } from "../../../components/common/Perayaan";
+import { BottomSheet } from "../../../components/common/BottomSheet";
 
 interface ContributionModalProps {
   isOpen: boolean;
@@ -33,16 +34,15 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
     }
   }, [isOpen]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
+  if (!goal) return null;
 
-  if (!isOpen || !goal) return null;
+  const sisa = Math.max(0, goal.targetAmount - goal.currentAmount);
+  // Chip cepat: sisa target (hanya setor), 100rb, 500rb
+  const cepat: { label: string; nilai: number }[] = [
+    ...(mode === "deposit" && sisa > 0 ? [{ label: `Sisa target ${formatRupiah(sisa)}`, nilai: sisa }] : []),
+    { label: "Rp 100.000", nilai: 100000 },
+    { label: "Rp 500.000", nilai: 500000 }
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,83 +69,78 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn"
-      style={{ backgroundColor: "var(--scrim)" }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="bg-surface rounded-card max-w-[420px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover"
-      >
-        <div className="flex items-center justify-between border-b border-border pb-3">
-          <h2 className="text-[18px] font-serif font-semibold text-text">
-            {mode === "deposit" ? "Setor ke Tabungan" : "Tarik dari Tabungan"}
-          </h2>
+    <BottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={mode === "deposit" ? "Setor ke Tabungan" : "Tarik dari Tabungan"}
+      titleId="contrib-title"
+      footer={
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onClose}
-            aria-label="Tutup"
-            className="p-1 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+            className="px-5 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[48px] hover:bg-surface-sunken transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            Batal
+          </button>
+          <button
+            type="submit"
+            form="contrib-form"
+            disabled={submitting}
+            className="flex-1 rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[15px] font-semibold min-h-[48px] transition cursor-pointer disabled:opacity-50"
+          >
+            {mode === "deposit" ? "Setor" : "Tarik"}
           </button>
         </div>
-
+      }
+    >
+      <form id="contrib-form" onSubmit={handleSubmit} className="space-y-4">
         <p className="text-[13px] text-text-2">
           Target: <span className="font-semibold text-text">{goal.name}</span>
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label htmlFor="contrib-amount" className="text-[13px] font-medium text-text">
-              Nominal (Rp)
-            </label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] font-medium text-text-2">
-                Rp
-              </span>
-              <input
-                id="contrib-amount"
-                ref={inputRef}
-                type="text"
-                inputMode="numeric"
-                value={amountStr}
-                onChange={(e) => {
-                  const num = parseRupiahInput(e.target.value);
-                  setAmountStr(num === null ? "" : formatRupiahInput(num));
-                  setError("");
-                }}
-                placeholder="0"
-                className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
-                  error ? "border-danger" : "border-border hover:border-border-strong"
-                }`}
-              />
-            </div>
-            {error && <p className="text-[12px] text-danger mt-1 font-medium">{error}</p>}
+        <div className="space-y-1">
+          <label htmlFor="contrib-amount" className="text-[13px] font-medium text-text">
+            Nominal (Rp)
+          </label>
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[14px] font-medium text-text-2">Rp</span>
+            <input
+              id="contrib-amount"
+              ref={inputRef}
+              type="text"
+              inputMode="numeric"
+              value={amountStr}
+              onChange={(e) => {
+                const num = parseRupiahInput(e.target.value);
+                setAmountStr(num === null ? "" : formatRupiahInput(num));
+                setError("");
+              }}
+              placeholder="0"
+              className={`w-full pl-10 pr-3 py-2 text-[20px] font-display font-tabular rounded-control border bg-surface text-text min-h-[52px] ${
+                error ? "border-danger" : "border-border hover:border-border-strong"
+              }`}
+            />
           </div>
+          {error && <p className="text-[12px] text-danger mt-1 font-medium">{error}</p>}
+        </div>
 
-          <div className="pt-2 flex items-center justify-end gap-2">
+        <div className="flex flex-wrap gap-2" aria-label="Nominal cepat">
+          {cepat.map((c) => (
             <button
+              key={c.label}
               type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
+              onClick={() => {
+                setAmountStr(formatRupiahInput(c.nilai));
+                setError("");
+              }}
+              className="px-3.5 min-h-[40px] rounded-full border border-border bg-surface text-text-2 hover:text-text text-[13px] font-medium cursor-pointer transition"
             >
-              Batal
+              {c.label}
             </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-5 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
-            >
-              {mode === "deposit" ? "Setor" : "Tarik"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+          ))}
+        </div>
+      </form>
+    </BottomSheet>
   );
 };

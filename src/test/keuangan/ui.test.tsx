@@ -130,13 +130,16 @@ describe("9.4 Keuangan Keluarga UI Tests (T-UI-1 .. T-UI-20)", () => {
     render(<App />);
 
     expect(await screen.findByText("Anggaran bulanan")).toBeInTheDocument();
-    expect(screen.getByText("Kategori transaksi")).toBeInTheDocument();
+    // Di HP kategori ada di segmen sendiri (UX-REDESIGN, Anggaran)
+    fireEvent.click(screen.getByRole("radio", { name: "Kategori" }));
+    expect(await screen.findByText("Kategori transaksi")).toBeInTheDocument();
   });
 
   it("T-UI-12: AnggaranPage allows adding custom category", async () => {
     window.location.hash = "#/keuangan-keluarga/anggaran";
     render(<App />);
 
+    fireEvent.click(await screen.findByRole("radio", { name: "Kategori" }));
     const input = await screen.findByPlaceholderText("Nama kategori baru");
     fireEvent.change(input, { target: { value: "Kopi & Camilan" } });
 
@@ -150,6 +153,8 @@ describe("9.4 Keuangan Keluarga UI Tests (T-UI-1 .. T-UI-20)", () => {
     window.location.hash = "#/keuangan-keluarga/pengaturan";
     render(<App />);
 
+    // Zona bahaya terlipat: buka dulu
+    fireEvent.click(await screen.findByRole("button", { name: /Zona bahaya/i }));
     const deleteBtn = await screen.findByRole("button", { name: /Hapus data keuangan/i });
     fireEvent.click(deleteBtn);
 

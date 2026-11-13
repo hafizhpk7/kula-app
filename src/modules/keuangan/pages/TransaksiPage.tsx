@@ -1,18 +1,47 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ExternalLink, Plus, Filter, Wallet } from "lucide-react";
-import { KuraBerenang } from "../../../components/common/LautKura";
+import { ExternalLink, Plus, SlidersHorizontal } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
+import { READING_MAX } from "../../../config/layout";
+import { PageHeader } from "../../../components/common/PageHeader";
+import { EmptyState } from "../../../components/common/EmptyState";
 import { MODULE_REGISTRY } from "../../registry";
 import { MonthSelector } from "../components/MonthSelector";
 import { useCatatTransaksi } from "../components/FinanceLayout";
+import {
+  FILTER_TRANSAKSI_AWAL,
+  TransaksiFilters,
+  TransaksiFilterSheet,
+  hitungFilterTransaksi
+} from "../components/TransaksiFilterSheet";
 import { useFinance } from "../state/FinanceContext";
 import { useFamily } from "../../../shell/family/context/FamilyContext";
 import { useAuth } from "../../../context/AuthContext";
 import { TxType } from "../types";
 import { getAllCategories, resolveCategoryName } from "../utils/categories";
-import { filterEntries, groupByDate, summarizeMonth } from "../utils/calculations";
-import { formatDayHeader, monthKeyOf } from "../utils/dates";
+import { filterEntries, groupByDate } from "../utils/calculations";
+import { formatDayHeader, monthKeyOf, todayLocal } from "../utils/dates";
+
+const SEGMEN: { id: TxType | "all"; label: string }[] = [
+  { id: "all", label: "Semua" },
+  { id: "expense", label: "Keluar" },
+  { id: "income", label: "Masuk" }
+];
+
+/** "Hari ini" / "Kemarin" untuk dua hari terakhir, selain itu tanggal lengkap. */
+function labelHari(date: string): string {
+  const hariIni = todayLocal();
+  if (date === hariIni) return "Hari ini";
+  const [y, m, d] = hariIni.split("-").map(Number);
+  const kemarin = new Date(y, m - 1, d - 1);
+  const k = `${kemarin.getFullYear()}-${String(kemarin.getMonth() + 1).padStart(2, "0")}-${String(
+    kemarin.getDate()
+  ).padStart(2, "0")}`;
+  if (date === k) return "Kemarin";
+  return formatDayHeader(date);
+}
+
+const signed = (n: number) => `${n < 0 ? "−" : n > 0 ? "+" : ""}${formatRupiah(Math.abs(n))}`;
 
 export const TransaksiPage: React.FC = () => {
   const { selectedMonth, setSelectedMonth, config, entries } = useFinance();
@@ -20,248 +49,213 @@ export const TransaksiPage: React.FC = () => {
   const { user } = useAuth();
 
   const [typeFilter, setTypeFilter] = useState<TxType | "all">("all");
-  const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [memberFilter, setMemberFilter] = useState<string>("all"); // "all", "me", or uid
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [filters, setFilters] = useState<TransaksiFilters>(FILTER_TRANSAKSI_AWAL);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const bukaCatat = useCatatTransaksi();
 
   const bayiModule = MODULE_REGISTRY.find((m) => m.id === "bayi");
   const bayiBiayaPath = bayiModule ? `${bayiModule.basePath.replace(/\/beranda$/, "")}/biaya` : "/bayi/biaya";
 
-  // Filter entries for selected month
-  const monthEntries = useMemo(() => {
-    return entries.filter((e) => monthKeyOf(e.date) === selectedMonth);
-  }, [entries, selectedMonth]);
+  const monthEntries = useMemo(
+    () => entries.filter((e) => monthKeyOf(e.date) === selectedMonth),
+    [entries, selectedMonth]
+  );
 
-  // Apply search & dropdown filters
   const filteredList = useMemo(() => {
     let list = filterEntries(
       monthEntries,
-      {
-        type: typeFilter,
-        categoryId: categoryFilter,
-        query: searchQuery
-      },
+      { type: typeFilter, categoryId: filters.categoryId, query: filters.query },
       config
     );
-
-    if (memberFilter !== "all") {
-      list = list.filter(e => {
-        if (memberFilter === "me") return e.createdBy === user?.uid;
-        return e.createdBy === memberFilter;
-      });
+    if (filters.member !== "all") {
+      list = list.filter((e) => (filters.member === "me" ? e.createdBy === user?.uid : e.createdBy === filters.member));
     }
-    
     return list;
-  }, [monthEntries, typeFilter, categoryFilter, searchQuery, config, memberFilter, user?.uid]);
+  }, [monthEntries, typeFilter, filters, config, user?.uid]);
 
-  // Group by date
-  const groupedData = useMemo(() => {
-    return groupByDate(filteredList);
-  }, [filteredList]);
+  const groupedData = useMemo(() => groupByDate(filteredList), [filteredList]);
+
+  const totalMasuk = filteredList.filter((e) => e.type === "income").reduce((s, e) => s + e.amount, 0);
+  const totalKeluar = filteredList.filter((e) => e.type === "expense").reduce((s, e) => s + e.amount, 0);
 
   const allCategories = getAllCategories(config);
-  const summary = summarizeMonth(entries, selectedMonth);
-  const isMonthEmpty = summary.count === 0;
+  const filterAktif = hitungFilterTransaksi(filters);
+  const isMonthEmpty = monthEntries.length === 0;
 
   return (
-    <div className="space-y-6">
-      {/* Top Header & Month Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h1 className="text-[22px] font-serif font-semibold text-text">Daftar Transaksi</h1>
-          <p className="text-[13px] text-text-2">
-            Riwayat pemasukan dan pengeluaran bulan {selectedMonth}.
-          </p>
-        </div>
+    <div className={`space-y-4 animate-fadeIn w-full ${READING_MAX}`}>
+      <PageHeader
+        title="Transaksi"
+        subtitle={<MonthSelector selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />}
+      />
 
-        <MonthSelector selectedMonth={selectedMonth} onMonthChange={setSelectedMonth} />
-      </div>
-
-      {/* Filter Bar */}
-      <div className="bg-surface rounded-card border border-border p-4 space-y-3 shadow-card">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          {/* Type Filter Chips */}
-          <div className="flex items-center gap-1.5 bg-surface-sunken p-1 rounded-control border border-border shrink-0">
-            {[
-              { id: "all", label: "Semua" },
-              { id: "expense", label: "Pengeluaran" },
-              { id: "income", label: "Pemasukan" }
-            ].map((chip) => (
-              <button
-                key={chip.id}
-                type="button"
-                onClick={() => setTypeFilter(chip.id as any)}
-                className={`px-3 py-1.5 rounded-chip text-[12px] font-medium transition cursor-pointer ${
-                  typeFilter === chip.id
-                    ? "bg-surface text-text border border-border shadow-2xs"
-                    : "text-text-2 hover:text-text"
-                }`}
-              >
-                {chip.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Category Dropdown & Search Input */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1 max-w-lg">
-            <select
-              value={categoryFilter}
-              onChange={(e) => setCategoryFilter(e.target.value)}
-              className="px-3 py-2 text-[13px] rounded-control border border-border bg-surface text-text min-h-[40px]"
-            >
-              <option value="all">Semua kategori</option>
-              {allCategories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name} {c.archived ? "(Diarsipkan)" : ""}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={memberFilter}
-              onChange={(e) => setMemberFilter(e.target.value)}
-              className="px-3 py-2 text-[13px] rounded-control border border-border bg-surface text-text min-h-[40px]"
-            >
-              <option value="all">Semua Anggota</option>
-              <option value="me">Saya</option>
-              {members.map((m) => (
-                <option key={m.uid} value={m.uid}>
-                  {m.displayName}
-                </option>
-              ))}
-            </select>
-
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-text-2 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari catatan atau kategori"
-                className="w-full pl-9 pr-3 py-2 text-[13px] rounded-control border border-border bg-surface text-text min-h-[40px]"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Content Area */}
       {isMonthEmpty ? (
-        <div className="bg-surface rounded-card border border-border p-8 text-center space-y-4 shadow-card">
-          <KuraBerenang className="kura-bob w-24 h-auto mx-auto" />
-          <div className="space-y-1">
-            <h3 className="text-[16px] font-serif font-semibold text-text">Belum ada transaksi bulan ini</h3>
-            <p className="text-[13px] text-text-2 max-w-sm mx-auto">
-              Tidak ada catatan transaksi pada bulan yang dipilih.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => bukaCatat()}
-            className="px-4 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg text-[13px] font-medium transition cursor-pointer inline-flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Catat transaksi</span>
-          </button>
-        </div>
-      ) : groupedData.length === 0 ? (
-        <div className="bg-surface rounded-card border border-border p-8 text-center space-y-2 shadow-card">
-          <Filter className="w-8 h-8 text-text-3 mx-auto" />
-          <p className="text-[14px] font-medium text-text">
-            Tidak ada transaksi yang cocok dengan filter.
-          </p>
-          <p className="text-[13px] text-text-2">
-            Coba ubah filter jenis, kategori, atau kata kunci pencarian Anda.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {groupedData.map((group) => (
-            <div
-              key={group.date}
-              className="bg-surface rounded-card border border-border overflow-hidden shadow-card"
+        <EmptyState
+          title="Belum ada transaksi bulan ini"
+          description="Tidak ada catatan transaksi pada bulan yang dipilih."
+          action={
+            <button
+              type="button"
+              onClick={() => bukaCatat()}
+              className="px-5 min-h-[44px] rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[14px] font-semibold transition cursor-pointer inline-flex items-center gap-2"
             >
-              {/* Date Header */}
-              <div className="bg-surface-sunken/60 px-4 py-2.5 border-b border-border flex items-center justify-between">
-                <span className="text-[13px] font-medium text-text">
-                  {formatDayHeader(group.date)}
-                </span>
-              </div>
-
-              {/* Transactions List */}
-              <div className="divide-y divide-border">
-                {group.entries.map((entry) => {
-                  const catName = resolveCategoryName(config, entry.categoryId);
-                  const creator = members.find((m: any) => m.uid === entry.createdBy)?.displayName || 'Unknown';
-                  const isIncome = entry.type === "income";
-
-                  return (
-                    <div
-                      key={entry.id}
-                      tabIndex={entry.readOnly ? undefined : 0}
-                      role={entry.readOnly ? undefined : "button"}
-                      onKeyDown={(e) => {
-                        if (!entry.readOnly && (e.key === "Enter" || e.key === " ")) {
-                          e.preventDefault();
-                          bukaCatat(entry);
-                        }
-                      }}
-                      onClick={() => {
-                        if (!entry.readOnly) {
-                          bukaCatat(entry);
-                        }
-                      }}
-                      className={`px-4 py-3 flex items-center justify-between gap-3 ${
-                        !entry.readOnly
-                          ? "hover:bg-surface-sunken/60 cursor-pointer focus:outline-none focus:bg-surface-sunken/80"
-                          : ""
-                      } transition`}
-                    >
-                      <div className="space-y-0.5 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="text-[14px] font-medium text-text truncate">
-                            {catName}
-                          </span>
-                          <span className="text-[11px] text-text-3">Dicatat oleh {creator}</span>
-                          {entry.source === "vaccine" && (
-                            <span className="text-[11px] px-2 py-0.5 rounded-full bg-info-tint text-info font-medium border border-info/20 flex items-center gap-1">
-                              <span>Dari jadwal vaksin</span>
-                              <Link
-                                to={bayiBiayaPath}
-                                aria-label="Buka di Biaya vaksin"
-                                title="Buka di Biaya vaksin"
-                                onClick={(e) => e.stopPropagation()}
-                                className="hover:underline p-0.5"
-                              >
-                                <ExternalLink className="w-3 h-3" />
-                              </Link>
-                            </span>
-                          )
-                        }
-                        </div>
-                        {entry.note && (
-                          <p className="text-[12px] text-text-2 truncate">{entry.note}</p>
-                        )}
-                      </div>
-
-                      <span
-                        className={`text-[14px] font-bold shrink-0 ${
-                          isIncome ? "text-primary-text" : "text-text"
-                        }`}
-                      >
-                        {isIncome ? "+" : "−"}
-                        {formatRupiah(entry.amount)}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
+              <Plus className="w-4 h-4" />
+              <span>Catat transaksi</span>
+            </button>
+          }
+        />
+      ) : (
+        <>
+          {/* Segmen jenis + tombol Filter */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1 bg-surface-sunken p-1 rounded-full border border-border" role="radiogroup" aria-label="Jenis transaksi">
+              {SEGMEN.map((s) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  role="radio"
+                  aria-checked={typeFilter === s.id}
+                  onClick={() => setTypeFilter(s.id)}
+                  className={`px-3.5 min-h-[40px] rounded-full text-[13px] font-medium transition cursor-pointer ${
+                    typeFilter === s.id ? "bg-surface text-text border border-border shadow-2xs" : "text-text-2 hover:text-text"
+                  }`}
+                >
+                  {s.label}
+                </button>
+              ))}
             </div>
-          ))}
-        </div>
+            <button
+              type="button"
+              onClick={() => setFilterOpen(true)}
+              className="px-3.5 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 cursor-pointer hover:bg-surface-sunken transition"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              <span>Filter</span>
+              {filterAktif > 0 && (
+                <span className="min-w-5 h-5 px-1 rounded-full bg-mod-uang text-mod-uang-fg text-[11px] font-semibold flex items-center justify-center">
+                  {filterAktif}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Total sesuai filter */}
+          <p className="text-[13px] text-text-2">
+            Keluar <strong className="text-text font-semibold font-tabular">−{formatRupiah(totalKeluar)}</strong> · Masuk{" "}
+            <strong className="text-primary-text font-semibold font-tabular">+{formatRupiah(totalMasuk)}</strong>
+          </p>
+
+          {groupedData.length === 0 ? (
+            <EmptyState
+              title="Tidak ada yang cocok"
+              description="Coba ubah jenis, kategori, atau kata kunci pencarian."
+              action={
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTypeFilter("all");
+                    setFilters(FILTER_TRANSAKSI_AWAL);
+                  }}
+                  className="px-5 min-h-[44px] rounded-full border border-border-strong text-text text-[14px] font-medium cursor-pointer hover:bg-surface-sunken transition"
+                >
+                  Reset filter
+                </button>
+              }
+            />
+          ) : (
+            <div className="space-y-4">
+              {groupedData.map((group) => {
+                const net = group.entries.reduce((s, e) => s + (e.type === "income" ? e.amount : -e.amount), 0);
+                return (
+                  <section
+                    key={group.date}
+                    aria-label={labelHari(group.date)}
+                    className="bg-surface rounded-card border border-border overflow-hidden shadow-[var(--shadow-card)]"
+                  >
+                    <div className="bg-surface-sunken/60 px-4 py-2.5 border-b border-border flex items-center justify-between">
+                      <span className="text-[13px] font-medium text-text">{labelHari(group.date)}</span>
+                      <span className="text-[13px] text-text-2 font-tabular">{signed(net)}</span>
+                    </div>
+
+                    <div className="divide-y divide-border">
+                      {group.entries.map((entry) => {
+                        const catName = resolveCategoryName(config, entry.categoryId);
+                        const creator = members.find((m: any) => m.uid === entry.createdBy)?.displayName || "Unknown";
+                        const isIncome = entry.type === "income";
+
+                        return (
+                          <div
+                            key={entry.id}
+                            tabIndex={entry.readOnly ? undefined : 0}
+                            role={entry.readOnly ? undefined : "button"}
+                            onKeyDown={(e) => {
+                              if (!entry.readOnly && (e.key === "Enter" || e.key === " ")) {
+                                e.preventDefault();
+                                bukaCatat(entry);
+                              }
+                            }}
+                            onClick={() => {
+                              if (!entry.readOnly) bukaCatat(entry);
+                            }}
+                            className={`px-4 py-3 min-h-[56px] flex items-center justify-between gap-3 ${
+                              !entry.readOnly
+                                ? "hover:bg-surface-sunken/60 cursor-pointer focus:outline-none focus:bg-surface-sunken/80"
+                                : ""
+                            } transition`}
+                          >
+                            <div className="space-y-0.5 min-w-0">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[14px] font-medium text-text truncate">{catName}</span>
+                                {entry.source === "vaccine" && (
+                                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-info-tint text-info font-medium border border-info/20 flex items-center gap-1">
+                                    <span>Dari jadwal vaksin</span>
+                                    <Link
+                                      to={bayiBiayaPath}
+                                      aria-label="Buka di Biaya vaksin"
+                                      title="Buka di Biaya vaksin"
+                                      onClick={(e) => e.stopPropagation()}
+                                      className="hover:underline p-0.5"
+                                    >
+                                      <ExternalLink className="w-3 h-3" />
+                                    </Link>
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[12px] text-text-2 truncate">
+                                {entry.note ? `${entry.note} · ` : ""}Dicatat oleh {creator}
+                              </p>
+                            </div>
+
+                            <span
+                              className={`text-[14px] font-bold font-tabular shrink-0 ${
+                                isIncome ? "text-primary-text" : "text-text"
+                              }`}
+                            >
+                              {isIncome ? "+" : "−"}
+                              {formatRupiah(entry.amount)}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+          )}
+        </>
       )}
+
+      <TransaksiFilterSheet
+        isOpen={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        filters={filters}
+        onChange={setFilters}
+        categories={allCategories}
+        members={members}
+        hasil={filteredList.length}
+      />
     </div>
   );
 };

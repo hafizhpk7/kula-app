@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Plus, Wallet as WalletIcon, Archive, ArchiveRestore, Edit2, Check, X } from "lucide-react";
 import { useFinance } from "../state/FinanceContext";
 
-export const WalletsSection: React.FC = () => {
+export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = false }) => {
   const { config, addWallet, renameWallet, setWalletArchived } = useFinance();
   const [newWalletName, setNewWalletName] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -36,13 +36,15 @@ export const WalletsSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
-      <div>
-        <h2 className="text-[16px] font-serif font-semibold text-text">Dompet (Wallet)</h2>
-        <p className="text-[12px] text-text-2">
-          Kelola beberapa rekening atau dompet kas (misal: Kas Utama, BCA, GoPay).
-        </p>
-      </div>
+    <div className={embedded ? "space-y-4" : "bg-surface rounded-card border border-border p-5 space-y-4 shadow-[var(--shadow-card)]"}>
+      {!embedded && (
+        <div>
+          <h2 className="text-[16px] font-display text-text">Dompet (Wallet)</h2>
+          <p className="text-[12px] text-text-2">
+            Kelola beberapa rekening atau dompet kas (misal: Kas Utama, BCA, GoPay).
+          </p>
+        </div>
+      )}
 
       {/* Add Wallet Form */}
       <form onSubmit={handleAddSubmit} className="space-y-2">

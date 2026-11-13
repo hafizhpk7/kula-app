@@ -19,3 +19,14 @@
 - Bayi · Info vaksin: baris daftar ringkas membuka `VaccineDetailModal` (isi sama dengan kartu lama, tidak ada data yang hilang).
 - Bukan di spec: `ProfileModal` dan `CustomRowModal` memanggil hook setelah `return null` (pelanggaran aturan hook); diperbaiki saat dipindah ke `BottomSheet`.
 - Tab Bayi diberi nama pendek di nav: Ringkasan · Jadwal · Biaya · Info (sidebar memakai nama yang sama).
+
+## Batch 3 (Keuangan)
+
+- Keuangan · Transaksi: kategori, anggota, dan pencarian semuanya di lembar Filter di semua lebar layar (spec: desktop sebaris + tabel). Daftar tetap berupa kartu per hari.
+- Keuangan · Transaksi: subtotal per hari = bersih (masuk − keluar), bukan hanya pengeluaran. Link "Transaksi berulang" ada di lembar Filter.
+- Keuangan · Anggaran: kategori tanpa batas masuk lipatan "Kategori tanpa batas" (ketuk baris = atur batas), bukan tombol "+ Tambah anggaran" terpisah. Desktop (≥ lg): dua kolom tanpa segmen.
+- Keuangan · Anggaran: bagian Kategori dipindah ke `CategoryManager.tsx` tanpa ubah perilaku.
+- Keuangan · Tabungan: menu "⋯" berupa lembar aksi (Edit target, Tarik dana, Hapus target), bukan popover. Catatan "kontribusi terpisah dari buku kas" dibuang dari halaman.
+- Keuangan · Pengaturan: Dompet dan Transaksi berulang berupa `Lipat` di halaman (spec: sheet di HP), karena `RecurringRuleModal` sendiri sudah sheet dan sheet bersarang tidak dipakai. Kartu "Pengaturan Akun & Sinkronisasi" dibuang (ada di hub). Pemilih bulan dipindah ke blok Ekspor.
+- Keuangan · Modal: `ContributionModal`, `SavingsGoalModal`, `RecurringRuleModal` jadi `BottomSheet`; konfirmasi hapus data keuangan dan hapus data tamu juga lembar. Tenggat tabungan ke "Detail lain". "Kelola dompet" ditambah di `TransactionModal`.
+- Tidak dibuat: kategori "terakhir dipakai di depan" dan key `kula_*` (sudah tercatat di Batch 1).

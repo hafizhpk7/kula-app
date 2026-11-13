@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { Trash2, ChevronDown } from "lucide-react";
 import { useFinance } from "../state/FinanceContext";
 import { LedgerEntry, TxType } from "../types";
@@ -303,6 +304,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                   ))}
                 </select>
                 {errors.walletId && <p className="text-[12px] text-danger font-medium">{errors.walletId}</p>}
+                <Link
+                  to="/keuangan-keluarga/pengaturan"
+                  onClick={onClose}
+                  className="inline-block text-[12px] text-primary-text font-medium hover:underline"
+                >
+                  Kelola dompet
+                </Link>
               </div>
 
               <div className="space-y-1">

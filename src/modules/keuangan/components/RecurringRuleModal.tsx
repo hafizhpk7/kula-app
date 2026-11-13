@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { X } from "lucide-react";
+import { BottomSheet } from "../../../components/common/BottomSheet";
 import { RecurringFrequency, RecurringRule, TxType } from "../types";
 import { getActiveCategories, resolveCategoryName } from "../utils/categories";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
@@ -73,17 +73,6 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
     }
   }, [isOpen, initialRule, config]);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isOpen) return;
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
   const activeCategories = getActiveCategories(config, type);
 
   // Preview due occurrences if start date is in the past
@@ -137,33 +126,33 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fadeIn"
-      style={{ backgroundColor: "var(--scrim)" }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="bg-surface rounded-card max-w-[480px] w-full border border-border p-5 sm:p-6 space-y-5 shadow-popover max-h-[90vh] overflow-y-auto"
-      >
-        <div className="flex items-center justify-between border-b border-border pb-3">
-          <h2 className="text-[18px] font-serif font-semibold text-text">
-            {isEdit ? "Ubah aturan berulang" : "Tambah aturan berulang"}
-          </h2>
+    <BottomSheet
+      isOpen={isOpen}
+      onClose={onClose}
+      title={isEdit ? "Ubah aturan berulang" : "Tambah aturan berulang"}
+      titleId="rule-title"
+      footer={
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onClose}
-            aria-label="Tutup"
-            className="p-1 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
+            className="px-5 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[48px] hover:bg-surface-sunken transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            Batal
+          </button>
+          <button
+            type="submit"
+            form="rule-form"
+            disabled={submitting}
+            className="flex-1 rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[15px] font-semibold min-h-[48px] transition cursor-pointer disabled:opacity-50"
+          >
+            Simpan Aturan
           </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+      }
+    >
+      <form id="rule-form" onSubmit={handleSubmit} className="space-y-4">
+        <h3 className="text-[12px] font-semibold uppercase tracking-wide text-text-2">Apa</h3>
           <div className="space-y-1">
             <label htmlFor="rule-name" className="text-[13px] font-medium text-text">
               Nama / Keterangan Aturan
@@ -287,6 +276,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             </select>
           </div>
 
+          <h3 className="text-[12px] font-semibold uppercase tracking-wide text-text-2 pt-1">Kapan</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label htmlFor="rule-freq" className="text-[13px] font-medium text-text">
@@ -369,24 +359,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             </div>
           )}
 
-          <div className="pt-2 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2.5 rounded-control bg-surface-sunken hover:bg-border/60 text-text text-[13px] font-medium transition cursor-pointer min-h-[44px]"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="px-5 py-2.5 rounded-control bg-primary hover:bg-primary-hover text-primary-fg font-medium text-[13px] transition cursor-pointer min-h-[44px] disabled:opacity-50"
-            >
-              Simpan Aturan
-            </button>
-          </div>
         </form>
-      </div>
-    </div>
+    </BottomSheet>
   );
 };

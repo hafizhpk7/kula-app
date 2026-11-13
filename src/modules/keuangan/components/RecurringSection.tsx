@@ -6,7 +6,7 @@ import { RecurringRule } from "../types";
 import { getAllCategories, resolveCategoryName } from "../utils/categories";
 import { RecurringRuleModal } from "./RecurringRuleModal";
 
-export const RecurringSection: React.FC = () => {
+export const RecurringSection: React.FC<{ embedded?: boolean }> = ({ embedded = false }) => {
   const { config, recurringRules, upsertRecurringRule, deleteRecurringRule } = useFinance();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRule, setEditingRule] = useState<RecurringRule | null>(null);
@@ -28,14 +28,16 @@ export const RecurringSection: React.FC = () => {
   };
 
   return (
-    <div className="bg-surface rounded-card border border-border p-5 space-y-4 shadow-card">
+    <div className={embedded ? "space-y-4" : "bg-surface rounded-card border border-border p-5 space-y-4 shadow-[var(--shadow-card)]"}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h2 className="text-[16px] font-serif font-semibold text-text">Transaksi Berulang (Recurring)</h2>
-          <p className="text-[12px] text-text-2">
-            Otomatiskan pencatatan pemasukan atau pengeluaran rutin secara periodik.
-          </p>
-        </div>
+        {!embedded && (
+          <div>
+            <h2 className="text-[16px] font-display text-text">Transaksi Berulang (Recurring)</h2>
+            <p className="text-[12px] text-text-2">
+              Otomatiskan pencatatan pemasukan atau pengeluaran rutin secara periodik.
+            </p>
+          </div>
+        )}
 
         <button
           type="button"
