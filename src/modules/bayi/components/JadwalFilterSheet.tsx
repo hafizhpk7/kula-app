@@ -42,6 +42,8 @@ interface Props {
   onUpdatePaymentMode: (m: PaymentMode) => void;
   onAddCustom: () => void;
   hasil: number;
+  /** Pilihan Garis waktu/Tabel hanya di layar lebar; HP selalu daftar */
+  tampilkanPilihTampilan?: boolean;
 }
 
 const chip = (aktif: boolean) =>
@@ -58,6 +60,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
   filters,
   onChange,
   viewMode,
+  tampilkanPilihTampilan = true,
   onViewModeChange,
   paymentMode,
   onUpdatePaymentMode,
@@ -153,6 +156,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
           </div>
         </div>
 
+        {tampilkanPilihTampilan && (
         <div className="space-y-2">
           <p className="text-[13px] font-medium text-text-2">Tampilan</p>
           <div className="flex bg-surface-sunken p-1 rounded-full border border-border">
@@ -180,6 +184,7 @@ export const JadwalFilterSheet: React.FC<Props> = ({
             </button>
           </div>
         </div>
+        )}
 
         <div className="space-y-2">
           <p className="text-[13px] font-medium text-text-2">Perkiraan biaya</p>

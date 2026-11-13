@@ -127,7 +127,8 @@ describe("Phase U: Layout and Schedule Verification", () => {
     fireEvent.click(screen.getByRole("button", { name: /Filter/ }));
     fireEvent.click(screen.getByRole("button", { name: "Tahun 1" }));
     fireEvent.click(screen.getByRole("button", { name: "Tutup" }));
-    expect(screen.getAllByText("Info Detail").length).toBeGreaterThan(0);
+    // Baris ringkas: ketuk baris membuka detail (tombol "Detail <vaksin>")
+    expect(screen.getAllByRole("button", { name: /^Detail / }).length).toBeGreaterThan(0);
 
     // Timeline checkbox label
     const firstRow = dummyProfile.schedule[0];
@@ -149,6 +150,10 @@ describe("Phase U: Layout and Schedule Verification", () => {
       onResetSchedule: vi.fn(),
       onOpenVaccineDetail: vi.fn()
     };
+
+    // Tabel hanya tersedia di layar lebar (>= 1024px): tiru matchMedia
+    const asli = window.matchMedia;
+    window.matchMedia = ((q: string) => ({ matches: true, media: q, addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {}, onchange: null, dispatchEvent: () => false })) as any;
 
     render(<ScheduleTab {...dummyHandlers} />);
 
@@ -173,6 +178,7 @@ describe("Phase U: Layout and Schedule Verification", () => {
     expect(
       screen.getByText("Geser ke samping untuk melihat kolom lainnya.")
     ).toBeInTheDocument();
+    window.matchMedia = asli;
   });
 
   it("U7: AppShell Bayi features tablet icon rail, back link, and accessible names", () => {

@@ -42,3 +42,8 @@
 - Gabung: `JoinFamilyPage.tsx` (alias satu baris) dihapus, `App.tsx` memakai `JoinPage` langsung; header diganti `AppShell`. Kode salah/kedaluwarsa tetap memakai pesan lama.
 - Login: pesan error dipindah ke tepat di atas tombol Masuk (bukan per-field, karena error berasal dari satu pemeriksaan); tombol tamu jadi tautan teks di bawah kartu.
 - Dihapus: `src/components/KulaLogo.tsx` (re-export tak terpakai). Banner PWA/toast belum diubah (opsional batch 8).
+
+## Perbaikan Jadwal (setelah Batch 4)
+
+- Bayi · Jadwal (HP): baris jadi ringkas (checkbox, nama, "usia · tanggal", chip status, panah); seluruh baris membuka detail. Tombol "Info Detail", tag Gratis, catatan, dan "Rp 0 (Puskesmas)" dihapus dari baris (harga hanya muncul kalau berbayar; selebihnya ada di detail). Tabel hanya di layar ≥ 1024px; HP selalu daftar, jadi pilihan "Tampilan" di lembar Filter disembunyikan di HP.
+- `BottomSheet`: dirender lewat portal ke `body` dan z-index 60, supaya tombol footer tidak tertutup nav bawah/pil aksi (penyebab: stacking context dari animasi halaman).

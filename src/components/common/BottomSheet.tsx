@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 /**
@@ -46,9 +47,10 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
 
   if (!isOpen) return null;
 
-  return (
+  // Portal ke body: lepas dari stacking context halaman (animasi/transform) supaya tidak tertutup nav bawah
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 animate-fadeIn"
+      className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center sm:p-4 animate-fadeIn"
       style={{ backgroundColor: "var(--scrim)" }}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -84,6 +86,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
