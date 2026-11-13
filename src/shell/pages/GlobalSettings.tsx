@@ -118,7 +118,7 @@ export const GlobalSettingsPage: React.FC = () => {
                       role="radio"
                       aria-checked={isSelected}
                       onClick={() => setTheme(item.id as ThemeMode)}
-                      className={`flex items-center gap-1.5 px-3.5 rounded-full text-[13px] transition cursor-pointer min-h-[40px] ${
+                      className={`flex items-center gap-1.5 px-3.5 rounded-full text-[13px] transition cursor-pointer min-h-[44px] ${
                         isSelected
                           ? "bg-surface text-text font-semibold border border-border shadow-2xs"
                           : "text-text-2 hover:text-text border border-transparent"

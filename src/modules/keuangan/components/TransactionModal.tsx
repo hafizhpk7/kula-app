@@ -183,7 +183,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               role="radio"
               aria-checked={type === j.id}
               onClick={() => handleTypeChange(j.id)}
-              className={`flex-1 py-2 text-[14px] font-semibold rounded-full transition cursor-pointer min-h-[40px] ${
+              className={`flex-1 py-2 text-[14px] font-semibold rounded-full transition cursor-pointer min-h-[44px] ${
                 type === j.id ? `bg-surface border border-border shadow-2xs ${j.aktif}` : "text-text-2 hover:text-text"
               }`}
             >
@@ -236,7 +236,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
                     setCategoryId(cat.id);
                     setErrors((prev) => ({ ...prev, categoryId: undefined }));
                   }}
-                  className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition cursor-pointer min-h-[40px] ${
+                  className={`px-3.5 py-2 rounded-full text-[13px] font-medium border transition cursor-pointer min-h-[44px] ${
                     dipilih
                       ? "bg-mod-uang text-mod-uang-fg border-mod-uang"
                       : "bg-surface text-text border-border hover:border-border-strong"

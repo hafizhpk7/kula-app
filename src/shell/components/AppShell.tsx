@@ -81,7 +81,7 @@ export const AppShell: React.FC<AppShellProps> = ({
         <div className="px-3 sm:px-5 h-14 flex items-center gap-2">
           <Link
             to={back.to}
-            className="flex items-center gap-0.5 pl-1 pr-2.5 h-10 rounded-full text-[13px] font-medium text-text-2 hover:text-text hover:bg-surface-sunken transition shrink-0"
+            className="flex items-center gap-0.5 pl-1 pr-2.5 min-h-[44px] min-w-[44px] rounded-full text-[13px] font-medium text-text-2 hover:text-text hover:bg-surface-sunken transition shrink-0"
             aria-label={`Kembali ke ${back.label}`}
             title={`Kembali ke ${back.label}`}
           >

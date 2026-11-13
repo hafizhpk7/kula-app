@@ -191,7 +191,7 @@ export const RingkasanPage: React.FC = () => {
       {!adaAnggaran && (
         <Link
           to="/keuangan-keluarga/anggaran"
-          className="inline-flex items-center gap-1 text-[13px] font-medium text-primary-text hover:underline"
+          className="inline-flex items-center gap-1 min-h-[44px] text-[13px] font-medium text-primary-text hover:underline"
         >
           Atur anggaran <ArrowRight className="w-3.5 h-3.5" />
         </Link>
@@ -235,7 +235,7 @@ export const RingkasanPage: React.FC = () => {
       </ul>
       <Link
         to="/keuangan-keluarga/anggaran"
-        className="inline-flex items-center gap-1 text-[13px] font-medium text-primary-text hover:underline"
+        className="inline-flex items-center gap-1 min-h-[44px] text-[13px] font-medium text-primary-text hover:underline"
       >
         Lihat semua anggaran <ChevronRight className="w-4 h-4" />
       </Link>
@@ -251,7 +251,7 @@ export const RingkasanPage: React.FC = () => {
         </h2>
         <Link
           to="/keuangan-keluarga/transaksi"
-          className="text-[13px] font-medium text-primary-text hover:underline flex items-center gap-1"
+          className="min-h-[44px] text-[13px] font-medium text-primary-text hover:underline flex items-center gap-1"
         >
           <span>Lihat semua</span>
           <ArrowRight className="w-3.5 h-3.5" />

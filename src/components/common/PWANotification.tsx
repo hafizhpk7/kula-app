@@ -55,7 +55,7 @@ export const PWANotification: React.FC = () => {
           <button
             type="button"
             onClick={closeOffline}
-            className="p-1 text-text-2 hover:text-text cursor-pointer"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center text-text-2 hover:text-text cursor-pointer"
             aria-label="Tutup"
           >
             <X className="w-4 h-4" />
@@ -84,7 +84,7 @@ export const PWANotification: React.FC = () => {
             <button
               type="button"
               onClick={closeRefresh}
-              className="p-1 text-text-2 hover:text-text cursor-pointer"
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center text-text-2 hover:text-text cursor-pointer"
               aria-label="Tutup"
             >
               <X className="w-4 h-4" />

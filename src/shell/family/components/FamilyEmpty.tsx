@@ -28,7 +28,7 @@ export const FamilyEmpty: React.FC<Props> = ({ notice, onDismissNotice }) => {
           <button
             type="button"
             onClick={onDismissNotice}
-            className="p-1 rounded-md text-text-2 hover:text-text transition cursor-pointer"
+            className="min-h-[44px] min-w-[44px] -my-2 -mr-2 flex items-center justify-center rounded-md text-text-2 hover:text-text transition cursor-pointer"
             aria-label="Tutup pemberitahuan"
           >
             <X className="w-4 h-4" />

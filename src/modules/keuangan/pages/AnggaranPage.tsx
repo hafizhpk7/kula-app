@@ -190,7 +190,7 @@ export const AnggaranPage: React.FC = () => {
               role="radio"
               aria-checked={segmen === s.id}
               onClick={() => setSegmen(s.id)}
-              className={`px-4 min-h-[40px] rounded-full text-[13px] font-medium transition cursor-pointer ${
+              className={`px-4 min-h-[44px] rounded-full text-[13px] font-medium transition cursor-pointer ${
                 segmen === s.id ? "bg-surface text-text border border-border shadow-2xs" : "text-text-2 hover:text-text"
               }`}
             >

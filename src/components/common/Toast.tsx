@@ -73,7 +73,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   toast.onAction?.();
                   dismissToast(toast.id);
                 }}
-                className="text-primary hover:text-primary-hover font-medium underline underline-offset-2 shrink-0 cursor-pointer min-h-[36px] flex items-center"
+                className="text-primary hover:text-primary-hover font-medium underline underline-offset-2 shrink-0 cursor-pointer min-h-[44px] flex items-center"
               >
                 {toast.actionLabel}
               </button>

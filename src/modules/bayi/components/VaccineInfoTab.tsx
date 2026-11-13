@@ -65,7 +65,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
             type="button"
             onClick={() => setSearchQuery("")}
             aria-label="Bersihkan pencarian"
-            className="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 flex items-center justify-center text-text-2 hover:text-text cursor-pointer"
+            className="absolute right-1 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center text-text-2 hover:text-text cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -87,7 +87,7 @@ export const VaccineInfoTab: React.FC<Props> = ({ profile, onOpenVaccineDetail }
               role="radio"
               aria-checked={isSelected}
               onClick={() => setFilterCategory(cat.id)}
-              className={`px-3.5 py-2 rounded-full text-[13px] whitespace-nowrap transition cursor-pointer min-h-[40px] border shrink-0 ${
+              className={`px-3.5 py-2 rounded-full text-[13px] whitespace-nowrap transition cursor-pointer min-h-[44px] border shrink-0 ${
                 isSelected
                   ? "bg-mod-bayi text-mod-bayi-fg border-mod-bayi font-semibold"
                   : "bg-surface text-text-2 hover:text-text border-border font-medium"

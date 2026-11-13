@@ -97,7 +97,7 @@ export const DashboardTab: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => onOpenVaccineDetail(berikutnya.row.ref)}
-                className="text-[18px] font-semibold text-text hover:text-primary-text text-left cursor-pointer leading-snug"
+                className="min-h-[44px] flex items-center text-[18px] font-semibold text-text hover:text-primary-text text-left cursor-pointer leading-snug"
               >
                 {berikutnya.row.vaksin}
               </button>
@@ -158,7 +158,7 @@ export const DashboardTab: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => onOpenVaccineDetail(item.row.ref)}
-                className="flex-1 min-w-0 text-left cursor-pointer"
+                className="flex-1 min-w-0 min-h-[44px] flex flex-col justify-center text-left cursor-pointer"
               >
                 <span className="block text-[14px] font-semibold text-text truncate">{item.row.vaksin}</span>
                 <span className="mt-0.5 block">
@@ -182,7 +182,7 @@ export const DashboardTab: React.FC<Props> = ({
           <button
             type="button"
             onClick={() => onNavigateToTab("jadwal")}
-            className="text-[13px] font-medium text-primary-text hover:underline cursor-pointer"
+            className="min-h-[44px] inline-flex items-center text-[13px] font-medium text-primary-text hover:underline cursor-pointer"
           >
             Lihat {overdueItems.length - 4} lainnya di Jadwal
           </button>

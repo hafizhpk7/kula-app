@@ -93,7 +93,7 @@ export const AccountMenu: React.FC = () => {
                     role="radio"
                     aria-checked={aktif}
                     onClick={() => setTheme(t.id)}
-                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-chip text-[13px] font-medium min-h-[40px] transition cursor-pointer ${
+                    className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-chip text-[13px] font-medium min-h-[44px] transition cursor-pointer ${
                       aktif ? "bg-surface text-text border border-border shadow-2xs" : "text-text-2 hover:text-text"
                     }`}
                   >

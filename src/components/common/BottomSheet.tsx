@@ -146,7 +146,7 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
             type="button"
             onClick={onClose}
             aria-label={closeLabel}
-            className="w-10 h-10 -mr-2 rounded-full flex items-center justify-center text-text-2 hover:text-text hover:bg-surface-sunken active:bg-surface-sunken transition cursor-pointer"
+            className="w-11 h-11 -mr-3 rounded-full flex items-center justify-center text-text-2 hover:text-text hover:bg-surface-sunken active:bg-surface-sunken transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>

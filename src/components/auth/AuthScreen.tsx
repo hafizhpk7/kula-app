@@ -339,7 +339,7 @@ export const AuthScreen: React.FC = () => {
                   type="button"
                   onClick={() => setShowPassword((p) => !p)}
                   aria-label={showPassword ? "Sembunyikan kata sandi" : "Tampilkan kata sandi"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-2 hover:text-text p-1 cursor-pointer min-h-[32px] min-w-[32px] flex items-center justify-center"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-2 hover:text-text p-1 cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>

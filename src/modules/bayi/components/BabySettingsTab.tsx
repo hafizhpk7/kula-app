@@ -174,14 +174,14 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
                 <button
                   type="button"
                   onClick={() => setDeleteStep(0)}
-                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
                   Lanjutkan
                 </button>
@@ -198,14 +198,14 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
                 <button
                   type="button"
                   onClick={() => setDeleteStep(0)}
-                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 text-text bg-surface-sunken rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
                   Batalkan
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirmDelete}
-                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[40px] cursor-pointer"
+                  className="px-4 py-2 bg-danger text-white font-medium rounded-full text-[13px] min-h-[44px] cursor-pointer"
                 >
                   Ya, hapus data Bayi
                 </button>

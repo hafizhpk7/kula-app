@@ -136,7 +136,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                 setAmountStr(formatRupiahInput(c.nilai));
                 setError("");
               }}
-              className="px-3.5 min-h-[40px] rounded-full border border-border bg-surface text-text-2 hover:text-text text-[13px] font-medium cursor-pointer transition"
+              className="px-3.5 min-h-[44px] rounded-full border border-border bg-surface text-text-2 hover:text-text text-[13px] font-medium cursor-pointer transition"
             >
               {c.label}
             </button>

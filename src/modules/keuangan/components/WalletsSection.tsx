@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Plus, Wallet as WalletIcon, Archive, ArchiveRestore, Edit2, Check, X } from "lucide-react";
+import { IconButton } from "../../../components/common/IconButton";
 import { useFinance } from "../state/FinanceContext";
 
 export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = false }) => {
@@ -95,22 +96,12 @@ export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = fa
                         onChange={(e) => setEditingName(e.target.value)}
                         className="flex-1 px-3 py-1.5 text-[14px] rounded-chip border border-border bg-surface text-text"
                       />
-                      <button
-                        type="button"
-                        onClick={() => handleRenameSubmit(w.id)}
-                        className="p-1.5 rounded-chip bg-primary text-primary-fg cursor-pointer"
-                        title="Simpan"
-                      >
+                      <IconButton label="Simpan nama dompet" nada="primer" onClick={() => handleRenameSubmit(w.id)}>
                         <Check className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditingId(null)}
-                        className="p-1.5 rounded-chip bg-surface-sunken text-text-2 cursor-pointer"
-                        title="Batal"
-                      >
+                      </IconButton>
+                      <IconButton label="Batalkan ubah nama" onClick={() => setEditingId(null)}>
                         <X className="w-4 h-4" />
-                      </button>
+                      </IconButton>
                     </div>
                     {editError && <p className="text-[11px] text-danger-text">{editError}</p>}
                   </div>
@@ -136,30 +127,24 @@ export const WalletsSection: React.FC<{ embedded?: boolean }> = ({ embedded = fa
               {!isEditing && (
                 <div className="flex items-center gap-1">
                   {!isDefault && (
-                    <button
-                      type="button"
+                    <IconButton
+                      label={`Ubah nama dompet ${w.name}`}
                       onClick={() => {
                         setEditingId(w.id);
                         setEditingName(w.name);
                         setEditError(null);
                       }}
-                      title="Ubah nama"
-                      aria-label="Ubah nama"
-                      className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                     >
                       <Edit2 className="w-4 h-4" />
-                    </button>
+                    </IconButton>
                   )}
                   {!isDefault && (
-                    <button
-                      type="button"
+                    <IconButton
+                      label={w.archived ? `Pulihkan dompet ${w.name}` : `Arsipkan dompet ${w.name}`}
                       onClick={() => setWalletArchived(w.id, !w.archived)}
-                      title={w.archived ? "Pulihkan dompet" : "Arsipkan dompet"}
-                      aria-label={w.archived ? "Pulihkan dompet" : "Arsipkan dompet"}
-                      className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                     >
                       {w.archived ? <ArchiveRestore className="w-4 h-4" /> : <Archive className="w-4 h-4" />}
-                    </button>
+                    </IconButton>
                   )}
                 </div>
               )}

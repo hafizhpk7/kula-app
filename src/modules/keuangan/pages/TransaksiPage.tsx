@@ -117,7 +117,7 @@ export const TransaksiPage: React.FC = () => {
                   role="radio"
                   aria-checked={typeFilter === s.id}
                   onClick={() => setTypeFilter(s.id)}
-                  className={`px-3.5 min-h-[40px] rounded-full text-[13px] font-medium transition cursor-pointer ${
+                  className={`px-3.5 min-h-[44px] rounded-full text-[13px] font-medium transition cursor-pointer ${
                     typeFilter === s.id ? "bg-surface text-text border border-border shadow-2xs" : "text-text-2 hover:text-text"
                   }`}
                 >

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Plus, Repeat, Trash2, Edit2, AlertCircle } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
+import { IconButton } from "../../../components/common/IconButton";
 import { useFinance } from "../state/FinanceContext";
 import { RecurringRule } from "../types";
 import { getAllCategories, resolveCategoryName } from "../utils/categories";
@@ -100,31 +101,26 @@ export const RecurringSection: React.FC<{ embedded?: boolean }> = ({ embedded = 
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    type="button"
+                  <IconButton
+                    label={`Ubah aturan ${rule.name || resolveCategoryName(config, rule.categoryId)}`}
                     onClick={() => {
                       setEditingRule(rule);
                       setModalOpen(true);
                     }}
-                    title="Ubah aturan"
-                    aria-label="Ubah aturan"
-                    className="p-1.5 rounded-chip hover:bg-surface-sunken text-text-2 hover:text-text transition cursor-pointer"
                   >
                     <Edit2 className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
+                  </IconButton>
+                  <IconButton
+                    label={`Hapus aturan ${rule.name || resolveCategoryName(config, rule.categoryId)}`}
+                    nada="bahaya"
                     onClick={() => {
                       if (window.confirm("Hapus aturan berulang ini? Transaksi yang sudah dibuat tidak ikut terhapus.")) {
                         deleteRecurringRule(rule.id);
                       }
                     }}
-                    title="Hapus aturan"
-                    aria-label="Hapus aturan"
-                    className="p-1.5 rounded-chip hover:bg-danger-tint text-danger-text transition cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </IconButton>
                 </div>
               </div>
             );

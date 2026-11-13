@@ -192,7 +192,7 @@ export const ScheduleTab: React.FC<Props> = ({
             role="radio"
             aria-checked={segmen === s.id}
             onClick={() => setSegmen(s.id)}
-            className={`flex-1 py-2 rounded-full text-[13px] min-h-[42px] transition cursor-pointer ${
+            className={`flex-1 py-2 rounded-full text-[13px] min-h-[44px] transition cursor-pointer ${
               segmen === s.id ? "bg-surface text-text font-semibold border border-border shadow-xs" : "text-text-2 hover:text-text font-medium"
             }`}
           >
@@ -291,7 +291,7 @@ export const ScheduleTab: React.FC<Props> = ({
                           type="button"
                           onClick={() => onOpenVaccineDetail(item.row.ref)}
                           aria-label={`Detail ${item.row.vaksin}`}
-                          className="flex-1 min-w-0 flex items-center gap-2 text-left cursor-pointer"
+                          className="flex-1 min-w-0 min-h-[44px] flex items-center gap-2 text-left cursor-pointer"
                         >
                           <span className="flex-1 min-w-0 space-y-0.5">
                             <span
@@ -446,7 +446,7 @@ export const ScheduleTab: React.FC<Props> = ({
                           <button
                             type="button"
                             onClick={() => onOpenVaccineDetail(item.row.ref)}
-                            className="px-2.5 py-1 text-[13px] text-primary hover:text-primary-hover hover:bg-primary-tint font-semibold rounded-[6px] transition cursor-pointer min-h-[32px] inline-flex items-center justify-center border border-transparent hover:border-primary/20"
+                            className="px-2.5 py-1 text-[13px] text-primary hover:text-primary-hover hover:bg-primary-tint font-semibold rounded-[6px] transition cursor-pointer min-h-[44px] inline-flex items-center justify-center border border-transparent hover:border-primary/20"
                           >
                             Detail
                           </button>

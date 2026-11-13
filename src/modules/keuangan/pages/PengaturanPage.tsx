@@ -109,13 +109,16 @@ export const PengaturanPage: React.FC = () => {
             </p>
           </div>
 
-          <input
-            id="toggle-vax"
-            type="checkbox"
-            checked={config.includeVaccineCosts}
-            onChange={(e) => setIncludeVaccineCosts(e.target.checked)}
-            className="w-6 h-6 rounded border-border text-primary focus:ring-primary cursor-pointer shrink-0 mt-1"
-          />
+          {/* Area sentuh 44×44 di sekeliling kotak centang */}
+          <label htmlFor="toggle-vax" className="w-11 h-11 -mt-2 -mr-2 shrink-0 flex items-center justify-center cursor-pointer">
+            <input
+              id="toggle-vax"
+              type="checkbox"
+              checked={config.includeVaccineCosts}
+              onChange={(e) => setIncludeVaccineCosts(e.target.checked)}
+              className="w-6 h-6 rounded border-border text-primary focus:ring-primary cursor-pointer"
+            />
+          </label>
         </div>
       </section>
 
