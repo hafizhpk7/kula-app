@@ -47,15 +47,15 @@ Branch `fix/audit-ui-ux`. Label bukti: [lihat] diukur/dilihat di browser, [kode]
 | COPY-1..5 | Selesai | |
 | COPY-6..12 | Selesai | Dikecualikan sengaja: "Zona bahaya", "Heksavalen", dua pesan validasi yang dikunci tes |
 | COPY-13 | Selesai | Toast nama dibedakan |
-| COPY-14, 15 | Belum (Batch C) | |
+| COPY-14, 15 | Selesai (Batch C) | Tab Biaya pakai ikon struk; placeholder nominal "Contoh: 50.000" |
 | UI-3, UI-5 | Selesai | Disetujui "Ikut rekomendasi" |
 | UI-4, UI-6, UI-7 | Selesai | |
 | UI-8 | Selesai | Commit `59707ac` |
-| UI-9 | Belum (Batch C) | Label aksi di rail tablet |
+| UI-9 | Selesai (Batch C) | [lihat] rail 768px menampilkan "Catat" di bawah ikon |
 | UI-10, UI-11, UI-12 | Selesai | UI-10 dicek ulang dengan data ekstrem |
 | A11Y-8..14 | Selesai | Satu sisa: bar warning 2,28:1 |
-| MOB-12..14 | Belum (Batch C) | |
-| A11Y-15 | Sebagian | `lang="id"` di manifest sudah. Skip link belum |
+| MOB-12..14 | Selesai [kode] (Batch C) | Orientasi manifest dilepas; umpan balik tekan di hover:none; enterKeyHint di login |
+| A11Y-15 | Selesai (Batch C) | lang="id" dan tombol "Lewati ke konten" |
 
 ## Belum dikerjakan atau butuh keputusan
 

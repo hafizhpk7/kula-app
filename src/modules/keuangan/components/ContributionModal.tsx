@@ -117,7 +117,7 @@ export const ContributionModal: React.FC<ContributionModalProps> = ({
                 setAmountStr(num === null ? "" : formatRupiahInput(num));
                 setError("");
               }}
-              placeholder="0"
+              placeholder="Contoh: 50.000"
               {...ariaField("contrib-amount", error)}
               className={`w-full pl-10 pr-3 py-2 text-[20px] font-display font-tabular rounded-control border bg-surface text-text min-h-[52px] ${
                 error ? "border-danger" : "border-border hover:border-border-strong"

@@ -216,7 +216,7 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
               inputMode="numeric"
               value={amountStr}
               onChange={handleAmountChange}
-              placeholder="0"
+              placeholder="Contoh: 50.000"
               {...ariaField("tx-amount", errors.amount)}
               className={`w-full pl-14 pr-4 py-3 text-[28px] font-semibold font-tabular rounded-control border bg-surface text-text min-h-[64px] ${
                 errors.amount ? "border-danger" : "border-border hover:border-border-strong"

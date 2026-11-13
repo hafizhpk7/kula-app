@@ -4,6 +4,7 @@ import { db } from "../../../services/firebase";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../components/common/Toast";
 import { BottomSheet } from "../../../components/common/BottomSheet";
+import { rayakan } from "../../../components/common/Perayaan";
 import { useFamily } from "../context/FamilyContext";
 import { Relation, RELATIONS, RELATION_LABELS } from "../types";
 import { belum, pesanPengguna } from "../../../utils/pesanError";
@@ -72,6 +73,8 @@ export const CreateFamilySheet: React.FC<{ isOpen: boolean; onClose: () => void 
         relation: createRelation,
         displayName: createDisplayName
       });
+
+      rayakan(); // keluarga pertama terbentuk: satu-satunya momen perayaan di alur ini
 
       if (hasPersonalCloudData && migrateDataChecked && user) {
         try {

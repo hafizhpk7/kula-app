@@ -144,7 +144,7 @@ export const SavingsGoalModal: React.FC<SavingsGoalModalProps> = ({
                 setTargetStr(num === null ? "" : formatRupiahInput(num));
                 setErrors((prev) => ({ ...prev, targetAmount: undefined }));
               }}
-              placeholder="0"
+              placeholder="Contoh: 50.000"
               {...ariaField("goal-target", errors.targetAmount)}
               className={`${inp(errors.targetAmount)} pl-10`}
             />

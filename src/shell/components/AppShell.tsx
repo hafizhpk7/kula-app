@@ -78,6 +78,14 @@ export const AppShell: React.FC<AppShellProps> = ({
 
   return (
     <div className="min-h-dvh bg-bg text-text flex flex-col transition-colors">
+      {/* Lewati ke konten (keyboard/pembaca layar). Tombol, bukan tautan #: HashRouter memakai hash untuk rute. */}
+      <button
+        type="button"
+        onClick={() => document.getElementById("konten-utama")?.focus()}
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[80] focus:px-4 focus:min-h-[44px] focus:rounded-full focus:bg-surface focus:text-text focus:border focus:border-border-strong focus:text-[14px] focus:font-medium no-print"
+      >
+        Lewati ke konten
+      </button>
       {/* Bar atas */}
       <header className={`bg-surface border-b-[3px] ${tone.border} sticky top-0 z-30 no-print transition-colors`}>
         <div className="px-3 sm:px-5 h-14 flex items-center gap-2">
@@ -129,9 +137,11 @@ export const AppShell: React.FC<AppShellProps> = ({
                   onClick={primaryAction.onClick}
                   aria-label={primaryAction.detail ? `${primaryAction.label}: ${primaryAction.detail}` : primaryAction.label}
                   title={primaryAction.detail ? `${primaryAction.label}: ${primaryAction.detail}` : primaryAction.label}
-                  className={`w-full flex items-center justify-center gap-2 py-3 rounded-full text-[14px] font-semibold shadow-[var(--shadow-card)] hover:brightness-95 transition cursor-pointer ${tone.pill}`}
+                  className={`w-full flex flex-col lg:flex-row items-center justify-center gap-0.5 lg:gap-2 py-2.5 lg:py-3 rounded-full lg:rounded-full text-[12px] lg:text-[14px] font-semibold shadow-[var(--shadow-card)] hover:brightness-95 transition cursor-pointer min-h-[44px] ${tone.pill}`}
                 >
                   <PrimaryIcon className="w-5 h-5 shrink-0" />
+                  {/* Tablet (rail 76px): label singkat di bawah ikon; desktop: label penuh */}
+                  <span className="lg:hidden">{primaryAction.shortLabel ?? primaryAction.label}</span>
                   <span className="hidden lg:inline">{primaryAction.label}</span>
                 </button>
               )}
@@ -153,7 +163,7 @@ export const AppShell: React.FC<AppShellProps> = ({
           </aside>
         )}
 
-        <main className="flex-1 min-w-0">
+        <main id="konten-utama" tabIndex={-1} className="flex-1 min-w-0 outline-none">
           <div className={`${PAGE_CONTAINER} pt-5 sm:pt-7 ${adaTab ? "pb-[calc(10rem+env(safe-area-inset-bottom))] md:pb-10" : "pb-[calc(6rem+env(safe-area-inset-bottom))]"}`}>{children}</div>
         </main>
       </div>

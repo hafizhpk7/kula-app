@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, Wallet, BookOpen, CheckCheck } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Receipt, BookOpen, CheckCheck } from "lucide-react";
 import { useBayi } from "../context/BayiContext";
 import { AppShell, ShellTab } from "../../../shell/components/AppShell";
 import { BayiChildSwitcher } from "./BayiChildSwitcher";
@@ -16,7 +16,7 @@ import { useToast } from "../../../components/common/Toast";
 export const BAYI_TABS: ShellTab[] = [
   { path: "/bayi/beranda", label: "Ringkasan", icon: LayoutDashboard },
   { path: "/bayi/jadwal", label: "Jadwal", icon: CalendarDays },
-  { path: "/bayi/biaya", label: "Biaya", icon: Wallet },
+  { path: "/bayi/biaya", label: "Biaya", icon: Receipt },
   { path: "/bayi/info-vaksin", label: "Info", icon: BookOpen }
 ];
 

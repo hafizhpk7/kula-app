@@ -330,6 +330,7 @@ export const AuthScreen: React.FC = () => {
                   type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
+                  enterKeyHint="go"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimal 6 karakter"

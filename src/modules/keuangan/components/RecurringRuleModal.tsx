@@ -232,7 +232,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
                   setAmountStr(num === null ? "" : formatRupiahInput(num));
                   setErrors(prev => ({ ...prev, amount: undefined }));
                 }}
-                placeholder="0"
+                placeholder="Contoh: 50.000"
                 {...ariaField("rule-amount", errors.amount)}
                 className={`w-full pl-9 pr-3 py-2 text-[15px] rounded-control border bg-surface text-text min-h-[44px] ${
                   errors.amount ? "border-danger" : "border-border hover:border-border-strong"

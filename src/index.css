@@ -391,3 +391,12 @@ nav a {
     color: black !important;
   }
 }
+
+/* Umpan balik tekan di layar sentuh (hover tidak ada di HP): sedikit meredup, tanpa menggeser tata letak */
+@media (hover: none) {
+  button:not(:disabled):active,
+  [role="button"]:active,
+  nav a:active {
+    filter: brightness(0.94);
+  }
+}
