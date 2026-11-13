@@ -99,7 +99,7 @@ export const JoinPage: React.FC = () => {
           <div className="p-4 rounded-xl border border-warning/40 bg-warning-tint text-text text-[13px] flex items-start gap-2.5">
             <AlertCircle className="w-5 h-5 text-warning-text shrink-0 mt-0.5" />
             <p>
-              Tamu tidak bisa membuat atau bergabung ke keluarga. Silakan masuk dengan akun terdaftar di halaman Masuk
+              Tamu tidak bisa membuat atau bergabung ke keluarga. Masuk dengan akun terdaftar di halaman Masuk
               untuk bergabung.
             </p>
           </div>

@@ -157,16 +157,21 @@ export const GlobalSettingsPage: React.FC = () => {
                   setGerakDikurangi(!kurangiGerak);
                   setKurangiGerak(!kurangiGerak);
                 }}
-                className={`relative w-14 h-8 rounded-full shrink-0 border border-field transition cursor-pointer ${
-                  kurangiGerak ? "bg-primary" : "bg-track"
-                }`}
+                className="relative w-14 h-11 shrink-0 cursor-pointer"
               >
+                {/* Area sentuh 56×44; trek visualnya 56×32 di tengah */}
                 <span
                   aria-hidden="true"
-                  className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white border border-field transition-transform ${
-                    kurangiGerak ? "translate-x-6" : ""
+                  className={`absolute inset-x-0 top-1.5 h-8 rounded-full border border-field transition ${
+                    kurangiGerak ? "bg-primary" : "bg-track"
                   }`}
-                />
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white border border-field transition-transform ${
+                      kurangiGerak ? "translate-x-6" : ""
+                    }`}
+                  />
+                </span>
               </button>
             </div>
           </section>
