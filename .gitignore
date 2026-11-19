@@ -6,3 +6,8 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Dokumen sumber pihak lain (besar, tidak di-push)
+docs/sumber/*.pdf
+docs/sumber/*.xlsx
+docs/sumber/who/
