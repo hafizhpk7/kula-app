@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, CalendarCheck, Receipt, BookOpen, CheckCheck } from "lucide-react";
+import { LayoutDashboard, CalendarDays, CalendarCheck, Sprout, Receipt, BookOpen, CheckCheck } from "lucide-react";
 import { FEATURES } from "../../../config/features";
 import { useBayi } from "../context/BayiContext";
 import { AppShell, ShellTab } from "../../../shell/components/AppShell";
@@ -21,6 +21,7 @@ export const BAYI_TABS: ShellTab[] = [
   FEATURES.tumbuhKembang
     ? { path: "/bayi/kunjungan", label: "Kunjungan", icon: CalendarCheck }
     : { path: "/bayi/jadwal", label: "Jadwal", icon: CalendarDays },
+  ...(FEATURES.tumbuhKembang ? [{ path: "/bayi/tumbuh-kembang", label: "Tumbuh kembang", shortLabel: "Tumbuh", icon: Sprout }] : []),
   { path: "/bayi/biaya", label: "Biaya", icon: Receipt },
   { path: "/bayi/info-vaksin", label: "Info", icon: BookOpen }
 ];

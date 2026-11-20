@@ -127,6 +127,12 @@ export function tentukanFormulir(params: {
   };
 }
 
+/** Titik skrining rutin berikutnya (umur bulat >= umur sekarang), dari jadwal rutin di aturan.json. null bila sudah lewat yang terakhir. */
+export function titikRutinBerikutnya(umurBulatBulan: number): number | null {
+  const ada = ATURAN.jadwalRutinBulan.nilai.filter((u) => u >= umurBulatBulan);
+  return ada.length ? Math.min(...ada) : null;
+}
+
 /** Teks umur untuk layar, mis. "6 bulan 12 hari". */
 export function teksUmur(u: UmurAnak): string {
   const tahun = Math.floor(u.bulanTotal / 12);
