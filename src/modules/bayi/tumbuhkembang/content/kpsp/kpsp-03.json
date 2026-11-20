@@ -1,0 +1,98 @@
+{
+  "id": "kpsp-03",
+  "umurBulan": 3,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    135
+  ],
+  "halamanCetak": [
+    122
+  ],
+  "perluReview": true,
+  "alat": [
+    "Gulungan wool merah"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-03-01",
+      "no": 1,
+      "teks": "Pada saat bayi terlentang, apakah masing-masing lengan dan tungkai bergerak dengan mudah? Jawab ‘Tidak’ bila salah satu atau kedua tungkai atau lengan bayi bergerak tak terarah atau tak terkendali.",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-02",
+      "no": 2,
+      "teks": "Jangan membuat suara apapun. Pada saat bayi terlentang apakah ia melihat dan menatap wajah Anda?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-03",
+      "no": 3,
+      "teks": "Pada saat Anda mengajak bayi berbicara dan tersenyum, apakah ia tersenyum kembali kepada Anda?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-04",
+      "no": 4,
+      "teks": "Apakah bayi dapat mengeluarkan suara-suara lain (mengoceh) selain menangis?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-05",
+      "no": 5,
+      "teks": "Apakah bayi suka tertawa keras walau tidak digelitik atau diraba-raba?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-06",
+      "no": 6,
+      "teks": "Ambil gulungan wool merah, lalu letakkan di atas wajah di depan mata bayi. Gerakkan wool dari samping kiri ke kanan kepala atau sebaliknya. Apakah ia dapat mengikuti gerakan Anda dengan menggerakkan kepalanya dari kanan atau kiri ke tengah?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-07",
+      "no": 7,
+      "teks": "Ambil gulungan wool merah, lalu letakkan di atas wajah di depan mata bayi. Gerakkan wool dari samping kiri ke kanan kepala atau sebaliknya. Apakah ia dapat mengikuti gerakan Anda dengan menggerakkan kepalanya dari satu sisi hampir sampai pada sisi yang lain?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-03-08",
+      "no": 8,
+      "teks": "Pada saat bayi tengkurap di alas yang datar, apakah ia dapat mengangkat kepalanya seperti pada gambar?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-03-09",
+      "no": 9,
+      "teks": "Pada saat bayi tengkurap di alas yang datar, apakah ia dapat mengangkat kepalanya sehingga membentuk sudut 45˚ seperti pada gambar?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-03-10",
+      "no": 10,
+      "teks": "Pada saat bayi tengkurap di alas yang datar, apakah ia dapat mengangkat kepalanya dengan tegak seperti pada gambar?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": true
+    }
+  ]
+}
