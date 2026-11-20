@@ -134,6 +134,19 @@ function periksaPertumbuhan(dir) {
   }
 }
 
+
+function periksaAturanPertumbuhan(path) {
+  const d = baca(path);
+  if (!d) return;
+  periksaMeta(path, d);
+  const bulat = (v) => Number.isInteger(v);
+  if (!bulat(d.umurPlot?.batasMingguPenuh)) catat(path, "umurPlot.batasMingguPenuh harus bilangan bulat");
+  if (!bulat(d.rentang?.umurMaksBulan) || !bulat(d.rentang?.pbBatasBulan)) catat(path, "rentang umur harus bilangan bulat");
+  const r = d.rentang;
+  if (!(r?.panjangBBPB?.min < r?.panjangBBPB?.max) || !(r?.tinggiBBTB?.min < r?.tinggiBBTB?.max)) catat(path, "rentang panjang dan tinggi tidak valid");
+  if (typeof d.koreksiCaraUkur?.cm !== "number" || d.koreksiCaraUkur.cm <= 0) catat(path, "koreksiCaraUkur.cm harus angka positif");
+}
+
 if (!existsSync(DIR)) {
   console.error(`Folder konten tidak ada: ${DIR}`);
   process.exit(1);
@@ -141,6 +154,7 @@ if (!existsSync(DIR)) {
 periksaKpsp(join(DIR, "kpsp"));
 periksaAturan(join(DIR, "aturan.json"));
 periksaPertumbuhan(join(DIR, "pertumbuhan"));
+periksaAturanPertumbuhan(join(DIR, "aturan-pertumbuhan.json"));
 
 if (galat.length) {
   console.error(`Validasi konten GAGAL (${galat.length}):`);
