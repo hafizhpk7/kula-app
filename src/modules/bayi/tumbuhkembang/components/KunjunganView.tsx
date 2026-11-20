@@ -8,6 +8,7 @@ import { PageHeader } from "../../../../components/common/PageHeader";
 import { useToast } from "../../../../components/common/Toast";
 import { Kunjungan, kelompokkanKunjungan, kunjunganMendatang, labelWaktu, ringkasKunjungan } from "../logic/kunjungan";
 import { buatKalender, namaBerkasIcs, peristiwaDariKunjungan, unduhIcs } from "../logic/ics";
+import { labelHasil } from "../logic/istilah";
 
 interface Props {
   profile: Profile;
@@ -40,6 +41,14 @@ export const KunjunganView: React.FC<Props> = ({ profile, onOpenVaccineDetail, s
   const mendatang = useMemo(() => kunjunganMendatang(daftar), [daftar]);
 
   const opsi = { profileId: profile.id, namaAnak: profile.panggilan, sembunyikanNama };
+
+  /** Teks kanan pada slot KPSP: hasil terakhir untuk titik umur ini, atau ajakan memulai. */
+  const ringkasanKpsp = (bln: number): string => {
+    const terakhir = (profile.kpsp ?? [])
+      .filter((x) => x.umurFormulirBulan === bln)
+      .sort((a, b) => (a.tanggal < b.tanggal ? 1 : -1))[0];
+    return terakhir ? `${labelHasil(terakhir.hasil).judul} · ${formatIndonesianDate(terakhir.tanggal, "d MMM yyyy")}` : "Mulai";
+  };
 
   const tambahKeKalender = (daftarKunjungan: Kunjungan[], satu?: Kunjungan) => {
     if (daftarKunjungan.length === 0) return;
@@ -155,11 +164,16 @@ export const KunjunganView: React.FC<Props> = ({ profile, onOpenVaccineDetail, s
                   ))}
                 </ul>
 
-                <ul className="space-y-2" aria-label={`Segera hadir untuk ${k.label}`}>
+                <ul className="space-y-2" aria-label={`Skrining dan pengukuran untuk ${k.label}`}>
                   {k.adaSlotKpsp && (
-                    <li aria-disabled="true" className="flex items-center justify-between gap-3 rounded-control border border-dashed border-border-strong px-3 min-h-[44px] text-[14px] text-text-2">
-                      <span>Skrining KPSP</span>
-                      <span className="text-[12px]">Segera hadir</span>
+                    <li>
+                      <Link
+                        to={`/bayi/tumbuh-kembang?kpsp=${k.bln}`}
+                        className="flex items-center justify-between gap-3 rounded-control border border-border-strong px-3 min-h-[44px] text-[14px] text-text hover:bg-surface-sunken transition"
+                      >
+                        <span>Skrining KPSP</span>
+                        <span className="text-[12px] text-text-2">{ringkasanKpsp(k.bln)}</span>
+                      </Link>
                     </li>
                   )}
                   <li aria-disabled="true" className="flex items-center justify-between gap-3 rounded-control border border-dashed border-border-strong px-3 min-h-[44px] text-[14px] text-text-2">

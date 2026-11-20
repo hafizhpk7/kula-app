@@ -12,11 +12,15 @@ describe("navigasi Bayi di balik FEATURES.tumbuhKembang", () => {
     expect(BAYI_TABS.map((t) => t.path)).toEqual(["/bayi/beranda", "/bayi/jadwal", "/bayi/biaya", "/bayi/info-vaksin"]);
   });
 
-  it("flag menyala: tab Jadwal diganti Kunjungan, tetap empat item", async () => {
+  it("flag menyala: Jadwal diganti Kunjungan dan ditambah Tumbuh kembang, lima item", async () => {
     vi.doMock("../../config/features", () => ({ FEATURES: { tumbuhKembang: true } }));
     const { BAYI_TABS } = await import("../../modules/bayi/components/BayiLayout");
-    expect(BAYI_TABS.map((t) => t.label)).toEqual(["Ringkasan", "Kunjungan", "Biaya", "Info"]);
+    expect(BAYI_TABS.map((t) => t.label)).toEqual(["Ringkasan", "Kunjungan", "Tumbuh kembang", "Biaya", "Info"]);
     expect(BAYI_TABS[1].path).toBe("/bayi/kunjungan");
+    expect(BAYI_TABS[2].path).toBe("/bayi/tumbuh-kembang");
+    // Label pendek dipakai di nav bawah HP supaya lima item muat
+    expect(BAYI_TABS[2].shortLabel).toBe("Tumbuh");
+    expect(BAYI_TABS.length).toBeLessThanOrEqual(5);
   });
 
   it("default flag di berkas config adalah mati bila variabel lingkungan tidak diset", async () => {

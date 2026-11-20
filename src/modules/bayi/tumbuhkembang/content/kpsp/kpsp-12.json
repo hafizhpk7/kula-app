@@ -1,0 +1,100 @@
+{
+  "id": "kpsp-12",
+  "umurBulan": 12,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    139
+  ],
+  "halamanCetak": [
+    126
+  ],
+  "perluReview": true,
+  "alat": [
+    "2 kubus",
+    "Kismis, kacang-kacangan, atau potongan biskuit",
+    "Pensil"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-12-01",
+      "no": 1,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Letakkan pensil di telapak tangan anak. Coba ambil pensil tersebut dengan perlahan-lahan. Apakah anak menggenggam pensil dengan erat dan Anda merasa kesulitan mendapatkan pensil itu kembali?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-02",
+      "no": 2,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Letakkan kismis di atas meja. Dapatkah anak memungut dengan tangannya benda−benda kecil seperti kismis, kacang−kacangan, potongan biskuit dengan gerakan miring atau menggerapai seperti gambar?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-12-03",
+      "no": 3,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Berikan 2 kubus kepada bayi. Tanpa bantuan, apakah anak dapat mempertemukan 2 kubus kecil yang ia pegang?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-04",
+      "no": 4,
+      "teks": "Sebut 2−3 kata yang dapat ditiru oleh anak (tidak perlu kata−kata yang lengkap). Apakah ia mencoba meniru kata-kata tadi?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-05",
+      "no": 5,
+      "teks": "Tanyakan kepada ibu atau pengasuh, apakah anak dapat mengangkat badannya ke posisi berdiri tanpa bantuan?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-06",
+      "no": 6,
+      "teks": "Tanyakan kepada ibu atau pengasuh, apakah anak dapat duduk sendiri tanpa bantuan dari posisi tidur atau tengkurap?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-07",
+      "no": 7,
+      "teks": "Tanyakan kepada ibu atau pengasuh, apakah anak dapat memahami makna kata ’jangan’?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-08",
+      "no": 8,
+      "teks": "Tanyakan kepada ibu atau pengasuh, apakah anak akan mencari atau terlihat mengharapkan muncul kembali jika ibu atau pengasuh bersembunyi di belakang sesuatu atau di pojok, kemudian muncul dan menghilang secara berulang-ulang di hadapan anak?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-09",
+      "no": 9,
+      "teks": "Tanyakan kepada ibu atau pengasuh, apakah anak dapat membedakan ibu atau pengasuh dengan orang yang belum ia kenal? Ia akan menunjukkan sikap malu-malu atau ragu-ragu pada saat permulaan bertemu dengan orang yang belum dikenalnya.",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-12-10",
+      "no": 10,
+      "teks": "Berdirikan anak. Apakah anak dapat berdiri dengan berpegangan pada kursi atau meja selama 30 detik atau lebih?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

@@ -19,6 +19,7 @@ import { BayiLayout } from "./modules/bayi/components/BayiLayout";
 import { DashboardPage } from "./modules/bayi/pages/DashboardPage";
 import { SchedulePage } from "./modules/bayi/pages/SchedulePage";
 import { KunjunganPage } from "./modules/bayi/pages/KunjunganPage";
+import { TumbuhKembangPage } from "./modules/bayi/pages/TumbuhKembangPage";
 import { FEATURES } from "./config/features";
 import { KeuanganPage } from "./modules/bayi/pages/KeuanganPage";
 import { VaccineInfoPage } from "./modules/bayi/pages/VaccineInfoPage";
@@ -61,6 +62,10 @@ function AppRoutes() {
         <Route
           path="kunjungan"
           element={FEATURES.tumbuhKembang ? <KunjunganPage /> : <Navigate to="/bayi/jadwal" replace />}
+        />
+        <Route
+          path="tumbuh-kembang"
+          element={FEATURES.tumbuhKembang ? <TumbuhKembangPage /> : <Navigate to="/bayi/beranda" replace />}
         />
         <Route path="biaya" element={<KeuanganPage />} />
         <Route path="keuangan" element={<Navigate to="/bayi/biaya" replace />} />

@@ -4,6 +4,9 @@ import { BottomSheet } from "../../../components/common/BottomSheet";
 import { createNewProfile } from "../../../data/seed";
 import { Profile } from "../../../types";
 import { getChildAge } from "../../../utils/dates";
+import { FEATURES } from "../../../config/features";
+import { FieldUsiaKehamilan } from "../tumbuhkembang/components/FieldUsiaKehamilan";
+import { parseUsiaKehamilan } from "../tumbuhkembang/logic/profil";
 
 interface Props {
   isOpen: boolean;
@@ -35,6 +38,7 @@ export const ProfileModal: React.FC<Props> = ({
     new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString().split("T")[0]
   );
   const [catatan, setCatatan] = useState("");
+  const [usiaKehamilan, setUsiaKehamilan] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
@@ -44,6 +48,7 @@ export const ProfileModal: React.FC<Props> = ({
         setPanggilan("");
         setTanggalLahir(new Date().toISOString().split("T")[0]);
         setCatatan("");
+        setUsiaKehamilan("");
         setErrorMsg("");
         setConfirmDeleteId(null);
         setMode("add");
@@ -59,6 +64,7 @@ export const ProfileModal: React.FC<Props> = ({
     setPanggilan("");
     setTanggalLahir(new Date().toISOString().split("T")[0]);
     setCatatan("");
+    setUsiaKehamilan("");
     setErrorMsg("");
     setConfirmDeleteId(null);
     setMode("add");
@@ -69,6 +75,7 @@ export const ProfileModal: React.FC<Props> = ({
     setPanggilan(p.panggilan);
     setTanggalLahir(p.tanggalLahir);
     setCatatan(p.catatan || "");
+    setUsiaKehamilan(typeof p.usiaKehamilanMinggu === "number" ? String(p.usiaKehamilanMinggu) : "");
     setErrorMsg("");
     setConfirmDeleteId(null);
     setMode("edit");
@@ -81,21 +88,34 @@ export const ProfileModal: React.FC<Props> = ({
       return;
     }
 
+    // Usia kehamilan hanya diproses bila fitur tumbuh kembang menyala; selain itu profil tidak disentuh.
+    const usia = FEATURES.tumbuhKembang ? parseUsiaKehamilan(usiaKehamilan) : ({ ok: true, nilai: undefined } as const);
+    if (!usia.ok) {
+      setErrorMsg(usia.pesan);
+      return;
+    }
+
     if (mode === "add") {
       const newId = "child-" + Date.now();
       const profile = createNewProfile(newId, panggilan.trim(), tanggalLahir);
       if (catatan.trim()) profile.catatan = catatan.trim();
+      if (usia.nilai !== undefined) profile.usiaKehamilanMinggu = usia.nilai;
       onAddProfile(profile);
       setMode("list");
     } else if (mode === "edit" && editingId) {
       const target = profiles.find((p) => p.id === editingId);
       if (target && onUpdateProfile) {
-        onUpdateProfile({
+        const diubah: Profile = {
           ...target,
           panggilan: panggilan.trim(),
           tanggalLahir,
           catatan: catatan.trim() || undefined
-        });
+        };
+        if (FEATURES.tumbuhKembang) {
+          if (usia.nilai !== undefined) diubah.usiaKehamilanMinggu = usia.nilai;
+          else delete diubah.usiaKehamilanMinggu;
+        }
+        onUpdateProfile(diubah);
       }
       setMode("list");
     }
@@ -198,7 +218,7 @@ export const ProfileModal: React.FC<Props> = ({
               {confirmDeleteId && (
                 <div className="p-3 bg-danger-tint border border-danger/30 rounded-control space-y-2">
                   <p className="text-[13px] text-danger-text font-medium">
-                    Hapus profil ini beserta seluruh catatan imunisasinya?
+                    Hapus profil ini beserta seluruh catatan imunisasinya{FEATURES.tumbuhKembang ? " dan catatan tumbuh kembangnya" : ""}?
                   </p>
                   <div className="flex items-center gap-2">
                     <button
@@ -257,6 +277,8 @@ export const ProfileModal: React.FC<Props> = ({
                   className="w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                 />
               </div>
+
+              {FEATURES.tumbuhKembang && <FieldUsiaKehamilan value={usiaKehamilan} onChange={setUsiaKehamilan} />}
 
               <div className="space-y-1">
                 <label className="text-[13px] font-medium text-text">

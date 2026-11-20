@@ -1,0 +1,102 @@
+{
+  "id": "kpsp-54",
+  "umurBulan": 54,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    151,
+    152
+  ],
+  "halamanCetak": [
+    138,
+    139
+  ],
+  "perluReview": true,
+  "alat": [
+    "Kertas",
+    "Pensil",
+    "Kertas warna-warni"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-54-01",
+      "no": 1,
+      "teks": "Jangan mengoreksi atau membantu anak. Jangan menyebut kata “Lebih panjang”. Perlihatkan gambar kedua garis ini pada anak. Tanyakan: “Mana garis yang lebih panjang?” Minta anak menunjuk garis yang lebih panjang. Setelah anak menunjuk, putar lembar ini dan ulangi pertanyaan tersebut. Apakah anak dapat menunjuk garis yang lebih panjang sebanyak 3 kali dengan benar?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-54-02",
+      "no": 2,
+      "teks": "Jangan membantu anak dan jangan memberitahu nama gambar ini. Minta anak untuk menggambar seperti contoh di kertas kosong yang tersedia. Berikan 3 kali kesempatan. Apakah anak dapat menggambar + seperti contoh di bawah?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-54-03",
+      "no": 3,
+      "teks": "Berikan anak pensil dan kertas lalu katakan kepada anak “Buatlah gambar orang” (anak laki-laki, anak perempuan, papa, mama, dll). Jangan memberi perintah lebih dari itu. Jangan bertanya atau mengingatkan anak bila ada bagian yang belum tergambar. Dalam memberi nilai, hitunglah berapa bagian tubuh yang tergambar. Untuk bagian tubuh yang berpasangan seperti mata, telinga, lengan, dan kaki, setiap pasang dinilai 1 bagian. Pastikan anak telah menyelesaikan gambar sebelum memberikan penilaian. Dapatkah anak menggambar orang dengan sedikitnya 3 bagian tubuh? Jawaban ‘Ya’: Jawaban ‘Tidak’:",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-54-04",
+      "no": 4,
+      "teks": "Memahami konsep 2 warna Minta anak untuk menyebutkan 2 warna. Dapatkah anak menyebut 2 warna dengan benar?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-54-05",
+      "no": 5,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah bicara anak mampu dipahami seluruhnya oleh orang lain (yang tidak bertemu setiap hari)?",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-54-06",
+      "no": 6,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak mengikuti peraturan permainan saat bermain dengan teman- temannya (misal: ular tangga, petak umpet, dll)?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-54-07",
+      "no": 7,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak menggosok gigi tanpa dibantu?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-54-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat mengancingkan bajunya atau pakaian boneka?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-54-09",
+      "no": 9,
+      "teks": "Mengenal konsep 2 kata depan Minta anak untuk mengikuti perintah di bawah, jangan memberi isyarat. “Ambil benda (misalnya kertas, balok) dan letakkan di atas meja” “Ambil benda (misalnya kertas, balok) dan letakkan di bawah meja” “Ambil benda (misalnya kertas, balok) dan letakkan di depan ibu” “Ambil benda (misalnya kertas, balok) dan letakkan di samping ibu” “Ambil benda (misalnya kertas, balok) dan letakkan di belakang ibu” Dapatkah anak melakukan sedikitnya 2 perintah (memahami 2 kata depan)?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-54-10",
+      "no": 10,
+      "teks": "Minta anak untuk berdiri 1 kaki tanpa berpegangan. Jika perlu tunjukkan caranya dan beri anak kesempatan sebanyak 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 2 detik atau lebih?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

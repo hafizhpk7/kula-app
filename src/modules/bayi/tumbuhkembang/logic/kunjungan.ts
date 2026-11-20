@@ -1,13 +1,14 @@
 import { differenceInCalendarDays, parseISO, startOfDay } from "date-fns";
 import { Record as RecordImunisasi, ScheduleItemStatus, ScheduleRow } from "../../../../types";
 import { calculateDueDate, getScheduleStatus } from "../../../../utils/dates";
+import { ATURAN } from "../konten";
 
 /**
- * Titik umur (bulan) skrining perkembangan.
- * Perlu diverifikasi ke dokumen Kemenkes di Fase 2. Sementara hanya dipakai untuk
- * menampilkan slot "segera hadir" pada kunjungan di titik umur ini.
+ * Titik umur (bulan) skrining KPSP rutin: 6, 9, 18, 24, 36, 48, 60, 72 (Pedoman hlm 130, keputusan K1).
+ * Sebelumnya 16 titik (semua formulir); Fase 2 menggantinya dengan jadwal rutin dari aturan.json.
+ * Formulir 16 umur tetap ada untuk memilih lembar yang sesuai umur anak.
  */
-export const KPSP_TITIK_UMUR_BULAN: readonly number[] = [3, 6, 9, 12, 15, 18, 21, 24, 30, 36, 42, 48, 54, 60, 66, 72];
+export const KPSP_TITIK_UMUR_BULAN: readonly number[] = ATURAN.jadwalRutinBulan.nilai;
 
 /** Kunjungan dianggap "mendekat" bila tanggal targetnya paling lama sekian hari lagi. Sama dengan status "Segera". */
 export const BATAS_MENDEKAT_HARI = 30;
