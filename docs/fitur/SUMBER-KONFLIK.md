@@ -55,6 +55,43 @@ Status keputusan di kolom kanan bawah tiap butir. K1–K4 sudah disetujui (20 No
 - **Keputusan sementara (Claude):** memakai hari kalender yang tepat (geser tanggal lahir sebanyak (40 − usia kehamilan) × 7 hari), bukan aritmetika contoh. Alasannya konsisten dengan `getChildAge` yang sudah ada dan bisa diuji. Ada tes yang mendokumentasikan selisih ini (`umur.test.ts`, "selisih hari tepat").
 - Keputusan: **[tunggu]** konfirmasi tenaga kesehatan bila selisih 2 hari penting.
 
+## Fase 3 (pertumbuhan)
+
+## K7. Lingkar kepala hanya ada di WHO, tidak di Permenkes
+
+- Permenkes 2/2020 tidak memuat tabel lingkar kepala menurut umur (daftar tabel di `MANIFEST.md`). [baca]
+- Pedoman hlm 102 meminta lingkar kepala diukur dan dicatat di "grafik lingkar kepala menurut umur dan jenis kelamin", tetapi tabelnya bukan di Permenkes. [baca]
+- Prompt Fase 3 menetapkan Permenkes sebagai acuan nasional utama dan WHO sebagai cross-check. Untuk LK/U tidak ada acuan nasional di paket sumber, jadi **WHO (`hcfa-*`) menjadi satu-satunya sumber**.
+- **[usulan]** Pakai WHO untuk LK/U dan tandai di layar "Sumber: WHO Child Growth Standards" (bukan Permenkes). Hasil LK/U ditandai `perluReview`.
+- Keputusan: **[tunggu]**
+
+## K8. Cacat di PDF Permenkes (Tabel 12, tinggi 69,5 cm)
+
+- Nilai −3 SD tercetak `6.`; Excel WHO memberi 6,3. 729 dari 730 baris lain identik. [hitung]
+- **[usulan]** Data aplikasi diambil dari Excel WHO (yang utuh), dan Permenkes dipakai sebagai titik uji. Baris cacat itu dikecualikan dari uji dan dicatat. Tidak mengubah hasil hitung.
+- Keputusan: **[tunggu]** (mohon dikonfirmasi, atau lihat halaman 38 sebagai gambar)
+
+## K9. Batas antara umur minggu dan umur bulan untuk plotting
+
+- Pedoman hlm 104: "Hingga umur 3 bulan, plotting menggunakan usia minggu penuh... Setelah umur 3 bulan, gunakan bulan penuh (contoh: 6 bulan 12 hari menjadi 6 bulan)." [baca]
+- Excel WHO mingguan berakhir di minggu 13 (91 hari); tabel bulanan mulai di bulan 0. "3 bulan" dan "13 minggu" tidak persis sama (3 bulan = 91 sampai 92 hari kalender, bergantung bulannya).
+- **[usulan]** Pakai minggu penuh selama umur ≤ 13 minggu, dan bulan penuh sesudahnya (14 minggu ke atas memakai bulan penuh = 3 atau lebih). Batas ini mengikuti ujung tabel mingguan WHO.
+- Keputusan: **[tunggu]**
+
+## K10. Pembulatan panjang atau tinggi untuk BB/PB dan BB/TB
+
+- Pedoman hlm 104: panjang atau tinggi dibulatkan ke **sentimeter terdekat** (0,1–0,4 turun, 0,5–0,9 naik). [baca]
+- Tabel Permenkes dan WHO untuk BB/PB dan BB/TB berlangkah **0,5 cm**. [baca, hitung]
+- **[usulan]** Ikuti Pedoman: bulatkan ke cm terdekat lalu pakai baris itu. Jadi baris `x,5` pada tabel tidak dipakai untuk pencarian.
+- Keputusan: **[tunggu]**
+
+## K11. Penyesuaian umur prematur di Pedoman memakai aritmetika "1 bulan = 4 minggu" lagi
+
+- Pedoman hlm 104: "12 bulan − (40 − 32 minggu) = 12 bulan − 8 minggu (2 bulan) = 10 bulan". Delapan minggu adalah 56 hari, bukan tepat 2 bulan. [baca]
+- Sama dengan K6. Pedoman hlm 104 juga memakai ambang **< 37 minggu** dan batas **2 tahun** untuk plotting, yaitu cocok dengan keputusan K4 (37 minggu). Ambang 38 minggu hanya di bagian KPSP (hlm 130).
+- **[usulan]** Konsisten dengan K6: hitung selisih hari kalender yang tepat, dan pakai fungsi `umurUntukPerkembangan` yang sudah ada.
+- Keputusan: **[tunggu]** (ikut K6)
+
 ## Bukan konflik, tapi perlu diketahui (batas produk)
 
 - **KPSP versi Pedoman dilakukan oleh tenaga kesehatan.** Hlm 130, butir 2: "Skrining atau pemeriksaan dilakukan oleh tenaga kesehatan". Anak harus dibawa saat skrining (butir 6a). Sebagian butir berupa **perintah kepada petugas atau orang tua** yang memakai alat bantu (kubus, bola, kismis, dst.), bukan hanya pertanyaan ke orang tua. Hlm 131, butir 6e. [baca]
