@@ -18,6 +18,8 @@ interface Props {
   onNavigateToTab: (tab: any) => void;
   onQuickMarkGiven: (row: ScheduleRow) => void;
   readOnly?: boolean;
+  /** Kartu tambahan di atas "Berikutnya" (dipakai fitur tumbuh kembang, di balik flag). */
+  kartuKunjungan?: React.ReactNode;
 }
 
 const kartu = "bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)]";
@@ -29,7 +31,8 @@ export const DashboardTab: React.FC<Props> = ({
   onOpenVaccineDetail,
   onNavigateToTab,
   onQuickMarkGiven,
-  readOnly = false
+  readOnly = false,
+  kartuKunjungan
 }) => {
   const [celebrateSignal, setCelebrateSignal] = useState(0);
   const lebar = useLayarLebar();
@@ -265,6 +268,7 @@ export const DashboardTab: React.FC<Props> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
         <div className="lg:col-span-2 space-y-4">
+          {kartuKunjungan}
           {blokBerikutnya}
           {blokPerhatian}
         </div>
