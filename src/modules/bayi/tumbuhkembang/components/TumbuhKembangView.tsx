@@ -294,6 +294,16 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
         )}
       </section>
 
+      <section className={`${kartu} space-y-2`} aria-labelledby="tk-dokter">
+        <h2 id="tk-dokter" className="font-display text-[16px] text-text">
+          Ringkasan untuk dokter
+        </h2>
+        <p className="text-[13px] text-text-2 leading-relaxed">Satu halaman berisi profil, imunisasi, hasil KPSP, ukuran dan grafik pertumbuhan, siap dicetak untuk dibawa ke dokter atau bidan.</p>
+        <Link to="/bayi/ringkasan-dokter" className={tombolSekunder}>
+          Buka ringkasan untuk dokter
+        </Link>
+      </section>
+
       <DisclaimerTumbuhKembang />
     </div>
   );
