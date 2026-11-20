@@ -80,14 +80,14 @@ describe("kelompokkanKunjungan", () => {
     expect(jauh.status).toBe("Terjadwal");
   });
 
-  it("slot KPSP hanya di titik umur KPSP", () => {
+  it("slot KPSP hanya di 8 titik rutin (K1: 6, 9, 18, 24, 36, 48, 60, 72)", () => {
     const k = kelompokkanKunjungan(ROWS, [], LAHIR, new Date(2026, 0, 20));
     expect(k.find((x) => x.bln === 6)!.adaSlotKpsp).toBe(true);
-    expect(k.find((x) => x.bln === 12)!.adaSlotKpsp).toBe(true);
+    // 12 bulan punya formulir KPSP tetapi bukan titik rutin
+    expect(k.find((x) => x.bln === 12)!.adaSlotKpsp).toBe(false);
     expect(k.find((x) => x.bln === 2)!.adaSlotKpsp).toBe(false);
     expect(k.find((x) => x.bln === 0)!.adaSlotKpsp).toBe(false);
-    expect(KPSP_TITIK_UMUR_BULAN[0]).toBe(3);
-    expect(KPSP_TITIK_UMUR_BULAN[KPSP_TITIK_UMUR_BULAN.length - 1]).toBe(72);
+    expect([...KPSP_TITIK_UMUR_BULAN]).toEqual([6, 9, 18, 24, 36, 48, 60, 72]);
   });
 
   it("tanggal lahir kosong atau tidak valid menghasilkan daftar kosong, tanpa error", () => {
