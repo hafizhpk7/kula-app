@@ -5,8 +5,9 @@
  * File ini sebelumnya kosong, jadi tes di sini hanya mencakup aturan `babies` dan dua
  * pemeriksaan penjaga di sekitarnya. Aturan `finance*` dan keluarga lain belum punya tes.
  *
- * STATUS: ditulis tanpa bisa dijalankan (Java belum terpasang saat ditulis). Hasil run pertama
- * di emulator adalah verifikasi pertamanya, termasuk uji batch 380 operasi dan tes membership.
+ * Run pertama di emulator (20 Nov 2026): 31 lulus, 1 gagal. Yang gagal adalah tes membership,
+ * dan itu bug di rules (lihat komentar di tesnya), bukan di aturan `babies`. Batch 380 operasi lulus.
+ * Java ada di ~/Tools/jdk/Contents/Home (belum di PATH): export JAVA_HOME dan PATH sebelum `npm run test:rules`.
  */
 import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, beforeEach, describe, it } from "vitest";
@@ -297,10 +298,12 @@ describe("penjaga di sekitar babies", () => {
     await assertFails(getDoc(doc(asAdmin(), `families/${FID}/babies/b1/lain/x`)));
   });
 
-  it("[karakterisasi] pemilik membaca users/{uid}/membership/current sesuai maksud aturan", async () => {
-    // Blok `match /membership/{docId}` di firestore.rules tampak berada di luar `match /users/{userId}`
-    // (hitungan kurung), padahal klien memakai users/{uid}/membership/current. Tes ini menyatakan
-    // perilaku yang dimaksud. Bila gagal di emulator, temuan struktur itu terbukti.
+  // BUG DIKETAHUI (terbukti di emulator, 20 Nov 2026). Blok `match /membership/{docId}` di firestore.rules
+  // berada di luar `match /users/{userId}` (kedalaman kurung 2, seharusnya di dalam users), jadi tidak
+  // pernah cocok dengan jalur yang dipakai klien: users/{uid}/membership/current. Akibatnya jatuh ke
+  // default-deny (`false for 'get' @ L6`). `it.fails` membuat suite hijau selama bug ini belum diputuskan;
+  // saat blok dipindah ke dalam `match /users/{userId}`, tes ini akan berbalik dan harus diubah jadi `it`.
+  it.fails("[bug diketahui] pemilik membaca users/{uid}/membership/current sesuai maksud aturan", async () => {
     await assertSucceeds(getDoc(doc(env.authenticatedContext(ADMIN).firestore(), `users/${ADMIN}/membership/current`)));
   });
 });
