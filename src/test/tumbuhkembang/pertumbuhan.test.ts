@@ -4,6 +4,7 @@ import { SEMUA_STANDAR, standar } from "../../modules/bayi/tumbuhkembang/pertumb
 import {
   bulatkanCm,
   hitungPengukuran,
+  jendelaGrafik,
   koreksiCaraUkur,
   kurvaStandar,
   pengukuranTerbaru,
@@ -361,5 +362,49 @@ describe("pengukuranTerbaru, urutkanPengukuran, titikAnak, kurvaStandar", () => 
     expect(pb).toHaveLength(61);
     expect(pb.map((t) => t.x)).toEqual(Array.from({ length: 61 }, (_, i) => i));
     for (const kurva of [kurvaStandar("bbu", "L"), pb]) for (let i = 1; i < kurva.length; i++) expect(kurva[i].x).toBeGreaterThan(kurva[i - 1].x);
+  });
+});
+
+describe("jendelaGrafik", () => {
+  const kurvaBBU = kurvaStandar("bbu", "L");
+  const titik = (x: number[], y: number[]) => x.map((v, i) => ({ id: `t${i}`, tanggal: "2026-01-01", x: v, y: y[i], z: 0, pita: "medianPlus1" as const }));
+
+  it("semua titik di bawah 24 bulan: jendela 0-24 dan sumbu-y mengikuti kurva di jendela itu", () => {
+    const j = jendelaGrafik("bbu", kurvaBBU, titik([1, 4], [4.3, 6.3]));
+    expect(j.x).toEqual([0, 24]);
+    const dalam = kurvaBBU.filter((t) => t.x <= 24);
+    expect(j.y[0]).toBe(Math.floor(Math.min(...dalam.map((t) => t.sd[0]))));
+    expect(j.y[1]).toBe(Math.ceil(Math.max(...dalam.map((t) => t.sd[6]))));
+    expect(j.y[1]).toBeLessThan(28); // lebih rapat daripada jendela 0-60
+  });
+
+  it("semua titik dari 24 bulan: jendela 24-60; titik di kedua sisi: 0-60", () => {
+    expect(jendelaGrafik("bbu", kurvaBBU, titik([30, 40], [12, 14])).x).toEqual([24, 60]);
+    expect(jendelaGrafik("bbu", kurvaBBU, titik([20, 30], [11, 12])).x).toEqual([0, 60]);
+  });
+
+  it("tanpa titik: seluruh rentang kurva", () => {
+    expect(jendelaGrafik("bbu", kurvaBBU, []).x).toEqual([0, 60]);
+    expect(jendelaGrafik("bbpb", kurvaStandar("bbpb", "L"), []).x).toEqual([45, 110]);
+  });
+
+  it("titik anak di luar kurva ikut masuk sumbu-y", () => {
+    const j = jendelaGrafik("bbu", kurvaBBU, titik([4], [30]));
+    expect(j.y[1]).toBeGreaterThanOrEqual(30);
+  });
+
+  it("BB/PB dipersempit sekitar panjang anak dan dijepit ke rentang tabel", () => {
+    const k = kurvaStandar("bbpb", "L");
+    expect(jendelaGrafik("bbpb", k, titik([68], [7.9])).x).toEqual([58, 78]);
+    expect(jendelaGrafik("bbpb", k, titik([46], [2.6])).x[0]).toBe(45);
+    const dekatAtas = jendelaGrafik("bbpb", k, titik([109], [17])).x;
+    expect(dekatAtas[1]).toBe(110);
+    expect(dekatAtas[1] - dekatAtas[0]).toBeGreaterThanOrEqual(20);
+  });
+
+  it("BB/TB dijepit ke 65-120", () => {
+    const j = jendelaGrafik("bbtb", kurvaStandar("bbtb", "P"), titik([66, 70], [7, 8]));
+    expect(j.x[0]).toBe(65);
+    expect(j.x[1]).toBeLessThanOrEqual(120);
   });
 });

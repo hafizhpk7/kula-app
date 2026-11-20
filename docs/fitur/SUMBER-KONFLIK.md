@@ -63,34 +63,47 @@ Status keputusan di kolom kanan bawah tiap butir. K1–K4 sudah disetujui (20 No
 - Pedoman hlm 102 meminta lingkar kepala diukur dan dicatat di "grafik lingkar kepala menurut umur dan jenis kelamin", tetapi tabelnya bukan di Permenkes. [baca]
 - Prompt Fase 3 menetapkan Permenkes sebagai acuan nasional utama dan WHO sebagai cross-check. Untuk LK/U tidak ada acuan nasional di paket sumber, jadi **WHO (`hcfa-*`) menjadi satu-satunya sumber**.
 - **[usulan]** Pakai WHO untuk LK/U dan tandai di layar "Sumber: WHO Child Growth Standards" (bukan Permenkes). Hasil LK/U ditandai `perluReview`.
-- Keputusan: **[tunggu]**
+- Keputusan: **disetujui** (20 November 2026), sesuai [usulan] di atas.
 
 ## K8. Cacat di PDF Permenkes (Tabel 12, tinggi 69,5 cm)
 
 - Nilai −3 SD tercetak `6.`; Excel WHO memberi 6,3. 729 dari 730 baris lain identik. [hitung]
 - **[usulan]** Data aplikasi diambil dari Excel WHO (yang utuh), dan Permenkes dipakai sebagai titik uji. Baris cacat itu dikecualikan dari uji dan dicatat. Tidak mengubah hasil hitung.
-- Keputusan: **[tunggu]** (mohon dikonfirmasi, atau lihat halaman 38 sebagai gambar)
+- Keputusan: **disetujui** (20 November 2026), sesuai [usulan] di atas. Halaman 38 belum dilihat sebagai gambar.
 
 ## K9. Batas antara umur minggu dan umur bulan untuk plotting
 
 - Pedoman hlm 104: "Hingga umur 3 bulan, plotting menggunakan usia minggu penuh... Setelah umur 3 bulan, gunakan bulan penuh (contoh: 6 bulan 12 hari menjadi 6 bulan)." [baca]
 - Excel WHO mingguan berakhir di minggu 13 (91 hari); tabel bulanan mulai di bulan 0. "3 bulan" dan "13 minggu" tidak persis sama (3 bulan = 91 sampai 92 hari kalender, bergantung bulannya).
 - **[usulan]** Pakai minggu penuh selama umur ≤ 13 minggu, dan bulan penuh sesudahnya (14 minggu ke atas memakai bulan penuh = 3 atau lebih). Batas ini mengikuti ujung tabel mingguan WHO.
-- Keputusan: **[tunggu]**
+- Keputusan: **disetujui** (20 November 2026), sesuai [usulan] di atas.
 
 ## K10. Pembulatan panjang atau tinggi untuk BB/PB dan BB/TB
 
 - Pedoman hlm 104: panjang atau tinggi dibulatkan ke **sentimeter terdekat** (0,1–0,4 turun, 0,5–0,9 naik). [baca]
 - Tabel Permenkes dan WHO untuk BB/PB dan BB/TB berlangkah **0,5 cm**. [baca, hitung]
 - **[usulan]** Ikuti Pedoman: bulatkan ke cm terdekat lalu pakai baris itu. Jadi baris `x,5` pada tabel tidak dipakai untuk pencarian.
-- Keputusan: **[tunggu]**
+- Keputusan: **disetujui** (20 November 2026), sesuai [usulan] di atas.
 
 ## K11. Penyesuaian umur prematur di Pedoman memakai aritmetika "1 bulan = 4 minggu" lagi
 
 - Pedoman hlm 104: "12 bulan − (40 − 32 minggu) = 12 bulan − 8 minggu (2 bulan) = 10 bulan". Delapan minggu adalah 56 hari, bukan tepat 2 bulan. [baca]
 - Sama dengan K6. Pedoman hlm 104 juga memakai ambang **< 37 minggu** dan batas **2 tahun** untuk plotting, yaitu cocok dengan keputusan K4 (37 minggu). Ambang 38 minggu hanya di bagian KPSP (hlm 130).
 - **[usulan]** Konsisten dengan K6: hitung selisih hari kalender yang tepat, dan pakai fungsi `umurUntukPerkembangan` yang sudah ada.
-- Keputusan: **[tunggu]** (ikut K6)
+- Keputusan: **disetujui** (20 November 2026), ikut K6.
+
+## K12. Contoh umur plotting di Pedoman tidak cocok dengan hari kalender
+
+- Pedoman hlm 104: lahir 25 Desember 2020, diperiksa 5 Februari 2021, "umur saat ini 10-01 atau 5 minggu 3 hari, di-plotting di umur 5 minggu". [baca]
+- Hari kalender sebenarnya: 25 Desember 2020 sampai 5 Februari 2021 adalah **42 hari = 6 minggu tepat**. Angka "10-01" (1 bulan 10 hari) dan "5 minggu 3 hari" (38 hari) juga tidak sama satu dengan yang lain.
+- Implementasi memakai hari kalender, jadi contoh itu menghasilkan **6 minggu**, bukan 5. Ada tes yang mendokumentasikannya (`pertumbuhan.test.ts`, "contoh Pedoman hlm 104").
+- Keputusan: **keputusan sementara oleh Claude**, silakan koreksi. Sejalan dengan K6 dan K11.
+
+## K13. "Perubahan jalur" pertumbuhan tidak punya ambang di sumber
+
+- Prompt Fase 3 meminta perubahan jalur memicu kalimat "sebaiknya didiskusikan dengan tenaga kesehatan". Tidak ada dokumen di `docs/sumber/` yang menyebut ambang perubahan jalur (berapa pita atau berapa SD). Pedoman hlm 100 hanya menyebut kenaikan berat yang mendatar atau tidak mengikuti garis pertumbuhan sebagai alasan memakai tabel kenaikan berat (Permenkes Tabel 17–23), yang belum dipakai. [baca]
+- **Tidak diimplementasikan.** Aplikasi hanya memicu kalimat itu untuk posisi di luar −2 sampai +2 SD, dan menampilkan pembanding netral ("naik 1 pita", "turun 2 pita", "masih di pita yang sama") tanpa saran. Menambah pemicu perubahan jalur butuh ambang dari sumber resmi atau tenaga kesehatan.
+- Keputusan: **[tunggu]** apakah ingin memakai tabel kenaikan berat/tinggi Permenkes (Tabel 17–23) sebagai dasar pemicu.
 
 ## Bukan konflik, tapi perlu diketahui (batas produk)
 

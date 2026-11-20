@@ -239,6 +239,35 @@ export function kurvaStandar(indikator: Indikator, jk: JenisKelamin): TitikKurva
   }
 }
 
+export interface JendelaGrafik {
+  x: [number, number];
+  y: [number, number];
+}
+
+/**
+ * Jendela tampilan grafik supaya titik anak terbaca: grafik umur memakai 0-24 bulan bila semua titik di bawah 24 bulan
+ * (seperti grafik terpisah di Permenkes), 24-60 bila semua dari 24 bulan, selain itu 0-60. Grafik BB/PB dan BB/TB
+ * dipersempit di sekitar panjang atau tinggi anak. Sumbu-y mengikuti kurva di jendela itu dan titik anak.
+ */
+export function jendelaGrafik(indikator: Indikator, kurva: readonly TitikKurva[], titik: readonly TitikAnak[]): JendelaGrafik {
+  const xKurva: [number, number] = [kurva[0].x, kurva[kurva.length - 1].x];
+  let x: [number, number] = xKurva;
+  const xs = titik.map((t) => t.x);
+  if (indikator === "bbpb" || indikator === "bbtb") {
+    if (xs.length > 0) {
+      const a = Math.max(xKurva[0], Math.floor(Math.min(...xs) - 10));
+      const b = Math.min(xKurva[1], Math.ceil(Math.max(...xs) + 10));
+      x = b - a >= 20 ? [a, b] : [Math.max(xKurva[0], Math.min(a, xKurva[1] - 20)), Math.min(xKurva[1], Math.max(b, xKurva[0] + 20))];
+    }
+  } else if (xs.length > 0) {
+    if (Math.max(...xs) <= 24) x = [0, 24];
+    else if (Math.min(...xs) >= 24) x = [24, 60];
+  }
+  const dalam = kurva.filter((t) => t.x >= x[0] && t.x <= x[1]);
+  const nilai = [...dalam.flatMap((t) => [t.sd[0], t.sd[6]]), ...titik.map((t) => t.y)];
+  return { x, y: [Math.floor(Math.min(...nilai)), Math.ceil(Math.max(...nilai))] };
+}
+
 /** Pengukuran paling akhir menurut tanggal, atau undefined. */
 export function pengukuranTerbaru(daftar: readonly Pengukuran[] | undefined): Pengukuran | undefined {
   const u = urutkanPengukuran(daftar);

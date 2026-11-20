@@ -55,6 +55,8 @@ Tanpa perubahan skema atau rules. Tidak butuh dokumen sumber.
 - Butuh: F1, F2, F3, F7.
 - Selesai bila: semua butir konten punya sumber dan halaman, tes lulus, konten ditandai `perluReview`.
 
+> **Status Fase 3 (20 November 2026):** langkah 1 sampai 4 selesai di branch `feat/tumbuh-kembang-fase3` (data standar WHO yang divalidasi terhadap Permenkes, logika z-score dan umur plot, form catat ukuran, grafik, ringkasan untuk dokter) dan rules di `feat/rules-pengukuran`. Masih terbuka: tinjauan tenaga kesehatan atas konten (`perluReview`), K13 (pemicu perubahan jalur), konfirmasi K12 dan halaman Permenkes 38 sebagai gambar, dan tes di HP asli (grafik di 320px, cetak di HP dan desktop).
+
 ## Fase 3: Grafik pertumbuhan + ringkasan untuk dokter (Opus 5.5)
 
 - **Cek sumber dulu.** Butuh F2 (Lampiran Permenkes). Tabel WHO (28 Excel) sudah lengkap. Kalau tabel tidak ada, **STOP**.

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { CartesianGrid, ComposedChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { JenisKelamin } from "../../../../types";
 import { Indikator, SINGKATAN_INDIKATOR, standar } from "../pertumbuhanKonten";
-import { kurvaStandar, TitikAnak } from "../logic/pertumbuhan";
+import { jendelaGrafik, kurvaStandar, TitikAnak } from "../logic/pertumbuhan";
 
 interface Props {
   indikator: Indikator;
@@ -34,6 +34,7 @@ export const GrafikPertumbuhan: React.FC<Props> = ({ indikator, jenisKelamin, ti
     return { min3: ambil(0), min2: ambil(1), median: ambil(3), plus2: ambil(5), plus3: ambil(6) };
   }, [kurva]);
   const sumbuX = PORSI_X[indikator];
+  const jendela = useMemo(() => jendelaGrafik(indikator, kurva, titik), [indikator, kurva, titik]);
   const anak = titik.map((t) => ({ x: t.x, y: t.y }));
 
   const garis = (nama: string, data: { x: number; y: number }[], lebar: number, putus?: string) => (
@@ -49,13 +50,13 @@ export const GrafikPertumbuhan: React.FC<Props> = ({ indikator, jenisKelamin, ti
             <XAxis
               type="number"
               dataKey="x"
-              domain={sumbuX.domain}
+              domain={jendela.x}
               allowDataOverflow
               tick={{ fill: "var(--text-2)", fontSize: 12 }}
               label={{ value: sumbuX.label, position: "insideBottom", offset: -2, fill: "var(--text-2)", fontSize: 12 }}
               height={40}
             />
-            <YAxis type="number" domain={["auto", "auto"]} tick={{ fill: "var(--text-2)", fontSize: 12 }} width={40} />
+            <YAxis type="number" domain={jendela.y} allowDataOverflow tick={{ fill: "var(--text-2)", fontSize: 12 }} width={40} />
             {garis("−3 SD", seri.min3, 1, "2 4")}
             {garis("−2 SD", seri.min2, 1.5, "6 4")}
             {garis("Median", seri.median, 2.5)}

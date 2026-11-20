@@ -1,6 +1,6 @@
 # Usulan skema dan rencana Fase 3 (grafik pertumbuhan, ringkasan dokter)
 
-**Status: MENUNGGU persetujuan.** Belum ada kode, skema, atau rules yang berubah. Branch `feat/tumbuh-kembang-fase3` (bertumpu di `feat/tumbuh-kembang-fase2`, PR #5). Label: **[baca]** dari teks PDF, **[hitung]** diukur dari berkas, **[kode]** dari repo, **[usulan]** usulan Claude, **[tunggu]** butuh keputusan Anda.
+**Status: DISETUJUI (20 November 2026), sudah diimplementasikan** di `feat/tumbuh-kembang-fase3` (bertumpu di `feat/tumbuh-kembang-fase2`, PR #5) dan rules di `feat/rules-pengukuran` (bertumpu di `feat/rules-kpsp-milestone`). Label: **[baca]** dari teks PDF, **[hitung]** diukur dari berkas, **[kode]** dari repo, **[usulan]** usulan Claude, **[tunggu]** butuh keputusan Anda.
 
 ## 1. Hasil cek sumber
 
@@ -116,3 +116,13 @@ Bertumpu di PR #3, #4, dan #6. Peran tulis: admin saja. Batas angka hanya kewaja
 | G9 | Tanpa label diagnosis dan tanpa z di luar ±3 | Seperti bagian 5 |
 | S1 | `schemaVersion` tetap 1, tanpa method baru di `BayiRepository` | Seperti Fase 2 |
 | R1 | Diff rules bagian 4 | Disetujui bersama, ditulis di branch rules terpisah bertumpu di PR #6 |
+
+## 7. Catatan implementasi (apa yang berbeda atau ditambahkan)
+
+- **Tanpa method baru di `BayiRepository`**: jalurnya `updateProfile` → `diffAppState`, dengan operasi diff `setPengukuran` dan `deletePengukuran`, sesuai S1.
+- **Python untuk skrip data**: `scripts/ekstrak-who.py` dan `scripts/bandingkan-permenkes-who.py` memakai Python 3 bawaan macOS dan `scripts/pdfteks.swift`. Keduanya alat pengembang, bukan bagian build aplikasi. Hasilnya (10 JSON, 96 KB) sudah di-commit.
+- **Jendela grafik otomatis** (tambahan, tidak ada di usulan): grafik umur memakai 0–24 bulan bila semua titik di bawah 24 bulan, dan BB/PB dipersempit di sekitar panjang anak, supaya titik terbaca. Teruji di `pertumbuhan.test.ts`.
+- **Peringatan salah ketik (tambahan)**: |z| di atas 5 memicu peringatan "periksa lagi satuan dan angkanya" yang tidak menghalangi simpan. Ini heuristik pengecekan input, bukan kriteria klinis, dan angka 5 adalah pilihan saya (`AMBANG_SALAH_KETIK_Z`).
+- **Batas kewajaran isian** (`BATAS_INPUT`): berat 0,5–40 kg, panjang atau tinggi 30–140 cm, lingkar kepala 20–65 cm. Juga pilihan saya, hanya untuk menangkap salah ketik; di rules batasnya lebih longgar (≤ 300, ≤ 300, ≤ 150).
+- **"Perubahan jalur" tidak diimplementasikan** (K13): sumber tidak menyebut ambangnya.
+- Konten dan aturan (`content/pertumbuhan/*.json`, `aturan-pertumbuhan.json`) semuanya `perluReview: true`.
