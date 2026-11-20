@@ -1,4 +1,4 @@
-import { AppState, Insurance, KpspSkrining, MilestoneCatatan, Profile, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, Insurance, JenisKelamin, KpspSkrining, MilestoneCatatan, Pengukuran, Profile, ScheduleRow, VaccineRecord } from "../../../types";
 
 export type BayiDiffOp =
   | {
@@ -13,6 +13,7 @@ export type BayiDiffOp =
         schemaVersion: 1;
         sourceUid?: string;
         usiaKehamilanMinggu?: number;
+        jenisKelamin?: JenisKelamin;
       };
     }
   | {
@@ -38,7 +39,9 @@ export type BayiDiffOp =
   | { type: "setKpsp"; babyId: string; kpsp: KpspSkrining }
   | { type: "deleteKpsp"; babyId: string; id: string }
   | { type: "setMilestone"; babyId: string; catatan: MilestoneCatatan }
-  | { type: "deleteMilestone"; babyId: string; butirId: string };
+  | { type: "deleteMilestone"; babyId: string; butirId: string }
+  | { type: "setPengukuran"; babyId: string; pengukuran: Pengukuran }
+  | { type: "deletePengukuran"; babyId: string; id: string };
 
 /** Meta dokumen baby dari profil. Field opsional hanya ikut bila ada, supaya payload lama tidak berubah. */
 function metaDariProfil(p: Profile): Extract<BayiDiffOp, { type: "setBaby" }>["meta"] {
@@ -51,6 +54,7 @@ function metaDariProfil(p: Profile): Extract<BayiDiffOp, { type: "setBaby" }>["m
     schemaVersion: 1
   };
   if (typeof p.usiaKehamilanMinggu === "number") meta.usiaKehamilanMinggu = p.usiaKehamilanMinggu;
+  if (p.jenisKelamin === "L" || p.jenisKelamin === "P") meta.jenisKelamin = p.jenisKelamin;
   return meta;
 }
 
@@ -85,6 +89,9 @@ function opsKoleksi(babyId: string, prev: Profile | undefined, next: Profile): B
   const m = diffKoleksi(prev?.milestone, next.milestone, (x) => x.butirId);
   for (const butirId of m.hapus) ops.push({ type: "deleteMilestone", babyId, butirId });
   for (const catatan of m.set) ops.push({ type: "setMilestone", babyId, catatan });
+  const u = diffKoleksi(prev?.pengukuran, next.pengukuran, (x) => x.id);
+  for (const id of u.hapus) ops.push({ type: "deletePengukuran", babyId, id });
+  for (const pengukuran of u.set) ops.push({ type: "setPengukuran", babyId, pengukuran });
   return ops;
 }
 
@@ -93,6 +100,7 @@ function isMetaEqual(a: Profile, b: Profile): boolean {
   if (a.tanggalLahir !== b.tanggalLahir) return false;
   if ((a.catatan || "") !== (b.catatan || "")) return false;
   if ((a.usiaKehamilanMinggu ?? null) !== (b.usiaKehamilanMinggu ?? null)) return false;
+  if ((a.jenisKelamin ?? null) !== (b.jenisKelamin ?? null)) return false;
   return JSON.stringify(a.insurance || {}) === JSON.stringify(b.insurance || {});
 }
 

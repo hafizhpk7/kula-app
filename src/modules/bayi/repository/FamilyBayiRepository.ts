@@ -11,7 +11,7 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
-import { AppState, Insurance, KpspSkrining, MilestoneCatatan, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, Insurance, JenisKelamin, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
 import { BayiDiffOp, diffAppState } from "../state/diff";
 import { BayiRepository } from "./types";
 
@@ -28,6 +28,7 @@ interface BabyDocData {
   updatedBy: string;
   sourceUid?: string;
   usiaKehamilanMinggu?: number;
+  jenisKelamin?: JenisKelamin;
 }
 
 export class FamilyBayiRepository implements BayiRepository {
@@ -65,6 +66,7 @@ export class FamilyBayiRepository implements BayiRepository {
     const babyRecordsMap = new Map<string, Map<string, VaccineRecord>>();
     const babyKpspMap = new Map<string, Map<string, KpspSkrining>>();
     const babyMilestoneMap = new Map<string, Map<string, MilestoneCatatan>>();
+    const babyPengukuranMap = new Map<string, Map<string, Pengukuran>>();
 
     // User preferences subscription (activeProfileId & paymentMode)
     const userAppDoc = doc(db, "users", this.uid, "appData", "current");
@@ -96,6 +98,7 @@ export class FamilyBayiRepository implements BayiRepository {
         const records = recordsMap ? Array.from(recordsMap.values()) : [];
         const kpsp = Array.from(babyKpspMap.get(babyId)?.values() ?? []);
         const milestone = Array.from(babyMilestoneMap.get(babyId)?.values() ?? []);
+        const pengukuran = Array.from(babyPengukuranMap.get(babyId)?.values() ?? []);
 
         assembled.push({
           id: meta.id,
@@ -108,7 +111,9 @@ export class FamilyBayiRepository implements BayiRepository {
           // Field tumbuh kembang hanya ikut bila ada, supaya bentuk Profile lama tidak berubah.
           ...(typeof meta.usiaKehamilanMinggu === "number" ? { usiaKehamilanMinggu: meta.usiaKehamilanMinggu } : {}),
           ...(kpsp.length ? { kpsp } : {}),
-          ...(milestone.length ? { milestone } : {})
+          ...(milestone.length ? { milestone } : {}),
+          ...(meta.jenisKelamin === "L" || meta.jenisKelamin === "P" ? { jenisKelamin: meta.jenisKelamin } : {}),
+          ...(pengukuran.length ? { pengukuran } : {})
         });
       }
 
@@ -202,11 +207,26 @@ export class FamilyBayiRepository implements BayiRepository {
               (err) => onError(err)
             );
 
+            const unsubPengukuran = onSnapshot(
+              collection(db, this.basePath, "babies", babyId, "pengukuran"),
+              (uSnap) => {
+                const uMap = new Map<string, Pengukuran>();
+                uSnap.docs.forEach((uDoc) => {
+                  const u = uDoc.data() as Pengukuran;
+                  uMap.set(u.id || uDoc.id, u);
+                });
+                babyPengukuranMap.set(babyId, uMap);
+                emitIfReady();
+              },
+              (err) => onError(err)
+            );
+
             subCleanups.set(babyId, () => {
               unsubSched();
               unsubRecs();
               unsubKpsp();
               unsubMilestone();
+              unsubPengukuran();
             });
           }
         });
@@ -221,6 +241,7 @@ export class FamilyBayiRepository implements BayiRepository {
             babyRecordsMap.delete(id);
             babyKpspMap.delete(id);
             babyMilestoneMap.delete(id);
+            babyPengukuranMap.delete(id);
           }
         }
 
@@ -300,6 +321,9 @@ export class FamilyBayiRepository implements BayiRepository {
             // Dokumen ditulis ulang utuh (set), jadi field ini harus ikut agar tidak hilang.
             if (typeof op.meta.usiaKehamilanMinggu === "number") {
               payload.usiaKehamilanMinggu = op.meta.usiaKehamilanMinggu;
+            }
+            if (op.meta.jenisKelamin === "L" || op.meta.jenisKelamin === "P") {
+              payload.jenisKelamin = op.meta.jenisKelamin;
             }
 
             currentBatch.set(babyRef, payload);
@@ -410,6 +434,36 @@ export class FamilyBayiRepository implements BayiRepository {
             await commitBatchIfNeeded();
             break;
           }
+
+          case "setPengukuran": {
+            const u = op.pengukuran;
+            const uRef = doc(db, this.basePath, "babies", op.babyId, "pengukuran", u.id);
+            const uPayload: Record<string, any> = {
+              id: u.id,
+              tanggal: u.tanggal,
+              // createdAt dan createdBy tidak boleh berubah saat update (aturan rules).
+              createdAt: u.createdAt || nowIso,
+              createdBy: u.createdBy || this.uid,
+              updatedAt: nowIso,
+              updatedBy: this.uid
+            };
+            if (typeof u.beratKg === "number") uPayload.beratKg = u.beratKg;
+            if (typeof u.panjangTinggiCm === "number") uPayload.panjangTinggiCm = u.panjangTinggiCm;
+            if (u.caraUkur) uPayload.caraUkur = u.caraUkur;
+            if (typeof u.lingkarKepalaCm === "number") uPayload.lingkarKepalaCm = u.lingkarKepalaCm;
+            if (u.catatan && u.catatan.trim()) uPayload.catatan = u.catatan.trim();
+            currentBatch.set(uRef, uPayload);
+            opCount++;
+            await commitBatchIfNeeded();
+            break;
+          }
+
+          case "deletePengukuran": {
+            currentBatch.delete(doc(db, this.basePath, "babies", op.babyId, "pengukuran", op.id));
+            opCount++;
+            await commitBatchIfNeeded();
+            break;
+          }
         }
       }
 
@@ -421,7 +475,7 @@ export class FamilyBayiRepository implements BayiRepository {
 
   private async deleteBabySubtree(babyId: string): Promise<void> {
     // 1. Delete records, KPSP, and milestone documents in batches
-    for (const nama of ["records", "kpsp", "milestone"]) {
+    for (const nama of ["records", "kpsp", "milestone", "pengukuran"]) {
       while (true) {
         const q = collection(db, this.basePath, "babies", babyId, nama);
         const snaps = await getDocs(q);
