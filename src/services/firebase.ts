@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import {
   getAuth,
+  connectAuthEmulator,
   signInWithPopup,
   signOut,
   GoogleAuthProvider,
@@ -12,6 +13,7 @@ import {
 } from "firebase/auth";
 import {
   getFirestore,
+  connectFirestoreEmulator,
   doc,
   getDoc,
   setDoc,
@@ -22,12 +24,22 @@ import {
 import firebaseConfig from "../../firebase-applet-config.json";
 import { AppState, isPaymentMode, Profile, PaymentMode } from "../types";
 
+// Mode emulator untuk pengembangan lokal (`npm run dev:emulator`). Hanya aktif di `vite dev`
+// (import.meta.env.DEV), jadi build produksi tidak pernah bisa terhubung ke emulator.
+// Memakai proyek demo dan database default supaya tidak menyentuh proyek Firebase sungguhan.
+const USE_EMULATOR = import.meta.env.DEV && import.meta.env.VITE_USE_FIREBASE_EMULATOR === "true";
+
 // Initialize Firebase App
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(USE_EMULATOR ? { ...firebaseConfig, projectId: "demo-growbang" } : firebaseConfig);
 
 // CRITICAL: The app will break without this line
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+export const db = getFirestore(app, USE_EMULATOR ? "(default)" : firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+
+if (USE_EMULATOR) {
+  connectAuthEmulator(auth, "http://127.0.0.1:9099", { disableWarnings: true });
+  connectFirestoreEmulator(db, "127.0.0.1", 8080);
+}
 
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: "select_account" });

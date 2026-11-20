@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
+    "emulators": "npx firebase-tools emulators:start --only auth,firestore --project demo-growbang",
+    "seed:emulator": "node scripts/seed-emulator.mjs",
+    "dev:emulator": "VITE_USE_FIREBASE_EMULATOR=true vite --port=3100 --host=127.0.0.1",
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
