@@ -52,11 +52,29 @@ Judul metadata yang terbaca: `Buku_KIA_2024.pdf` = "KIA 2024 Book 1.7", CDC = "M
 
 Formulir ada untuk **ke-16 titik umur**. Menurut teks aturan (halaman 130), KPSP berisi 10 pertanyaan, dan tiap formulir diawali "Alat dan bahan yang dibutuhkan". Jumlah butir tiap formulir dan penandaan domain per butir **belum diperiksa satu per satu**, itu pekerjaan Langkah 3.
 
-## Permenkes 2/2020 (TERJAWAB): Lampiran tabel ada
+## Permenkes 2/2020 (TERVERIFIKASI di Fase 3): isi Lampiran dan perbandingan dengan WHO
 
-- 78 halaman. **[baca]** Halaman PDF 9 membuka "LAMPIRAN … STANDAR ANTROPOMETRI ANAK". Halaman 17 dan 30 berisi tabel nilai −3 SD sampai +3 SD per umur (berat/umur, IMT/umur, dst.).
-- Tabel berbentuk **titik potong SD per umur (median dan ±1, 2, 3 SD)**, bukan parameter LMS. Untuk z-score kontinu di Fase 3 tetap perlu Excel WHO (LMS) dan pencocokan ke tabel ini. Indikator lengkap yang ada di lampiran belum dipetakan satu per satu.
-- Pengecualian: ada 1 halaman tanpa teks (kemungkinan sampul atau halaman kosong).
+**[baca]** Daftar tabel di Lampiran (halaman PDF 16–64), semuanya titik potong **−3, −2, −1, median, +1, +2, +3 SD**, bukan parameter LMS:
+
+| Tabel | Indikator | Umur atau kunci | Laki-laki | Perempuan |
+|---|---|---|---|---|
+| BB/U | berat menurut umur | 0–60 bulan | Tabel 1 (hlm 16) | Tabel 8 (hlm 30) |
+| PB/U | panjang badan menurut umur | 0–24 bulan | Tabel 2 (hlm 18) | Tabel 9 (hlm 32) |
+| TB/U | tinggi badan menurut umur | 24–60 bulan | Tabel 3 (hlm 19) | Tabel 10 (hlm 33) |
+| BB/PB | berat menurut panjang | 0–24 bulan, panjang 45–110 cm | Tabel 4 (hlm 20) | Tabel 11 (hlm 34) |
+| BB/TB | berat menurut tinggi | 24–60 bulan, tinggi 65–120 cm | Tabel 5 (hlm 24) | Tabel 12 (hlm 38) |
+| IMT/U | indeks massa tubuh | 0–24, 24–60 bulan, 5–18 tahun | Tabel 6, 7, 15 | Tabel 13, 14, 16 |
+
+Juga ada Grafik 1–18 (hlm 55–64) dan Tabel 17–23, tabel kenaikan berat dan tinggi (hlm 66–72, belum dipakai).
+
+**Tidak ada tabel lingkar kepala menurut umur (LK/U) di Permenkes.** Untuk LK/U sumbernya hanya Excel WHO `hcfa-*` (lihat SUMBER-KONFLIK K7).
+
+**Perbandingan dengan Excel WHO** [hitung]: sepuluh tabel (Tabel 1–5 dan 8–12) diurai dari teks PDF dan dibandingkan nilai demi nilai dengan file WHO yang sepadan (`wfa`, `lhfa`, `wfl`, `wfh`, laki-laki dan perempuan).
+- **729 dari 730 baris identik** pada ketujuh nilai (−3 SD sampai +3 SD). Tidak ada perbedaan angka antara Permenkes dan WHO.
+- **Satu cacat di PDF Permenkes:** Tabel 12 (BB/TB perempuan), baris tinggi 69,5 cm, nilai −3 SD tercetak `6.` (WHO: 6,3). Apakah itu salah cetak di dokumen atau karakter hilang di lapisan teks PDF tidak diketahui (halaman belum dilihat sebagai gambar). Lihat SUMBER-KONFLIK K8.
+- Catatan baris "24 *" pada TB/U: nilai tinggi berdiri pada 24 bulan (lebih rendah 0,7 cm dari panjang berbaring pada 24 bulan), sesuai catatan WHO tentang diskontinuitas antara 730 dan 731 hari.
+
+**Aturan dari Pedoman S2 untuk pertumbuhan** [baca]: halaman PDF 104 (umur untuk plotting, koreksi prematur, pembulatan panjang/tinggi), 101–102 (cara ukur PB/TB dan koreksi 0,7 cm, jadwal pengukuran lingkar kepala), 100 (cara menimbang).
 
 ## Excel WHO (28 file)
 

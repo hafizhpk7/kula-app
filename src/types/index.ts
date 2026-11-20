@@ -99,6 +99,28 @@ export interface MilestoneCatatan {
   updatedBy?: string;
 }
 
+export type JenisKelamin = "L" | "P";
+/** Cara mengukur panjang atau tinggi: berbaring (panjang badan) atau berdiri (tinggi badan). Menentukan koreksi 0,7 cm. */
+export type CaraUkur = "berbaring" | "berdiri";
+
+export interface Pengukuran {
+  id: string;
+  /** yyyy-MM-dd */
+  tanggal: string;
+  /** Dicatat apa adanya (kg). */
+  beratKg?: number;
+  /** Dicatat apa adanya (cm), BELUM dikoreksi cara ukur. */
+  panjangTinggiCm?: number;
+  /** Wajib bila panjangTinggiCm diisi. */
+  caraUkur?: CaraUkur;
+  lingkarKepalaCm?: number;
+  catatan?: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
 export interface Profile {
   id: string;
   panggilan: string;
@@ -111,6 +133,9 @@ export interface Profile {
   usiaKehamilanMinggu?: number;
   kpsp?: KpspSkrining[];
   milestone?: MilestoneCatatan[];
+  /** Dipakai khusus untuk memilih kurva standar pertumbuhan. */
+  jenisKelamin?: JenisKelamin;
+  pengukuran?: Pengukuran[];
 }
 
 export type PaymentMode = "HYBRID" | "FULL_PRIVATE" | "FULL_BPJS";

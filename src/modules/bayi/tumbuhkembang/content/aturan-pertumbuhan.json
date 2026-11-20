@@ -1,0 +1,38 @@
+{
+  "id": "aturan-pertumbuhan",
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022; Permenkes 2/2020 tentang Standar Antropometri Anak; WHO Child Growth Standards",
+  "versi": "pedoman-sdidtk-2022-08",
+  "perluReview": true,
+  "catatan": "Nilai disalin dari dokumen sumber di docs/sumber/. Keputusan G1-G9 ada di docs/fitur/SKEMA-FASE3.md dan K7-K11 di docs/fitur/SUMBER-KONFLIK.md.",
+  "umurPlot": {
+    "batasMingguPenuh": 13,
+    "halamanPdf": 104,
+    "halamanCetak": 91,
+    "keputusan": "G3 (K9)",
+    "keterangan": "Hingga umur 3 bulan plotting memakai minggu penuh, sesudahnya bulan penuh (6 bulan 12 hari menjadi 6 bulan). Batas dipasang di minggu ke-13, ujung tabel mingguan WHO."
+  },
+  "rentang": {
+    "umurMaksBulan": 60,
+    "pbBatasBulan": 24,
+    "panjangBBPB": { "min": 45, "max": 110 },
+    "tinggiBBTB": { "min": 65, "max": 120 },
+    "keputusan": "G8",
+    "keterangan": "Tabel Permenkes: BB/U 0-60 bulan, PB/U 0-24 bulan, TB/U 24-60 bulan, BB/PB 0-24 bulan (panjang 45-110 cm), BB/TB 24-60 bulan (tinggi 65-120 cm). Lingkar kepala hanya WHO (K7)."
+  },
+  "koreksiCaraUkur": {
+    "cm": 0.7,
+    "halamanPdf": [101, 102],
+    "keputusan": "G7",
+    "keterangan": "Anak 0-24 bulan diukur berdiri: tambah 0,7 cm. Anak di atas 24 bulan diukur terlentang: kurangi 0,7 cm."
+  },
+  "pembulatanPanjang": {
+    "halamanPdf": 104,
+    "halamanCetak": 91,
+    "keputusan": "G4 (K10)",
+    "keterangan": "Panjang atau tinggi untuk BB/PB dan BB/TB dibulatkan ke sentimeter terdekat: 0,1-0,4 turun, 0,5-0,9 naik."
+  },
+  "pita": {
+    "keputusan": "G9",
+    "keterangan": "Posisi ditampilkan sebagai pita SD tanpa label diagnosis. Angka z hanya ditampilkan di dalam -3 sampai +3. Lewat dari -2 atau +2 SD memicu kalimat untuk membicarakan dengan tenaga kesehatan."
+  }
+}

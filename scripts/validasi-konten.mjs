@@ -87,12 +87,74 @@ function periksaAturan(path) {
   }
 }
 
+
+const DERET_PERTUMBUHAN = {
+  bbu: { mingguan: [0, 13, 1], bulanan: [0, 60, 1] },
+  pbtbu: { mingguan: [0, 13, 1], bulananPB: [0, 24, 1], bulananTB: [24, 60, 1] },
+  lku: { mingguan: [0, 13, 1], bulanan: [0, 60, 1] },
+  bbpb: { panjang: [45, 110, 0.5] },
+  bbtb: { tinggi: [65, 120, 0.5] }
+};
+
+function periksaPertumbuhan(dir) {
+  if (!existsSync(dir)) return catat(dir, "folder pertumbuhan tidak ada");
+  const ada = readdirSync(dir).filter((f) => f.endsWith(".json")).sort();
+  const harapan = Object.keys(DERET_PERTUMBUHAN).flatMap((i) => ["L", "P"].map((j) => `${i}-${j}.json`)).sort();
+  if (JSON.stringify(ada) !== JSON.stringify(harapan)) catat(dir, `berkas ${ada.join(",")} tidak sama dengan ${harapan.join(",")}`);
+
+  for (const nama of ada) {
+    const path = join(dir, nama);
+    const d = baca(path);
+    if (!d) continue;
+    periksaMeta(path, d);
+    if (d.id !== nama.replace(".json", "")) catat(path, "id tidak sama dengan nama berkas");
+    if (!["L", "P"].includes(d.jenisKelamin)) catat(path, "jenisKelamin harus L atau P");
+    if (!Array.isArray(d.berkas) || d.berkas.length === 0) catat(path, "daftar berkas sumber kosong");
+    const spek = DERET_PERTUMBUHAN[d.indikator];
+    if (!spek) {
+      catat(path, `indikator tidak dikenal: ${d.indikator}`);
+      continue;
+    }
+    for (const [namaDeret, [awal, akhir, langkah]] of Object.entries(spek)) {
+      const baris = d.deret?.[namaDeret];
+      if (!Array.isArray(baris)) {
+        catat(path, `deret ${namaDeret} tidak ada`);
+        continue;
+      }
+      const harapanK = [];
+      for (let x = awal; x <= akhir + 1e-9; x += langkah) harapanK.push(Math.round(x * 10) / 10);
+      if (JSON.stringify(baris.map((b) => b.k)) !== JSON.stringify(harapanK)) catat(path, `deret ${namaDeret}: kunci tidak urut lengkap ${awal}..${akhir}`);
+      for (const b of baris) {
+        const lokasi = `${path} ${namaDeret} k=${b.k}`;
+        if (![b.l, b.m, b.s].every((v) => typeof v === "number" && Number.isFinite(v))) catat(lokasi, "L, M, S harus angka");
+        if (b.m <= 0 || b.s <= 0) catat(lokasi, "M dan S harus positif");
+        if (!Array.isArray(b.sd) || b.sd.length !== 7 || b.sd.some((v, i) => i > 0 && v <= b.sd[i - 1])) catat(lokasi, "titik SD harus 7 angka naik tegas");
+      }
+    }
+  }
+}
+
+
+function periksaAturanPertumbuhan(path) {
+  const d = baca(path);
+  if (!d) return;
+  periksaMeta(path, d);
+  const bulat = (v) => Number.isInteger(v);
+  if (!bulat(d.umurPlot?.batasMingguPenuh)) catat(path, "umurPlot.batasMingguPenuh harus bilangan bulat");
+  if (!bulat(d.rentang?.umurMaksBulan) || !bulat(d.rentang?.pbBatasBulan)) catat(path, "rentang umur harus bilangan bulat");
+  const r = d.rentang;
+  if (!(r?.panjangBBPB?.min < r?.panjangBBPB?.max) || !(r?.tinggiBBTB?.min < r?.tinggiBBTB?.max)) catat(path, "rentang panjang dan tinggi tidak valid");
+  if (typeof d.koreksiCaraUkur?.cm !== "number" || d.koreksiCaraUkur.cm <= 0) catat(path, "koreksiCaraUkur.cm harus angka positif");
+}
+
 if (!existsSync(DIR)) {
   console.error(`Folder konten tidak ada: ${DIR}`);
   process.exit(1);
 }
 periksaKpsp(join(DIR, "kpsp"));
 periksaAturan(join(DIR, "aturan.json"));
+periksaPertumbuhan(join(DIR, "pertumbuhan"));
+periksaAturanPertumbuhan(join(DIR, "aturan-pertumbuhan.json"));
 
 if (galat.length) {
   console.error(`Validasi konten GAGAL (${galat.length}):`);

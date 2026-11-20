@@ -77,18 +77,21 @@ describe("KunjunganView", () => {
     expect(within(daftar).getByText("15 Juli 2026")).toBeInTheDocument();
   });
 
-  it("slot KPSP berupa tautan hanya di titik rutin, slot Timbang & ukur di semua dan masih 'Segera hadir'", () => {
+  it("slot KPSP berupa tautan hanya di titik rutin, slot Timbang & ukur di semua kunjungan", () => {
     tampil();
     // ROWS: 0, 2, 6, 12 bulan. Hanya 6 bulan yang termasuk jadwal rutin KPSP (K1).
     const kpsp = screen.getAllByRole("link", { name: /Skrining KPSP/ });
     expect(kpsp).toHaveLength(1);
     expect(kpsp[0]).toHaveAttribute("href", "/bayi/tumbuh-kembang?kpsp=6");
     expect(kpsp[0]).toHaveTextContent("Mulai");
-    expect(screen.getAllByText("Timbang & ukur")).toHaveLength(4);
-    for (const slot of screen.getAllByText("Timbang & ukur")) {
-      expect(slot.closest("li")).toHaveAttribute("aria-disabled", "true");
+    // Fase 3: Timbang & ukur aktif di setiap kunjungan dan membuka lembar catat ukuran
+    const ukur = screen.getAllByRole("link", { name: /Timbang & ukur/ });
+    expect(ukur).toHaveLength(4);
+    for (const a of ukur) {
+      expect(a).toHaveAttribute("href", "/bayi/tumbuh-kembang?ukur=1");
+      expect(a).toHaveTextContent("Catat");
     }
-    expect(screen.getAllByText("Segera hadir")).toHaveLength(4);
+    expect(screen.queryByText("Segera hadir")).not.toBeInTheDocument();
   });
 
   it("slot KPSP menampilkan hasil terakhir untuk titik umur itu", () => {
