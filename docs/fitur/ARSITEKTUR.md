@@ -1,6 +1,6 @@
 # Arsitektur fitur Tumbuh Kembang (modul Bayi), Fase 0
 
-**Status persetujuan: DISETUJUI** (20 November 2026, secara umum). Tujuh butir di bagian F belum dijawab satu per satu dan dicatat sebagai keputusan terbuka di `BACKLOG.md`. Belum ada kode produksi, belum ada perubahan skema atau rules.
+**Status persetujuan: DISETUJUI** (20 November 2026, secara umum). Tujuh butir di bagian F dijawab sementara di `BACKLOG.md` (bagian "Keputusan F1–F7") atas pendelegasian pengguna; beberapa masih butuh tindakan pengguna. Belum ada kode produksi, belum ada perubahan skema atau rules.
 
 Label bukti: **[kode]** dibaca dari file repo, **[metadata]** dibaca dari header file, **[hitung]** diukur, **[estimasi]** perkiraan kasar belum diukur, **[tidak ketahuan]** belum bisa dicek.
 

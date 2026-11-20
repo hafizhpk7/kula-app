@@ -4,21 +4,21 @@ Versi final setelah `ARSITEKTUR.md` disetujui (20 November 2026). Satu fase = sa
 
 Model yang disarankan (dari prompt kula-5, bukan benchmark): Opus 5.5 untuk Fase 0b, 2, 3. Sonnet 5.5 untuk Fase 1, 4, 5, 6.
 
-## Keputusan yang masih terbuka
+## Keputusan F1–F7
 
-`ARSITEKTUR.md` disetujui secara umum. Tujuh butir di bagian F-nya **belum dijawab satu per satu**, jadi di bawah ini statusnya terbuka. Tiap fase menyebut butir mana yang menghalanginya.
+Dijawab oleh Claude atas pendelegasian Anda (20 November 2026). Ini keputusan sementara yang mengikuti bukti di repo. Ubah kapan saja, dan fase yang bersangkutan mengikuti perubahan itu. Kolom "Perlu Anda" berisi tindakan yang memang tidak bisa saya ambil sendiri.
 
-| # | Keputusan | Menghalangi | Status |
+| # | Keputusan | Dasar | Perlu Anda |
 |---|---|---|---|
-| F1 | Dua PDF identik: cari salinan Buku Bagan SDIDTK yang benar | Fase 2, 5 | terbuka |
-| F2 | Cek tanggal revisi Pedoman SDIDTK dan Lampiran Permenkes (atau izinkan memasang `poppler`) | Fase 2, 3 | terbuka |
-| F3 | Aturan imunisasi bayi prematur memakai usia kronologis: cari sumber atau setuju tetap kronologis | Fase 2 | terbuka |
-| F4 | Siapa boleh menulis data Bayi di keluarga (admin saja atau semua anggota) | Fase 0b, 4 | terbuka |
-| F5 | Baseline tes (4 masalah) diperbaiki atau diabaikan | semua fase | terbuka |
-| F6 | Satu lockfile: `bun.lock` atau `package-lock.json` (PR #1) | semua fase | terbuka |
-| F7 | Izin menjalankan `npm run test:rules` (unduh `firebase-tools`, butuh Java) | Fase 0b, 2, 3, 4 | terbuka |
+| F1 | Dua PDF identik diperlakukan sebagai **satu salinan Buku KIA Khusus Bayi Kecil (S5b)**. Buku Bagan SDIDTK (S1) dianggap **belum ada**. Fase 2 dan 5 mengecek ulang lewat aturan "cek sumber dulu" dan **STOP** bila formulir KPSP tidak ada di Pedoman (S2) | MANIFEST: SHA-256 sama, metadata bertanggal 2020 (dugaan) | Taruh salinan Bagan SDIDTK yang benar di `docs/sumber/` sebelum Fase 2. Saya tidak mengunduh dokumen dari internet sendiri |
+| F2 | Alat baca PDF **dibutuhkan di awal Fase 2** (tanggal revisi, Lampiran Permenkes, formulir KPSP). Tidak dipasang sekarang karena Fase 1 tidak membutuhkannya. `brew` tidak ada di mesin ini, jadi pemasangan `poppler` butuh cara lain | Fase 1 tidak membaca PDF. `which brew` kosong | Setuju memasang `poppler` saat Fase 2 dimulai, atau cek manual dua hal itu dan tulis hasilnya di `MANIFEST.md` |
+| F3 | **Jadwal imunisasi tetap memakai usia kronologis**, sama seperti perilaku sekarang. Usia koreksi tidak menyentuh `calculateDueDate`/`getScheduleStatus`. Aturan ini diberi `perluReview` sampai ada sumber | Pilihan paling konservatif: tidak mengubah perilaku yang ada, tidak ada sumber yang menyatakan sebaliknya | Konfirmasi ke Buku KIA atau tenaga kesehatan |
+| F4 | **Hanya admin keluarga yang menulis data Bayi**, anggota lain melihat saja. Sama dengan pola `finance*` di rules | Aplikasi sudah menampilkan "Mode lihat saja: Hanya admin keluarga yang dapat mengubah data Bayi" (`BayiLayout.tsx`, `isReadOnly`). Definisi `isReadOnly` belum saya telusuri | Beri tahu bila anggota biasa seharusnya boleh mencatat |
+| F5 | **Baseline tes diabaikan dulu.** Gerbang commit tiap fase: `tsc --noEmit` hijau dan tes yang baru ditambah lulus. Empat masalah lama (`characterization`, `keuangan/static`, `firestore_retry_storm`, `handlers` hang) dicatat, bukan diperbaiki di fitur ini. Tes dijalankan per file, bukan `npm test` penuh, karena `handlers.test.tsx` membuat run penuh menggantung | Sesi 20 Nov 2026, Node 26.13.1 | Putuskan kapan baseline dibereskan, sebaiknya sebagai tugas terpisah |
+| F6 | **`bun.lock` adalah lockfile resmi.** `package-lock.json` tidak dipakai. PR #1 sebaiknya **ditutup** | Repo punya `bun.lock` (bun belum terpasang di mesin ini, jadi `npm` dipakai untuk menjalankan tes, tanpa menyimpan lockfile) | Tutup PR #1 (saya tidak menutup PR tanpa izin). Fase 1 tidak menambah dependency, jadi tidak menyentuh lockfile |
+| F7 | `npm run test:rules` **hanya dijalankan di Fase 0b, 2, 3, dan 4**, dan tiap kali setelah izin Anda. Sekarang tidak bisa dijalankan: **Java belum terpasang** (`/usr/bin/java` hanya stub) | `java -version`: "Unable to locate a Java Runtime" | Pasang Java (JDK) sebelum Fase 0b. Tidak dibutuhkan di Fase 1 |
 
-Usulan untuk F5 dari `ARSITEKTUR.md`: abaikan dulu, gerbang commit cukup `tsc` dan tes yang baru ditambah.
+Akibat ke urutan fase: **Fase 1 jalan sekarang.** Fase 0b menunggu Java (F7). Fase 2 menunggu salinan Bagan SDIDTK (F1) dan alat baca PDF (F2).
 
 ## Fase 0b: Aturan Firestore untuk Bayi mode keluarga (Opus 5.5)
 
