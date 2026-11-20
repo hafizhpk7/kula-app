@@ -100,7 +100,10 @@ describe("TumbuhKembangView: ringkasan", () => {
   it("menawarkan mengisi usia kehamilan bila umur di bawah 24 bulan dan belum diisi", () => {
     const { onBukaProfil } = tampil();
     expect(screen.getByText(/Lahir sebelum cukup bulan/)).toBeInTheDocument();
-    klik("Buka profil anak");
+    // Tombol yang sama juga ada di kartu Pertumbuhan (jenis kelamin belum diisi)
+    const tombol = screen.getAllByRole("button", { name: "Buka profil anak" });
+    expect(tombol).toHaveLength(2);
+    fireEvent.click(tombol[0]);
     expect(onBukaProfil).toHaveBeenCalled();
   });
 

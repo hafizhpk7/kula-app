@@ -13,6 +13,7 @@ export const TumbuhKembangPage: React.FC = () => {
 
   const kpspParam = params.get("kpsp");
   const kpspBulan = kpspParam && /^\d+$/.test(kpspParam) ? Number(kpspParam) : null;
+  const bukaUkur = params.get("ukur") === "1";
 
   return (
     <TumbuhKembangView
@@ -24,6 +25,12 @@ export const TumbuhKembangPage: React.FC = () => {
         setProfileModalOpen(true);
       }}
       kpspBulan={kpspBulan}
+      bukaUkur={bukaUkur}
+      onTutupUkur={() => {
+        const next = new URLSearchParams(params);
+        next.delete("ukur");
+        setParams(next);
+      }}
       onBukaKpsp={(bulan) => {
         const next = new URLSearchParams(params);
         if (bulan === null) next.delete("kpsp");

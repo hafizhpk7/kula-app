@@ -176,9 +176,14 @@ export const KunjunganView: React.FC<Props> = ({ profile, onOpenVaccineDetail, s
                       </Link>
                     </li>
                   )}
-                  <li aria-disabled="true" className="flex items-center justify-between gap-3 rounded-control border border-dashed border-border-strong px-3 min-h-[44px] text-[14px] text-text-2">
-                    <span>Timbang &amp; ukur</span>
-                    <span className="text-[12px]">Segera hadir</span>
+                  <li>
+                    <Link
+                      to="/bayi/tumbuh-kembang?ukur=1"
+                      className="flex items-center justify-between gap-3 rounded-control border border-border-strong px-3 min-h-[44px] text-[14px] text-text hover:bg-surface-sunken transition"
+                    >
+                      <span>Timbang &amp; ukur</span>
+                      <span className="text-[12px] text-text-2">Catat</span>
+                    </Link>
                   </li>
                 </ul>
 
