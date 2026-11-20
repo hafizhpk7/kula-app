@@ -10,6 +10,8 @@ interface Props {
   readOnly: boolean;
   /** status null menghapus catatan. */
   onUbah: (butirId: string, status: MilestoneStatus | null, tanggal?: string) => void;
+  /** Bila ada, butir berstatus "sudah" menampilkan tombol "Catat sebagai momen" (tersedia juga di mode lihat saja). */
+  onCatatMomen?: (butirId: string, tanggal?: string) => void;
 }
 
 const PILIHAN: { status: MilestoneStatus; label: string; ikon: React.ReactNode }[] = [
@@ -24,7 +26,7 @@ const JENIS_TEKS: Record<ButirKpsp["jenis"], string> = {
 };
 
 /** Checklist milestone per domain untuk satu formulir umur (butir KPSP). */
-export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, onUbah }) => {
+export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, onUbah, onCatatMomen }) => {
   const kelompok = kelompokkanPerDomain(formulir.butir);
   const r = ringkasMilestone(formulir.butir, catatan);
 
@@ -84,6 +86,15 @@ export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, 
                         className="px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                       />
                     </label>
+                  )}
+                  {cat?.status === "sudah" && onCatatMomen && (
+                    <button
+                      type="button"
+                      onClick={() => onCatatMomen(b.id, cat.tanggal)}
+                      className="px-4 rounded-full border border-border-strong text-text text-[13px] font-medium min-h-[44px] inline-flex items-center hover:bg-surface-sunken transition cursor-pointer"
+                    >
+                      Catat sebagai momen
+                    </button>
                   )}
                 </li>
               );

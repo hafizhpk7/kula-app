@@ -121,6 +121,22 @@ export interface Pengukuran {
   updatedBy?: string;
 }
 
+/** Momen di jurnal anak (teks saja). Hanya merujuk butir milestone lewat id, isinya tidak disalin. */
+export interface JurnalMomen {
+  id: string;
+  /** yyyy-MM-dd, kapan momen terjadi */
+  tanggal: string;
+  judul: string;
+  catatan?: string;
+  pertamaKali?: boolean;
+  /** id butir KPSP (milestone) yang dirujuk */
+  milestoneId?: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
 export interface Profile {
   id: string;
   panggilan: string;
@@ -136,6 +152,8 @@ export interface Profile {
   /** Dipakai khusus untuk memilih kurva standar pertumbuhan. */
   jenisKelamin?: JenisKelamin;
   pengukuran?: Pengukuran[];
+  /** Jurnal momen. Di mode keluarga disusun dari subkoleksi, bukan dari dokumen anak. */
+  jurnal?: JurnalMomen[];
 }
 
 export type PaymentMode = "HYBRID" | "FULL_PRIVATE" | "FULL_BPJS";
