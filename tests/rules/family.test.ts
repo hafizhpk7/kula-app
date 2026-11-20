@@ -167,7 +167,7 @@ describe("babies: menulis dokumen baby", () => {
   });
 
   it("kunci tambahan ditolak", async () => {
-    await assertFails(setDoc(doc(asAdmin(), `families/${FID}/babies/b2`), baby("b2", ADMIN, { jenisKelamin: "L" })));
+    await assertFails(setDoc(doc(asAdmin(), `families/${FID}/babies/b2`), baby("b2", ADMIN, { ekstra: "L" })));
   });
 
   it("kunci wajib hilang ditolak (tanpa insurance)", async () => {
