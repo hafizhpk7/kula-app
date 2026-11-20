@@ -35,6 +35,20 @@ Tiga bagian dalam satu atau dua kalimat: **apa yang belum terjadi, status datany
 - Galat yang memang sengaja dibuat aplikasi dengan bahasa Indonesia (mis. "Kode undangan sudah dipakai.") boleh tampil apa adanya.
 - Implementasi: `src/utils/pesanError.ts` (`pesanPengguna`, `belum`, `lokalkanPesan`) dan `src/modules/keuangan/utils/pesan.ts` (`pesanGagal`).
 
+## Status waktu kunjungan (fitur Kunjungan)
+
+Tanpa nada menyalahkan. Selalu teks, bukan warna saja.
+
+| Keadaan | Pakai | Jangan |
+|---|---|---|
+| Tanggal target sudah lewat, belum dicatat | **Sudah lewat jadwal N hari** | Terlambat, Telat |
+| 1 sampai 30 hari lagi | **Mendekat, N hari lagi** | Segera! |
+| Hari-H | **Hari ini** | |
+| Lebih dari 30 hari | **N hari lagi** | |
+| Titik umur belum bisa dilayani fitur | **Segera hadir** | Belum tersedia, Coming soon |
+
+Catatan: status "Terlambat" di Ringkasan dan Jadwal lama belum diubah. Penyeragaman menunggu keputusan di luar Fase 1.
+
 ## Gaya
 
 - Sentence case di semua judul dan tombol ("Buat keluarga", bukan "Buat Keluarga").
