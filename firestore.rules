@@ -338,6 +338,51 @@ service cloud.firestore {
         && data.updatedBy == request.auth.uid;
     }
 
+    // ---------- Bayi mode keluarga: families/{fid}/babies/** ----------
+    // Mencerminkan persis yang ditulis FamilyBayiRepository (src/modules/bayi/repository).
+    // Batas panjang sengaja longgar supaya tidak menolak data yang sah.
+    function isValidFamilyBaby(data, babyId) {
+      return data.keys().hasAll(['id', 'panggilan', 'tanggalLahir', 'insurance', 'schemaVersion', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.keys().hasOnly(['id', 'panggilan', 'tanggalLahir', 'catatan', 'insurance', 'schemaVersion', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy', 'sourceUid'])
+        && data.id == babyId
+        && data.panggilan is string && data.panggilan.size() > 0 && data.panggilan.size() <= 100
+        && data.tanggalLahir is string && data.tanggalLahir.size() > 0 && data.tanggalLahir.size() <= 32
+        && (!('catatan' in data) || (data.catatan is string && data.catatan.size() <= 2000))
+        && data.insurance is map
+        && data.schemaVersion is number
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.createdBy is string && isValidId(data.createdBy)
+        && data.updatedBy == request.auth.uid
+        && (!('sourceUid' in data) || (data.sourceUid is string && data.sourceUid.size() <= 128));
+    }
+
+    function isValidFamilySchedule(data) {
+      return data.keys().hasAll(['rows', 'updatedAt', 'updatedBy'])
+        && data.keys().hasOnly(['rows', 'updatedAt', 'updatedBy'])
+        && data.rows is list && data.rows.size() <= 300
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.updatedBy == request.auth.uid;
+    }
+
+    function isValidFamilyRecord(data, rowId) {
+      return data.keys().hasAll(['rowId', 'diberikan', 'updatedAt', 'updatedBy'])
+        && data.keys().hasOnly(['rowId', 'diberikan', 'tanggalDiberikan', 'tempat', 'merekBatch', 'biayaAktual', 'ditanggungAsuransi', 'nominalKlaim', 'statusKlaim', 'efekSamping', 'catatan', 'updatedAt', 'updatedBy'])
+        && data.rowId == rowId
+        && data.diberikan is bool
+        && (!('tanggalDiberikan' in data) || (data.tanggalDiberikan is string && data.tanggalDiberikan.size() <= 32))
+        && (!('tempat' in data) || data.tempat in ['Puskesmas', 'Posyandu', 'Rumah Sakit', 'Klinik', 'Dokter Praktik', 'Lainnya'])
+        && (!('merekBatch' in data) || (data.merekBatch is string && data.merekBatch.size() <= 200))
+        && (!('biayaAktual' in data) || (data.biayaAktual is int && data.biayaAktual >= 0 && data.biayaAktual <= 1000000000000))
+        && (!('ditanggungAsuransi' in data) || data.ditanggungAsuransi is bool)
+        && (!('nominalKlaim' in data) || (data.nominalKlaim is int && data.nominalKlaim >= 0 && data.nominalKlaim <= 1000000000000))
+        && (!('statusKlaim' in data) || data.statusKlaim in ['Belum diajukan', 'Diajukan', 'Disetujui', 'Ditolak'])
+        && (!('efekSamping' in data) || (data.efekSamping is string && data.efekSamping.size() <= 1000))
+        && (!('catatan' in data) || (data.catatan is string && data.catatan.size() <= 1000))
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.updatedBy == request.auth.uid;
+    }
+
     // ---------- inside `match /users/{userId}` ----------
     match /membership/{docId} {
       allow get: if isOwner(userId) && isValidId(userId) && docId == 'current';
@@ -446,6 +491,33 @@ service cloud.firestore {
         allow create, update: if isFamilyAdmin(familyId) && isValidId(ruleId)
           && isValidRecurringRule(incoming()) && incoming().id == ruleId;
         allow delete: if isFamilyAdmin(familyId) && isValidId(ruleId);
+      }
+
+      // Bayi mode keluarga: anggota membaca, hanya admin yang menulis (sama dengan finance*).
+      match /babies/{babyId} {
+        allow get, list: if isFamilyMember(familyId);
+        allow create: if isFamilyAdmin(familyId) && isValidId(babyId)
+          && isValidFamilyBaby(incoming(), babyId);
+        allow update: if isFamilyAdmin(familyId) && isValidId(babyId)
+          && isValidFamilyBaby(incoming(), babyId)
+          && incoming().createdAt == existing().createdAt
+          && incoming().createdBy == existing().createdBy;
+        allow delete: if isFamilyAdmin(familyId) && isValidId(babyId);
+
+        match /schedule/{docId} {
+          allow get: if isFamilyMember(familyId) && docId == 'main';
+          allow list: if false;
+          allow create, update: if isFamilyAdmin(familyId) && docId == 'main'
+            && isValidFamilySchedule(incoming());
+          allow delete: if isFamilyAdmin(familyId) && docId == 'main';
+        }
+
+        match /records/{rowId} {
+          allow get, list: if isFamilyMember(familyId);
+          allow create, update: if isFamilyAdmin(familyId) && isValidId(rowId)
+            && isValidFamilyRecord(incoming(), rowId);
+          allow delete: if isFamilyAdmin(familyId) && isValidId(rowId);
+        }
       }
     }
 
