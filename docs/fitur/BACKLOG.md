@@ -43,6 +43,8 @@ Tanpa perubahan skema atau rules. Tidak butuh dokumen sumber.
 - Butuh: F5 (menentukan gerbang commit), F6.
 - Selesai bila: tes pengelompokan, status, dan ICS lulus, `tsc` hijau, layar 375px dicek [lihat], unduhan `.ics` masuk daftar tes di HP asli.
 
+> **Status Fase 2 (20 November 2026):** langkah 1 sampai 4 selesai di branch `feat/tumbuh-kembang-fase2` (konten 16 formulir KPSP, logika murni, data, UI di balik flag) dan rules di `feat/rules-kpsp-milestone`. Hal yang masih terbuka: tinjauan tenaga kesehatan atas konten (`perluReview` masih `true`), 24 butir yang merujuk gambar di buku Pedoman (gambarnya belum ada di aplikasi), konfirmasi K6, dan tes di HP asli. Fase 0b selesai (PR #3 dan #4).
+
 ## Fase 2: Milestone + KPSP + usia koreksi (Opus 5.5)
 
 - **Langkah 1, cek sumber.** Butuh F1 dan F2. Kalau formulir KPSP resmi tidak ada, **STOP**.

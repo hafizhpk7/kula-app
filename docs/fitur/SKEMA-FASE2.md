@@ -1,6 +1,6 @@
 # Usulan skema Fase 2 (milestone, KPSP, usia koreksi)
 
-**Status: MENUNGGU persetujuan.** Belum ada kode, skema, atau rules yang berubah. Label: **[kode]** dibaca dari repo, **[estimasi]** belum diukur, **[tunggu]** butuh keputusan Anda.
+**Status: DISETUJUI (20 November 2026), sudah diimplementasikan di branch `feat/tumbuh-kembang-fase2` dan `feat/rules-kpsp-milestone`.** Label: **[kode]** dibaca dari repo, **[estimasi]** belum diukur, **[tunggu]** butuh keputusan Anda.
 
 Prasyarat: PR #3 (aturan `babies`) dan PR #4 (perbaikan `membership`) sebaiknya sudah di-merge, karena diff rules di bawah bertumpu di atasnya.
 
@@ -48,6 +48,9 @@ milestone?: MilestoneCatatan[];
 - Ukuran dokumen pribadi (1 MiB dibagi semua anak): KPSP ± 300 B per skrining dan milestone ± 100 B per butir, jadi puluhan KB per anak. [estimasi, belum diukur]
 
 ## 3. Perubahan kode yang menyertai skema (tanpa mengubah method yang ada)
+
+> **Deviasi dari usulan awal:** `BayiRepository` **tidak** mendapat method baru (`saveKpsp`, `deleteKpsp`, `saveMilestone`). Setelah membaca kode, jalur `updateProfile` → `saveState(next, prev)` → `diffAppState` sudah dipakai ketiga repository, jadi KPSP dan milestone cukup ditambah sebagai **operasi diff** (`setKpsp`, `deleteKpsp`, `setMilestone`, `deleteMilestone`). Mode tamu dan pribadi menyimpan seluruh profil apa adanya, sedangkan mode keluarga menulis per dokumen. Lebih kecil perubahannya dan konsisten dengan arsitektur yang ada.
+
 
 - `BayiRepository` menambah: `saveKpsp`, `deleteKpsp`, `saveMilestone`, di **ketiga** repository. `usiaKehamilanMinggu` memakai jalur profil yang sudah ada.
 - `diff.ts`: `meta` pada `setBaby` menambah `usiaKehamilanMinggu?`, dan `isMetaEqual` membandingkannya. **Tanpa ini, perubahan usia kehamilan tidak terdeteksi**. `FamilyBayiRepository.setBaby` membangun ulang payload tiap kali, jadi field yang tidak ikut ditulis akan **hilang** saat baby diperbarui.
