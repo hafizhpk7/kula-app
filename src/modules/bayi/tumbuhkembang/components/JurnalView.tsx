@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Pencil, Plus, Sparkles, Trash2, Users } from "lucide-react";
 import { JurnalMomen, Profile } from "../../../../types";
 import { PageHeader } from "../../../../components/common/PageHeader";
@@ -32,6 +32,12 @@ export const JurnalView: React.FC<Props> = ({ profile, peran, namaPenulis, onSim
   const [tambah, setTambah] = useState(false);
   const [ubah, setUbah] = useState<JurnalMomen | null>(null);
   const [hapusId, setHapusId] = useState<string | null>(null);
+
+  const dialogHapus = useRef<HTMLDivElement>(null);
+  // Konfirmasi muncul di bawah daftar dan bisa tertutup menu bawah; bawa ke tengah layar.
+  useEffect(() => {
+    if (hapusId) dialogHapus.current?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+  }, [hapusId]);
 
   const kelompok = useMemo(() => kelompokkanPerBulan(profile.jurnal), [profile.jurnal]);
   const jumlah = profile.jurnal?.length ?? 0;
@@ -149,7 +155,7 @@ export const JurnalView: React.FC<Props> = ({ profile, peran, namaPenulis, onSim
       )}
 
       {hapusTarget && (
-        <div role="alertdialog" aria-labelledby="jr-hapus" className="rounded-control border border-danger/30 bg-danger-tint p-4 space-y-3">
+        <div ref={dialogHapus} role="alertdialog" aria-labelledby="jr-hapus" className="rounded-control border border-danger/30 bg-danger-tint p-4 space-y-3">
           <p id="jr-hapus" className="text-[14px] font-semibold text-danger-text">
             Hapus momen “{hapusTarget.judul}”?
           </p>
