@@ -3,20 +3,21 @@ import { renderHook, act } from "@testing-library/react";
 import { useBayiState } from "../modules/bayi/hooks/useBayiState";
 import * as firebaseService from "../services/firebase";
 
-vi.mock("../context/AuthContext", () => ({
-  useAuth: () => ({
-    user: { uid: "test-user-123", email: "test@growbang.app" },
-    cloudSyncStatus: "idle",
-    setCloudSyncStatus: vi.fn(),
-    markSynced: vi.fn(),
-  }),
-}));
-
-vi.mock("../components/common/Toast", () => ({
-  useToast: () => ({
-    showToast: vi.fn(),
-  }),
-}));
+// Mock dengan identitas STABIL antar render. Objek user dan fungsi masuk deps useMemo di useBayiRepository;
+// kalau dibuat ulang tiap render (seperti vi.fn() di dalam pabrik mock), repository dibuat ulang tiap render dan
+// useBayiState subscribe tanpa henti, sampai kehabisan memori (worker SIGABRT).
+const { auth, toast } = vi.hoisted(() => {
+  const user = { uid: "test-user-123", email: "test@growbang.app" };
+  const setCloudSyncStatus = () => {};
+  const markSynced = () => {};
+  const showToast = () => {};
+  return {
+    auth: { user, cloudSyncStatus: "idle", setCloudSyncStatus, markSynced },
+    toast: { showToast }
+  };
+});
+vi.mock("../context/AuthContext", () => ({ useAuth: () => auth }));
+vi.mock("../components/common/Toast", () => ({ useToast: () => toast }));
 
 describe("firestore retry storm regression test", () => {
   beforeEach(() => {
