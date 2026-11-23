@@ -1,4 +1,4 @@
-import { AppState, PaymentMode, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, JurnalMomen, PaymentMode, ScheduleRow, VaccineRecord } from "../../../types";
 
 export interface BayiRepository {
   /**
@@ -32,6 +32,13 @@ export interface BayiRepository {
    * Concurrency-safe record update (per doc).
    */
   updateRecord(babyId: string, record: VaccineRecord): Promise<void>;
+
+  /**
+   * Jurnal momen. Jalur tulis sendiri (bukan diff): di mode keluarga anggota biasa boleh menulis,
+   * dan penegak izin per penulis adalah firestore.rules.
+   */
+  saveJurnal(babyId: string, entry: JurnalMomen): Promise<void>;
+  deleteJurnal(babyId: string, id: string): Promise<void>;
 
   /**
    * Resets all baby data.

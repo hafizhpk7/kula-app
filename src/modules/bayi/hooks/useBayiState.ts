@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { belum, pesanPengguna } from "../../../utils/pesanError";
-import { AppState, Insurance, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
+import { AppState, Insurance, JurnalMomen, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../components/common/Toast";
@@ -8,6 +8,7 @@ import * as transitions from "../state/transitions";
 import { useBayiRepository } from "../repository/useBayiRepository";
 import { formatIndonesianDate, todayLocal } from "../../../utils/dates";
 import { rayakan } from "../../../components/common/Perayaan";
+import { aturMomen, bolehTambahMomen, hapusMomenDari, PESAN_DITOLAK } from "../tumbuhkembang/logic/jurnal";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
   const { user } = useAuth();
@@ -240,6 +241,41 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     [appState, repository]
   );
 
+  // H14 dan H15: jurnal momen. Sengaja tanpa assertCanWrite: di mode keluarga semua anggota boleh menulis;
+  // izin per penulis ditegakkan firestore.rules.
+  const simpanMomen = useCallback(
+    (entri: JurnalMomen): boolean => {
+      if (!activeProfile) return false;
+      const baru = !(activeProfile.jurnal ?? []).some((x) => x.id === entri.id);
+      if (baru) {
+        const boleh = bolehTambahMomen(activeProfile, mode !== "family");
+        if (!boleh.ok) {
+          showToast(PESAN_DITOLAK[boleh.alasan]);
+          return false;
+        }
+      }
+      const babyId = activeProfile.id;
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: aturMomen(p.jurnal, entri) } : p)) }));
+      repository.saveJurnal(babyId, entri).catch((err) => {
+        showToast(pesanPengguna("bayi", err, belum("Momen", "tersimpan")));
+      });
+      return true;
+    },
+    [activeProfile, mode, repository, showToast]
+  );
+
+  const hapusMomen = useCallback(
+    (id: string) => {
+      if (!activeProfile) return;
+      const babyId = activeProfile.id;
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: hapusMomenDari(p.jurnal, id) } : p)) }));
+      repository.deleteJurnal(babyId, id).catch((err) => {
+        showToast(pesanPengguna("bayi", err, belum("Momen", "terhapus")));
+      });
+    },
+    [activeProfile, repository, showToast]
+  );
+
   // H13: clearAllBabyData
   const clearAllBabyData = useCallback(() => {
     if (!assertCanWrite()) return;
@@ -273,6 +309,8 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     quickMarkGiven,
     updateInsurance,
     updatePaymentMode,
+    simpanMomen,
+    hapusMomen,
     clearAllBabyData
   };
 }

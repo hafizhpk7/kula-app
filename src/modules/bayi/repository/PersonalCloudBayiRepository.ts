@@ -1,7 +1,8 @@
-import { AppState, PaymentMode, Record, ScheduleRow } from "../../../types";
+import { AppState, JurnalMomen, PaymentMode, Record, ScheduleRow } from "../../../types";
 import { clearAllData, getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { saveStateToCloud, subscribeToCloudState } from "../../../services/firebase";
 import { BayiRepository } from "./types";
+import { aturMomen, hapusMomenDari } from "../tumbuhkembang/logic/jurnal";
 
 export class PersonalCloudBayiRepository implements BayiRepository {
   private seedingAttempted = false;
@@ -163,6 +164,24 @@ export class PersonalCloudBayiRepository implements BayiRepository {
           records: newRecords
         };
       })
+    };
+    return this.saveState(updated);
+  }
+
+  async saveJurnal(babyId: string, entry: JurnalMomen): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: aturMomen(p.jurnal, entry) } : p))
+    };
+    return this.saveState(updated);
+  }
+
+  async deleteJurnal(babyId: string, id: string): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: hapusMomenDari(p.jurnal, id) } : p))
     };
     return this.saveState(updated);
   }

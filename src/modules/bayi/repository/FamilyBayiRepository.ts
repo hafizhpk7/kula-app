@@ -11,7 +11,7 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
-import { AppState, Insurance, JenisKelamin, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, Insurance, JenisKelamin, JurnalMomen, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
 import { BayiDiffOp, diffAppState } from "../state/diff";
 import { BayiRepository } from "./types";
 
@@ -67,6 +67,7 @@ export class FamilyBayiRepository implements BayiRepository {
     const babyKpspMap = new Map<string, Map<string, KpspSkrining>>();
     const babyMilestoneMap = new Map<string, Map<string, MilestoneCatatan>>();
     const babyPengukuranMap = new Map<string, Map<string, Pengukuran>>();
+    const babyJurnalMap = new Map<string, Map<string, JurnalMomen>>();
 
     // User preferences subscription (activeProfileId & paymentMode)
     const userAppDoc = doc(db, "users", this.uid, "appData", "current");
@@ -99,6 +100,7 @@ export class FamilyBayiRepository implements BayiRepository {
         const kpsp = Array.from(babyKpspMap.get(babyId)?.values() ?? []);
         const milestone = Array.from(babyMilestoneMap.get(babyId)?.values() ?? []);
         const pengukuran = Array.from(babyPengukuranMap.get(babyId)?.values() ?? []);
+        const jurnal = Array.from(babyJurnalMap.get(babyId)?.values() ?? []);
 
         assembled.push({
           id: meta.id,
@@ -113,7 +115,8 @@ export class FamilyBayiRepository implements BayiRepository {
           ...(kpsp.length ? { kpsp } : {}),
           ...(milestone.length ? { milestone } : {}),
           ...(meta.jenisKelamin === "L" || meta.jenisKelamin === "P" ? { jenisKelamin: meta.jenisKelamin } : {}),
-          ...(pengukuran.length ? { pengukuran } : {})
+          ...(pengukuran.length ? { pengukuran } : {}),
+          ...(jurnal.length ? { jurnal } : {})
         });
       }
 
@@ -221,12 +224,27 @@ export class FamilyBayiRepository implements BayiRepository {
               (err) => onError(err)
             );
 
+            const unsubJurnal = onSnapshot(
+              collection(db, this.basePath, "babies", babyId, "jurnal"),
+              (jSnap) => {
+                const jMap = new Map<string, JurnalMomen>();
+                jSnap.docs.forEach((jDoc) => {
+                  const j = jDoc.data() as JurnalMomen;
+                  jMap.set(j.id || jDoc.id, j);
+                });
+                babyJurnalMap.set(babyId, jMap);
+                emitIfReady();
+              },
+              (err) => onError(err)
+            );
+
             subCleanups.set(babyId, () => {
               unsubSched();
               unsubRecs();
               unsubKpsp();
               unsubMilestone();
               unsubPengukuran();
+              unsubJurnal();
             });
           }
         });
@@ -242,6 +260,7 @@ export class FamilyBayiRepository implements BayiRepository {
             babyKpspMap.delete(id);
             babyMilestoneMap.delete(id);
             babyPengukuranMap.delete(id);
+            babyJurnalMap.delete(id);
           }
         }
 
@@ -475,7 +494,7 @@ export class FamilyBayiRepository implements BayiRepository {
 
   private async deleteBabySubtree(babyId: string): Promise<void> {
     // 1. Delete records, KPSP, and milestone documents in batches
-    for (const nama of ["records", "kpsp", "milestone", "pengukuran"]) {
+    for (const nama of ["records", "kpsp", "milestone", "pengukuran", "jurnal"]) {
       while (true) {
         const q = collection(db, this.basePath, "babies", babyId, nama);
         const snaps = await getDocs(q);
@@ -626,6 +645,40 @@ export class FamilyBayiRepository implements BayiRepository {
       await setDoc(recRef, payload);
     } catch (e: any) {
       handleFirestoreError(e, OperationType.WRITE, `families/${this.fid}/babies/${babyId}/records/${record.rowId}`);
+    }
+  }
+
+  /**
+   * Sengaja TANPA checkAdminPermission: semua anggota boleh menulis jurnal. Izin per penulis
+   * (hanya penulis mengubah, penulis atau admin menghapus) ditegakkan firestore.rules.
+   */
+  async saveJurnal(babyId: string, entry: JurnalMomen): Promise<void> {
+    const nowIso = new Date().toISOString();
+    const payload: Record<string, any> = {
+      id: entry.id,
+      tanggal: entry.tanggal,
+      judul: entry.judul,
+      // createdAt dan createdBy tidak boleh berubah saat update (aturan rules).
+      createdAt: entry.createdAt || nowIso,
+      createdBy: entry.createdBy || this.uid,
+      updatedAt: nowIso,
+      updatedBy: this.uid
+    };
+    if (entry.catatan && entry.catatan.trim()) payload.catatan = entry.catatan.trim();
+    if (entry.pertamaKali === true) payload.pertamaKali = true;
+    if (entry.milestoneId) payload.milestoneId = entry.milestoneId;
+    try {
+      await setDoc(doc(db, this.basePath, "babies", babyId, "jurnal", entry.id), payload);
+    } catch (e: any) {
+      handleFirestoreError(e, OperationType.WRITE, `${this.basePath}/babies/${babyId}/jurnal/${entry.id}`);
+    }
+  }
+
+  async deleteJurnal(babyId: string, id: string): Promise<void> {
+    try {
+      await deleteDoc(doc(db, this.basePath, "babies", babyId, "jurnal", id));
+    } catch (e: any) {
+      handleFirestoreError(e, OperationType.DELETE, `${this.basePath}/babies/${babyId}/jurnal/${id}`);
     }
   }
 

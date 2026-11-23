@@ -1,6 +1,7 @@
-import { AppState, PaymentMode, Record, ScheduleRow } from "../../../types";
+import { AppState, JurnalMomen, PaymentMode, Record, ScheduleRow } from "../../../types";
 import { clearAllData, getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { BayiRepository } from "./types";
+import { aturMomen, hapusMomenDari } from "../tumbuhkembang/logic/jurnal";
 
 export class LocalBayiRepository implements BayiRepository {
   private listeners: Set<(state: AppState) => void> = new Set();
@@ -117,6 +118,26 @@ export class LocalBayiRepository implements BayiRepository {
           records: newRecords
         };
       })
+    };
+    saveAppState(updated);
+    this.notify();
+  }
+
+  async saveJurnal(babyId: string, entry: JurnalMomen): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: aturMomen(p.jurnal, entry) } : p))
+    };
+    saveAppState(updated);
+    this.notify();
+  }
+
+  async deleteJurnal(babyId: string, id: string): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: hapusMomenDari(p.jurnal, id) } : p))
     };
     saveAppState(updated);
     this.notify();

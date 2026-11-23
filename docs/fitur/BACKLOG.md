@@ -72,6 +72,8 @@ Tanpa perubahan skema atau rules. Tidak butuh dokumen sumber.
 - **Langkah 2, skema** `jurnal`: subkoleksi `users/{uid}/jurnal/{id}` (pribadi) dan `families/{fid}/babies/{babyId}/jurnal/{id}` (keluarga). Diff rules dan tes emulator, **STOP untuk ok**.
 - Aturan keluarga: semua anggota melihat, penulis atau admin boleh menghapus (disesuaikan dengan F4).
 - Butuh: F4, F7, Fase 0b.
+- **Status (disetujui J1–J6, R1 pada 2026-11-20; lihat `SKEMA-FASE4.md`):** foto = A (teks saja); mode tamu dan pribadi menyimpan `jurnal` di profil (batas 200 entri, penjaga ukuran 800 KB), menyimpang dari subkoleksi di atas karena subkoleksi mode pribadi butuh refactor repository yang lebih besar dari fiturnya; mode keluarga subkoleksi. Semua anggota menambah, penulis mengubah, penulis atau admin menghapus, lewat `saveJurnal`/`deleteJurnal` (bukan diff). Kode di `feat/tumbuh-kembang-fase4`, rules di `feat/rules-jurnal` (belum di-deploy).
+- **Belum:** pemeriksaan di perangkat nyata, tinjauan rules produksi sebelum deploy, foto (fase terpisah bila memilih Storage).
 
 ## Fase 5: Stimulasi harian (Sonnet 5.5)
 

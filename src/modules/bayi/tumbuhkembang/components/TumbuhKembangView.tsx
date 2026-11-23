@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Check, ChevronRight, Clock, Stethoscope, Trash2 } from "lucide-react";
 import { KpspHasil, KpspSkrining, MilestoneStatus, Profile } from "../../../../types";
 import { formatIndonesianDate } from "../../../../utils/dates";
@@ -42,6 +42,7 @@ const IKON_HASIL: Record<KpspHasil, React.ReactNode> = {
 
 export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, onBukaProfil, kpspBulan, onBukaKpsp, bukaUkur = false, onTutupUkur = () => {}, sekarang }) => {
   const now = sekarang ?? new Date();
+  const navigate = useNavigate();
   const [tahapPilihan, setTahapPilihan] = useState<number | null>(null);
   const [hapusId, setHapusId] = useState<string | null>(null);
 
@@ -228,7 +229,13 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
               </button>
             )}
           </div>
-          <MilestoneDaftar formulir={sekitar.saatIni} catatan={profile.milestone} readOnly={readOnly} onUbah={ubahMilestone} />
+          <MilestoneDaftar
+            formulir={sekitar.saatIni}
+            catatan={profile.milestone}
+            readOnly={readOnly}
+            onUbah={ubahMilestone}
+            onCatatMomen={(butirId, tanggal) => navigate(`/bayi/jurnal?dari=${encodeURIComponent(butirId)}${tanggal ? `&tanggal=${tanggal}` : ""}`)}
+          />
           {readOnly && <p className="text-[13px] text-text-2">Mode lihat saja: catatan milestone tidak bisa diubah.</p>}
         </section>
       )}
@@ -292,6 +299,19 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
             </div>
           </div>
         )}
+      </section>
+
+      <section className={`${kartu} space-y-2`} aria-labelledby="tk-jurnal">
+        <h2 id="tk-jurnal" className="font-display text-[16px] text-text">
+          Jurnal momen
+        </h2>
+        <p className="text-[13px] text-text-2 leading-relaxed">
+          Catat momen yang ingin diingat, seperti pertama kali tersenyum atau melangkah.
+          {(profile.jurnal?.length ?? 0) > 0 && <> Sudah ada {profile.jurnal!.length} momen.</>}
+        </p>
+        <Link to="/bayi/jurnal" className={tombolSekunder}>
+          Buka jurnal momen
+        </Link>
       </section>
 
       <section className={`${kartu} space-y-2`} aria-labelledby="tk-dokter">
