@@ -1,0 +1,347 @@
+[
+  {
+    "id": "stim-0-2-meraba",
+    "umurMinBulan": 0,
+    "umurMaxBulan": 2,
+    "domain": "geraHalus",
+    "judul": "Melatih bayi meraba dan memegang benda",
+    "langkah": [
+      "Letakkan benda atau mainan kecil yang berbunyi atau berwarna cerah di tangan bayi, atau sentuhkan benda itu pada punggung jari-jarinya.",
+      "Amati cara bayi memegang benda tersebut."
+    ],
+    "bahan": [
+      "mainan kecil yang berbunyi atau berwarna cerah"
+    ],
+    "tujuan": "Melatih bayi meraba dan memegang benda",
+    "keselamatan": [
+      "Jaga agar benda itu tidak melukai bayi atau tertelan dan membuatnya tersedak."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      51
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-0-2-gantung",
+    "umurMinBulan": 0,
+    "umurMaxBulan": 2,
+    "domain": "geraHalus",
+    "judul": "Menggantung benda berwarna dan berbunyi",
+    "langkah": [
+      "Gantungkan mainan atau benda pada tali di atas bayi, dengan jarak sekitar 30 cm (kira-kira 2 jengkal tangan orang dewasa).",
+      "Amati bayi melihat benda itu dan menggerakkan tangan dan kakinya."
+    ],
+    "bahan": [
+      "mainan atau benda berwarna dan berbunyi",
+      "tali"
+    ],
+    "tujuan": "Menggantung benda berwarna dan berbunyi",
+    "keselamatan": [
+      "Pastikan benda tersebut tidak bisa dimasukkan ke mulut bayi dan tidak akan terlepas dari ikatan."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      51
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-3-5-cermin",
+    "umurMinBulan": 3,
+    "umurMaxBulan": 5,
+    "domain": "sosialisasiKemandirian",
+    "judul": "Mengajak bayi melihat dirinya di kaca",
+    "langkah": [
+      "Bawalah bayi melihat dirinya di cermin.",
+      "Gunakan cermin yang tidak mudah pecah."
+    ],
+    "bahan": [
+      "cermin yang tidak mudah pecah"
+    ],
+    "tujuan": "Mengajak bayi melihat dirinya di kaca",
+    "keselamatan": [
+      "Gunakan cermin yang tidak mudah pecah."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      55
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-3-5-duduk",
+    "umurMinBulan": 3,
+    "umurMaxBulan": 5,
+    "domain": "geraKasar",
+    "judul": "Melatih bayi duduk",
+    "langkah": [
+      "Mula-mula dudukkan bayi di kursi dengan sandaran agar tidak jatuh ke belakang, lalu beri mainan kecil di tangannya.",
+      "Jika bayi belum bisa duduk tegak, pegang badan bayi.",
+      "Jika bayi sudah bisa duduk tegak, dudukkan bayi di lantai yang beralaskan selimut, tanpa sandaran atau penyangga."
+    ],
+    "bahan": [
+      "kursi dengan sandaran",
+      "selimut",
+      "mainan kecil"
+    ],
+    "tujuan": "Melatih bayi duduk",
+    "keselamatan": [
+      "Dudukkan bayi dengan sandaran agar tidak jatuh ke belakang.",
+      "Jika bayi belum bisa duduk tegak, pegang badan bayi.",
+      "Bila duduk di lantai, alasi dengan selimut."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      54
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-3-5-benda-kecil",
+    "umurMinBulan": 3,
+    "umurMaxBulan": 5,
+    "domain": "geraHalus",
+    "judul": "Melatih bayi mengamati dan mengambil benda kecil",
+    "langkah": [
+      "Letakkan benda kecil, seperti potongan-potongan biskuit, di hadapan bayi.",
+      "Ajari bayi mengambil benda-benda tersebut."
+    ],
+    "bahan": [
+      "benda kecil yang aman, seperti potongan biskuit (contoh dari sumber)"
+    ],
+    "tujuan": "Melatih bayi mengamati dan mengambil benda kecil",
+    "keselamatan": [
+      "Singkirkan barang-barang kecil berbahaya yang dapat menyebabkan tersedak."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      54
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true,
+    "catatanReview": "Contoh 'potongan biskuit' disalin setia dari sumber; tenaga kesehatan perlu menilai apakah pantas untuk bayi 3-5 bulan sebelum kartu ini dipakai."
+  },
+  {
+    "id": "stim-6-8-wadah",
+    "umurMinBulan": 6,
+    "umurMaxBulan": 8,
+    "domain": "geraHalus",
+    "judul": "Melatih bayi memasukkan benda ke dalam wadah",
+    "langkah": [
+      "Ajari bayi memasukkan mainan atau benda kecil ke dalam wadah.",
+      "Setelah bayi memasukkan benda ke dalam wadah, ajari cara mengeluarkannya dan memasukkannya kembali."
+    ],
+    "bahan": [
+      "wadah dari karton, kaleng, kardus, atau botol air mineral bekas",
+      "mainan atau benda kecil"
+    ],
+    "tujuan": "Melatih bayi memasukkan benda ke dalam wadah",
+    "keselamatan": [
+      "Pastikan benda-benda tersebut tidak berbahaya: jangan terlalu kecil karena bisa membuat bayi tersedak bila tertelan."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      57
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-6-8-bunyi",
+    "umurMinBulan": 6,
+    "umurMaxBulan": 8,
+    "domain": "geraHalus",
+    "judul": "Melatih bayi membuat bunyi-bunyian",
+    "langkah": [
+      "Letakkan mainan yang tidak dapat pecah (kubus atau balok kecil) di tangan kanan dan kiri bayi.",
+      "Bantu bayi membuat bunyi dengan memukul-mukulkan kedua benda tersebut."
+    ],
+    "bahan": [
+      "dua kubus atau balok kecil yang tidak dapat pecah"
+    ],
+    "tujuan": "Melatih bayi membuat bunyi-bunyian",
+    "keselamatan": [
+      "Gunakan mainan yang tidak dapat pecah."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      58
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-9-11-mainan",
+    "umurMinBulan": 9,
+    "umurMaxBulan": 11,
+    "domain": "geraHalus",
+    "judul": "Melatih bayi mengambil mainan",
+    "langkah": [
+      "Letakkan mainan agak jauh dari bayi, lalu ajari bayi mengambilnya dengan meraih, menarik, atau mendorong badannya supaya dekat dengan mainan.",
+      "Untuk mainan bertali, letakkan agak jauh dan ajari bayi menarik tali untuk mendapatkan mainan itu."
+    ],
+    "bahan": [
+      "mainan",
+      "mainan bertali"
+    ],
+    "tujuan": "Melatih bayi mengambil mainan",
+    "keselamatan": [
+      "Simpan mainan bertali jika Anda tidak dapat mengawasi bayi."
+    ],
+    "keselamatanDariSumber": "aktivitas",
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      61
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-3-5-cilukba",
+    "umurMinBulan": 3,
+    "umurMaxBulan": 5,
+    "domain": "sosialisasiKemandirian",
+    "judul": "Mengajak bayi bermain cilukba",
+    "langkah": [
+      "Tutup seluruh bagian wajah Anda, lalu buka secara tiba-tiba untuk dilihat bayi.",
+      "Cara lain: mengintip bayi dari balik pintu atau tempat tidurnya."
+    ],
+    "bahan": [],
+    "tujuan": "Mengajak bayi bermain cilukba",
+    "keselamatan": [
+      "Selalu lakukan stimulasi dalam suasana aman, nyaman dan menyenangkan."
+    ],
+    "keselamatanDariSumber": "umum",
+    "keselamatanSumber": [
+      {
+        "dokumen": "Buku KIA 2024",
+        "halamanPdf": 33,
+        "kutipan": "melakukan stimulasi dalam suasana aman, nyaman dan menyenangkan"
+      }
+    ],
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      55
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-6-8-merangkak",
+    "umurMinBulan": 6,
+    "umurMaxBulan": 8,
+    "domain": "geraKasar",
+    "judul": "Melatih bayi merangkak",
+    "langkah": [
+      "Letakkan sebuah mainan di luar jangkauan bayi.",
+      "Usahakan agar bayi mau merangkak ke arah mainan dengan menggunakan kedua tangan dan lututnya."
+    ],
+    "bahan": [
+      "mainan"
+    ],
+    "tujuan": "Melatih bayi merangkak",
+    "keselamatan": [
+      "Saat bayi mulai lebih sering bergerak, tetaplah berada pada jarak dekat dengannya.",
+      "Sediakan tempat yang cukup luas dan aman untuk bayi bergerak bebas dan mengeksplorasi sekitarnya.",
+      "Selalu lakukan stimulasi dalam suasana aman, nyaman dan menyenangkan."
+    ],
+    "keselamatanDariSumber": "umum",
+    "keselamatanSumber": [
+      {
+        "dokumen": "Pedoman SDIDTK 2022",
+        "halamanPdf": 60,
+        "kutipan": "tetaplah berada pada jarak dekat dengannya; tempat yang cukup luas dan aman"
+      },
+      {
+        "dokumen": "Buku KIA 2024",
+        "halamanPdf": 33,
+        "kutipan": "melakukan stimulasi dalam suasana aman, nyaman dan menyenangkan"
+      }
+    ],
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      56
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-6-8-cari-mainan",
+    "umurMinBulan": 6,
+    "umurMaxBulan": 8,
+    "domain": "geraHalus",
+    "judul": "Melatih bayi mencari dan menemukan mainan",
+    "langkah": [
+      "Sembunyikan mainan atau benda yang disukai bayi dengan menutupnya sebagian saja dengan selimut atau koran.",
+      "Tunjukkan cara menemukannya dengan mengangkat kain atau koran penutup.",
+      "Setelah bayi mengerti, tutup mainan seluruhnya dan biarkan bayi mencarinya sendiri."
+    ],
+    "bahan": [
+      "mainan atau benda yang disukai bayi",
+      "selimut atau koran"
+    ],
+    "tujuan": "Melatih bayi mencari dan menemukan mainan",
+    "keselamatan": [
+      "Selalu lakukan stimulasi dalam suasana aman, nyaman dan menyenangkan."
+    ],
+    "keselamatanDariSumber": "umum",
+    "keselamatanSumber": [
+      {
+        "dokumen": "Buku KIA 2024",
+        "halamanPdf": 33,
+        "kutipan": "melakukan stimulasi dalam suasana aman, nyaman dan menyenangkan"
+      }
+    ],
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      57
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  },
+  {
+    "id": "stim-6-8-buku",
+    "umurMinBulan": 6,
+    "umurMaxBulan": 8,
+    "domain": "bicaraBahasa",
+    "judul": "Membacakan buku cerita",
+    "langkah": [
+      "Bacakan buku cerita dengan gambar berwarna (misalnya gambar hewan atau kendaraan) dari buku atau majalah bergambar.",
+      "Tunjukkan hal-hal baru di dalamnya dan puji bayi bila ia mengoceh.",
+      "Lakukan setiap hari dalam beberapa menit saja."
+    ],
+    "bahan": [
+      "buku atau majalah bergambar berwarna"
+    ],
+    "tujuan": "Membacakan buku cerita",
+    "keselamatan": [
+      "Selalu lakukan stimulasi dalam suasana aman, nyaman dan menyenangkan."
+    ],
+    "keselamatanDariSumber": "umum",
+    "keselamatanSumber": [
+      {
+        "dokumen": "Buku KIA 2024",
+        "halamanPdf": 33,
+        "kutipan": "melakukan stimulasi dalam suasana aman, nyaman dan menyenangkan"
+      }
+    ],
+    "sumber": "Pedoman SDIDTK 2022 (Kemenkes), Tabel 3.7",
+    "halamanPdf": [
+      58
+    ],
+    "versi": "S2-2022-08",
+    "perluReview": true
+  }
+]

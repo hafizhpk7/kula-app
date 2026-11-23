@@ -11,7 +11,7 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
-import { AppState, Insurance, JenisKelamin, JurnalMomen, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, Insurance, JenisKelamin, JurnalMomen, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, StimulasiCatatan, VaccineRecord } from "../../../types";
 import { BayiDiffOp, diffAppState } from "../state/diff";
 import { BayiRepository } from "./types";
 
@@ -68,6 +68,7 @@ export class FamilyBayiRepository implements BayiRepository {
     const babyMilestoneMap = new Map<string, Map<string, MilestoneCatatan>>();
     const babyPengukuranMap = new Map<string, Map<string, Pengukuran>>();
     const babyJurnalMap = new Map<string, Map<string, JurnalMomen>>();
+    const babyStimulasiMap = new Map<string, Map<string, StimulasiCatatan>>();
 
     // User preferences subscription (activeProfileId & paymentMode)
     const userAppDoc = doc(db, "users", this.uid, "appData", "current");
@@ -101,6 +102,7 @@ export class FamilyBayiRepository implements BayiRepository {
         const milestone = Array.from(babyMilestoneMap.get(babyId)?.values() ?? []);
         const pengukuran = Array.from(babyPengukuranMap.get(babyId)?.values() ?? []);
         const jurnal = Array.from(babyJurnalMap.get(babyId)?.values() ?? []);
+        const stimulasi = Array.from(babyStimulasiMap.get(babyId)?.values() ?? []);
 
         assembled.push({
           id: meta.id,
@@ -116,7 +118,8 @@ export class FamilyBayiRepository implements BayiRepository {
           ...(milestone.length ? { milestone } : {}),
           ...(meta.jenisKelamin === "L" || meta.jenisKelamin === "P" ? { jenisKelamin: meta.jenisKelamin } : {}),
           ...(pengukuran.length ? { pengukuran } : {}),
-          ...(jurnal.length ? { jurnal } : {})
+          ...(jurnal.length ? { jurnal } : {}),
+          ...(stimulasi.length ? { stimulasi } : {})
         });
       }
 
@@ -238,6 +241,20 @@ export class FamilyBayiRepository implements BayiRepository {
               (err) => onError(err)
             );
 
+            const unsubStimulasi = onSnapshot(
+              collection(db, this.basePath, "babies", babyId, "stimulasi"),
+              (tSnap) => {
+                const tMap = new Map<string, StimulasiCatatan>();
+                tSnap.docs.forEach((tDoc) => {
+                  const t = tDoc.data() as StimulasiCatatan;
+                  tMap.set(t.id || tDoc.id, t);
+                });
+                babyStimulasiMap.set(babyId, tMap);
+                emitIfReady();
+              },
+              (err) => onError(err)
+            );
+
             subCleanups.set(babyId, () => {
               unsubSched();
               unsubRecs();
@@ -245,6 +262,7 @@ export class FamilyBayiRepository implements BayiRepository {
               unsubMilestone();
               unsubPengukuran();
               unsubJurnal();
+              unsubStimulasi();
             });
           }
         });
@@ -261,6 +279,7 @@ export class FamilyBayiRepository implements BayiRepository {
             babyMilestoneMap.delete(id);
             babyPengukuranMap.delete(id);
             babyJurnalMap.delete(id);
+            babyStimulasiMap.delete(id);
           }
         }
 
@@ -494,7 +513,7 @@ export class FamilyBayiRepository implements BayiRepository {
 
   private async deleteBabySubtree(babyId: string): Promise<void> {
     // 1. Delete records, KPSP, and milestone documents in batches
-    for (const nama of ["records", "kpsp", "milestone", "pengukuran", "jurnal"]) {
+    for (const nama of ["records", "kpsp", "milestone", "pengukuran", "jurnal", "stimulasi"]) {
       while (true) {
         const q = collection(db, this.basePath, "babies", babyId, nama);
         const snaps = await getDocs(q);
@@ -679,6 +698,36 @@ export class FamilyBayiRepository implements BayiRepository {
       await deleteDoc(doc(db, this.basePath, "babies", babyId, "jurnal", id));
     } catch (e: any) {
       handleFirestoreError(e, OperationType.DELETE, `${this.basePath}/babies/${babyId}/jurnal/${id}`);
+    }
+  }
+
+  /** Tanpa checkAdminPermission (semua anggota boleh menulis); izin per penulis ditegakkan firestore.rules. */
+  async saveStimulasi(babyId: string, catatan: StimulasiCatatan): Promise<void> {
+    const nowIso = new Date().toISOString();
+    const payload: Record<string, any> = {
+      id: catatan.id,
+      aktivitasId: catatan.aktivitasId,
+      jenis: catatan.jenis,
+      tanggal: catatan.tanggal,
+      // createdAt dan createdBy tidak boleh berubah saat update (aturan rules).
+      createdAt: catatan.createdAt || nowIso,
+      createdBy: catatan.createdBy || this.uid,
+      updatedAt: nowIso,
+      updatedBy: this.uid
+    };
+    if (catatan.jenis === "dicoba" && catatan.reaksi) payload.reaksi = catatan.reaksi;
+    try {
+      await setDoc(doc(db, this.basePath, "babies", babyId, "stimulasi", catatan.id), payload);
+    } catch (e: any) {
+      handleFirestoreError(e, OperationType.WRITE, `${this.basePath}/babies/${babyId}/stimulasi/${catatan.id}`);
+    }
+  }
+
+  async deleteStimulasi(babyId: string, id: string): Promise<void> {
+    try {
+      await deleteDoc(doc(db, this.basePath, "babies", babyId, "stimulasi", id));
+    } catch (e: any) {
+      handleFirestoreError(e, OperationType.DELETE, `${this.basePath}/babies/${babyId}/stimulasi/${id}`);
     }
   }
 
