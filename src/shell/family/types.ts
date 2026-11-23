@@ -96,6 +96,10 @@ export const FAMILY_JURNAL_KEYS = [
   "id", "tanggal", "judul", "catatan", "pertamaKali", "milestoneId", "createdAt", "updatedAt", "createdBy", "updatedBy"
 ] as const;
 
+export const FAMILY_STIMULASI_KEYS = [
+  "id", "aktivitasId", "jenis", "tanggal", "reaksi", "createdAt", "updatedAt", "createdBy", "updatedBy"
+] as const;
+
 export const FAMILY_DATA_COLLECTIONS = ["financeTransactions", "savingsGoals", "recurringRules"] as const;
 
 export const MAX_FAMILY_MEMBERS_SOFT = 50; // Soft UI cap only; not a security boundary

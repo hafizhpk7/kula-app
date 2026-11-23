@@ -8,7 +8,7 @@
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
-const DIR = "src/modules/bayi/tumbuhkembang/content";
+const DIR = process.env.KULA_KONTEN_DIR || "src/modules/bayi/tumbuhkembang/content";
 const DOMAIN = ["geraKasar", "geraHalus", "bicaraBahasa", "sosialisasiKemandirian"];
 const UMUR_KPSP = [3, 6, 9, 12, 15, 18, 21, 24, 30, 36, 42, 48, 54, 60, 66, 72];
 const galat = [];
@@ -147,6 +147,42 @@ function periksaAturanPertumbuhan(path) {
   if (typeof d.koreksiCaraUkur?.cm !== "number" || d.koreksiCaraUkur.cm <= 0) catat(path, "koreksiCaraUkur.cm harus angka positif");
 }
 
+const KATA_TERLARANG = ["meningkatkan iq", "meningkatkan kecerdasan", "pasti", "dijamin", "terbukti", "cepat pintar", "mencegah keterlambatan", "mencegah terlambat"];
+const MEREK_ATAU_TAUTAN = /https?:\/\/|www\.|\.com\b|\.id\b|beli di|tokopedia|shopee|lazada/i;
+
+function periksaStimulasi(path) {
+  const daftar = baca(path);
+  if (!daftar) return;
+  if (!Array.isArray(daftar) || daftar.length === 0) return catat(path, "daftar aktivitas kosong");
+  const idPernah = new Set();
+  daftar.forEach((a, i) => {
+    const lokasi = `${path} aktivitas ${i + 1}`;
+    if (!punyaTeks(a.id)) catat(lokasi, "id kosong");
+    else if (idPernah.has(a.id)) catat(lokasi, `id ganda: ${a.id}`);
+    else idPernah.add(a.id);
+    if (!Number.isInteger(a.umurMinBulan) || !Number.isInteger(a.umurMaxBulan) || a.umurMinBulan < 0 || a.umurMinBulan > a.umurMaxBulan) catat(lokasi, "rentang umur tidak valid");
+    if (!DOMAIN.includes(a.domain)) catat(lokasi, `domain tidak dikenal: ${a.domain}`);
+    if (!punyaTeks(a.judul)) catat(lokasi, "judul kosong");
+    if (!punyaTeks(a.tujuan)) catat(lokasi, "tujuan kosong");
+    if (!Array.isArray(a.langkah) || a.langkah.length < 2 || a.langkah.length > 4 || !a.langkah.every(punyaTeks)) catat(lokasi, "langkah harus 2-4 teks");
+    if (!Array.isArray(a.bahan) || !a.bahan.every(punyaTeks)) catat(lokasi, "bahan harus array teks");
+    if (!Array.isArray(a.keselamatan) || a.keselamatan.length === 0 || !a.keselamatan.every(punyaTeks)) catat(lokasi, "keselamatan WAJIB dan tidak boleh kosong");
+    if (!["aktivitas", "umum"].includes(a.keselamatanDariSumber)) catat(lokasi, "keselamatanDariSumber harus 'aktivitas' atau 'umum'");
+    if (a.keselamatanDariSumber === "umum" && (!Array.isArray(a.keselamatanSumber) || a.keselamatanSumber.length === 0)) catat(lokasi, "keselamatan umum wajib menyebut sumbernya (keselamatanSumber)");
+    if (!punyaTeks(a.sumber)) catat(lokasi, "sumber kosong");
+    if (!Array.isArray(a.halamanPdf) || a.halamanPdf.length === 0) catat(lokasi, "halamanPdf kosong");
+    if (!punyaTeks(a.versi)) catat(lokasi, "versi kosong");
+    if (typeof a.perluReview !== "boolean") catat(lokasi, "perluReview harus boolean");
+    if ("durasiMenit" in a) catat(lokasi, "durasiMenit tidak boleh ada (tidak ada di sumber)");
+    const semua = [a.judul, a.tujuan, ...(a.langkah ?? []), ...(a.bahan ?? []), ...(a.keselamatan ?? [])].filter(punyaTeks).join(" \n ");
+    const rendah = semua.toLowerCase();
+    for (const k of KATA_TERLARANG) {
+      if (new RegExp(`(^|[^a-z])${k}([^a-z]|$)`).test(rendah)) catat(lokasi, `klaim berlebihan terlarang: "${k}"`);
+    }
+    if (MEREK_ATAU_TAUTAN.test(semua)) catat(lokasi, "ada tautan atau ajakan beli (dilarang)");
+  });
+}
+
 if (!existsSync(DIR)) {
   console.error(`Folder konten tidak ada: ${DIR}`);
   process.exit(1);
@@ -155,6 +191,7 @@ periksaKpsp(join(DIR, "kpsp"));
 periksaAturan(join(DIR, "aturan.json"));
 periksaPertumbuhan(join(DIR, "pertumbuhan"));
 periksaAturanPertumbuhan(join(DIR, "aturan-pertumbuhan.json"));
+periksaStimulasi(join(DIR, "stimulasi", "aktivitas.json"));
 
 if (galat.length) {
   console.error(`Validasi konten GAGAL (${galat.length}):`);

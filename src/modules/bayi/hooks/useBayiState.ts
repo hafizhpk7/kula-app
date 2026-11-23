@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { belum, pesanPengguna } from "../../../utils/pesanError";
-import { AppState, Insurance, JurnalMomen, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
+import { AppState, Insurance, JurnalMomen, StimulasiCatatan, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../components/common/Toast";
@@ -8,7 +8,8 @@ import * as transitions from "../state/transitions";
 import { useBayiRepository } from "../repository/useBayiRepository";
 import { formatIndonesianDate, todayLocal } from "../../../utils/dates";
 import { rayakan } from "../../../components/common/Perayaan";
-import { aturMomen, bolehTambahMomen, hapusMomenDari, PESAN_DITOLAK } from "../tumbuhkembang/logic/jurnal";
+import { aturMomen, BATAS_JURNAL, bolehTambahMomen, hapusMomenDari, PESAN_DITOLAK } from "../tumbuhkembang/logic/jurnal";
+import { aturCatatan, hapusCatatanDari } from "../tumbuhkembang/logic/stimulasi";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
   const { user } = useAuth();
@@ -276,6 +277,37 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     [activeProfile, repository, showToast]
   );
 
+  // H16 dan H17: catatan stimulasi harian. Seperti jurnal, tanpa assertCanWrite (semua anggota keluarga boleh).
+  const simpanStimulasi = useCallback(
+    (catatan: StimulasiCatatan): boolean => {
+      if (!activeProfile) return false;
+      const baru = !(activeProfile.stimulasi ?? []).some((x) => x.id === catatan.id);
+      if (baru && mode !== "family" && JSON.stringify(activeProfile).length > BATAS_JURNAL.maksUkuranProfilByte) {
+        showToast(PESAN_DITOLAK.terlaluBesar);
+        return false;
+      }
+      const babyId = activeProfile.id;
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, stimulasi: aturCatatan(p.stimulasi, catatan) } : p)) }));
+      repository.saveStimulasi(babyId, catatan).catch((err) => {
+        showToast(pesanPengguna("bayi", err, belum("Catatan stimulasi", "tersimpan")));
+      });
+      return true;
+    },
+    [activeProfile, mode, repository, showToast]
+  );
+
+  const hapusStimulasi = useCallback(
+    (id: string) => {
+      if (!activeProfile) return;
+      const babyId = activeProfile.id;
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, stimulasi: hapusCatatanDari(p.stimulasi, id) } : p)) }));
+      repository.deleteStimulasi(babyId, id).catch((err) => {
+        showToast(pesanPengguna("bayi", err, belum("Catatan stimulasi", "terhapus")));
+      });
+    },
+    [activeProfile, repository, showToast]
+  );
+
   // H13: clearAllBabyData
   const clearAllBabyData = useCallback(() => {
     if (!assertCanWrite()) return;
@@ -311,6 +343,8 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     updatePaymentMode,
     simpanMomen,
     hapusMomen,
+    simpanStimulasi,
+    hapusStimulasi,
     clearAllBabyData
   };
 }

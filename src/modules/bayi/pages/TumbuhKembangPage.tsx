@@ -1,11 +1,13 @@
 import React from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
+import { useAuth } from "../../../context/AuthContext";
 import { useBayi } from "../context/BayiContext";
 import { TumbuhKembangView } from "../tumbuhkembang/components/TumbuhKembangView";
 
 /** Rute /bayi/tumbuh-kembang. Parameter ?kpsp=<umur formulir> membuka panduan KPSP (dipakai slot di Kunjungan). */
 export const TumbuhKembangPage: React.FC = () => {
-  const { activeProfile, updateProfile, isReadOnly } = useBayi();
+  const { activeProfile, updateProfile, isReadOnly, mode, isAdmin, simpanStimulasi, hapusStimulasi } = useBayi();
+  const { user } = useAuth();
   const { setProfileModalOpen, setProfileModalMode } = useOutletContext<any>();
   const [params, setParams] = useSearchParams();
 
@@ -24,6 +26,7 @@ export const TumbuhKembangPage: React.FC = () => {
         setProfileModalMode("list");
         setProfileModalOpen(true);
       }}
+      stimulasi={{ peran: { mode, uid: user?.uid, isAdmin }, onSimpan: simpanStimulasi, onHapus: hapusStimulasi }}
       kpspBulan={kpspBulan}
       bukaUkur={bukaUkur}
       onTutupUkur={() => {

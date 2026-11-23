@@ -137,6 +137,25 @@ export interface JurnalMomen {
   updatedBy?: string;
 }
 
+export type ReaksiStimulasi = "suka" | "biasa" | "kurangSuka";
+
+/**
+ * Catatan stimulasi harian: "dicoba" (id c-<tanggal>-<aktivitasId>) atau "sembunyi" (id h-<aktivitasId>).
+ * Id deterministik, jadi tidak ada duplikat. Di mode keluarga disusun dari subkoleksi.
+ */
+export interface StimulasiCatatan {
+  id: string;
+  aktivitasId: string;
+  jenis: "dicoba" | "sembunyi";
+  /** yyyy-MM-dd */
+  tanggal: string;
+  reaksi?: ReaksiStimulasi;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
 export interface Profile {
   id: string;
   panggilan: string;
@@ -154,6 +173,7 @@ export interface Profile {
   pengukuran?: Pengukuran[];
   /** Jurnal momen. Di mode keluarga disusun dari subkoleksi, bukan dari dokumen anak. */
   jurnal?: JurnalMomen[];
+  stimulasi?: StimulasiCatatan[];
 }
 
 export type PaymentMode = "HYBRID" | "FULL_PRIVATE" | "FULL_BPJS";

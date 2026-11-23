@@ -12,6 +12,8 @@ import { DisclaimerTumbuhKembang } from "./DisclaimerTumbuhKembang";
 import { KpspFlow } from "./KpspFlow";
 import { MilestoneDaftar } from "./MilestoneDaftar";
 import { PertumbuhanSection } from "./PertumbuhanSection";
+import { KartuStimulasi } from "./KartuStimulasi";
+import { PeranStimulasi } from "../logic/stimulasi";
 
 interface Props {
   profile: Profile;
@@ -24,6 +26,8 @@ interface Props {
   /** Bila true, lembar catat ukuran terbuka (dari slot "Timbang & ukur" di Kunjungan). */
   bukaUkur?: boolean;
   onTutupUkur?: () => void;
+  /** Kartu stimulasi harian; tidak tampil bila tidak diberikan. */
+  stimulasi?: { peran: PeranStimulasi; onSimpan: (c: import("../../../../types").StimulasiCatatan) => boolean; onHapus: (id: string) => void };
   /** Hanya untuk tes dan pratinjau. Default: sekarang. */
   sekarang?: Date;
 }
@@ -40,7 +44,7 @@ const IKON_HASIL: Record<KpspHasil, React.ReactNode> = {
   kemungkinanPenyimpangan: <Stethoscope className="w-4 h-4" aria-hidden="true" />
 };
 
-export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, onBukaProfil, kpspBulan, onBukaKpsp, bukaUkur = false, onTutupUkur = () => {}, sekarang }) => {
+export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, onBukaProfil, kpspBulan, onBukaKpsp, bukaUkur = false, onTutupUkur = () => {}, stimulasi, sekarang }) => {
   const now = sekarang ?? new Date();
   const navigate = useNavigate();
   const [tahapPilihan, setTahapPilihan] = useState<number | null>(null);
@@ -163,6 +167,10 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
         onTutupUkur={onTutupUkur}
         sekarang={sekarang}
       />
+
+      {stimulasi && (
+        <KartuStimulasi profile={profile} peran={stimulasi.peran} onSimpan={stimulasi.onSimpan} onHapus={stimulasi.onHapus} sekarang={sekarang} />
+      )}
 
       {/* Skrining KPSP */}
       <section className={`${kartu} space-y-3`} aria-labelledby="tk-kpsp">
