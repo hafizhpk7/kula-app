@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { Eye, EyeOff, RefreshCw, ShieldAlert } from "lucide-react";
 import { Profile, ReaksiStimulasi, StimulasiCatatan } from "../../../../types";
@@ -52,6 +52,11 @@ export const KartuStimulasi: React.FC<Props> = ({ profile, peran, onSimpan, onHa
   const [offset, setOffset] = useState(() => bacaOffsetGanti(profile.id, tanggal, simpanan));
   const [pilihReaksi, setPilihReaksi] = useState(false);
   const [konfirmSembunyi, setKonfirmSembunyi] = useState(false);
+  const dialogSembunyi = useRef<HTMLDivElement>(null);
+  // Konfirmasi muncul di bawah tombol dan bisa tertutup menu bawah; bawa ke tengah layar.
+  useEffect(() => {
+    if (konfirmSembunyi) dialogSembunyi.current?.scrollIntoView?.({ block: "center", behavior: "smooth" });
+  }, [konfirmSembunyi]);
 
   const umur = umurUntukPerkembangan(profile.tanggalLahir, profile.usiaKehamilanMinggu, now);
   const umurBulan = umur ? umur.umur.bulanTotal : null;
@@ -221,7 +226,7 @@ export const KartuStimulasi: React.FC<Props> = ({ profile, peran, onSimpan, onHa
           )}
 
           {konfirmSembunyi && (
-            <div role="alertdialog" aria-labelledby="tk-sembunyi" className="rounded-control border border-border-strong bg-surface-sunken p-4 space-y-3">
+            <div ref={dialogSembunyi} role="alertdialog" aria-labelledby="tk-sembunyi" className="rounded-control border border-border-strong bg-surface-sunken p-4 space-y-3">
               <p id="tk-sembunyi" className="text-[14px] font-semibold text-text">
                 Sembunyikan aktivitas “{aktivitas.judul}”?
               </p>
