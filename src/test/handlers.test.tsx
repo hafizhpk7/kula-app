@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, waitFor } from "@testing-library/react";
 import React from "react";
 import { useBayiState } from "../modules/bayi/hooks/useBayiState";
 import { STORAGE_KEY } from "../utils/storage";
@@ -8,14 +8,17 @@ import { createSampleProfile } from "../data/seed";
 import { ToastProvider } from "../components/common/Toast";
 import { Profile, ScheduleRow, Insurance } from "../types";
 
-// Mock AuthContext
+// Mock AuthContext. Fungsi HARUS stabil antar render: identitasnya masuk deps useMemo di useBayiRepository,
+// jadi fungsi baru tiap render membuat repository baru tiap render dan hook subscribe tanpa henti (loop sinkron
+// yang membuat tes menggantung).
+const { setCloudSyncStatus, markSynced } = vi.hoisted(() => ({ setCloudSyncStatus: () => {}, markSynced: () => {} }));
 vi.mock("../context/AuthContext", () => ({
   useAuth: () => ({
     user: null,
     loading: false,
     isGuest: true,
-    setCloudSyncStatus: vi.fn(),
-    markSynced: vi.fn()
+    setCloudSyncStatus,
+    markSynced
   })
 }));
 
@@ -108,9 +111,15 @@ describe("3B: State Handlers H1-H13 (useBayiState)", () => {
       insurance: emptyInsurance
     };
 
+    // Satu act per handler: tiap handler membaca appState dari render, jadi beberapa panggilan dalam satu tick
+    // saling menimpa (perilaku hook yang sengaja tidak diubah di sini).
     act(() => {
       result.current.addProfile(newP);
+    });
+    act(() => {
       result.current.selectProfile(initialId);
+    });
+    act(() => {
       result.current.deleteProfile(initialId);
     });
 
@@ -252,7 +261,7 @@ describe("3B: State Handlers H1-H13 (useBayiState)", () => {
     expect(result.current.paymentMode).toBe("FULL_PRIVATE");
   });
 
-  it("H13 clearAllBabyData clears storage and resets to initial state", () => {
+  it("H13 clearAllBabyData clears storage and resets to initial state", async () => {
     const navigateMock = vi.fn();
     const { result } = renderHook(() => useBayiState(navigateMock), { wrapper });
 
@@ -260,7 +269,8 @@ describe("3B: State Handlers H1-H13 (useBayiState)", () => {
       result.current.clearAllBabyData();
     });
 
+    // clearAllBabyData asinkron (repository.clearAllData().then(...)): tunggu navigasi.
+    await waitFor(() => expect(navigateMock).toHaveBeenCalled());
     expect(result.current.appState.profiles.length).toBe(1);
-    expect(navigateMock).toHaveBeenCalled();
   });
 });
