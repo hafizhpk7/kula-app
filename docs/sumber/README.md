@@ -8,14 +8,29 @@ Disusun November 2026 untuk Fase 2, 3, dan 5 di `kula-5-fitur-tumbuh-kembang.md`
 2. Dokumen yang belum ada diunduh lewat tautan di bagian 1, atau pakai `unduh-sumber.sh` (opsional; file yang sudah ada dilewati dan dicatat di `MANIFEST.md`).
 3. Claude Code memetakan tiap file ke ID sumber di bawah berdasarkan judul di halaman pertama, lalu menulis `MANIFEST.md` di Fase 0.
 
-### Status file di repo (diisi dari tangkapan layar folder `docs/sumber`)
+### Inventaris file di repo (dari tangkapan layar folder `docs/sumber`, 20 November 2026)
 
-| ID | File yang sudah ada | Catatan |
-|---|---|---|
-| S2 | `BUKU-PEDOMAN-SDIDTK-revisi-23082022.pdf` (13 MB) | Nama file menyebut 23/08/2022, mirror yang gua temukan bertanggal 28/03/2022. Catat dari mana file ini diunduh dan cek tanggal revisi di dalam dokumen |
-| S4 | `Buku_KIA_2024.pdf` (17 MB) | Tautan sumbernya dulu berasal dari daftar pustaka, jadi tanggal terbit dicek di Fase 0 |
-| S5b | `Buku_KIA_bayi_kecil_(2022-2023).pdf` (20 MB) | Mirror Poltekkes Malang, memuat aturan usia koreksi |
-| S6, S7, S8 | sudah diunduh (nama file bebas) | Permenkes 2/2020, tabel WHO, dan CDC. Fase 0 memetakan dan mencatatnya di `MANIFEST.md` |
+| ID | File | Ukuran | Catatan |
+|---|---|---|---|
+| S1 | `Buku Bagan SDIDTK 2022.pdf` | 20,7 MB | Buku Bagan SDIDTK-MTBS (formulir KPSP ringkas, tahapan, stimulasi, tanda bahaya) |
+| S2 | `BUKU-PEDOMAN-SDIDTK-revisi-23082022.pdf` | 13,3 MB | Pedoman lengkap. Nama file menyebut 23/08/2022, mirror lain bertanggal 28/03/2022: cek tanggal di dalam dokumen |
+| S4 | `Buku_KIA_2024.pdf` | 17,4 MB | Cek tahun terbit di halaman depan |
+| S5b | `Buku_KIA_bayi_kecil_(2022-2023).pdf` | 20,7 MB | Aturan usia koreksi |
+| S6 | `Permenkes Nomor 2 Tahun 2020.pdf` | 2,4 MB | **Cek memuat Lampiran tabel**, bukan hanya pasal |
+| S7 | 28 file `.xlsx` WHO + `instructions-en.pdf` | 11–200 KB per Excel | Lihat rincian di bawah |
+| S8 | `cdc-milestone-checklists-ltsae-english-508.pdf`, `Milestone-Moments-Booklet21_Eng_Sng_FNL-508-1.pdf` | 7,4 MB dan 6,8 MB | Pembanding saja |
+
+Rincian Excel WHO (semuanya z-score; laki-laki dan perempuan; versi "expanded" untuk kartu kesehatan):
+
+| Indikator | File |
+|---|---|
+| Berat/umur (`wfa`) | 0–13 minggu, 0–5 tahun, expanded (6 file) |
+| Panjang-tinggi/umur (`lhfa`) | 0–13 minggu, 0–2 tahun, 2–5 tahun, expanded (8 file) |
+| Lingkar kepala/umur (`hcfa`) | 0–13 (minggu), 0–5 tahun, expanded (6 file) |
+| Berat/panjang (`wfl`, 0–2 tahun) | z-score dan expanded (4 file) |
+| Berat/tinggi (`wfh`, 2–5 tahun) | z-score dan expanded (4 file) |
+
+Tidak ada di repo (semuanya opsional): Petunjuk Teknis Buku KIA Khusus Bayi Kecil, Buku SDIDTK 2016 (pembanding), WHO motor milestones, tabel IMT/umur.
 
 ## Batas dokumen ini (penting)
 
@@ -121,7 +136,7 @@ Disusun November 2026 untuk Fase 2, 3, dan 5 di `kula-5-fitur-tumbuh-kembang.md`
 ## 6. Yang belum ada
 
 - Asal dan tanggal revisi salinan SDIDTK yang sudah ada di repo (nama file 23/08/2022 vs mirror 28/03/2022). Dicek Claude Code di Fase 0.
-- Salinan **resmi** Pedoman SDIDTK dari situs Kemenkes belum ketemu.
+- Salinan **resmi** Pedoman SDIDTK dari situs Kemenkes belum ketemu (yang ada di repo berasal dari mirror atau sumber yang tidak tercatat).
 - Sumber untuk aturan jadwal imunisasi pada bayi prematur (butir 12).
 - Isi WHO motor milestones belum dibuka.
 - Ketentuan lisensi tiap penerbit belum diperiksa.

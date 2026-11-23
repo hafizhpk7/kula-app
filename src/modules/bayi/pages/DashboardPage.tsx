@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useBayi } from "../context/BayiContext";
 import { DashboardTab } from "../components/DashboardTab";
+import { FEATURES } from "../../../config/features";
+import { KartuKunjunganBerikutnya } from "../tumbuhkembang/components/KartuKunjunganBerikutnya";
 
 export const DashboardPage: React.FC = () => {
   const { activeProfile, paymentMode, quickMarkGiven, isReadOnly } = useBayi();
@@ -15,6 +17,11 @@ export const DashboardPage: React.FC = () => {
       profile={activeProfile}
       paymentMode={paymentMode}
       readOnly={isReadOnly}
+      kartuKunjungan={
+        FEATURES.tumbuhKembang ? (
+          <KartuKunjunganBerikutnya profile={activeProfile} onBuka={() => navigate("/bayi/kunjungan")} />
+        ) : undefined
+      }
       onOpenVaccineDetail={(ref) => setSelectedVaccineRef(ref)}
       onNavigateToTab={(tab) => {
         if (tab === "jadwal") navigate("/bayi/jadwal");
