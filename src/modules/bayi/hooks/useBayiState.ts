@@ -4,10 +4,9 @@ import { AppState, Insurance, PaymentMode, Profile, Record, ScheduleRow } from "
 import { getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../components/common/Toast";
-import { todayLocal } from "../../keuangan/utils/dates";
 import * as transitions from "../state/transitions";
 import { useBayiRepository } from "../repository/useBayiRepository";
-import { formatIndonesianDate } from "../../../utils/dates";
+import { formatIndonesianDate, todayLocal } from "../../../utils/dates";
 import { rayakan } from "../../../components/common/Perayaan";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {

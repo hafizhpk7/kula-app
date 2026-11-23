@@ -235,7 +235,9 @@ describe("C2: calc.ts Characterization Tests", () => {
 describe("C3: dates.ts Characterization Tests", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-10-08T00:00:00.000Z"));
+    // Siang hari LOKAL (bukan instan UTC): kode memakai tanggal kalender lokal, jadi 00:00 UTC jatuh pada
+    // 7 Oktober di zona di belakang UTC dan tes bergantung pada zona waktu mesin.
+    vi.setSystemTime(new Date(2026, 9, 8, 12, 0, 0));
   });
 
   afterEach(() => {
@@ -244,7 +246,9 @@ describe("C3: dates.ts Characterization Tests", () => {
 
   it("calculateDueDate and formatIndonesianDate", () => {
     const dueDate = calculateDueDate("2025-01-01", 6);
-    expect(dueDate.toISOString().split("T")[0]).toBe("2025-07-01");
+    // Tanggal kalender LOKAL: parseISO("2025-01-01") adalah tengah malam lokal, jadi toISOString() (UTC) bergeser
+    // sehari di zona di depan UTC (mis. WIB) dan tes bergantung pada zona waktu mesin.
+    expect(`${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, "0")}-${String(dueDate.getDate()).padStart(2, "0")}`).toBe("2025-07-01");
     expect(formatIndonesianDate(dueDate)).toBe("1 Jul 2025");
     expect(formatFullIndonesianDate(dueDate)).toBe("1 Juli 2025");
   });
