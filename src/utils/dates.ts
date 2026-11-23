@@ -13,6 +13,21 @@ export function formatIndonesianDate(date: Date | string | undefined | null, for
   }
 }
 
+/**
+ * Tanggal hari ini (yyyy-MM-dd) di zona Asia/Jakarta, supaya tidak bergeser karena zona waktu perangkat atau UTC.
+ * Ada di utils bersama (bukan di modul keuangan) karena dipakai juga oleh modul Bayi; modul keuangan
+ * meneruskannya dari `keuangan/utils/dates`.
+ */
+export function todayLocal(now = new Date()): string {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+  return formatter.format(now);
+}
+
 export function formatFullIndonesianDate(date: Date | string | undefined | null): string {
   return formatIndonesianDate(date, "d MMMM yyyy");
 }

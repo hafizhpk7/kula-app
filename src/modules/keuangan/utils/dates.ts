@@ -1,3 +1,5 @@
+import { todayLocal } from "../../../utils/dates";
+
 const MONTH_NAMES_INDONESIAN = [
   "Januari", "Februari", "Maret", "April", "Mei", "Juni",
   "Juli", "Agustus", "September", "Oktober", "November", "Desember"
@@ -12,16 +14,8 @@ const WEEKDAY_NAMES_INDONESIAN = [
   "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
 ];
 
-export function todayLocal(now = new Date()): string {
-  // Always format in Asia/Jakarta timezone to avoid local vs UTC drift
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jakarta",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  });
-  return formatter.format(now);
-}
+// Implementasi ada di utils bersama (juga dipakai modul Bayi); diteruskan agar import lama tetap bekerja.
+export { todayLocal };
 
 export function isValidDateString(s: string): boolean {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;

@@ -15,6 +15,12 @@ Object.defineProperty(window, "matchMedia", {
   }))
 });
 
+// jsdom tidak punya scrollIntoView. BottomSheet memanggilnya 250 ms setelah kolom difokuskan; tanpa stub, timer itu
+// melempar galat tak tertangani setelah tes selesai dan vitest keluar dengan kode 1 walau semua tes lulus.
+if (typeof Element !== "undefined" && !Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = vi.fn();
+}
+
 vi.mock("virtual:pwa-register/react", () => ({
   useRegisterSW: () => ({
     needRefresh: [false, vi.fn()],
