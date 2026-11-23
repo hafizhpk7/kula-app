@@ -1,0 +1,101 @@
+{
+  "id": "kpsp-06",
+  "umurBulan": 6,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    136
+  ],
+  "halamanCetak": [
+    123
+  ],
+  "perluReview": true,
+  "alat": [
+    "Gulungan wool merah",
+    "Kismis, kacang, atau uang logam",
+    "Pensil",
+    "Mainan"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-06-01",
+      "no": 1,
+      "teks": "Bayi diposisikan terlentang. Ambil gulungan wool merah, letakkan di atas wajah di depan mata bayi. Gerakkan wool dari samping kiri ke kanan kepala. Apakah ia dapat mengikuti gerakan Anda dengan menggerakkan kepala sepenuhnya dari satu ke sisi yang lain?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-02",
+      "no": 2,
+      "teks": "Pada posisi bayi terlentang, pegang kedua tangannya lalu tarik perlahan ke posisi duduk. Dapatkah bayi mempertahankan lehernya secara kaku seperti pada gambar? Jawab ‘Tidak’ bila kepala bayi jatuh kembali seperti gambar.",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-06-03",
+      "no": 3,
+      "teks": "Ketika bayi tengkurap di alas yang datar, apakah ia dapat mengangkat dada dengan kedua lengannya sebagai penyangga seperti pada gambar?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-06-04",
+      "no": 4,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Dapatkah bayi mempertahankan posisi kepala dalam keadaan tegak dan stabil? Jawab ‘Tidak’ bila kepala bayi cenderung jatuh ke kanan, kiri, atau ke dadanya.",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-05",
+      "no": 5,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Sentuhkan pensil di punggung tangan atau ujung jari bayi (jangan meletakkan di atas telapak tangan bayi). Apakah bayi dapat menggenggam pensil itu selama beberapa detik?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-06",
+      "no": 6,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Dapatkah bayi mengarahkan matanya pada benda kecil sebesar kacang, kismis atau uang logam? Jawab ‘Tidak’ jika ia tidak dapat mengarahkan matanya.",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-07",
+      "no": 7,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Dapatkah bayi meraih mainan yang diletakkan agak jauh namun masih berada dalam jangkauan tangannya?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, pernahkah bayi berbalik paling sedikit 2 kali, dari terlentang ke tengkurap atau sebaliknya?",
+      "domain": "geraKasar",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-09",
+      "no": 9,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, pernahkah bayi mengeluarkan suara gembira bernada tinggi atau memekik tetapi bukan menangis?",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-06-10",
+      "no": 10,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, pernahkah orang tua atau pengasuh melihat bayi tersenyum ketika melihat mainan yang lucu, gambar, atau binatang peliharaan pada saat ia bermain sendiri?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": true
+    }
+  ]
+}

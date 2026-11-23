@@ -1,0 +1,103 @@
+{
+  "id": "kpsp-36",
+  "umurBulan": 36,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    145,
+    146
+  ],
+  "halamanCetak": [
+    132,
+    133
+  ],
+  "perluReview": true,
+  "alat": [
+    "6 kubus",
+    "Kertas",
+    "Bola tenis",
+    "Pensil"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-36-01",
+      "no": 1,
+      "teks": "Beri kubus di depan anak. Dapatkah anak menyusun 6 buah kubus satu persatu di atas kubus yang lain tanpa menjatuhkan kubus tersebut?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-02",
+      "no": 2,
+      "teks": "Buat garis lurus ke bawah sepanjang sekurang-kurangnya 2,5 cm. Minta anak untuk menggambar garis lain di samping garis ini. Jawab ‘Ya’ bila ia menggambar garis seperti ini: Jawab ‘Tidak’ bila ia menggambar garis seperti ini:",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-03",
+      "no": 3,
+      "teks": "Tanpa bimbingan, petunjuk, atau bantuan Anda, dapatkah anak menyebut 4 gambar di antara gambar-gambar di bawah ini dengan benar? Menyebut dengan suara binatang tidak ikut dinilai.",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-36-04",
+      "no": 4,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat memahami perintah yang terdiri dari 2 langkah, misalnya “Tolong ambil bola dan berikan kepada Ayah”?",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-05",
+      "no": 5,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah sebagian dari bicara anak dapat dipahami oleh orang asing (yang tidak bertemu setiap hari)?",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-06",
+      "no": 6,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak merangkai kalimat sederhana yang terdiri dari minimal 3 kata, misalnya “Aku makan roti” atau ”Ibu minta susu”?",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-07",
+      "no": 7,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak menggosok gigi dengan bantuan?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak mengenakan baju, celana, atau sepatu sendiri (tidak termasuk mengancing dan menali)?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-09",
+      "no": 9,
+      "teks": "Berikan kepada anak sebuah bola tenis. Minta ia untuk melemparkan ke arah dada Anda. Dapatkah anak melempar bola dengan lurus ke arah perut atau dada Anda dari jarak 1,5 meter?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-36-10",
+      "no": 10,
+      "teks": "Letakkan selembar kertas seukuran buku ini di atas lantai. Apakah anak dapat melompati bagian lebar kertas dengan mengangkat kedua kakinya secara bersamaan tanpa didahului lari?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

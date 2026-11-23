@@ -65,6 +65,40 @@ export interface Insurance {
   checklist: boolean[]; /* 4 item */
 }
 
+/** Hasil KPSP sebagai enum internal. Teks yang tampil di UI berbeda dari istilah sumber (lihat tumbuhkembang/logic/istilah.ts). */
+export type KpspHasil = "sesuai" | "meragukan" | "kemungkinanPenyimpangan";
+export type MilestoneStatus = "sudah" | "belum" | "belumYakin";
+
+export interface KpspSkrining {
+  id: string;
+  /** yyyy-MM-dd */
+  tanggal: string;
+  /** Formulir yang dipakai (3 sampai 72). */
+  umurFormulirBulan: number;
+  /** Apakah umur koreksi dipakai saat memilih formulir. */
+  dikoreksi: boolean;
+  /** Urut butir formulir: true = Ya, false = Tidak, null = belum dijawab. */
+  jawaban: (boolean | null)[];
+  jumlahYa: number;
+  hasil: KpspHasil;
+  /** Id versi konten yang dipakai, supaya riwayat tetap bisa ditafsirkan saat konten diperbarui. */
+  versiKonten: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
+export interface MilestoneCatatan {
+  /** Id butir konten, stabil antar versi. */
+  butirId: string;
+  status: MilestoneStatus;
+  /** yyyy-MM-dd, kapan pertama terlihat. */
+  tanggal?: string;
+  updatedAt: string;
+  updatedBy?: string;
+}
+
 export interface Profile {
   id: string;
   panggilan: string;
@@ -73,6 +107,10 @@ export interface Profile {
   schedule: ScheduleRow[];
   records: VaccineRecord[];
   insurance: Insurance;
+  /** Usia kehamilan saat lahir (minggu, bilangan bulat). Hanya relevan bila lahir prematur; untuk usia koreksi. */
+  usiaKehamilanMinggu?: number;
+  kpsp?: KpspSkrining[];
+  milestone?: MilestoneCatatan[];
 }
 
 export type PaymentMode = "HYBRID" | "FULL_PRIVATE" | "FULL_BPJS";

@@ -1,0 +1,103 @@
+{
+  "id": "kpsp-66",
+  "umurBulan": 66,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    155,
+    156
+  ],
+  "halamanCetak": [
+    142,
+    143
+  ],
+  "perluReview": true,
+  "alat": [
+    "Bola tenis atau bola kasti",
+    "Pensil",
+    "Kertas",
+    "8 kubus"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-66-01",
+      "no": 1,
+      "teks": "Menggambar + Jangan membantu anak dan jangan memberitahu nama gambar ini. Minta anak untuk menggambar seperti contoh di kertas kosong yang tersedia. Berikan 3 kali kesempatan. Apakah anak dapat menggambar + seperti contoh di bawah?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-66-02",
+      "no": 2,
+      "teks": "Menggambar kotak dengan dicontohkan Berikan kepada anak pensil dan kertas. Tunjukkan kepada anak contoh gambar di bawah. Anda bisa mencontohkan cara membuat kotak. Dapatkah anak menggambar kotak seperti contoh di bawah?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-66-03",
+      "no": 3,
+      "teks": "Menggambar orang dengan sedikitnya 6 bagian tubuh Berikan anak pensil dan kertas lalu katakan kepada anak “Buatlah gambar orang” (anak laki-laki, anak perempuan, papa, mama, dll). Jangan memberi perintah lebih dari itu. Jangan bertanya atau mengingatkan anak bila ada bagian yang belum tergambar. Dalam memberi nilai, hitunglah berapa bagian tubuh yang tergambar. Untuk bagian tubuh yang berpasangan seperti mata, telinga, lengan dan kaki, setiap pasang dinilai 1 bagian. Pastikan anak telah menyelesaikan gambar sebelum memberikan penilaian. Dapatkah anak menggambar orang dengan sedikitnya 6 bagian tubuh? Jawaban ‘Ya’: Jawaban ‘Tidak’:",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-66-04",
+      "no": 4,
+      "teks": "Mengetahui konsep angka 5 Letakkan 8 kubus di atas meja dan selembar kertas di samping kubus. Katakan kepada anak “Ambil 5 kubus dan letakkan di atas kertas”. Setelah anak selesai meletakkan, tanyakan “Ada berapa banyak kubus di atas kertas?” Dapatkah anak melakukannya?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-66-05",
+      "no": 5,
+      "teks": "Memahami/mengartikan 5 kata Pastikan anak mendengar pemeriksa lalu katakan “Saya akan mengucapkan 1 kata dan saya ingin kamu menyebutkan apa arti kata itu”. Setiap kata dapat diberikan sebanyak 3 kali bila perlu. Pemeriksa dapat mengatakan “Beritahu saya sesuatu tentang itu” tetapi jangan tanya apa kegunaannya. Tanyalah setiap kata dalam satu waktu. “Apakah bola itu?” “Apakah sungai itu?” “Apakah meja itu?” “Apakah mobil/motor itu?” “Apakah rumah itu?” “Apakah pisang itu?” “Apakah pintu itu?” “Apakah atap itu?” Anak dikatakan dapat mengartikan jika anak mengartikan yang sesuai dalam istilah: 1) kegunaan, 2) bentuk, 3) terbuat dari apa, 4) kategori umum. Dapatkah anak mengartikan 5 kata yang sesuai?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-66-06",
+      "no": 6,
+      "teks": "Mengetahui konsep analogi berlawanan Minta anak untuk melengkapi kalimat di bawah ini, jangan membantu kecuali mengulang pertanyaan: “Jika kuda besar, maka tikus...?” Jawaban: kecil “Jika api panas, maka es...?” Jawaban: dingin “Jika ibu seorang wanita, maka ayah seorang...” Jawaban: pria, laki- laki Apakah anak menjawab ketiga pertanyaan dengan benar?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-66-07",
+      "no": 7,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak bereaksi dengan tenang dan tidak rewel (tanpa menangis atau menggelayut) pada saat ditinggal oleh orang tua atau pengasuh?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-66-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak sepenuhnya berpakaian sendiri tanpa dibantu?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-66-09",
+      "no": 9,
+      "teks": "Minta anak untuk berdiri 1 kaki tanpa berpegangan. Jika perlu tunjukkan caranya dan beri anak kesempatan sebanyak 3 kali. Dapatkah ia mempertahankan keseimbangan dalam waktu 6 detik atau lebih?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-66-10",
+      "no": 10,
+      "teks": "Apakah anak dapat menangkap bola kecil sebesar bola tenis atau bola kasti hanya dengan menggunakan kedua tangannya?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

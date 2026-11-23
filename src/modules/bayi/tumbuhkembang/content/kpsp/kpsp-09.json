@@ -1,0 +1,103 @@
+{
+  "id": "kpsp-09",
+  "umurBulan": 9,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    137,
+    138
+  ],
+  "halamanCetak": [
+    124,
+    125
+  ],
+  "perluReview": true,
+  "alat": [
+    "Gulungan wool merah",
+    "Kismis, kacang-kacangan, potongan biskuit atau kue kering",
+    "2 kubus",
+    "Mainan"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-09-01",
+      "no": 1,
+      "teks": "Bayi dipangku orang tua atau pengasuh, Taruh kismis di atas meja. Dapatkah bayi memungut dengan tangannya benda−benda kecil seperti kismis, kacang-kacangan, potongan biskuit dengan gerakan miring atau menggerapai seperti gambar?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-09-02",
+      "no": 2,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Taruh 2 kubus di atas meja, buat agar bayi dapat memungut dan memegang kubus pada masing-masing tangannya. Dapatkah ia melakukannya?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-03",
+      "no": 3,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Tarik perhatian bayi dengan memperlihatkan gulungan wool merah, kemudian jatuhkan ke lantai. Apakah bayi mencoba mencari benda tersebut, misalnya mencari di bawah meja atau di belakang kursi?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-04",
+      "no": 4,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Letakkan suatu mainan yang diinginkan bayi di luar jangkauannya, apakah ia mencoba mendapatkan mainan dengan mengulurkan lengan atau badannya?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-05",
+      "no": 5,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah bayi menengok ke belakang seperti mendengar kedatangan seseorang pada saat bayi sedang bermain sendiri dan seseorang diam-diam datang berdiri di belakangnya? Suara keras tidak ikut dihitung. Jawab ‘Ya’ hanya jika melihat reaksinya terhadap suara yang perlahan atau bisikan.",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-06",
+      "no": 6,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat mengatakan 2 suku kata yang sama, misalnya: “Ma-ma”, “Da-da” atau “Pa-pa”? Jawab ‘Ya’ bila ia dapat mengeluarkan salah satu suara tersebut.",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-07",
+      "no": 7,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah bayi dapat makan kue kering sendiri?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh apakah pernah melihat bayi memindahkan mainan atau kue kering dari satu tangan ke tangan yang lain? Benda−benda panjang seperti sendok atau kerincingan bertangkai tidak ikut dinilai.",
+      "domain": "geraHalus",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-09",
+      "no": 9,
+      "teks": "Tanpa disangga oleh bantal, kursi atau dinding, dapatkah bayi duduk sendiri selama 60 detik?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-09-10",
+      "no": 10,
+      "teks": "Jika Anda mengangkat bayi melalui ketiaknya ke posisi berdiri, dapatkah ia menyangga sebagian berat badan dengan kedua kakinya? Jawab ‘Ya’ bila ia mencoba berdiri dan sebagian berat badan tertumpu pada kedua kakinya.",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

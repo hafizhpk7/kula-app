@@ -1,0 +1,101 @@
+{
+  "id": "kpsp-24",
+  "umurBulan": 24,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    143
+  ],
+  "halamanCetak": [
+    130
+  ],
+  "perluReview": true,
+  "alat": [
+    "4 kubus",
+    "Pensil",
+    "Bola tenis",
+    "Kertas"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-24-01",
+      "no": 1,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Berikan anak sebuah pensil dan kertas. Apakah anak dapat mencoret-coret kertas tanpa bantuan atau petunjuk?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-02",
+      "no": 2,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Minta anak untuk menyusun kubus. Apakah anak dapat menyusun 4 kubus?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-03",
+      "no": 3,
+      "teks": "Bayi dipangku orang tua atau pengasuh. Tanpa bimbingan, petunjuk, atau bantuan Anda, dapatkah anak menunjuk paling sedikit 2 bagian tubuhnya dengan benar (rambut, mata, hidung, mulut, atau bagian badan yang lain)?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-04",
+      "no": 4,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak mampu menggabungkan 2 kata berbeda ketika berbicara, misalnya “Minum susu” atau “Main bola”? “Terima kasih” dan “Da-dah” tidak termasuk.",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-05",
+      "no": 5,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat melepas pakaiannya seperti baju, rok, atau celana?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-06",
+      "no": 6,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat makan dengan menggunakan sendok sendiri tanpa banyak yang tumpah?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-07",
+      "no": 7,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat berlari tanpa terjatuh?",
+      "domain": "geraKasar",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat berjalan naik tangga sendiri? Jawab ‘Ya’ jika ia naik tangga dengan posisi tegak atau berpegangan pada dinding atau pegangan tangga. Jawab ‘Tidak’ jika ia naik tangga dengan merangkak, orang tua tidak memperbolehkan anak naik tangga, atau anak harus berpegangan pada seseorang.",
+      "domain": "geraKasar",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-09",
+      "no": 9,
+      "teks": "Letakkan bola tenis di depan kaki anak. Apakah ia dapat menendang ke depan tanpa berpegangan pada apapun?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-24-10",
+      "no": 10,
+      "teks": "Ikuti perintah dengan seksama. Jangan memberi isyarat dengan telunjuk atau mata pada saat memberikan perintah berikut ini: “Ambil kertas” “Ambil pensil” “Tutup pintu” Dapatkah anak melakukan perintah tersebut?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "id": "kpsp-30",
+  "umurBulan": 30,
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "halamanPdf": [
+    144
+  ],
+  "halamanCetak": [
+    131
+  ],
+  "perluReview": true,
+  "alat": [
+    "4 kubus",
+    "Kertas",
+    "Bola tenis",
+    "Pensil"
+  ],
+  "butir": [
+    {
+      "id": "kpsp-30-01",
+      "no": 1,
+      "teks": "Beri kubus di depan anak. Dapatkah anak menyusun 4 buah kubus menyerupai kereta api dengan cerobong asap (dicontohkan)?",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-02",
+      "no": 2,
+      "teks": "Buat garis lurus ke bawah sepanjang sekurang-kurangnya 2,5 cm. Minta anak untuk menggambar garis lain di samping garis ini. Jawab ‘Ya’ bila ia menggambar garis seperti ini: Jawab ‘Tidak’ bila ia menggambar garis seperti ini:",
+      "domain": "geraHalus",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-03",
+      "no": 3,
+      "teks": "Tanpa bimbingan, petunjuk, atau bantuan Anda, dapatkah anak menyebut 2 gambar di antara gambar-gambar di bawah dengan benar? Menyebut dengan suara binatang tidak ikut dinilai.",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-30-04",
+      "no": 4,
+      "teks": "Tanpa bimbingan, petunjuk, atau bantuan Anda, dapatkah anak menunjuk 4 gambar di antara gambar-gambar di atas ini dengan benar ketika Anda sebutkan namanya?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": true
+    },
+    {
+      "id": "kpsp-30-05",
+      "no": 5,
+      "teks": "Tanpa bimbingan, petunjuk, atau bantuan Anda, dapatkah anak menunjuk paling sedikit 6 bagian tubuhnya?",
+      "domain": "bicaraBahasa",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-06",
+      "no": 6,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, apakah anak dapat memahami perintah yang terdiri dari 2 langkah, misalnya “Tolong ambil bola dan berikan kepada Ayah”?",
+      "domain": "bicaraBahasa",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-07",
+      "no": 7,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak berpakaian sendiri seperti baju, rok, celana (topi dan kaos kaki tidak ikut dinilai)?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-08",
+      "no": 8,
+      "teks": "Tanyakan kepada orang tua atau pengasuh, dapatkah anak bermain peran, misalnya menyuapi boneka?",
+      "domain": "sosialisasiKemandirian",
+      "jenis": "tanya",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-09",
+      "no": 9,
+      "teks": "Letakkan bola tenis di depan kaki anak. Dapatkah anak menendang ke depan tanpa berpegangan pada apapun? Mendorong bola tidak ikut dinilai.",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    },
+    {
+      "id": "kpsp-30-10",
+      "no": 10,
+      "teks": "Minta anak untuk melompat atau mengangkat kedua kakinya pada saat bersamaan. Dapatkah ia melakukannya?",
+      "domain": "geraKasar",
+      "jenis": "amati",
+      "perluGambar": false
+    }
+  ]
+}

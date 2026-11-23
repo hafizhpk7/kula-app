@@ -77,14 +77,42 @@ describe("KunjunganView", () => {
     expect(within(daftar).getByText("15 Juli 2026")).toBeInTheDocument();
   });
 
-  it("slot KPSP hanya di titik umur KPSP, slot Timbang & ukur di semua, keduanya 'Segera hadir'", () => {
+  it("slot KPSP berupa tautan hanya di titik rutin, slot Timbang & ukur di semua dan masih 'Segera hadir'", () => {
     tampil();
-    expect(screen.getAllByText("Skrining KPSP")).toHaveLength(2); // 6 dan 12 bulan
+    // ROWS: 0, 2, 6, 12 bulan. Hanya 6 bulan yang termasuk jadwal rutin KPSP (K1).
+    const kpsp = screen.getAllByRole("link", { name: /Skrining KPSP/ });
+    expect(kpsp).toHaveLength(1);
+    expect(kpsp[0]).toHaveAttribute("href", "/bayi/tumbuh-kembang?kpsp=6");
+    expect(kpsp[0]).toHaveTextContent("Mulai");
     expect(screen.getAllByText("Timbang & ukur")).toHaveLength(4);
-    for (const slot of screen.getAllByText("Skrining KPSP")) {
+    for (const slot of screen.getAllByText("Timbang & ukur")) {
       expect(slot.closest("li")).toHaveAttribute("aria-disabled", "true");
     }
-    expect(screen.getAllByText("Segera hadir")).toHaveLength(6);
+    expect(screen.getAllByText("Segera hadir")).toHaveLength(4);
+  });
+
+  it("slot KPSP menampilkan hasil terakhir untuk titik umur itu", () => {
+    tampil(
+      profil({
+        kpsp: [
+          {
+            id: "k1",
+            tanggal: "2026-06-10",
+            umurFormulirBulan: 6,
+            dikoreksi: false,
+            jawaban: [true, true, true, true, true, true, true, true, true, true],
+            jumlahYa: 10,
+            hasil: "sesuai",
+            versiKonten: "pedoman-sdidtk-2022-08",
+            createdAt: "2026-06-10T00:00:00.000Z",
+            updatedAt: "2026-06-10T00:00:00.000Z"
+          }
+        ]
+      })
+    );
+    const slot = screen.getByRole("link", { name: /Skrining KPSP/ });
+    expect(slot).toHaveTextContent("Sesuai tahap perkembangan");
+    expect(slot).toHaveTextContent("10 Jun 2026");
   });
 
   it("status dinyatakan dengan teks, tanpa kata menyalahkan", () => {

@@ -8,6 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
+    "validasi:konten": "node scripts/validasi-konten.mjs",
+    "prebuild": "node scripts/validasi-konten.mjs",
     "test": "vitest run",
     "test:rules": "npx firebase-tools emulators:exec --only firestore --project demo-growbang \"vitest run --config vitest.rules.config.ts\"",
     "lint": "tsc --noEmit"

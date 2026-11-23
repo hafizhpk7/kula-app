@@ -33,6 +33,8 @@ const ACCENT: Record<ModuleAccent, { active: string; border: string; pill: strin
 export interface ShellTab {
   path: string;
   label: string;
+  /** Label pendek untuk nav bawah di HP; default = label */
+  shortLabel?: string;
   icon: React.ElementType;
 }
 
@@ -208,7 +210,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 }
               >
                 <Icon className="w-5 h-5 mb-0.5" />
-                <span>{t.label}</span>
+                <span>{t.shortLabel ?? t.label}</span>
               </NavLink>
             );
           })}

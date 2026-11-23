@@ -4,7 +4,9 @@ Dibuat di Fase 0 (20 November 2026). Hanya nama, ukuran, SHA-256, dan metadata y
 
 ## Batas inventaris ini
 
-- Alat pembaca PDF (`pdftoppm`, `pdftotext`, `pdfinfo`) **tidak terpasang** dan tidak dipasang (aturan: jangan install tanpa tanya). Akibatnya halaman 1–3 tiap PDF **belum dibaca**: judul di halaman depan, tahun revisi di dalam dokumen, dan ada tidaknya teks yang bisa diseleksi **[tidak ketahuan]** untuk semua PDF. Indeks Spotlight juga kosong untuk isi teks.
+- **Diperbarui di Fase 2 (20 November 2026):** PDF dibaca dengan PDFKit bawaan macOS lewat `scripts/pdfteks.swift` (perlu Swift dari Xcode Command Line Tools, tanpa memasang apa pun). Label **[baca]** di bawah berarti dibaca dari teks halaman PDF dengan alat itu. Nomor halaman yang ditulis di dokumen ini adalah **nomor halaman PDF** (indeks berkas), bukan nomor cetak di kaki halaman.
+- Semua 8 PDF memuat **teks yang bisa diseleksi** (bukan hasil scan) [baca]: tiap PDF hanya 0 atau 1 halaman dengan kurang dari 20 huruf (halaman kosong atau gambar). Jadi transkripsi dari teks lebih andal, tetapi tetap harus ditinjau (urutan kolom tabel dan formulir bisa tercampur).
+- ~~Alat pembaca PDF belum terpasang~~: tidak lagi menjadi hambatan.
 - Tanggal "dibuat" dari `mdls` (20 Nov 2026) adalah tanggal salin ke laptop ini, bukan tanggal dokumen. Jangan dipakai sebagai tahun revisi.
 - File ini bukan sumber konten aplikasi. Konten tetap ditranskripsi dari dokumen asli dengan nomor halaman.
 
@@ -23,22 +25,38 @@ Dibuat di Fase 0 (20 November 2026). Hanya nama, ukuran, SHA-256, dan metadata y
 
 Judul metadata yang terbaca: `Buku_KIA_2024.pdf` = "KIA 2024 Book 1.7", CDC = "Milestone Checklists" dan "Milestone Moments". Sisanya tanpa judul di metadata.
 
-## Peringatan 1: dua file identik
+## Peringatan 1 (TERVERIFIKASI): dua file identik, Buku Bagan SDIDTK tidak ada
 
-`Buku Bagan SDIDTK 2022.pdf` dan `Buku_KIA_bayi_kecil_(2022-2023).pdf` punya ukuran dan SHA-256 yang **sama persis**. Artinya satu dokumen tersalin dua kali dengan dua nama, dan **salah satu dokumen yang diharapkan tidak ada di repo**.
+`Buku Bagan SDIDTK 2022.pdf` dan `Buku_KIA_bayi_kecil_(2022-2023).pdf` punya ukuran dan SHA-256 yang **sama persis**.
 
-- **[dugaan]** File itu lebih mungkin Buku KIA Khusus Bayi Kecil (S5b) daripada Buku Bagan SDIDTK 2022 (S1): tanggal pembuatan di XMP file adalah 16 September 2020, lebih tua dari revisi SDIDTK 28/03/2022 yang disebut di README. Ini bukan bukti. Perlu Anda buka halaman depannya.
-- Kalau dugaan benar, **Buku Bagan SDIDTK (S1) belum ada**. Dampak: formulir KPSP ringkas di Fase 2 dan sebagian tahapan perkembangan dan stimulasi di Fase 5 hanya bisa bersumber dari Pedoman S2 (303 halaman), dan itu belum diverifikasi memuatnya.
+- **[baca]** Halaman 1–2 file itu: "Buku KIA Khusus Bayi Kecil", "Jakarta: Kementerian Kesehatan dan JICA, 2021". Jadi isinya **Buku KIA Khusus Bayi Kecil (S5b)**, 35 halaman.
+- Akibatnya **Buku Bagan SDIDTK (S1) belum ada di repo**. Nama `Buku Bagan SDIDTK 2022.pdf` menyesatkan, dan sebaiknya file itu diganti dengan Bagan yang benar atau dihapus supaya tidak menyesatkan.
+- **Fase 2 tidak terblokir:** formulir KPSP ada di Pedoman S2 (lihat bawah), jadi S1 tidak wajib untuk KPSP. Yang mungkin hanya ada di S1 (ringkasan tahapan dan tanda bahaya) belum diperiksa.
 
-## Peringatan 2: tanggal revisi SDIDTK
+## Peringatan 2 (TERJAWAB): tanggal revisi Pedoman SDIDTK
 
-Nama file Pedoman menyebut 23/08/2022, README menyebut mirror lain bertanggal 28/03/2022. Tanggal di dalam dokumen **[tidak ketahuan]** (halaman judul belum dibaca). Apakah ini dua revisi berbeda atau satu dokumen belum bisa dijawab. Perlu Anda cek halaman judul atau halaman pengesahan.
+- **[baca]** Kata pengantar Pedoman (halaman PDF 4–6) ditutup "Jakarta, Agustus 2022", Direktur Gizi dan Kesehatan Ibu dan Anak. Daftar kontributor menyebut "Buku Pedoman Pelaksanaan SDIDTK Tahun 2022". Itu **sesuai nama berkas (23/08/2022)**.
+- Teks yang sama menyebut ini hasil revisi buku pedoman sebelumnya. Mirror 28/03/2022 di README adalah dokumen lain yang tidak ada di repo. Daftar isi masih memuat judul "TAHUN 2021" di satu baris (halaman PDF 7). **[dugaan]** itu sisa dari versi sebelumnya, bukan tanggal terbit; tidak dikonfirmasi.
+- Tidak ada konflik tanggal yang harus diputuskan. Acuan utama = Pedoman Agustus 2022.
 
-## Permenkes 2/2020: memuat Lampiran tabel?
+## Pedoman S2: letak bagian yang dibutuhkan Fase 2 [baca]
 
-- 78 halaman [metadata], tanggal pembuatan XMP 21 Januari 2020 [metadata], konsisten dengan peraturan tahun 2020.
-- Ada tidaknya Lampiran tabel antropometri dan halaman tempat tabel z-score berada **[tidak ketahuan]**. Perlu dicek manual: cari daftar lampiran di halaman depan atau halaman terakhir.
-- Hitungan kasar: 78 halaman untuk pasal dan lampiran tabel mungkin cukup, tapi ini tebakan, bukan bukti.
+| Bagian | Halaman PDF (cetak) |
+|---|---|
+| Daftar isi | 7 |
+| Penghitungan umur, penyesuaian prematuritas | 130 (117) |
+| Cara memakai KPSP, interpretasi S/M/P | 130–132 (117–119) |
+| Intervensi per hasil | 131–133 |
+| Algoritme KPSP | 134 (121) |
+| Formulir KPSP 3, 6, 9, 12, 15, 18, 21, 24, 30, 36, 42, 48, 54, 60, 66, 72 bulan | 135–158 (122–145), tiap umur 1–2 halaman |
+
+Formulir ada untuk **ke-16 titik umur**. Menurut teks aturan (halaman 130), KPSP berisi 10 pertanyaan, dan tiap formulir diawali "Alat dan bahan yang dibutuhkan". Jumlah butir tiap formulir dan penandaan domain per butir **belum diperiksa satu per satu**, itu pekerjaan Langkah 3.
+
+## Permenkes 2/2020 (TERJAWAB): Lampiran tabel ada
+
+- 78 halaman. **[baca]** Halaman PDF 9 membuka "LAMPIRAN … STANDAR ANTROPOMETRI ANAK". Halaman 17 dan 30 berisi tabel nilai −3 SD sampai +3 SD per umur (berat/umur, IMT/umur, dst.).
+- Tabel berbentuk **titik potong SD per umur (median dan ±1, 2, 3 SD)**, bukan parameter LMS. Untuk z-score kontinu di Fase 3 tetap perlu Excel WHO (LMS) dan pencocokan ke tabel ini. Indikator lengkap yang ada di lampiran belum dipetakan satu per satu.
+- Pengecualian: ada 1 halaman tanpa teks (kemungkinan sampul atau halaman kosong).
 
 ## Excel WHO (28 file)
 
@@ -90,8 +108,8 @@ Tidak ada tabel IMT/umur (tidak dibutuhkan di rencana Fase 3).
 | Fase | Status | Alasan |
 |---|---|---|
 | 1 Kunjungan + `.ics` | tidak terblokir | tidak butuh sumber di `docs/sumber/` |
-| 2 Milestone + KPSP + usia koreksi | **berisiko** | S1 kemungkinan tidak ada (Peringatan 1). Pedoman S2 belum diverifikasi memuat formulir KPSP. Tanggal revisi belum jelas (Peringatan 2). Tipe PDF (teks atau scan) belum diketahui |
-| 3 Pertumbuhan | **belum bisa dipastikan** | Excel WHO lengkap. Lampiran tabel Permenkes belum dikonfirmasi |
+| 2 Milestone + KPSP + usia koreksi | **tidak terblokir, tapi ada konflik sumber yang butuh keputusan** | Formulir KPSP ada di Pedoman S2 (16 umur). S1 tidak ada tapi tidak wajib. PDF berupa teks. Konflik di `docs/fitur/SUMBER-KONFLIK.md` harus diputuskan sebelum transkripsi dan logika. Sumber **milestone per domain** (bukan KPSP) belum dipetakan |
+| 3 Pertumbuhan | **tidak terblokir** | Excel WHO lengkap. Lampiran tabel Permenkes ada (titik potong SD, bukan LMS) |
 | 4 Jurnal | tidak terblokir | tidak butuh sumber |
 | 5 Stimulasi | **berisiko** | bergantung S1/S2 dan S4 (halaman stimulasi Buku KIA), belum diverifikasi |
 | 6 Animasi | tidak terblokir | tidak butuh sumber |

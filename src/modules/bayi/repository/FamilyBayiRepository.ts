@@ -11,7 +11,7 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
-import { AppState, Insurance, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, Insurance, KpspSkrining, MilestoneCatatan, PaymentMode, Profile, ScheduleRow, VaccineRecord } from "../../../types";
 import { BayiDiffOp, diffAppState } from "../state/diff";
 import { BayiRepository } from "./types";
 
@@ -27,6 +27,7 @@ interface BabyDocData {
   createdBy: string;
   updatedBy: string;
   sourceUid?: string;
+  usiaKehamilanMinggu?: number;
 }
 
 export class FamilyBayiRepository implements BayiRepository {
@@ -62,6 +63,8 @@ export class FamilyBayiRepository implements BayiRepository {
     const babyMetaMap = new Map<string, BabyDocData>();
     const babyScheduleMap = new Map<string, ScheduleRow[]>();
     const babyRecordsMap = new Map<string, Map<string, VaccineRecord>>();
+    const babyKpspMap = new Map<string, Map<string, KpspSkrining>>();
+    const babyMilestoneMap = new Map<string, Map<string, MilestoneCatatan>>();
 
     // User preferences subscription (activeProfileId & paymentMode)
     const userAppDoc = doc(db, "users", this.uid, "appData", "current");
@@ -91,6 +94,8 @@ export class FamilyBayiRepository implements BayiRepository {
         const schedule = babyScheduleMap.get(babyId) || [];
         const recordsMap = babyRecordsMap.get(babyId);
         const records = recordsMap ? Array.from(recordsMap.values()) : [];
+        const kpsp = Array.from(babyKpspMap.get(babyId)?.values() ?? []);
+        const milestone = Array.from(babyMilestoneMap.get(babyId)?.values() ?? []);
 
         assembled.push({
           id: meta.id,
@@ -99,7 +104,11 @@ export class FamilyBayiRepository implements BayiRepository {
           catatan: meta.catatan,
           insurance: meta.insurance || { hasBpjs: false, hasPrivate: false },
           schedule,
-          records
+          records,
+          // Field tumbuh kembang hanya ikut bila ada, supaya bentuk Profile lama tidak berubah.
+          ...(typeof meta.usiaKehamilanMinggu === "number" ? { usiaKehamilanMinggu: meta.usiaKehamilanMinggu } : {}),
+          ...(kpsp.length ? { kpsp } : {}),
+          ...(milestone.length ? { milestone } : {})
         });
       }
 
@@ -165,9 +174,39 @@ export class FamilyBayiRepository implements BayiRepository {
               (err) => onError(err)
             );
 
+            // KPSP dan milestone (tumbuh kembang)
+            const unsubKpsp = onSnapshot(
+              collection(db, this.basePath, "babies", babyId, "kpsp"),
+              (kSnap) => {
+                const kMap = new Map<string, KpspSkrining>();
+                kSnap.docs.forEach((kDoc) => {
+                  const k = kDoc.data() as KpspSkrining;
+                  kMap.set(k.id || kDoc.id, k);
+                });
+                babyKpspMap.set(babyId, kMap);
+                emitIfReady();
+              },
+              (err) => onError(err)
+            );
+            const unsubMilestone = onSnapshot(
+              collection(db, this.basePath, "babies", babyId, "milestone"),
+              (mSnap) => {
+                const mMap = new Map<string, MilestoneCatatan>();
+                mSnap.docs.forEach((mDoc) => {
+                  const m = mDoc.data() as MilestoneCatatan;
+                  mMap.set(m.butirId || mDoc.id, m);
+                });
+                babyMilestoneMap.set(babyId, mMap);
+                emitIfReady();
+              },
+              (err) => onError(err)
+            );
+
             subCleanups.set(babyId, () => {
               unsubSched();
               unsubRecs();
+              unsubKpsp();
+              unsubMilestone();
             });
           }
         });
@@ -180,6 +219,8 @@ export class FamilyBayiRepository implements BayiRepository {
             babyMetaMap.delete(id);
             babyScheduleMap.delete(id);
             babyRecordsMap.delete(id);
+            babyKpspMap.delete(id);
+            babyMilestoneMap.delete(id);
           }
         }
 
@@ -256,6 +297,10 @@ export class FamilyBayiRepository implements BayiRepository {
             if (op.meta.sourceUid || existing?.sourceUid) {
               payload.sourceUid = op.meta.sourceUid || existing?.sourceUid;
             }
+            // Dokumen ditulis ulang utuh (set), jadi field ini harus ikut agar tidak hilang.
+            if (typeof op.meta.usiaKehamilanMinggu === "number") {
+              payload.usiaKehamilanMinggu = op.meta.usiaKehamilanMinggu;
+            }
 
             currentBatch.set(babyRef, payload);
             opCount++;
@@ -312,6 +357,59 @@ export class FamilyBayiRepository implements BayiRepository {
             await commitBatchIfNeeded();
             break;
           }
+
+          case "setKpsp": {
+            const k = op.kpsp;
+            const kpspRef = doc(db, this.basePath, "babies", op.babyId, "kpsp", k.id);
+            currentBatch.set(kpspRef, {
+              id: k.id,
+              tanggal: k.tanggal,
+              umurFormulirBulan: k.umurFormulirBulan,
+              dikoreksi: k.dikoreksi,
+              jawaban: k.jawaban,
+              jumlahYa: k.jumlahYa,
+              hasil: k.hasil,
+              versiKonten: k.versiKonten,
+              // createdAt dan createdBy tidak boleh berubah saat update (aturan rules).
+              createdAt: k.createdAt || nowIso,
+              createdBy: k.createdBy || this.uid,
+              updatedAt: nowIso,
+              updatedBy: this.uid
+            });
+            opCount++;
+            await commitBatchIfNeeded();
+            break;
+          }
+
+          case "deleteKpsp": {
+            currentBatch.delete(doc(db, this.basePath, "babies", op.babyId, "kpsp", op.id));
+            opCount++;
+            await commitBatchIfNeeded();
+            break;
+          }
+
+          case "setMilestone": {
+            const m = op.catatan;
+            const mRef = doc(db, this.basePath, "babies", op.babyId, "milestone", m.butirId);
+            const mPayload: Record<string, any> = {
+              butirId: m.butirId,
+              status: m.status,
+              updatedAt: nowIso,
+              updatedBy: this.uid
+            };
+            if (m.tanggal) mPayload.tanggal = m.tanggal;
+            currentBatch.set(mRef, mPayload);
+            opCount++;
+            await commitBatchIfNeeded();
+            break;
+          }
+
+          case "deleteMilestone": {
+            currentBatch.delete(doc(db, this.basePath, "babies", op.babyId, "milestone", op.butirId));
+            opCount++;
+            await commitBatchIfNeeded();
+            break;
+          }
         }
       }
 
@@ -322,15 +420,17 @@ export class FamilyBayiRepository implements BayiRepository {
   }
 
   private async deleteBabySubtree(babyId: string): Promise<void> {
-    // 1. Delete records in batches
-    while (true) {
-      const q = collection(db, this.basePath, "babies", babyId, "records");
-      const snaps = await getDocs(q);
-      if (snaps.empty) break;
+    // 1. Delete records, KPSP, and milestone documents in batches
+    for (const nama of ["records", "kpsp", "milestone"]) {
+      while (true) {
+        const q = collection(db, this.basePath, "babies", babyId, nama);
+        const snaps = await getDocs(q);
+        if (snaps.empty) break;
 
-      const batch = writeBatch(db);
-      snaps.docs.forEach((d) => batch.delete(d.ref));
-      await batch.commit();
+        const batch = writeBatch(db);
+        snaps.docs.forEach((d) => batch.delete(d.ref));
+        await batch.commit();
+      }
     }
 
     // 2. Delete schedule doc

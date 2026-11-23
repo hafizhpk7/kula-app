@@ -1,4 +1,4 @@
-import { AppState, Insurance, Profile, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, Insurance, KpspSkrining, MilestoneCatatan, Profile, ScheduleRow, VaccineRecord } from "../../../types";
 
 export type BayiDiffOp =
   | {
@@ -12,6 +12,7 @@ export type BayiDiffOp =
         insurance: Insurance;
         schemaVersion: 1;
         sourceUid?: string;
+        usiaKehamilanMinggu?: number;
       };
     }
   | {
@@ -33,12 +34,65 @@ export type BayiDiffOp =
       type: "deleteRecord";
       babyId: string;
       rowId: string;
-    };
+    }
+  | { type: "setKpsp"; babyId: string; kpsp: KpspSkrining }
+  | { type: "deleteKpsp"; babyId: string; id: string }
+  | { type: "setMilestone"; babyId: string; catatan: MilestoneCatatan }
+  | { type: "deleteMilestone"; babyId: string; butirId: string };
+
+/** Meta dokumen baby dari profil. Field opsional hanya ikut bila ada, supaya payload lama tidak berubah. */
+function metaDariProfil(p: Profile): Extract<BayiDiffOp, { type: "setBaby" }>["meta"] {
+  const meta: Extract<BayiDiffOp, { type: "setBaby" }>["meta"] = {
+    id: p.id,
+    panggilan: p.panggilan,
+    tanggalLahir: p.tanggalLahir,
+    catatan: p.catatan?.trim() || undefined,
+    insurance: p.insurance,
+    schemaVersion: 1
+  };
+  if (typeof p.usiaKehamilanMinggu === "number") meta.usiaKehamilanMinggu = p.usiaKehamilanMinggu;
+  return meta;
+}
+
+/** JSON dengan kunci terurut, supaya urutan properti yang berbeda tidak dianggap perubahan. */
+function stabil(v: unknown): string {
+  if (Array.isArray(v)) return `[${v.map(stabil).join(",")}]`;
+  if (v && typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    return `{${Object.keys(o)
+      .filter((k) => o[k] !== undefined)
+      .sort()
+      .map((k) => `${JSON.stringify(k)}:${stabil(o[k])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(v);
+}
+
+/** Diff dua daftar berkunci id: item baru atau berubah menjadi set, item yang hilang menjadi delete. */
+function diffKoleksi<T>(prev: readonly T[] | undefined, next: readonly T[] | undefined, kunci: (x: T) => string): { set: T[]; hapus: string[] } {
+  const p = new Map((prev ?? []).map((x) => [kunci(x), x]));
+  const n = new Map((next ?? []).map((x) => [kunci(x), x]));
+  const hapus = [...p.keys()].filter((k) => !n.has(k));
+  const set = [...n.entries()].filter(([k, x]) => !p.has(k) || stabil(p.get(k)) !== stabil(x)).map(([, x]) => x);
+  return { set, hapus };
+}
+
+function opsKoleksi(babyId: string, prev: Profile | undefined, next: Profile): BayiDiffOp[] {
+  const ops: BayiDiffOp[] = [];
+  const k = diffKoleksi(prev?.kpsp, next.kpsp, (x) => x.id);
+  for (const id of k.hapus) ops.push({ type: "deleteKpsp", babyId, id });
+  for (const kpsp of k.set) ops.push({ type: "setKpsp", babyId, kpsp });
+  const m = diffKoleksi(prev?.milestone, next.milestone, (x) => x.butirId);
+  for (const butirId of m.hapus) ops.push({ type: "deleteMilestone", babyId, butirId });
+  for (const catatan of m.set) ops.push({ type: "setMilestone", babyId, catatan });
+  return ops;
+}
 
 function isMetaEqual(a: Profile, b: Profile): boolean {
   if (a.panggilan !== b.panggilan) return false;
   if (a.tanggalLahir !== b.tanggalLahir) return false;
   if ((a.catatan || "") !== (b.catatan || "")) return false;
+  if ((a.usiaKehamilanMinggu ?? null) !== (b.usiaKehamilanMinggu ?? null)) return false;
   return JSON.stringify(a.insurance || {}) === JSON.stringify(b.insurance || {});
 }
 
@@ -103,14 +157,7 @@ export function diffAppState(prev: AppState, next: AppState): BayiDiffOp[] {
       ops.push({
         type: "setBaby",
         babyId: nextId,
-        meta: {
-          id: nextProf.id,
-          panggilan: nextProf.panggilan,
-          tanggalLahir: nextProf.tanggalLahir,
-          catatan: nextProf.catatan?.trim() || undefined,
-          insurance: nextProf.insurance,
-          schemaVersion: 1
-        }
+        meta: metaDariProfil(nextProf)
       });
 
       ops.push({
@@ -127,20 +174,15 @@ export function diffAppState(prev: AppState, next: AppState): BayiDiffOp[] {
           record: rec
         });
       }
+
+      ops.push(...opsKoleksi(nextId, undefined, nextProf));
     } else {
       // Existing baby: check meta
       if (!isMetaEqual(prevProf, nextProf)) {
         ops.push({
           type: "setBaby",
           babyId: nextId,
-          meta: {
-            id: nextProf.id,
-            panggilan: nextProf.panggilan,
-            tanggalLahir: nextProf.tanggalLahir,
-            catatan: nextProf.catatan?.trim() || undefined,
-            insurance: nextProf.insurance,
-            schemaVersion: 1
-          }
+          meta: metaDariProfil(nextProf)
         });
       }
 
@@ -180,6 +222,9 @@ export function diffAppState(prev: AppState, next: AppState): BayiDiffOp[] {
           });
         }
       }
+
+      // KPSP dan milestone (tumbuh kembang)
+      ops.push(...opsKoleksi(nextId, prevProf, nextProf));
     }
   }
 

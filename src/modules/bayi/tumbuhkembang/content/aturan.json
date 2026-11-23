@@ -1,0 +1,55 @@
+{
+  "id": "aturan-kpsp",
+  "sumber": "Pedoman Pelaksanaan SDIDTK di Tingkat Pelayanan Kesehatan Dasar, Kemenkes RI, Agustus 2022",
+  "versi": "pedoman-sdidtk-2022-08",
+  "perluReview": true,
+  "catatan": "Nilai di berkas ini disalin dari dokumen sumber di docs/sumber/. Keputusan K1-K4 ada di docs/fitur/SUMBER-KONFLIK.md.",
+  "sasaranUmurBulan": {
+    "min": 3,
+    "max": 72,
+    "halamanPdf": 131,
+    "halamanCetak": 118,
+    "keterangan": "Sasaran KPSP adalah anak umur 3-72 bulan."
+  },
+  "jadwalRutinBulan": {
+    "nilai": [6, 9, 18, 24, 36, 48, 60, 72],
+    "halamanPdf": 130,
+    "halamanCetak": 117,
+    "keputusan": "K1",
+    "keterangan": "Jadwal skrining KPSP rutin menurut Pedoman. Formulir tersedia untuk 16 umur (3 sampai 72 bulan), tetapi yang rutin hanya 8."
+  },
+  "pembulatanUmur": {
+    "hariMinimumNaikSatuBulan": 16,
+    "halamanPdf": 131,
+    "halamanCetak": 118,
+    "keputusan": "K3",
+    "keterangan": "Teks Pedoman menyebut 'lebih 16 hari', contohnya membulatkan naik pada 16 hari (3 bulan 16 hari menjadi 4 bulan; 3 bulan 15 hari tetap 3 bulan). Diikuti contoh, ditandai perlu ditinjau tenaga kesehatan."
+  },
+  "pemilihanFormulir": {
+    "halamanPdf": 131,
+    "halamanCetak": 118,
+    "keterangan": "Bila umur anak tidak sesuai dengan kelompok umur pada KPSP, gunakan KPSP untuk kelompok umur yang lebih muda."
+  },
+  "interpretasi": {
+    "halamanPdf": 131,
+    "halamanCetak": 118,
+    "sesuai": { "kode": "S", "min": 9, "max": 10 },
+    "meragukan": { "kode": "M", "min": 7, "max": 8 },
+    "kemungkinanPenyimpangan": { "kode": "P", "min": 0, "max": 6 }
+  },
+  "definisiJawaban": {
+    "halamanPdf": 131,
+    "halamanCetak": 118,
+    "ya": "bila ibu atau pengasuh menjawab anak bisa atau pernah atau sering atau kadang-kadang melakukannya",
+    "tidak": "bila ibu atau pengasuh menjawab anak belum pernah melakukan atau tidak pernah atau ibu atau pengasuh anak tidak tahu"
+  },
+  "koreksi": {
+    "halamanPdf": [130, 3, 7],
+    "keputusan": "K4",
+    "ambangUsiaKehamilanMinggu": 37,
+    "ambangPedomanMinggu": 38,
+    "patokanCukupBulanMinggu": 40,
+    "batasUmurBulan": 24,
+    "keterangan": "Usia koreksi (minggu) = usia sekarang (minggu) + usia kehamilan saat lahir (minggu) - 40. Ditawarkan bila lahir sebelum 37 minggu (Buku KIA Khusus Bayi Kecil, hlm 3 dan 7); Pedoman hlm 130 memakai ambang 38 minggu. Dipakai sampai umur 2 tahun. Tidak mengubah tanggal lahir. BBLR dengan usia kehamilan cukup bulan tidak dikoreksi."
+  }
+}
