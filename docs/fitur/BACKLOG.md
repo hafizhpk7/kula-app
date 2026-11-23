@@ -81,6 +81,9 @@ Tanpa perubahan skema atau rules. Tidak butuh dokumen sumber.
 - Skema konten dengan `keselamatan` wajib, validasi menggagalkan build bila kosong atau ada klaim berlebihan. Sekitar 12 aktivitas awal (0–12 bulan) dari dokumen sumber.
 - Kartu harian deterministik per hari dan per anak, "sudah dicoba", "ganti", "sembunyikan". Riwayat sesuai `ARSITEKTUR.md` (embed, dibatasi), diff skema dulu bila perlu.
 
+- **Status Fase 5 (disetujui C1, T1, S1, T2, S2, R1, K1 pada 2026-11-23; lihat `SKEMA-FASE5.md`):** 12 aktivitas 0-11 bulan dari Pedoman SDIDTK hlm 51-61 (8 dengan keselamatan dari aktivitas, 4 `umum` dari Pedoman hlm 60 dan KIA 2024 hlm 33), semua `perluReview`; #5 (potongan biskuit untuk 3-5 bulan) menunggu tinjauan tenaga kesehatan. Tanpa `durasiMenit` (tidak ada di sumber). Kartu stabil per hari dan per anak; "ganti" per perangkat (`kula-stimulasi-ganti-v1`). Riwayat embed (batas 300) di tamu dan pribadi, subkoleksi `stimulasi` di keluarga (jalur tulis sendiri). Kode di `feat/tumbuh-kembang-fase5`, rules di `feat/rules-stimulasi` (belum di-deploy).
+- **Belum Fase 5:** konten 12 bulan ke atas (pekerjaan konten, tinjau juga hlm 62+), tinjauan tenaga kesehatan, domain per aktivitas adalah klasifikasi Claude mengikuti Tabel 3.7 (perlu dicek), pemeriksaan di perangkat nyata.
+
 ## Fase 6: Lapisan animasi (Sonnet 5.5)
 
 - **Langkah 1, usulkan lalu STOP:** perayaan milestone, maskot pemandu, atau ilustrasi SVG/CSS. Tanpa bayi 3D realistis.
