@@ -1,5 +1,6 @@
 import React, { Suspense, useEffect, useState, useMemo } from "react";
 import { KulaMascotPoster } from "./KulaMascotPoster";
+import { bolehMuat3D, deteksiKemampuan } from "../../utils/kemampuan";
 
 const LazyKulaMascot = React.lazy(() => import("./KulaMascot"));
 
@@ -62,7 +63,9 @@ export const KulaMascotView: React.FC<KulaMascotViewProps> = ({
   const [hasError, setHasError] = useState(false);
   const [is3DReady, setIs3DReady] = useState(false);
 
-  const canUseWebGL = useMemo(() => isWebGLAvailable(), []);
+  // Chunk three (±920 kB) hanya dimuat bila WebGL ada DAN pengguna tidak mengurangi gerak (sistem atau Pengaturan),
+  // perangkat tidak lemah, dan Data Saver mati. Selain itu poster SVG statis yang tampil.
+  const canUseWebGL = useMemo(() => isWebGLAvailable() && bolehMuat3D(deteksiKemampuan()), []);
 
   return (
     <div

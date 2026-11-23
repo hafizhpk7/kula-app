@@ -10,6 +10,7 @@ import { formatIndonesianDate, todayLocal } from "../../../utils/dates";
 import { rayakan } from "../../../components/common/Perayaan";
 import { aturMomen, BATAS_JURNAL, bolehTambahMomen, hapusMomenDari, PESAN_DITOLAK } from "../tumbuhkembang/logic/jurnal";
 import { aturCatatan, hapusCatatanDari } from "../tumbuhkembang/logic/stimulasi";
+import { penyimpananLokal, sekaliRayakan } from "../tumbuhkembang/logic/rayakan";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
   const { user } = useAuth();
@@ -256,6 +257,8 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
         }
       }
       const babyId = activeProfile.id;
+      // Momen jurnal pertama anak ini dirayakan sekali per perangkat (M1).
+      if (baru && (activeProfile.jurnal?.length ?? 0) === 0 && sekaliRayakan(`jurnal:${babyId}`, penyimpananLokal())) rayakan();
       setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: aturMomen(p.jurnal, entri) } : p)) }));
       repository.saveJurnal(babyId, entri).catch((err) => {
         showToast(pesanPengguna("bayi", err, belum("Momen", "tersimpan")));

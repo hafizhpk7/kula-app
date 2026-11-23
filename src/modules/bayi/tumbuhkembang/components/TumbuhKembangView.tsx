@@ -14,6 +14,8 @@ import { MilestoneDaftar } from "./MilestoneDaftar";
 import { PertumbuhanSection } from "./PertumbuhanSection";
 import { KartuStimulasi } from "./KartuStimulasi";
 import { PeranStimulasi } from "../logic/stimulasi";
+import { rayakan } from "../../../../components/common/Perayaan";
+import { penyimpananLokal, sekaliRayakan } from "../logic/rayakan";
 
 interface Props {
   profile: Profile;
@@ -86,8 +88,13 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
   const tahapAktif = tahapPilihan ?? tahapDasar;
   const sekitar = tahapAktif !== undefined ? formulirSekitar(tahapAktif) : null;
 
-  const ubahMilestone = (butirId: string, status: MilestoneStatus | null, tanggal?: string) =>
+  const ubahMilestone = (butirId: string, status: MilestoneStatus | null, tanggal?: string) => {
+    // Perayaan hanya saat butir BERPINDAH ke "sudah" dan baru sekali per butir di perangkat ini (M1).
+    // Tidak ada perayaan untuk status lain, dan KPSP tidak dirayakan agar tidak bergantung pada hasil skrining.
+    const sebelumnya = profile.milestone?.find((c) => c.butirId === butirId)?.status;
+    if (status === "sudah" && sebelumnya !== "sudah" && sekaliRayakan(`milestone:${profile.id}:${butirId}`, penyimpananLokal())) rayakan();
     perbarui({ milestone: aturMilestone(profile.milestone, butirId, status, { tanggal, sekarangIso: new Date().toISOString() }) });
+  };
 
   const riwayat = [...(profile.kpsp ?? [])].sort((a, b) => (a.tanggal < b.tanggal ? 1 : a.tanggal > b.tanggal ? -1 : a.createdAt < b.createdAt ? 1 : -1));
   const hapusTarget = riwayat.find((r) => r.id === hapusId);

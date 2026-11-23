@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Pencil, Plus, Sparkles, Trash2, Users } from "lucide-react";
 import { JurnalMomen, Profile } from "../../../../types";
 import { PageHeader } from "../../../../components/common/PageHeader";
+import { PemanduKura } from "../../../../components/common/PemanduKura";
 import { formatIndonesianDate } from "../../../../utils/dates";
 import { FORMULIR_KPSP } from "../konten";
 import { bangunMomen, bisaHapusMomen, bisaUbahMomen, HasilValidasiMomen, kelompokkanPerBulan, KonteksPeran } from "../logic/jurnal";
@@ -87,7 +88,8 @@ export const JurnalView: React.FC<Props> = ({ profile, peran, namaPenulis, onSim
       </section>
 
       {jumlah === 0 ? (
-        <section className="bg-surface rounded-card border border-border p-5 text-center space-y-1">
+        <section className="bg-surface rounded-card border border-border p-5 text-center space-y-3">
+          <PemanduKura className="justify-center text-left">Setiap momen kecil layak diingat.</PemanduKura>
           <p className="text-[15px] text-text font-medium">Belum ada momen.</p>
           <p className="text-[13px] text-text-2">Momen pertama {profile.panggilan} bisa dicatat kapan saja.</p>
         </section>

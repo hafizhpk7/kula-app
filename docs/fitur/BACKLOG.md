@@ -89,6 +89,10 @@ Tanpa perubahan skema atau rules. Tidak butuh dokumen sumber.
 - **Langkah 1, usulkan lalu STOP:** perayaan milestone, maskot pemandu, atau ilustrasi SVG/CSS. Tanpa bayi 3D realistis.
 - **Langkah 2, setelah ok:** chunk `three` lazy, hormati `prefers-reduced-motion`, fallback poster statis, ukur bundle sebelum dan sesudah. Tanpa dependency baru tanpa tanya.
 
+- **Status Fase 6 (disetujui A1, M1, B1, B2, C1, C2, P1, P2, P3 pada 2026-11-23; lihat `SKEMA-FASE6.md`):** perayaan (`rayakan()`) hanya saat butir milestone pindah ke "sudah" (sekali per butir per perangkat, kunci `kula_rayakan_sekali`) dan momen jurnal pertama; KPSP tidak dirayakan. `PemanduKura` 2D di kartu stimulasi dan empty state Jurnal. 6 ilustrasi SVG benda tanpa tubuh bayi (gantung, cermin, wadah, balok, buku, cilukba; duduk dan merangkak sengaja tidak), animasi berhenti sendiri (<= 5 detik). Chunk three keluar dari precache PWA. Maskot 3D tidak dimuat bila Kurangi animasi (sistem atau Pengaturan), HP lemah (memori <= 2 GB atau <= 2 inti), atau Data Saver. Tanpa dependency baru; `motion` tetap tidak terpakai dan tidak dihapus (tanya dulu).
+- **Ukuran (build produksi, sebelum -> sesudah):** precache 3.183,34 -> 2.291,58 KiB (18 -> 17 entri, -891,76 KiB); `index.js` 2.216,94 -> 2.222,55 kB (gzip 635,65 -> 637,44); `index.css` 61,77 -> 62,78 kB (gzip 12,15 -> 12,32); chunk `KulaMascot` tetap 919,78 kB (gzip 244,97), kini lazy dan tidak di-precache.
+- **Belum Fase 6:** desktop yang offline pada kunjungan pertama tidak punya maskot 3D (poster tampil); ilustrasi perlu ditinjau (gambar bisa terbaca sebagai petunjuk jarak); perangkat nyata (HP lemah, `deviceMemory` hanya ada di Chromium).
+
 ## Urutan dan ketergantungan
 
 ```
