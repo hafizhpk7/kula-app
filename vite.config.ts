@@ -54,7 +54,19 @@ export default defineConfig(() => {
         workbox: {
           maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+          // Chunk three (maskot 3D, ±920 kB) hanya dipakai layar >= 1024 px. Jangan diunduh paksa oleh
+          // setiap HP yang memasang PWA; di-cache saat dipakai (runtime caching di bawah).
+          globIgnores: ['**/KulaMascot-*.js'],
           runtimeCaching: [
+            {
+              urlPattern: /\/assets\/KulaMascot-[^/]+\.js$/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'maskot-3d-cache',
+                expiration: { maxEntries: 2, maxAgeSeconds: 60 * 60 * 24 * 90 },
+                cacheableResponse: { statuses: [0, 200] }
+              }
+            },
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
               handler: 'CacheFirst',

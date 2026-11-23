@@ -238,6 +238,21 @@ h2.font-display {
 .ombak-depan { animation: ombak-geser 9s linear infinite; }
 .gelembung { animation: gelembung-naik 4s ease-in infinite; }
 
+/* Pemandu dan ilustrasi aktivitas: gerak singkat, berhenti sendiri (WCAG 2.2.2); mati lewat aturan reduced-motion di bawah */
+@keyframes ilus-ayun { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+@keyframes ilus-masuk { 0% { transform: translateY(0); opacity: 1; } 70% { transform: translateY(40px); opacity: 1; } 100% { transform: translateY(40px); opacity: 0; } }
+@keyframes ilus-ketuk-kiri { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(8px); } }
+@keyframes ilus-ketuk-kanan { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-8px); } }
+@keyframes ilus-kilau { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@keyframes ilus-intip { 0%, 100% { transform: translateX(-10px); } 50% { transform: translateX(0); } }
+.kura-bob-singkat { animation: kura-bob 2.4s ease-in-out 2; transform-origin: 50% 60%; }
+.ilus-ayun { animation: ilus-ayun 1.6s ease-in-out 3; }
+.ilus-masuk { animation: ilus-masuk 1.8s ease-in 2; }
+.ilus-ketuk-kiri { animation: ilus-ketuk-kiri 1.2s ease-in-out 3; }
+.ilus-ketuk-kanan { animation: ilus-ketuk-kanan 1.2s ease-in-out 3; }
+.ilus-kilau { animation: ilus-kilau 1.5s ease-in-out 3; }
+.ilus-intip { animation: ilus-intip 1.8s ease-in-out 2; }
+
 /* Perayaan kecil: butir warna naik dari bawah, Kura melompat sekali */
 @keyframes perayaan-naik {
   0% { transform: translateY(0) scale(0.6); opacity: 0; }

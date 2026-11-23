@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { Eye, EyeOff, RefreshCw, ShieldAlert } from "lucide-react";
 import { Profile, ReaksiStimulasi, StimulasiCatatan } from "../../../../types";
+import { PemanduKura } from "../../../../components/common/PemanduKura";
+import { IlustrasiAktivitas } from "./IlustrasiAktivitas";
 import { umurUntukPerkembangan } from "../logic/umur";
 import {
   PeranStimulasi,
@@ -114,10 +116,13 @@ export const KartuStimulasi: React.FC<Props> = ({ profile, peran, onSimpan, onHa
 
       {aktivitas ? (
         <div className="space-y-3">
+          <PemanduKura>Cukup yang terasa menyenangkan. Tidak perlu sempurna.</PemanduKura>
           <div className="space-y-1">
             <h3 className="text-[15px] font-semibold text-text">{aktivitas.judul}</h3>
             <p className="text-[12px] text-text-2">Untuk umur {aktivitas.umurMinBulan} sampai {aktivitas.umurMaxBulan} bulan</p>
           </div>
+
+          <IlustrasiAktivitas aktivitasId={aktivitas.id} />
 
           <ol className="list-decimal pl-5 space-y-1.5 text-[14px] text-text leading-relaxed">
             {aktivitas.langkah.map((l) => (
@@ -245,14 +250,16 @@ export const KartuStimulasi: React.FC<Props> = ({ profile, peran, onSimpan, onHa
           )}
         </div>
       ) : (
-        <div className="space-y-1">
+        <div className="space-y-3">
           {semuaDisembunyikan ? (
             <>
+              <PemanduKura>Tidak apa-apa, Anda yang memilih.</PemanduKura>
               <p className="text-[14px] text-text font-medium">Semua aktivitas untuk umur ini disembunyikan.</p>
               <p className="text-[13px] text-text-2">Tampilkan lagi salah satunya dari daftar di bawah untuk melihat kartu hari ini.</p>
             </>
           ) : (
             <>
+              <PemanduKura>Tidak ada yang perlu dikejar.</PemanduKura>
               <p className="text-[14px] text-text font-medium">Aktivitas untuk umur ini belum tersedia.</p>
               <p className="text-[13px] text-text-2">
                 Saat ini ada {AKTIVITAS_STIMULASI.length} aktivitas untuk bayi umur 0 sampai 11 bulan. Untuk umur lain, tanyakan ide bermain ke tenaga kesehatan.
