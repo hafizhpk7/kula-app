@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { Plus, Trash2, Edit2 } from "lucide-react";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { createNewProfile } from "../../../data/seed";
-import { Profile } from "../../../types";
+import { JenisKelamin, Profile } from "../../../types";
 import { getChildAge } from "../../../utils/dates";
 import { FEATURES } from "../../../config/features";
 import { FieldUsiaKehamilan } from "../tumbuhkembang/components/FieldUsiaKehamilan";
+import { FieldJenisKelamin } from "../tumbuhkembang/components/FieldJenisKelamin";
 import { parseUsiaKehamilan } from "../tumbuhkembang/logic/profil";
 
 interface Props {
@@ -39,6 +40,7 @@ export const ProfileModal: React.FC<Props> = ({
   );
   const [catatan, setCatatan] = useState("");
   const [usiaKehamilan, setUsiaKehamilan] = useState("");
+  const [jenisKelamin, setJenisKelamin] = useState<"" | JenisKelamin>("");
   const [errorMsg, setErrorMsg] = useState("");
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
@@ -49,6 +51,7 @@ export const ProfileModal: React.FC<Props> = ({
         setTanggalLahir(new Date().toISOString().split("T")[0]);
         setCatatan("");
         setUsiaKehamilan("");
+        setJenisKelamin("");
         setErrorMsg("");
         setConfirmDeleteId(null);
         setMode("add");
@@ -65,6 +68,7 @@ export const ProfileModal: React.FC<Props> = ({
     setTanggalLahir(new Date().toISOString().split("T")[0]);
     setCatatan("");
     setUsiaKehamilan("");
+    setJenisKelamin("");
     setErrorMsg("");
     setConfirmDeleteId(null);
     setMode("add");
@@ -76,6 +80,7 @@ export const ProfileModal: React.FC<Props> = ({
     setTanggalLahir(p.tanggalLahir);
     setCatatan(p.catatan || "");
     setUsiaKehamilan(typeof p.usiaKehamilanMinggu === "number" ? String(p.usiaKehamilanMinggu) : "");
+    setJenisKelamin(p.jenisKelamin ?? "");
     setErrorMsg("");
     setConfirmDeleteId(null);
     setMode("edit");
@@ -100,6 +105,7 @@ export const ProfileModal: React.FC<Props> = ({
       const profile = createNewProfile(newId, panggilan.trim(), tanggalLahir);
       if (catatan.trim()) profile.catatan = catatan.trim();
       if (usia.nilai !== undefined) profile.usiaKehamilanMinggu = usia.nilai;
+      if (FEATURES.tumbuhKembang && jenisKelamin) profile.jenisKelamin = jenisKelamin;
       onAddProfile(profile);
       setMode("list");
     } else if (mode === "edit" && editingId) {
@@ -114,6 +120,8 @@ export const ProfileModal: React.FC<Props> = ({
         if (FEATURES.tumbuhKembang) {
           if (usia.nilai !== undefined) diubah.usiaKehamilanMinggu = usia.nilai;
           else delete diubah.usiaKehamilanMinggu;
+          if (jenisKelamin) diubah.jenisKelamin = jenisKelamin;
+          else delete diubah.jenisKelamin;
         }
         onUpdateProfile(diubah);
       }
@@ -278,6 +286,7 @@ export const ProfileModal: React.FC<Props> = ({
                 />
               </div>
 
+              {FEATURES.tumbuhKembang && <FieldJenisKelamin value={jenisKelamin} onChange={setJenisKelamin} />}
               {FEATURES.tumbuhKembang && <FieldUsiaKehamilan value={usiaKehamilan} onChange={setUsiaKehamilan} />}
 
               <div className="space-y-1">

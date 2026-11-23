@@ -69,7 +69,7 @@ export const FAMILY_CONFIG_KEYS = [
 ] as const;
 
 export const FAMILY_BABY_KEYS = [
-  "id", "panggilan", "tanggalLahir", "catatan", "insurance", "schemaVersion", "createdAt", "updatedAt", "createdBy", "updatedBy", "sourceUid", "usiaKehamilanMinggu"
+  "id", "panggilan", "tanggalLahir", "catatan", "insurance", "schemaVersion", "createdAt", "updatedAt", "createdBy", "updatedBy", "sourceUid", "usiaKehamilanMinggu", "jenisKelamin"
 ] as const;
 
 export const FAMILY_SCHEDULE_KEYS = [
@@ -86,6 +86,10 @@ export const FAMILY_KPSP_KEYS = [
 
 export const FAMILY_MILESTONE_KEYS = [
   "butirId", "status", "tanggal", "updatedAt", "updatedBy"
+] as const;
+
+export const FAMILY_PENGUKURAN_KEYS = [
+  "id", "tanggal", "beratKg", "panjangTinggiCm", "caraUkur", "lingkarKepalaCm", "catatan", "createdAt", "updatedAt", "createdBy", "updatedBy"
 ] as const;
 
 export const FAMILY_DATA_COLLECTIONS = ["financeTransactions", "savingsGoals", "recurringRules"] as const;

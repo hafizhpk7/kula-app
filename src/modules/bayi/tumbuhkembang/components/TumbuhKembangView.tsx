@@ -11,6 +11,7 @@ import { labelHasil } from "../logic/istilah";
 import { DisclaimerTumbuhKembang } from "./DisclaimerTumbuhKembang";
 import { KpspFlow } from "./KpspFlow";
 import { MilestoneDaftar } from "./MilestoneDaftar";
+import { PertumbuhanSection } from "./PertumbuhanSection";
 
 interface Props {
   profile: Profile;
@@ -20,6 +21,9 @@ interface Props {
   /** Bila bukan null, tampilkan panduan KPSP untuk formulir umur itu. */
   kpspBulan: number | null;
   onBukaKpsp: (bulan: number | null) => void;
+  /** Bila true, lembar catat ukuran terbuka (dari slot "Timbang & ukur" di Kunjungan). */
+  bukaUkur?: boolean;
+  onTutupUkur?: () => void;
   /** Hanya untuk tes dan pratinjau. Default: sekarang. */
   sekarang?: Date;
 }
@@ -36,7 +40,7 @@ const IKON_HASIL: Record<KpspHasil, React.ReactNode> = {
   kemungkinanPenyimpangan: <Stethoscope className="w-4 h-4" aria-hidden="true" />
 };
 
-export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, onBukaProfil, kpspBulan, onBukaKpsp, sekarang }) => {
+export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, onBukaProfil, kpspBulan, onBukaKpsp, bukaUkur = false, onTutupUkur = () => {}, sekarang }) => {
   const now = sekarang ?? new Date();
   const [tahapPilihan, setTahapPilihan] = useState<number | null>(null);
   const [hapusId, setHapusId] = useState<string | null>(null);
@@ -147,6 +151,17 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
           </div>
         )}
       </section>
+
+      {/* Pertumbuhan */}
+      <PertumbuhanSection
+        profile={profile}
+        readOnly={readOnly}
+        onUpdateProfile={onUpdateProfile}
+        onBukaProfil={onBukaProfil}
+        bukaUkur={bukaUkur}
+        onTutupUkur={onTutupUkur}
+        sekarang={sekarang}
+      />
 
       {/* Skrining KPSP */}
       <section className={`${kartu} space-y-3`} aria-labelledby="tk-kpsp">
@@ -277,6 +292,16 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
             </div>
           </div>
         )}
+      </section>
+
+      <section className={`${kartu} space-y-2`} aria-labelledby="tk-dokter">
+        <h2 id="tk-dokter" className="font-display text-[16px] text-text">
+          Ringkasan untuk dokter
+        </h2>
+        <p className="text-[13px] text-text-2 leading-relaxed">Satu halaman berisi profil, imunisasi, hasil KPSP, ukuran dan grafik pertumbuhan, siap dicetak untuk dibawa ke dokter atau bidan.</p>
+        <Link to="/bayi/ringkasan-dokter" className={tombolSekunder}>
+          Buka ringkasan untuk dokter
+        </Link>
       </section>
 
       <DisclaimerTumbuhKembang />

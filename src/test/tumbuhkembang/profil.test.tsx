@@ -166,3 +166,57 @@ describe("ProfileModal: isian usia kehamilan di balik flag", () => {
     expect(dikirim.id).toBe("b1");
   });
 });
+
+
+describe("ProfileModal: jenis kelamin di balik flag", () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it("flag mati: pilihan jenis kelamin tidak muncul", async () => {
+    const ProfileModal = await muatModal(false);
+    render(<ProfileModal isOpen initialMode="add" onClose={vi.fn()} profiles={[]} activeProfileId="" onSelectProfile={vi.fn()} onAddProfile={vi.fn()} />);
+    expect(screen.queryByRole("radiogroup", { name: "Jenis kelamin" })).not.toBeInTheDocument();
+  });
+
+  it("tambah anak: memilih Perempuan tersimpan; tidak memilih berarti tidak ada kuncinya", async () => {
+    const ProfileModal = await muatModal(true);
+    const onAddProfile = vi.fn();
+    render(<ProfileModal isOpen initialMode="add" onClose={vi.fn()} profiles={[]} activeProfileId="" onSelectProfile={vi.fn()} onAddProfile={onAddProfile} />);
+    fireEvent.change(screen.getByPlaceholderText("Contoh: Kayla / Danis"), { target: { value: "Kiko" } });
+    fireEvent.click(screen.getByRole("radio", { name: "Perempuan" }));
+    fireEvent.click(screen.getByRole("button", { name: "Simpan profil" }));
+    expect((onAddProfile.mock.calls[0][0] as Profile).jenisKelamin).toBe("P");
+  });
+
+  it("tambah anak tanpa memilih: tidak ada jenisKelamin", async () => {
+    const ProfileModal = await muatModal(true);
+    const onAddProfile = vi.fn();
+    render(<ProfileModal isOpen initialMode="add" onClose={vi.fn()} profiles={[]} activeProfileId="" onSelectProfile={vi.fn()} onAddProfile={onAddProfile} />);
+    fireEvent.change(screen.getByPlaceholderText("Contoh: Kayla / Danis"), { target: { value: "Kiko" } });
+    expect(screen.getByRole("radio", { name: "Belum diisi" })).toHaveAttribute("aria-checked", "true");
+    fireEvent.click(screen.getByRole("button", { name: "Simpan profil" }));
+    expect("jenisKelamin" in (onAddProfile.mock.calls[0][0] as Profile)).toBe(false);
+  });
+
+  it("ubah anak: terisi dari profil, bisa diganti, dan 'Belum diisi' menghapusnya tanpa menyentuh data lain", async () => {
+    const ProfileModal = await muatModal(true);
+    const onUpdateProfile = vi.fn();
+    const p = bayi({ jenisKelamin: "L", usiaKehamilanMinggu: 33 });
+    render(
+      <ProfileModal isOpen initialMode="list" onClose={vi.fn()} profiles={[p]} activeProfileId="b1" onSelectProfile={vi.fn()} onAddProfile={vi.fn()} onUpdateProfile={onUpdateProfile} />
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Ubah Kiko" }));
+    expect(screen.getByRole("radio", { name: "Laki-laki" })).toHaveAttribute("aria-checked", "true");
+
+    fireEvent.click(screen.getByRole("radio", { name: "Perempuan" }));
+    fireEvent.click(screen.getByRole("button", { name: "Simpan profil" }));
+    expect((onUpdateProfile.mock.calls[0][0] as Profile).jenisKelamin).toBe("P");
+    expect((onUpdateProfile.mock.calls[0][0] as Profile).usiaKehamilanMinggu).toBe(33);
+
+    fireEvent.click(screen.getByRole("button", { name: "Ubah Kiko" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Belum diisi" }));
+    fireEvent.click(screen.getByRole("button", { name: "Simpan profil" }));
+    const kedua = onUpdateProfile.mock.calls[1][0] as Profile;
+    expect("jenisKelamin" in kedua).toBe(false);
+    expect(kedua.usiaKehamilanMinggu).toBe(33);
+  });
+});
