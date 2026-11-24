@@ -448,3 +448,16 @@ Branch `feat/revisi-bayi-r1`, dibuat dari `feat/revisi-bayi-r0` karena dokumen i
 - Tidak ada rute lama yang dihapus. Rute baru `/bayi/lainnya` dialihkan ke Beranda bila flag mati.
 - **"Waktunya ukur" tanpa interval:** halaman jadwal timbang di Pedoman/KIA tidak bisa dibaca di mesin ini (PDF butuh `pdftoppm`/poppler yang belum terpasang). Butir hanya muncul bila belum ada catatan ukuran, sesuai jalur cadangan di 2.1.
 - **KPSP "sudah bisa diisi"** = umur bulat (K3, usia koreksi bila ada) tepat di titik jadwal rutin (K1) dan formulir umur itu belum disimpan. Tidak ada aturan baru.
+
+## Status R2 (2026-11-24)
+
+Branch `feat/revisi-bayi-r2`, dibuat dari `feat/revisi-bayi-r1` (R1 belum masuk `main`). Logika dan data tidak berubah; hanya susunan, dan semuanya di balik `revisiBayi`.
+
+- `/bayi/tumbuh-kembang` jadi hub (`HubTumbuhKembang`): tiga ubin status (Milestone x dari y, Ukur terakhir, KPSP berikutnya), pratinjau "Coba ini hari ini" dengan satu aksi utama "Mulai aktivitas", dan satu baris "Sumber dan batasan" yang membuka lembar berisi disclaimer yang sama.
+- Halaman baru: `/bayi/milestone` (banner KPSP hanya saat jatuh tempo, milestone per domain, "Skrining KPSP dan riwayat" terlipat), `/bayi/stimulasi` (kartu hari ini + blok Riwayat), `/bayi/pertumbuhan` (isi `PertumbuhanSection` apa adanya).
+- `PanelMilestone` dan `RiwayatKpsp` diekstrak dari `TumbuhKembangView` dan dipakai bersama halaman lama dan baru; tampilan lama (flag mati) tidak berubah dan test lamanya lulus tanpa diubah.
+- Redirect: `revisiBayi` mati → `/bayi/milestone|stimulasi|pertumbuhan` ke `/bayi/tumbuh-kembang` (query ikut); `tumbuhKembang` mati → Beranda. `revisiBayi` nyala → `/bayi/tumbuh-kembang?kpsp=N` ke `/bayi/milestone?kpsp=N` dan `?ukur=1` ke `/bayi/pertumbuhan?ukur=1` (tautan dari Kunjungan tetap jalan).
+- Slot "Tumbuh" tetap menyala di tiga halaman pecahan. Beranda dan Hari ini menautkan ke rute baru.
+- Ringkasan dokter hanya ada di Lainnya (hub tidak memuatnya). Jurnal keluar dari hub; ubin Momen masih ke `/bayi/jurnal` sampai R3a.
+- **Menyimpang dari wireframe:** (1) "Catat ukuran" tetap tombol di dalam bagian Pertumbuhan, bukan tombol melayang `AppShell`; (2) tombol "Ganti" dan "Sembunyikan" serta daftar yang disembunyikan tetap di dalam `KartuStimulasi` (komponen tidak diubah); blok Riwayat baru hanya menampilkan data `dicoba` yang sudah ada; (3) kartu hub tidak menampilkan `tujuan` aktivitas karena isinya sama persis dengan judul di semua 12 aktivitas, diganti rentang umur.
+- "KPSP berikutnya" di hub melompati titik rutin yang formulirnya sudah disimpan.

@@ -152,3 +152,24 @@ export function simpanOffsetGanti(profilId: string, tanggal: string, offset: num
     // Penyimpanan penuh atau diblokir: kartu tetap jalan, hanya tidak bertahan setelah dibuka ulang.
   }
 }
+
+export interface BarisRiwayatStimulasi {
+  id: string;
+  tanggal: string;
+  aktivitasId: string;
+  reaksi?: ReaksiStimulasi;
+}
+
+/**
+ * Aktivitas yang pernah dicoba, terbaru dulu (tanggal, lalu waktu catat). Catatan "sembunyi" dan
+ * aktivitas yang tidak ada lagi di konten dilewati oleh pemanggil lewat `ada`.
+ */
+export function riwayatDicoba(
+  catatan: readonly StimulasiCatatan[] | undefined,
+  ada: (aktivitasId: string) => boolean = () => true
+): BarisRiwayatStimulasi[] {
+  return (catatan ?? [])
+    .filter((c) => c.jenis === "dicoba" && ada(c.aktivitasId))
+    .sort((a, b) => (a.tanggal !== b.tanggal ? (a.tanggal < b.tanggal ? 1 : -1) : a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0))
+    .map((c) => ({ id: c.id, tanggal: c.tanggal, aktivitasId: c.aktivitasId, reaksi: c.reaksi }));
+}

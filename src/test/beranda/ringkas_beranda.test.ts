@@ -150,8 +150,8 @@ describe("butirHariIni", () => {
     const b = butirHariIni({ profile: profil({ schedule: jadwal }), sekarang: SEKARANG, tumbuhKembang: true, readOnly: false });
     expect(b.map((x) => x.jenis)).toEqual(["imunisasi", "kpsp", "stimulasi", "ukur"]);
     expect(b.length).toBeLessThanOrEqual(MAKS_BUTIR_HARI_INI);
-    expect(b[1].path).toBe("/bayi/tumbuh-kembang?kpsp=6");
-    expect(b[3].path).toBe("/bayi/tumbuh-kembang?ukur=1");
+    expect(b[1].path).toBe("/bayi/milestone?kpsp=6");
+    expect(b[3].path).toBe("/bayi/pertumbuhan?ukur=1");
   });
 
   it("stimulasi yang sudah dicoba hari ini tidak muncul lagi", () => {

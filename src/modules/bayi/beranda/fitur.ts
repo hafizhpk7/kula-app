@@ -49,15 +49,14 @@ export interface Fitur {
   butuhTumbuhKembang: boolean;
 }
 
-// Milestone, Stimulasi, Pertumbuhan belum punya halaman sendiri sampai R2, dan Momen masih di /bayi/jurnal
-// sampai R3a. Sementara ini ubinnya membuka bagian yang sesuai di halaman yang sudah ada.
+// Momen masih di /bayi/jurnal sampai R3a.
 export const FITUR: Record<IdFitur, Fitur> = {
   kunjungan: { id: "kunjungan", label: "Kunjungan", path: "/bayi/kunjungan", ikon: CalendarCheck, warna: "langit", butuhTumbuhKembang: true },
   jadwal: { id: "jadwal", label: "Jadwal", path: "/bayi/jadwal", ikon: CalendarDays, warna: "langit", butuhTumbuhKembang: false },
   tumbuhKembang: { id: "tumbuhKembang", label: "Tumbuh kembang", path: "/bayi/tumbuh-kembang", ikon: Sprout, warna: "hijau", butuhTumbuhKembang: true },
-  milestone: { id: "milestone", label: "Milestone", path: "/bayi/tumbuh-kembang?bagian=milestone", ikon: ListChecks, warna: "hijau", butuhTumbuhKembang: true },
-  stimulasi: { id: "stimulasi", label: "Stimulasi", path: "/bayi/tumbuh-kembang?bagian=stimulasi", ikon: Puzzle, warna: "toska", butuhTumbuhKembang: true },
-  pertumbuhan: { id: "pertumbuhan", label: "Pertumbuhan", labelUbin: "Pertum\u00ADbuhan", path: "/bayi/tumbuh-kembang?bagian=pertumbuhan", ikon: Ruler, warna: "ungu", butuhTumbuhKembang: true },
+  milestone: { id: "milestone", label: "Milestone", path: "/bayi/milestone", ikon: ListChecks, warna: "hijau", butuhTumbuhKembang: true },
+  stimulasi: { id: "stimulasi", label: "Stimulasi", path: "/bayi/stimulasi", ikon: Puzzle, warna: "toska", butuhTumbuhKembang: true },
+  pertumbuhan: { id: "pertumbuhan", label: "Pertumbuhan", labelUbin: "Pertum\u00ADbuhan", path: "/bayi/pertumbuhan", ikon: Ruler, warna: "ungu", butuhTumbuhKembang: true },
   momen: { id: "momen", label: "Momen", path: "/bayi/jurnal", ikon: Sparkles, warna: "coral", butuhTumbuhKembang: true },
   ringkasanDokter: { id: "ringkasanDokter", label: "Ringkasan dokter", path: "/bayi/ringkasan-dokter", ikon: ClipboardList, warna: "ungu", butuhTumbuhKembang: true },
   biaya: { id: "biaya", label: "Biaya vaksin", path: "/bayi/biaya", ikon: Receipt, warna: "kuning", butuhTumbuhKembang: false },
@@ -108,7 +107,13 @@ export function tabBayiBaru(b: BenderaFitur): ShellTab[] {
     return [
       beranda,
       { path: "/bayi/kunjungan", label: "Kunjungan", icon: CalendarCheck },
-      { path: "/bayi/tumbuh-kembang", label: "Tumbuh kembang", shortLabel: "Tumbuh", icon: Sprout },
+      {
+        path: "/bayi/tumbuh-kembang",
+        label: "Tumbuh kembang",
+        shortLabel: "Tumbuh",
+        icon: Sprout,
+        aktifJuga: ["/bayi/milestone", "/bayi/stimulasi", "/bayi/pertumbuhan"]
+      },
       {
         path: "/bayi/lainnya",
         label: "Lainnya",

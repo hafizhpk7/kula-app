@@ -155,7 +155,7 @@ export function butirHariIni(m: MasukanHariIni): ButirHariIni[] {
         jenis: "kpsp",
         judul: `KPSP umur ${kpsp} bulan sudah bisa diisi`,
         detail: "Kuesioner 10 butir",
-        path: `/bayi/tumbuh-kembang?kpsp=${kpsp}`,
+        path: `/bayi/milestone?kpsp=${kpsp}`,
         formulirBulan: kpsp
       });
     }
@@ -175,14 +175,14 @@ export function butirHariIni(m: MasukanHariIni): ButirHariIni[] {
           jenis: "stimulasi",
           judul: `Coba hari ini: ${a.judul}`,
           detail: "Aktivitas stimulasi",
-          path: "/bayi/tumbuh-kembang?bagian=stimulasi",
+          path: "/bayi/stimulasi",
           aktivitasId: a.id
         });
       }
     }
 
     if (!m.readOnly && (profile.pengukuran ?? []).length === 0 && umurKronologis(profile.tanggalLahir, sekarang)) {
-      hasil.push({ jenis: "ukur", judul: "Belum ada catatan ukuran", detail: "Berat, panjang, lingkar kepala", path: "/bayi/tumbuh-kembang?ukur=1" });
+      hasil.push({ jenis: "ukur", judul: "Belum ada catatan ukuran", detail: "Berat, panjang, lingkar kepala", path: "/bayi/pertumbuhan?ukur=1" });
     }
   }
   return hasil.slice(0, MAKS_BUTIR_HARI_INI);
