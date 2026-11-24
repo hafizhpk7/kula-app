@@ -157,3 +157,9 @@ Acuan utama = Buku KIA 2024 (S4). Dokumen pembanding (PMBA Kemenkes, IDAI, WHO 2
 - Yang sudah terlihat dari S4: Buku KIA memasukkan "susu hewani dan produk turunannya" sebagai kelompok bahan MPASI 6–12 bulan (hlm 30), dan untuk 12–24 bulan menganjurkan menghindari susu atau yoghurt rendah lemak (hlm 34) [baca].
 - **[usulan]** Fase P1 tidak menampilkan anjuran tentang susu selain yang tertulis di S4, dan tidak memberi saran tentang alergen (urutan, waktu pengenalan). Perbandingan dengan WHO dan IDAI dilakukan setelah dokumennya ada.
 - Keputusan: **[tunggu]**
+
+## K17. Umur untuk tahap MPASI pada bayi prematur (belum ada sumber)
+
+- Buku KIA 2024 menulis tahap MPASI per umur (6–8, 9–11, 12–23 bulan) tanpa menyebut usia koreksi [baca]. Buku KIA Khusus Bayi Kecil tidak memuat kata MPASI [baca].
+- **[usulan, dipakai di P1]** Kartu "Tahap sekarang" memakai **umur kronologis**, dan untuk bayi dengan usia kehamilan tercatat < 37 minggu menampilkan kalimat "Bayi lahir prematur: tanyakan ke tenaga kesehatan kapan mulai MPASI dan tahap mana yang sesuai." Ini perlu dikonfirmasi tenaga kesehatan.
+- Keputusan: **[tunggu]**

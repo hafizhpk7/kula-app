@@ -7,6 +7,7 @@ import { formatIndonesianDate } from "../../../utils/dates";
 import { calculateCostSummary, formatRupiah } from "../../../utils/calc";
 import { KuraBerenang } from "../../../components/common/LautKura";
 import { GridFitur, UbinFitur } from "../../../components/common/UbinFitur";
+import { FEATURES } from "../../../config/features";
 import { PWABanner } from "../components/PWABanner";
 import { umurKronologis, umurUntukPerkembangan } from "../tumbuhkembang/logic/umur";
 import { urutkanJurnal } from "../tumbuhkembang/logic/jurnal";
@@ -138,7 +139,7 @@ export const BerandaView: React.FC<Props> = ({ profile, paymentMode, tumbuhKemba
 
       {/* Grid ubin */}
       <GridFitur judul="Fitur Bayi">
-        {ubinBeranda({ tumbuhKembang }).map((f) => (
+        {ubinBeranda({ tumbuhKembang, mpasi: FEATURES.mpasi }).map((f) => (
           <UbinFitur
             key={f.id}
             label={f.label}

@@ -9,6 +9,7 @@ import {
   Puzzle,
   Receipt,
   Ruler,
+  Soup,
   Sparkles,
   Sprout
 } from "lucide-react";
@@ -23,6 +24,8 @@ import type { ShellTab } from "../../../shell/components/AppShell";
 
 export interface BenderaFitur {
   tumbuhKembang: boolean;
+  /** Flag MPASI (P1). Tanpa nilai dianggap mati. */
+  mpasi?: boolean;
 }
 
 export type IdFitur =
@@ -33,6 +36,7 @@ export type IdFitur =
   | "stimulasi"
   | "pertumbuhan"
   | "momen"
+  | "mpasi"
   | "ringkasanDokter"
   | "biaya"
   | "infoVaksin";
@@ -47,6 +51,8 @@ export interface Fitur {
   warna: WarnaUbin;
   /** Hanya tampil bila flag tumbuhKembang menyala. */
   butuhTumbuhKembang: boolean;
+  /** Hanya tampil bila flag mpasi menyala. */
+  butuhMpasi?: boolean;
 }
 
 export const FITUR: Record<IdFitur, Fitur> = {
@@ -57,6 +63,7 @@ export const FITUR: Record<IdFitur, Fitur> = {
   stimulasi: { id: "stimulasi", label: "Stimulasi", path: "/bayi/stimulasi", ikon: Puzzle, warna: "toska", butuhTumbuhKembang: true },
   pertumbuhan: { id: "pertumbuhan", label: "Pertumbuhan", labelUbin: "Pertum\u00ADbuhan", path: "/bayi/pertumbuhan", ikon: Ruler, warna: "ungu", butuhTumbuhKembang: true },
   momen: { id: "momen", label: "Momen", path: "/bayi/momen", ikon: Sparkles, warna: "coral", butuhTumbuhKembang: true },
+  mpasi: { id: "mpasi", label: "MPASI", path: "/bayi/mpasi", ikon: Soup, warna: "kuning", butuhTumbuhKembang: false, butuhMpasi: true },
   ringkasanDokter: { id: "ringkasanDokter", label: "Ringkasan dokter", path: "/bayi/ringkasan-dokter", ikon: ClipboardList, warna: "ungu", butuhTumbuhKembang: true },
   biaya: { id: "biaya", label: "Biaya vaksin", path: "/bayi/biaya", ikon: Receipt, warna: "kuning", butuhTumbuhKembang: false },
   infoVaksin: { id: "infoVaksin", label: "Info vaksin", path: "/bayi/info-vaksin", ikon: BookOpen, warna: "langit", butuhTumbuhKembang: false }
@@ -65,7 +72,7 @@ export const FITUR: Record<IdFitur, Fitur> = {
 /** Paling banyak 8 ubin di Beranda (2 baris × 4 kolom); lebihnya diganti ubin "Semua". */
 export const MAKS_UBIN_BERANDA = 8;
 
-const URUT_BERANDA: IdFitur[] = ["jadwal", "milestone", "stimulasi", "pertumbuhan", "momen", "biaya", "infoVaksin"];
+const URUT_BERANDA: IdFitur[] = ["jadwal", "milestone", "stimulasi", "pertumbuhan", "momen", "mpasi", "biaya", "infoVaksin"];
 const URUT_LAINNYA: IdFitur[] = [
   "kunjungan",
   "jadwal",
@@ -74,12 +81,13 @@ const URUT_LAINNYA: IdFitur[] = [
   "stimulasi",
   "pertumbuhan",
   "momen",
+  "mpasi",
   "ringkasanDokter",
   "biaya",
   "infoVaksin"
 ];
 
-const menyala = (b: BenderaFitur) => (id: IdFitur) => !FITUR[id].butuhTumbuhKembang || b.tumbuhKembang;
+const menyala = (b: BenderaFitur) => (id: IdFitur) => (!FITUR[id].butuhTumbuhKembang || b.tumbuhKembang) && (!FITUR[id].butuhMpasi || !!b.mpasi);
 
 export type UbinBeranda = Fitur | { id: "semua"; label: string; path: string; ikon: ElementType; warna: WarnaUbin };
 
@@ -101,7 +109,7 @@ export function ubinLainnya(b: BenderaFitur): Fitur[] {
  */
 export function tabBayiBaru(b: BenderaFitur): ShellTab[] {
   const beranda: ShellTab = { path: "/bayi/beranda", label: "Beranda", icon: LayoutDashboard };
-  const lainnyaDasar = ["/bayi/info-vaksin", "/bayi/pengaturan"];
+  const lainnyaDasar = ["/bayi/info-vaksin", "/bayi/pengaturan", "/bayi/mpasi"];
   if (b.tumbuhKembang) {
     return [
       beranda,

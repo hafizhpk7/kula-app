@@ -86,6 +86,8 @@ export const BayiLayout: React.FC = () => {
   // Halaman Momen (flag revisiBayi): "Tambah momen" jadi aksi utama di bar aplikasi. Lembar tambah dibuka lewat ?tambah=1.
   // Tidak dibatasi mode lihat saja: anggota keluarga boleh menulis momen (J1).
   const diMomen = FEATURES.revisiBayi && FEATURES.tumbuhKembang && pathname.endsWith("/momen");
+  // Halaman MPASI (flag mpasi): "Catat makan" jadi aksi utama. Anggota keluarga boleh menulis, seperti momen.
+  const diMpasi = FEATURES.mpasi && pathname.endsWith("/mpasi");
 
   return (
     <>
@@ -104,6 +106,8 @@ export const BayiLayout: React.FC = () => {
         primaryAction={
           diMomen && !hasNoProfiles
             ? { label: "Tambah momen", shortLabel: "Tambah", icon: Plus, onClick: () => navigate("/bayi/momen?tambah=1", { replace: true }) }
+            : diMpasi && !hasNoProfiles
+            ? { label: "Catat makan", shortLabel: "Catat", icon: Plus, onClick: () => navigate("/bayi/mpasi?makan=1", { replace: true }) }
             : tampilkanAksi && barisBerikutnya
             ? {
                 label: "Tandai selesai",

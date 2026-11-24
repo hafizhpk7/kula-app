@@ -158,6 +158,29 @@ export interface StimulasiCatatan {
   updatedBy?: string;
 }
 
+/** Tekstur sesuai istilah Buku KIA 2024 hlm PDF 31: lumat (disaring), cincang, makanan keluarga (diiris). */
+export type TeksturMakan = "lumat" | "cincang" | "keluarga";
+
+/** Satu kali makan yang dicatat (MPASI, P1). Data kesehatan seperlunya: penanda reaksi hanya ya/tidak. */
+export interface CatatanMakan {
+  id: string;
+  /** yyyy-MM-dd */
+  tanggal: string;
+  /** Nama bahan seperti diketik orang tua, 1–8 bahan. */
+  bahan: string[];
+  tekstur?: TeksturMakan;
+  /** Porsi opsional dalam satuan Buku KIA: sendok makan atau mangkok 250 ml. */
+  porsi?: { jumlah: number; satuan: "sdm" | "mangkok" };
+  reaksi?: ReaksiStimulasi;
+  catatan?: string;
+  /** Penanda saja: tanpa daftar gejala, tingkat keparahan, atau foto. */
+  adaReaksiTidakBiasa?: boolean;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
 export interface Profile {
   id: string;
   panggilan: string;
@@ -176,6 +199,8 @@ export interface Profile {
   /** Jurnal momen. Di mode keluarga disusun dari subkoleksi, bukan dari dokumen anak. */
   jurnal?: JurnalMomen[];
   stimulasi?: StimulasiCatatan[];
+  /** Catatan makan MPASI. Di mode keluarga disusun dari subkoleksi `makan`. */
+  makan?: CatatanMakan[];
 }
 
 export type PaymentMode = "HYBRID" | "FULL_PRIVATE" | "FULL_BPJS";

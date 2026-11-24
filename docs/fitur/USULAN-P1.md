@@ -1,6 +1,6 @@
 # Usulan Fase P1: MPASI
 
-Status: **langkah 1 selesai, langkah 2 menunggu ok**. Belum ada perubahan ke tipe, repository, atau `firestore.rules`.
+Status: **langkah 1–3 selesai** (skema dan K14–K16 disetujui 24 November 2026). Di balik flag `mpasi`; rules `makan` belum di-deploy.
 
 ## Langkah 1: sumber (ringkas)
 
@@ -117,3 +117,13 @@ Indeks: tidak perlu. Datanya dibaca per anak tanpa kueri gabungan.
 ### Yang tidak disimpan
 
 Daftar gejala, tingkat keparahan, foto reaksi, nama obat, dan diagnosis alergi. Kalau orang tua menulis hal itu di `catatan`, tulisan itu tetap tersimpan sebagai teks bebas. Teks bantuan di form akan menyarankan menulis seperlunya.
+
+## Langkah 3: implementasi (24 November 2026)
+
+- Flag `mpasi` (`VITE_FEATURE_MPASI`, default mati). Rute `/bayi/mpasi` dimuat lazy; ubin MPASI di Beranda dan Lainnya hanya saat flag menyala.
+- Kartu "Tahap sekarang" dari `content/mpasi/tahap.json` (Buku KIA hlm PDF 31, sesuai K14), dengan umur kronologis dan catatan untuk bayi prematur (K17, [tunggu]).
+- Lembar "Catat makan" dibuka dari tombol aksi utama (`?makan=1`; bukan `?catat=` yang sudah dipakai BayiLayout untuk jalan pintas imunisasi).
+- Daftar "Makanan yang sudah dicoba" diturunkan dari catatan; ketuk satu bahan untuk melihat riwayat, mengubah, dan menghapus (dengan konfirmasi, sesuai peran).
+- "Ada reaksi tidak biasa": arahan ke bidan, dokter, atau perawat; tanda bahaya hlm 27 apa adanya; tombol telepon ambulans 119 untuk kejang, sesak napas, dan tampak biru (K15).
+- Rules `makan` dan 11 tes emulator; total `npm run test:rules` 160 lulus.
+- Bukti tampilan di `docs/fitur/p1/`.

@@ -1,0 +1,76 @@
+{
+  "id": "mpasi-tahap",
+  "sumber": "Buku KIA 2024 (Kemenkes)",
+  "versi": "2024",
+  "perluReview": true,
+  "catatanTranskripsi": "Tahap diambil dari hlm PDF 31 (cetak 58-59), sesuai keputusan SUMBER-KONFLIK K14. Kalimat diringkas tanpa mengubah angka. Energi (kkal) dan kebutuhan cairan (ml) sengaja tidak ditampilkan supaya tidak terbaca sebagai target harian.",
+  "mulai": { "umurBulan": 6, "teks": "MPASI diberikan mulai usia 6 bulan.", "halamanPdf": [31] },
+  "tahap": [
+    {
+      "id": "6-8",
+      "umurMinBulan": 6,
+      "umurMaxBulan": 8,
+      "tekstur": "lumat",
+      "teksturTeks": "Makanan disaring, teksturnya lumat dan kental.",
+      "porsiTeks": "2-3 sendok makan, bertahap hingga 1/2 mangkok ukuran 250 ml (125 ml) setiap kali makan.",
+      "frekuensiTeks": "2-3 kali makanan utama dan 1-2 kali makanan selingan setiap hari.",
+      "lainnya": ["Lanjutkan menyusui."],
+      "halamanPdf": [31],
+      "halamanCetak": [58, 59]
+    },
+    {
+      "id": "9-11",
+      "umurMinBulan": 9,
+      "umurMaxBulan": 11,
+      "tekstur": "cincang",
+      "teksturTeks": "Bahan makanan sama dengan untuk orang dewasa, teksturnya dicincang. Perhatikan respons anak saat makan.",
+      "porsiTeks": "1/2-3/4 mangkok ukuran 250 ml (125-200 ml) setiap kali makan.",
+      "frekuensiTeks": "3-4 kali makanan utama dan 1-2 kali makanan selingan setiap hari.",
+      "lainnya": ["Lanjutkan menyusui."],
+      "halamanPdf": [31],
+      "halamanCetak": [58, 59]
+    },
+    {
+      "id": "12-23",
+      "umurMinBulan": 12,
+      "umurMaxBulan": 23,
+      "tekstur": "keluarga",
+      "teksturTeks": "Bahan makanan sama dengan untuk orang dewasa, dimasak biasa dan teksturnya diiris-iris. Perhatikan respons anak saat makan.",
+      "porsiTeks": "3/4-1 mangkok ukuran 250 ml setiap kali makan.",
+      "frekuensiTeks": "3-4 kali makanan utama dan 1-2 kali makanan selingan setiap hari.",
+      "lainnya": ["Lanjutkan menyusui hingga 2 tahun atau lebih."],
+      "halamanPdf": [31],
+      "halamanCetak": [58, 59]
+    }
+  ],
+  "anjuranUmum": [
+    { "teks": "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.", "halamanPdf": [30] },
+    { "teks": "Masak dengan direbus atau dikukus. Hindari makanan yang digoreng, mengandung bahan pengawet, serta tinggi gula dan garam.", "halamanPdf": [30] },
+    { "teks": "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak.", "halamanPdf": [31] },
+    { "teks": "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV).", "halamanPdf": [31] }
+  ],
+  "tandaBahaya": {
+    "judul": "Tanda bahaya pada balita 29 hari-5 tahun",
+    "arahan": "Jika anak mengalami tanda bahaya, segera periksa ke bidan, dokter, atau perawat.",
+    "daftar": [
+      "Diare.",
+      "Demam/panas tinggi.",
+      "Kejang.",
+      "Muntah-muntah.",
+      "Pendarahan di hidung/kulit/BAB.",
+      "Pembengkakan yang nyeri di belakang telinga.",
+      "Sesak napas.",
+      "Tampak biru (sianosis).",
+      "Tidak bisa minum."
+    ],
+    "halamanPdf": [27],
+    "halamanCetak": [50, 51]
+  },
+  "gawat": {
+    "tanda": ["Kejang.", "Sesak napas.", "Tampak biru (sianosis)."],
+    "nomor": "119",
+    "label": "Ambulans",
+    "halamanPdf": [79],
+    "catatan": "Nomor 119 Ambulans dari daftar nomor penting Buku KIA hlm PDF 79. Pemilihan tiga tanda ini sebagai gawat adalah usulan aplikasi, bukan isi sumber (SUMBER-KONFLIK K15)."
+  }
+}
