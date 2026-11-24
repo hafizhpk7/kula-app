@@ -152,3 +152,22 @@ describe("RingkasanDokterView", () => {
     expect(screen.queryByRole("table", { name: "Imunisasi yang sudah diberikan" })).not.toBeInTheDocument();
   });
 });
+
+describe("RingkasanDokterView: pertanyaan dari orang tua (Asisten P3b)", () => {
+  it("tampil bila ada, tidak tampil bila kosong", () => {
+    const { unmount } = render(
+      <MemoryRouter>
+        <RingkasanDokterView profile={profil()} sekarang={SEKARANG} onCetak={() => {}} pertanyaan={["Kapan boleh makan telur?"]} />
+      </MemoryRouter>
+    );
+    expect(screen.getByRole("heading", { name: "Pertanyaan dari orang tua" })).toBeInTheDocument();
+    expect(screen.getByText("Kapan boleh makan telur?")).toBeInTheDocument();
+    unmount();
+    render(
+      <MemoryRouter>
+        <RingkasanDokterView profile={profil()} sekarang={SEKARANG} onCetak={() => {}} pertanyaan={[]} />
+      </MemoryRouter>
+    );
+    expect(screen.queryByRole("heading", { name: "Pertanyaan dari orang tua" })).not.toBeInTheDocument();
+  });
+});

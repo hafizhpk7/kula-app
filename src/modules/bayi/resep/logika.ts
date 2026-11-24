@@ -85,7 +85,8 @@ export interface HasilSaring {
   disembunyikan: { resep: Resep; karena: string[] }[];
 }
 
-const kataSama = (nama: string, kata: string) => {
+/** Kata utuh: `kata` muncul sebagai rangkaian kata di `nama` (mis. "hati ayam" di "Semur hati ayam"). */
+export const kataSama = (nama: string, kata: string) => {
   const a = ` ${kunciBahan(nama).replace(/[^\p{L}\p{N}]+/gu, " ")} `;
   const b = kunciBahan(kata).replace(/[^\p{L}\p{N}]+/gu, " ").trim();
   return b.length >= 3 && a.includes(` ${b} `);

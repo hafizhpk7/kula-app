@@ -30,7 +30,7 @@ export const LainnyaView: React.FC<Props> = ({ tumbuhKembang, panggilan }) => {
           Semua fitur
         </h2>
         <GridFitur judul="Semua fitur Bayi">
-          {ubinLainnya({ tumbuhKembang, mpasi: FEATURES.mpasi, resep: FEATURES.resep }).map((f) => (
+          {ubinLainnya({ tumbuhKembang, mpasi: FEATURES.mpasi, resep: FEATURES.resep, asisten: FEATURES.asisten }).map((f) => (
             <UbinFitur key={f.id} label={f.label} labelTampil={f.labelUbin} to={f.path} ikon={f.ikon} warna={f.warna} />
           ))}
         </GridFitur>
