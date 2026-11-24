@@ -435,3 +435,16 @@ Tidak ada pose tidur (D6), menyusu, atau makan. Butir yang tidak cocok dengan ge
 ## Urutan yang diusulkan
 
 R1 → R2 → R3a → (R3b langkah 1, ok) → R3b → R4a (stop untuk dinilai) → R4b → P1 → P2 → P3a → P3b. R3a bisa dikerjakan sebelum R2 karena tidak bergantung pada pemecahan hub, tapi tautan dari Milestone ke Momen lebih bersih kalau R2 lebih dulu.
+
+## Status R1 (2026-11-24)
+
+Branch `feat/revisi-bayi-r1`, dibuat dari `feat/revisi-bayi-r0` karena dokumen ini belum masuk `main`.
+
+- Flag `FEATURES.revisiBayi` (`VITE_FEATURE_REVISI_BAYI`), default mati. Saat mati, navigasi, Beranda, dan ikon Pengaturan di sidebar sama seperti sebelumnya.
+- Navigasi 4 slot dari `src/modules/bayi/beranda/fitur.ts` (sumber tunggal tempat fitur). "Lainnya" tampak aktif di halaman tanpa slot sendiri (`ShellTab.aktifJuga`). Rail tablet/desktop memakai daftar yang sama.
+- `UbinFitur` dan `GridFitur` di `src/components/common/UbinFitur.tsx`, token `--ubin-*` (RV2) dengan kontras ikon/latar 6,6:1 sampai 9,8:1 di terang dan gelap.
+- Beranda baru (`BerandaView`) dan halaman `/bayi/lainnya`. Pengaturan Bayi dibuka dari Lainnya (tombol kembali ke Lainnya) dan tetap dari Pengaturan global lewat menu akun.
+- Sampai R2/R3a, ubin Milestone, Stimulasi, dan Pertumbuhan membuka `/bayi/tumbuh-kembang?bagian=...` (halaman menggulir ke bagiannya), dan ubin Momen membuka `/bayi/jurnal`.
+- Tidak ada rute lama yang dihapus. Rute baru `/bayi/lainnya` dialihkan ke Beranda bila flag mati.
+- **"Waktunya ukur" tanpa interval:** halaman jadwal timbang di Pedoman/KIA tidak bisa dibaca di mesin ini (PDF butuh `pdftoppm`/poppler yang belum terpasang). Butir hanya muncul bila belum ada catatan ukuran, sesuai jalur cadangan di 2.1.
+- **KPSP "sudah bisa diisi"** = umur bulat (K3, usia koreksi bila ada) tepat di titik jadwal rutin (K1) dan formulir umur itu belum disimpan. Tidak ada aturan baru.
