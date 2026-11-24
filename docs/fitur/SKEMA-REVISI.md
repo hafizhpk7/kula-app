@@ -1,6 +1,6 @@
 # SKEMA-REVISI: Revisi modul Bayi (Fase R0)
 
-Status: **usulan, menunggu persetujuan.** Tidak ada kode yang berubah di fase ini.
+Status: **disetujui 2026-11-24** (semua usulan: D1–D8 dengan perubahan di bagian 5, RV1–RV3, termasuk pencabutan C1 untuk D6). Tidak ada kode yang berubah di fase ini.
 Dasar: `docs/prompts/kula-6-revisi-bayi-dan-roadmap.md` (D1–D8), kode `main` per `c8ff955`.
 Label bukti: [kode] dibaca dari kode, [lihat] dilihat dari gambar, [hitung] dihitung di dokumen ini.
 
