@@ -1,4 +1,4 @@
-import { AppState, JurnalMomen, PaymentMode, StimulasiCatatan, ScheduleRow, VaccineRecord } from "../../../types";
+import { AppState, CatatanMakan, JurnalMomen, PaymentMode, StimulasiCatatan, ScheduleRow, VaccineRecord } from "../../../types";
 
 export interface BayiRepository {
   /**
@@ -43,6 +43,10 @@ export interface BayiRepository {
   /** Catatan stimulasi harian ("dicoba" dan "sembunyi"). Jalur tulis sendiri, sama alasannya dengan jurnal. */
   saveStimulasi(babyId: string, catatan: StimulasiCatatan): Promise<void>;
   deleteStimulasi(babyId: string, id: string): Promise<void>;
+
+  /** Catatan makan MPASI (P1). Jalur tulis sendiri, sama alasannya dengan jurnal: anggota keluarga boleh menulis. */
+  saveMakan(babyId: string, catatan: CatatanMakan): Promise<void>;
+  deleteMakan(babyId: string, id: string): Promise<void>;
 
   /**
    * Resets all baby data.

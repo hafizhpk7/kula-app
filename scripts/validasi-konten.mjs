@@ -88,6 +88,30 @@ function periksaAturan(path) {
 }
 
 
+function periksaMpasi(path) {
+  if (!existsSync(path)) return catat(path, "berkas tahap MPASI tidak ada");
+  const d = baca(path);
+  if (!d) return;
+  periksaMeta(path, d);
+  if (d.perluReview !== true) catat(path, "perluReview harus true sampai ditinjau tenaga kesehatan");
+  if (!Array.isArray(d.tahap) || d.tahap.length === 0) return catat(path, "tahap kosong");
+  let akhirSebelum = (d.mulai?.umurBulan ?? 0) - 1;
+  d.tahap.forEach((t, i) => {
+    const lokasi = `${path} tahap ${i + 1}`;
+    if (!Number.isInteger(t.umurMinBulan) || !Number.isInteger(t.umurMaxBulan) || t.umurMinBulan > t.umurMaxBulan) catat(lokasi, "rentang umur tidak valid");
+    if (t.umurMinBulan !== akhirSebelum + 1) catat(lokasi, "rentang umur tidak bersambung");
+    akhirSebelum = t.umurMaxBulan;
+    if (!["lumat", "cincang", "keluarga"].includes(t.tekstur)) catat(lokasi, `tekstur tidak dikenal: ${t.tekstur}`);
+    for (const k of ["teksturTeks", "porsiTeks", "frekuensiTeks"]) if (!punyaTeks(t[k])) catat(lokasi, `${k} kosong`);
+    if (!Array.isArray(t.halamanPdf) || t.halamanPdf.length === 0) catat(lokasi, "halamanPdf kosong");
+    // Tanpa dosis dan target: tidak boleh ada kkal atau ml per hari di teks tahap.
+    if (/kkal|ml\/hari/i.test(`${t.teksturTeks} ${t.porsiTeks} ${t.frekuensiTeks}`)) catat(lokasi, "ada kkal atau ml/hari (sengaja tidak ditampilkan)");
+  });
+  if (!Array.isArray(d.tandaBahaya?.daftar) || d.tandaBahaya.daftar.length === 0) catat(path, "daftar tanda bahaya kosong");
+  for (const g of d.gawat?.tanda ?? []) if (!d.tandaBahaya.daftar.includes(g)) catat(path, `tanda gawat "${g}" tidak ada di daftar tanda bahaya sumber`);
+  if (d.gawat?.nomor !== "119") catat(path, "nomor gawat harus 119 (Buku KIA hlm 79)");
+}
+
 const DERET_PERTUMBUHAN = {
   bbu: { mingguan: [0, 13, 1], bulanan: [0, 60, 1] },
   pbtbu: { mingguan: [0, 13, 1], bulananPB: [0, 24, 1], bulananTB: [24, 60, 1] },
@@ -192,6 +216,7 @@ periksaAturan(join(DIR, "aturan.json"));
 periksaPertumbuhan(join(DIR, "pertumbuhan"));
 periksaAturanPertumbuhan(join(DIR, "aturan-pertumbuhan.json"));
 periksaStimulasi(join(DIR, "stimulasi", "aktivitas.json"));
+periksaMpasi(join(DIR, "mpasi", "tahap.json"));
 
 if (galat.length) {
   console.error(`Validasi konten GAGAL (${galat.length}):`);

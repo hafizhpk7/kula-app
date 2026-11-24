@@ -4,6 +4,7 @@ import { ChevronRight, HelpCircle, Settings } from "lucide-react";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { GridFitur, UbinFitur } from "../../../components/common/UbinFitur";
+import { FEATURES } from "../../../config/features";
 import { ASSUMPTIONS_AND_NOTES } from "../../../data/seed";
 import { DisclaimerTumbuhKembang } from "../tumbuhkembang/components/DisclaimerTumbuhKembang";
 import { ubinLainnya } from "./fitur";
@@ -29,7 +30,7 @@ export const LainnyaView: React.FC<Props> = ({ tumbuhKembang, panggilan }) => {
           Semua fitur
         </h2>
         <GridFitur judul="Semua fitur Bayi">
-          {ubinLainnya({ tumbuhKembang }).map((f) => (
+          {ubinLainnya({ tumbuhKembang, mpasi: FEATURES.mpasi }).map((f) => (
             <UbinFitur key={f.id} label={f.label} labelTampil={f.labelUbin} to={f.path} ikon={f.ikon} warna={f.warna} />
           ))}
         </GridFitur>

@@ -140,3 +140,17 @@ Tidak ada di repo (semuanya opsional): Petunjuk Teknis Buku KIA Khusus Bayi Keci
 - Sumber untuk aturan jadwal imunisasi pada bayi prematur (butir 12).
 - Isi WHO motor milestones belum dibuka.
 - Ketentuan lisensi tiap penerbit belum diperiksa.
+
+## 7. Sumber MPASI (Fase P1, ditambahkan 24 November 2026)
+
+Diperiksa di Fase P1 langkah 1. Nomor halaman = halaman PDF, nomor cetak di dalam kurung. [baca] = dibaca dari teks halaman dengan `scripts/pdfteks.swift`.
+
+| ID | Dokumen | Ada di repo? | Isi yang relevan |
+|---|---|---|---|
+| S4 | Buku KIA 2024 (`Buku_KIA_2024.pdf`) | **Ya** | **Acuan utama MPASI.** Hlm 30 (56–57): MPASI 6–12 bulan, kelompok bahan, "perkenalkan makanan satu per satu sambil memperhatikan alergi". Hlm 31 (58–59): syarat MPASI (tepat waktu, adekuat, aman, cara benar) dan tahap per umur 6–8, 9–11, 12–23 bulan (tekstur, porsi, frekuensi, cairan). Hlm 34 (64–65): MPASI 12–24 bulan. Hlm 63 (122–123): tabel nasihat tenaga kesehatan (variasi, tekstur, jumlah, frekuensi) per umur. Hlm 27 (50–51): tanda bahaya balita 29 hari–5 tahun. Hlm 79: nomor telepon penting (119 ambulans). [baca] |
+| S10 | Pedoman/Buku Saku **PMBA** Kemenkes (Pemberian Makan Bayi dan Anak) | **Tidak** | Rujukan resmi tenaga kesehatan untuk MPASI. Buku KIA hanya menyebut tautan konseling `telekonseling-pmba-kemenkes.com` (hlm 79). |
+| S11 | Rekomendasi **IDAI** tentang pemberian makan bayi dan batita / MPASI | **Tidak** | Pembanding dari perhimpunan dokter anak Indonesia. |
+| S12 | **WHO Guideline for complementary feeding of infants and young children 6–23 months (2023)** | **Tidak** | Pembanding internasional. **Lisensi: CC BY-NC-SA 3.0 IGO** (nonkomersial, berbagi serupa, wajib atribusi). Isinya tidak boleh disalin ke aplikasi bila Kula dipakai secara komersial; cukup dirujuk. Lisensi dicatat sesuai keterangan pengguna dan lisensi baku publikasi WHO; cek ulang di halaman hak cipta dokumen begitu berkasnya ada. |
+| S13 | Kumpulan resep MPASI Kemenkes (`link.kemkes.go.id/ResepMPASI2`, dirujuk Buku KIA hlm 79) | **Tidak** | Untuk Fase P2 (Resep). Buku KIA hlm 31–32 sudah memuat beberapa contoh resep. |
+
+**Kesimpulan langkah 1:** sumber utama Indonesia **ada** (Buku KIA 2024, terbitan Kemenkes), jadi Fase P1 tidak berhenti. Isi aplikasi untuk tahap MPASI hanya diambil dari S4. S10–S12 kurang dan sebaiknya ditambahkan sebagai pembanding dan bahan tinjauan tenaga kesehatan, terutama karena tanda reaksi alergi yang spesifik **tidak ada** di S4 (lihat SUMBER-KONFLIK K15).

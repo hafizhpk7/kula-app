@@ -1,9 +1,10 @@
-import { AppState, JurnalMomen, PaymentMode, Record, StimulasiCatatan, ScheduleRow } from "../../../types";
+import { AppState, CatatanMakan, JurnalMomen, PaymentMode, Record, StimulasiCatatan, ScheduleRow } from "../../../types";
 import { clearAllData, getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { saveStateToCloud, subscribeToCloudState } from "../../../services/firebase";
 import { BayiRepository } from "./types";
 import { aturMomen, hapusMomenDari } from "../tumbuhkembang/logic/jurnal";
 import { aturCatatan, hapusCatatanDari } from "../tumbuhkembang/logic/stimulasi";
+import { aturMakan, hapusMakanDari } from "../mpasi/logika";
 
 export class PersonalCloudBayiRepository implements BayiRepository {
   private seedingAttempted = false;
@@ -201,6 +202,24 @@ export class PersonalCloudBayiRepository implements BayiRepository {
     const updated: AppState = {
       ...cur,
       profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, stimulasi: hapusCatatanDari(p.stimulasi, id) } : p))
+    };
+    return this.saveState(updated);
+  }
+
+  async saveMakan(babyId: string, catatan: CatatanMakan): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, makan: aturMakan(p.makan, catatan) } : p))
+    };
+    return this.saveState(updated);
+  }
+
+  async deleteMakan(babyId: string, id: string): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, makan: hapusMakanDari(p.makan, id) } : p))
     };
     return this.saveState(updated);
   }
