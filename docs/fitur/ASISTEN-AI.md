@@ -1,6 +1,6 @@
 # Asisten AI (Fase P3a, rancangan)
 
-Status: **rancangan, tanpa kode produksi.** Ditulis 24 November 2026. Tahap 1 siap dikerjakan di P3b. **Tahap 2 menunggu keputusan pemilik.**
+Status: **rancangan disetujui sebagian (24 November 2026).** P3b mengerjakan **Tahap 1 saja**. Tahap 2 ditunda: bagian 3 dan 6 tetap sebagai rujukan, tanpa Worker dan tanpa `wrangler`.
 
 Label bukti: [lihat] dibaca langsung dari halaman atau kode, [hitung] dihitung dari angka resmi, [tidak dites] belum dicoba, perlu dibuktikan di P3b.
 
@@ -323,7 +323,7 @@ Bila Tahap 2 jalan, `wrangler` ditambahkan sebagai devDependency hanya di `worke
 
 ## 8. Yang perlu diputuskan pemilik
 
-1. **Tahap 2 jalan atau tidak.** Bila jalan, Worker, Durable Object, dan evaluasi model dikerjakan di P3b tanpa deploy.
+1. ~~Tahap 2 jalan atau tidak.~~ **Diputuskan 24 November 2026: Tahap 1 dulu.** Tahap 2 ditunda sampai diputuskan lagi.
 2. Kuota per pengguna (usulan 5 per hari) dan kuota global (usulan 80% kapasitas).
 3. Ok untuk pembersihan dependency (bagian 7).
 4. Opsional: ringkasan MPASI di `RingkasanDokterView` (2.4).
