@@ -6,12 +6,12 @@ import { KONTEN_MPASI } from "../logika";
  * Arahan saat orang tua menandai "ada reaksi tidak biasa" (SUMBER-KONFLIK K15). Tanpa diagnosis dan tanpa dosis:
  * hanya mengarahkan ke tenaga kesehatan, menampilkan tanda bahaya dari Buku KIA apa adanya, dan nomor ambulans 119.
  */
-export const PanduanReaksi: React.FC<{ ringkas?: boolean }> = ({ ringkas }) => {
+export const PanduanReaksi: React.FC<{ ringkas?: boolean; pembuka?: string }> = ({ ringkas, pembuka }) => {
   const { tandaBahaya, gawat, sumber } = KONTEN_MPASI;
   return (
     <div role="note" aria-label="Panduan reaksi tidak biasa" className="rounded-control border border-border-strong bg-surface-sunken p-3 space-y-3">
       <p className="text-[14px] text-text leading-relaxed">
-        Bicarakan reaksi ini dengan bidan, dokter, atau perawat. Aplikasi ini tidak bisa menilai penyebabnya.
+        {pembuka ?? "Bicarakan reaksi ini dengan bidan, dokter, atau perawat. Aplikasi ini tidak bisa menilai penyebabnya."}
       </p>
       <div className="rounded-control border border-danger/40 bg-danger-tint p-3 space-y-2">
         <p className="flex items-start gap-2 text-[14px] font-semibold text-danger-text">

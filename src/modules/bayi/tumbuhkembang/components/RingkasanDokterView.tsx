@@ -14,6 +14,8 @@ interface Props {
   sekarang?: Date;
   /** Hanya untuk tes: cegah window.print. */
   onCetak?: () => void;
+  /** Pertanyaan dari orang tua (Asisten, hanya di perangkat). Tampil bila tidak kosong. */
+  pertanyaan?: readonly string[];
 }
 
 const kartu = "bg-surface rounded-card border border-border p-5 print:border-0 print:p-0 print:shadow-none";
@@ -21,7 +23,7 @@ const sel = "text-left align-top py-1.5 pr-3 text-[13px] border-b border-border"
 const kepala = "text-left py-1.5 pr-3 text-[12px] font-semibold text-text-2 border-b border-border-strong";
 
 /** Halaman cetak untuk dokter: profil, imunisasi, hasil KPSP, ukuran dan posisi pertumbuhan, grafik, sumber, tanggal cetak. */
-export const RingkasanDokterView: React.FC<Props> = ({ profile, sekarang, onCetak }) => {
+export const RingkasanDokterView: React.FC<Props> = ({ profile, sekarang, onCetak, pertanyaan }) => {
   const now = sekarang ?? new Date();
   const r = useMemo(() => susunRingkasanDokter(profile, now), [profile, now.toDateString()]); // eslint-disable-line react-hooks/exhaustive-deps
   const grafik = useMemo(() => (profile.jenisKelamin ? indikatorTersedia(profile) : []), [profile]);
@@ -190,6 +192,21 @@ export const RingkasanDokterView: React.FC<Props> = ({ profile, sekarang, onCeta
           </div>
         )}
       </section>
+
+      {pertanyaan && pertanyaan.length > 0 && (
+        <section className={`${kartu} space-y-2`} aria-labelledby="rd-tanya">
+          <h2 id="rd-tanya" className="font-display text-[16px] text-text">
+            Pertanyaan dari orang tua
+          </h2>
+          <ol className="list-decimal pl-5 text-[14px] text-text space-y-1">
+            {pertanyaan.map((t, i) => (
+              <li key={i} className="break-words">
+                {t}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
 
       <section className={`${kartu} space-y-1.5`} aria-labelledby="rd-sumber">
         <h2 id="rd-sumber" className="font-display text-[16px] text-text">

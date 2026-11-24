@@ -328,3 +328,44 @@ Bila Tahap 2 jalan, `wrangler` ditambahkan sebagai devDependency hanya di `worke
 3. Ok untuk pembersihan dependency (bagian 7).
 4. Opsional: ringkasan MPASI di `RingkasanDokterView` (2.4).
 5. Teks layar persetujuan perlu ditinjau soal UU PDP sebelum Tahap 2 dirilis.
+
+---
+
+## 9. Implementasi P3b Tahap 1 (24 November 2026)
+
+Di balik flag `asisten` (`VITE_FEATURE_ASISTEN`, default mati). Rute `/bayi/asisten` dimuat lazy. Ubin "Asisten" hanya di Lainnya.
+
+| Bagian | Berkas |
+|---|---|
+| Normalisasi, akar kata, padanan | `src/modules/bayi/asisten/teks.ts` |
+| Indeks dan pencarian | `src/modules/bayi/asisten/cari.ts` (189 potongan: KPSP/milestone, stimulasi, MPASI, tanda bahaya, resep; ditambah Resep saya berlabel "Resep keluarga") |
+| Pendeteksi bahaya, dosis, diagnosis | `src/modules/bayi/asisten/bahaya.ts` |
+| Masak dari bahan | `src/modules/bayi/asisten/masak.ts` (memakai `saringResep` dan `kataSama` dari Resep) |
+| Pertanyaan untuk dokter | `src/modules/bayi/asisten/dokter.ts` (localStorage per anak, maks 5 × 200 karakter), tampil di `RingkasanDokterView` sebagai "Pertanyaan dari orang tua" |
+| Layar | `asisten/components/AsistenHalaman.tsx` (tab Cari, Masak, Untuk dokter), `pages/AsistenPage.tsx` |
+
+Penyimpangan dari rancangan:
+- **Indeks dibangun di perangkat saat halaman dibuka**, bukan oleh skrip build. Konten sudah divalidasi oleh `scripts/validasi-konten.mjs`, dan syarat "setiap potongan punya sumber dan halaman" dijaga oleh test, jadi skrip build tambahan belum perlu. Skrip build baru dibutuhkan bila Tahap 2 jalan, karena indeks harus dibundel ke Worker.
+- `PanduanReaksi` mendapat prop `pembuka` supaya kalimat pembukanya cocok untuk keadaan selain reaksi makan.
+- Penyaring kelompok "Tanpa ..." dan izin bahan yang pernah bereaksi dilipat di bawah "Penyaring bahan", sama dengan halaman Resep.
+- Kueri "tanpa X" di Cari menyembunyikan potongan yang memuat X.
+- Pemicu bahaya tambahan di luar daftar hlm 27 (lemas, pingsan, susah dibangunkan, ruam, bentol, gatal, bengkak, bintik merah, tersedak) hanya memunculkan daftar hlm 27 dan 119. Teks pemicu itu sendiri tidak pernah ditampilkan. Pilihan pemicu ini adalah usulan aplikasi, bukan isi sumber, dan perlu ditinjau bersama K15.
+
+Bukti:
+- 67 test baru di `src/test/asisten/` dan 1 di `ringkasan_dokter.test.tsx`. Total `npm test` 974 lulus [lihat].
+- Ukuran bundle [hitung]. Bandingannya adalah build `feat/revisi-bayi-p3a` di worktree dengan `node_modules` yang sama.
+  - Muatan awal (index ditambah chunk yang diimpor statis) naik dari 2.308,1 kB ke 2.310,5 kB, atau +2,4 kB mentah. Penyebabnya Rolldown memecah ulang chunk bersama (`seed`, `jsx-runtime`).
+  - `AsistenPage` 23,4 kB (7,6 kB gzip) terpisah.
+  - `ResepPage` mengecil dari 35,0 kB ke 20,0 kB, karena katalog resep pindah ke chunk bersama `saya` (15,3 kB).
+- Screenshot 375px terang dan gelap ada di `docs/fitur/p3b/` [lihat]:
+  1. ubin Lainnya;
+  2. Cari awal;
+  3. hasil dengan sumber;
+  4. tanda bahaya dengan 119;
+  5. dosis;
+  6. Masak;
+  7. Masak dengan resep tersembunyi;
+  8. Untuk dokter;
+  9. Ringkasan dokter dengan pertanyaan.
+- Selama di halaman Asisten (mode tamu, build pratinjau) **tidak ada permintaan jaringan** dan tidak ada galat konsol [lihat, CDP `Network.requestWillBeSent`]. Lebar dokumen 375px, jadi tidak ada gulir samping.
+- Tidak dites: mode pribadi dan keluarga di perangkat nyata, karena tidak ada data yang ditulis ke Firestore oleh fitur ini; pembaca layar nyata [tidak dites].
