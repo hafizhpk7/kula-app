@@ -121,3 +121,39 @@ Status keputusan di kolom kanan bawah tiap butir. K1–K4 sudah disetujui (20 No
 | Kemungkinan penyimpangan (P) | ≤ 6 | "Sebaiknya diperiksa tenaga kesehatan" (tanpa kata penyimpangan) |
 
 Ambang skor di atas dibaca dari hlm 131. Teks UI di tabel ini adalah teks aplikasi, bukan kutipan. Diimplementasikan di `tumbuhkembang/logic/istilah.ts`.
+
+## Fase P1 (MPASI)
+
+Acuan utama = Buku KIA 2024 (S4). Dokumen pembanding (PMBA Kemenkes, IDAI, WHO 2023) belum ada di repo, jadi konflik antar dokumen belum bisa diperiksa; yang tercatat di bawah adalah ketidakkonsistenan di dalam S4 dan batas isi S4.
+
+## K14. Tahap MPASI di Buku KIA: halaman 31 vs tabel halaman 63
+
+- Hlm 31 (58–59), per umur [baca]:
+
+  | Umur | Tekstur | Porsi tiap makan | Frekuensi |
+  |---|---|---|---|
+  | 6–8 bulan | disaring; lumat dan kental | 2–3 sdm bertahap hingga ½ mangkok 250 ml (125 ml) | 2–3 kali makanan utama, 1–2 kali selingan |
+  | 9–11 bulan | dicincang | ½–¾ mangkok 250 ml (125–200 ml) | 3–4 kali utama, 1–2 kali selingan |
+  | 12–23 bulan | masak biasa, diiris-iris | ¾–1 mangkok 250 ml | 3–4 kali utama, 1–2 kali selingan |
+
+- Hlm 63 (122–123), tabel nasihat yang diisi tenaga kesehatan [baca]: tekstur ditulis **empat** pilihan (disaring, dihaluskan, dicincang, makanan rumah) tanpa pembagian umur yang jelas di lapisan teks; porsi 6–8 bulan ditulis "2–3 sdm (½ mangkok ukuran 250 ml)"; ada kolom 24–59 bulan "1 mangkok"; frekuensi ditulis **"Makanan Utama (3x/hari)" dan "Makanan Selingan (2x/hari)"** tanpa pembagian umur.
+- Beda: frekuensi 6–8 bulan (2–3 kali di hlm 31 vs 3 kali di hlm 63), selingan (1–2 vs 2), dan istilah tekstur (3 vs 4 tahap). Urutan kolom tabel hlm 63 bisa tercampur di lapisan teks PDF; halaman belum dilihat sebagai gambar.
+- **[usulan]** Kartu "Tahap sekarang" memakai **hlm 31** (lebih rinci, per umur, dengan kalimat lengkap), mencantumkan halamannya, dan bertanda `perluReview`. Tabel hlm 63 hanya dicatat. Umur 24–59 bulan tidak ditampilkan di P1 (di luar MPASI 6–23 bulan).
+- Keputusan: **[tunggu]**
+
+## K15. Tanda reaksi alergi tidak ada di Buku KIA
+
+- Hlm 30 (57): "perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi" [baca]. Tidak ada daftar tanda reaksi alergi (kata "ruam" tidak muncul di seluruh dokumen; "alergi" hanya di hlm 30 dan formulir riwayat penyakit hlm 51) [baca].
+- Yang ada: **Tanda Bahaya Pada Balita 29 hari–5 tahun**, hlm 27 (50–51): diare, demam/panas tinggi, kejang, muntah-muntah, pendarahan di hidung/kulit/BAB, pembengkakan yang nyeri di belakang telinga, sesak napas, tampak biru (sianosis), tidak bisa minum; arahan "segera periksa ke bidan/dokter/perawat" [baca]. Nomor penting hlm 79: **119 Ambulans** [baca].
+- **[usulan]** Saat "ada reaksi tidak biasa" ditandai, aplikasi:
+  1. mengarahkan ke tenaga kesehatan (bidan, dokter, perawat) dengan kalimat aplikasi, tanpa menyebut jenis reaksi atau penyebabnya;
+  2. menampilkan **daftar tanda bahaya hlm 27 apa adanya** dengan arahan sumber "segera periksa", dan untuk **sesak napas, tampak biru, kejang** menambah "hubungi ambulans 119" (nomor dari hlm 79). Pemilihan tiga tanda itu sebagai "gawat" adalah **usulan Claude, bukan isi sumber**, dan wajib dicek tenaga kesehatan.
+  3. tidak menampilkan daftar tanda alergi dari ingatan. Daftar itu menunggu sumber S10–S12 dan tinjauan tenaga kesehatan.
+- Keputusan: **[tunggu]**
+
+## K16. Pedoman WHO 2023 vs anjuran Indonesia (belum bisa diperiksa)
+
+- Pengguna mencatat bahwa pedoman WHO 2023 mendapat tanggapan kritis dari beberapa perhimpunan dokter anak, terutama soal susu dan alergi. Dokumen WHO dan tanggapan itu **tidak ada di repo**, jadi isinya belum dibaca dan tidak dibandingkan. [belum diperiksa]
+- Yang sudah terlihat dari S4: Buku KIA memasukkan "susu hewani dan produk turunannya" sebagai kelompok bahan MPASI 6–12 bulan (hlm 30), dan untuk 12–24 bulan menganjurkan menghindari susu atau yoghurt rendah lemak (hlm 34) [baca].
+- **[usulan]** Fase P1 tidak menampilkan anjuran tentang susu selain yang tertulis di S4, dan tidak memberi saran tentang alergen (urutan, waktu pengenalan). Perbandingan dengan WHO dan IDAI dilakukan setelah dokumennya ada.
+- Keputusan: **[tunggu]**
