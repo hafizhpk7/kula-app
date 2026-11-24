@@ -1,0 +1,524 @@
+{
+ "id": "resep-mpasi",
+ "sumber": "Buku KIA 2024 (Kemenkes)",
+ "versi": "2024",
+ "perluReview": true,
+ "kelompokBahan": {
+  "telur": "Telur",
+  "susu": "Susu dan olahannya",
+  "ikan": "Ikan",
+  "udang": "Udang",
+  "kacang-kacangan": "Kacang-kacangan (termasuk kedelai dan tempe)",
+  "gandum": "Gandum"
+ },
+ "catatanTranskripsi": "Isi awal hanya dari Buku KIA 2024: dua resep lengkap (hlm PDF 32) dan enam contoh (hlm PDF 31). Waktu memasak tidak ada di sumber, jadi tidak ditulis. Perkedel kentang isi daging (hlm 31) tidak dimasukkan karena sumber tidak menulis langkahnya. Nama kelompok bahan mengikuti kelompok makanan di Buku KIA hlm 31; ini penyaring berdasarkan bahan yang tertulis, bukan penilaian alergi.",
+ "resep": [
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "bubur-sup-daging-kacang-merah",
+   "judul": "Bubur Sup Daging Kacang Merah",
+   "umurMinBulan": 6,
+   "umurMaxBulan": 8,
+   "porsiResep": "Resep untuk 3 porsi",
+   "bahan": [
+    {
+     "nama": "Nasi",
+     "takaran": "50 g (6 sdm)",
+     "alergen": []
+    },
+    {
+     "nama": "Daging ayam cincang",
+     "takaran": "30 g (3 sdm)",
+     "alergen": []
+    },
+    {
+     "nama": "Telur ayam",
+     "takaran": "25 g (1/2 butir)",
+     "alergen": [
+      "telur"
+     ]
+    },
+    {
+     "nama": "Buncis",
+     "takaran": "10 g (1 sdm)",
+     "alergen": []
+    },
+    {
+     "nama": "Wortel",
+     "takaran": "10 g (1 sdm)",
+     "alergen": []
+    },
+    {
+     "nama": "Kacang merah",
+     "takaran": "10 g (1 sdm)",
+     "alergen": [
+      "kacang-kacangan"
+     ]
+    },
+    {
+     "nama": "Bawang daun",
+     "takaran": "10 g (1 batang)",
+     "alergen": []
+    },
+    {
+     "nama": "Seledri",
+     "takaran": "1 batang",
+     "alergen": []
+    },
+    {
+     "nama": "Kaldu ayam",
+     "takaran": "300 ml",
+     "alergen": []
+    },
+    {
+     "nama": "Minyak untuk menumis",
+     "takaran": "2,5 g (1/2 sdt)",
+     "alergen": []
+    },
+    {
+     "nama": "Bawang merah (bumbu halus)",
+     "takaran": "2 siung",
+     "alergen": []
+    },
+    {
+     "nama": "Bawang putih (bumbu halus)",
+     "takaran": "2 siung",
+     "alergen": []
+    },
+    {
+     "nama": "Jeruk, diambil sarinya (buah)",
+     "takaran": "100 g (2 buah)",
+     "alergen": []
+    }
+   ],
+   "langkah": [
+    "Didihkan air kaldu ayam, masukkan kacang merah dan masak sampai empuk.",
+    "Tumis bumbu halus sampai harum, masukkan daging ayam cincang, lalu masak sampai berubah warna.",
+    "Masukkan tumisan daging ayam ke dalam air kaldu, masak sampai daging empuk.",
+    "Masukkan nasi, buncis, dan wortel.",
+    "Tambahkan kocokan telur, aduk merata dan masak sampai matang.",
+    "Haluskan bubur sampai mencapai tekstur yang diinginkan, lalu sajikan."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV)."
+   ],
+   "halamanPdf": [
+    32
+   ],
+   "halamanCetak": [
+    60
+   ],
+   "catatan": "Teksturnya mengikuti tahap umur di kartu Tahap sekarang; resep menulis \"haluskan sampai tekstur yang diinginkan\"."
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "nasi-tim-ikan-kembung-telur-puyuh",
+   "judul": "Nasi Tim Ikan Kembung Telur Puyuh",
+   "umurMinBulan": 9,
+   "umurMaxBulan": 12,
+   "porsiResep": "Resep untuk 3 porsi",
+   "bahan": [
+    {
+     "nama": "Nasi putih",
+     "takaran": "115 g (12 sdm)",
+     "alergen": []
+    },
+    {
+     "nama": "Ikan kembung segar, dihaluskan",
+     "takaran": "30 g (1 potong kecil)",
+     "alergen": [
+      "ikan"
+     ]
+    },
+    {
+     "nama": "Telur puyuh",
+     "takaran": "30 g (3 butir)",
+     "alergen": [
+      "telur"
+     ]
+    },
+    {
+     "nama": "Wortel",
+     "takaran": "15 g (1 potong besar)",
+     "alergen": []
+    },
+    {
+     "nama": "Tomat",
+     "takaran": "10 g (1 buah sedang)",
+     "alergen": []
+    },
+    {
+     "nama": "Minyak kelapa",
+     "takaran": "7,5 g (1,5 sdt)",
+     "alergen": []
+    },
+    {
+     "nama": "Kaldu ayam",
+     "takaran": "75 cc (1/3 gelas belimbing)",
+     "alergen": []
+    },
+    {
+     "nama": "Pepaya, dihaluskan (saus)",
+     "takaran": "50 g (1/2 potong)",
+     "alergen": []
+    },
+    {
+     "nama": "Semangka (buah)",
+     "takaran": "180 g (1 potong besar)",
+     "alergen": []
+    }
+   ],
+   "langkah": [
+    "Masukkan nasi, ikan kembung, telur puyuh, dan minyak kelapa ke dalam mangkok tim.",
+    "Tambahkan air kaldu.",
+    "Masukkan wortel dan tomat, tim hingga matang.",
+    "Angkat, sajikan dengan saus pepaya."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV).",
+    "Perhatikan respons anak saat makan."
+   ],
+   "halamanPdf": [
+    32
+   ],
+   "halamanCetak": [
+    60
+   ]
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "mpasi-keluarga-6-8",
+   "judul": "Bubur dari makanan keluarga (contoh 6-8 bulan)",
+   "umurMinBulan": 6,
+   "umurMaxBulan": 8,
+   "tekstur": "lumat",
+   "bahan": [
+    {
+     "nama": "Nasi putih",
+     "takaran": "30 g",
+     "alergen": []
+    },
+    {
+     "nama": "Dadar telur",
+     "takaran": "35 g",
+     "alergen": [
+      "telur"
+     ]
+    },
+    {
+     "nama": "Sayur kare wortel tempe",
+     "takaran": "20 g",
+     "alergen": [
+      "kacang-kacangan"
+     ]
+    }
+   ],
+   "langkah": [
+    "Nasi, telur dadar, tempe dan wortel (dari sayur kare) dilumatkan kemudian disaring.",
+    "Ditambahkan kuah sayur (santan kare) sampai mendapatkan konsistensi bubur kental.",
+    "Sajikan."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV)."
+   ],
+   "halamanPdf": [
+    31
+   ],
+   "halamanCetak": [
+    59
+   ],
+   "catatan": "Contoh mengolah makanan keluarga yang sudah matang menjadi MPASI."
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "mpasi-keluarga-9-11",
+   "judul": "Nasi cincang dari makanan keluarga (contoh 9-11 bulan)",
+   "umurMinBulan": 9,
+   "umurMaxBulan": 11,
+   "tekstur": "cincang",
+   "bahan": [
+    {
+     "nama": "Nasi putih",
+     "takaran": "45 g",
+     "alergen": []
+    },
+    {
+     "nama": "Ikan kembung bumbu kuning",
+     "takaran": "30 g",
+     "alergen": [
+      "ikan"
+     ]
+    },
+    {
+     "nama": "Tumis buncis",
+     "takaran": "25 g",
+     "alergen": []
+    }
+   ],
+   "langkah": [
+    "Nasi, ikan kembung bumbu kuning dan tumis buncis dicincang.",
+    "Sajikan dengan kuah sayur (santan kare)."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV).",
+    "Perhatikan respons anak saat makan."
+   ],
+   "halamanPdf": [
+    31
+   ],
+   "halamanCetak": [
+    59
+   ],
+   "catatan": "Contoh mengolah makanan keluarga yang sudah matang menjadi MPASI."
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "mpasi-keluarga-12-23",
+   "judul": "Makanan keluarga (contoh 12-23 bulan)",
+   "umurMinBulan": 12,
+   "umurMaxBulan": 23,
+   "tekstur": "keluarga",
+   "bahan": [
+    {
+     "nama": "Nasi putih",
+     "takaran": "55 g",
+     "alergen": []
+    },
+    {
+     "nama": "Semur hati ayam",
+     "takaran": "45 g",
+     "alergen": []
+    },
+    {
+     "nama": "Bening/bobor bayam",
+     "takaran": "20 g",
+     "alergen": []
+    }
+   ],
+   "langkah": [
+    "MPASI untuk anak 12-23 bulan disajikan dalam bentuk makanan keluarga (dicincang tidak besar jika diperlukan)."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV).",
+    "Perhatikan respons anak saat makan."
+   ],
+   "halamanPdf": [
+    31
+   ],
+   "halamanCetak": [
+    59
+   ],
+   "catatan": "Sumber hanya menulis cara penyajiannya, tanpa langkah memasak."
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "bubur-mentah-6-8",
+   "judul": "Bubur beras telur tempe wortel (contoh 6-8 bulan)",
+   "umurMinBulan": 6,
+   "umurMaxBulan": 8,
+   "tekstur": "lumat",
+   "bahan": [
+    {
+     "nama": "Beras putih",
+     "takaran": "10 g",
+     "alergen": []
+    },
+    {
+     "nama": "Telur ayam",
+     "takaran": "30 g",
+     "alergen": [
+      "telur"
+     ]
+    },
+    {
+     "nama": "Tempe kedelai",
+     "takaran": "10 g",
+     "alergen": [
+      "kacang-kacangan"
+     ]
+    },
+    {
+     "nama": "Wortel",
+     "takaran": "10 g",
+     "alergen": []
+    },
+    {
+     "nama": "Santan",
+     "takaran": "30 g",
+     "alergen": []
+    }
+   ],
+   "langkah": [
+    "Memasak beras, tambahkan santan dan bumbu yang telah ditumis dengan sedikit minyak (bawang merah, daun salam, kunyit).",
+    "Setelah nasi masak, masukan telur yang telah dikocok lepas, tempe dan wortel yang telah dicincang.",
+    "Aduk sampai mendapatkan konsistensi bubur kental lalu sajikan."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV)."
+   ],
+   "halamanPdf": [
+    31
+   ],
+   "halamanCetak": [
+    59
+   ],
+   "catatan": "Contoh membuat MPASI dari bahan mentah."
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "bubur-mentah-9-11",
+   "judul": "Bubur kasar ikan kembung buncis (contoh 9-11 bulan)",
+   "umurMinBulan": 9,
+   "umurMaxBulan": 11,
+   "tekstur": "cincang",
+   "bahan": [
+    {
+     "nama": "Beras putih",
+     "takaran": "15 g",
+     "alergen": []
+    },
+    {
+     "nama": "Ikan kembung",
+     "takaran": "30 g",
+     "alergen": [
+      "ikan"
+     ]
+    },
+    {
+     "nama": "Minyak kelapa",
+     "takaran": "10 g",
+     "alergen": []
+    },
+    {
+     "nama": "Wortel",
+     "takaran": "15 g",
+     "alergen": []
+    },
+    {
+     "nama": "Tempe",
+     "takaran": "10 g",
+     "alergen": [
+      "kacang-kacangan"
+     ]
+    }
+   ],
+   "langkah": [
+    "Memasak beras, tambahkan bumbu yg telah ditumis (bawang merah, daun salam, kunyit) dengan minyak kelapa.",
+    "Setelah nasi masak, masukkan ikan kembung dan buncis yang telah dicincang.",
+    "Aduk sampai mendapatkan konsistensi bubur kasar/cincang.",
+    "Sajikan."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV).",
+    "Perhatikan respons anak saat makan."
+   ],
+   "halamanPdf": [
+    31
+   ],
+   "halamanCetak": [
+    59
+   ],
+   "catatan": "Contoh membuat MPASI dari bahan mentah. Daftar bahan di sumber menyebut wortel, sedangkan langkahnya menyebut buncis; ditulis apa adanya (lihat SUMBER-KONFLIK K18)."
+  },
+  {
+   "sumber": "Buku KIA 2024 (Kemenkes)",
+   "versi": "2024",
+   "perluReview": true,
+   "peninjau": null,
+   "id": "nasi-mentah-12-23",
+   "judul": "Nasi hati ayam bayam (contoh 12-23 bulan)",
+   "umurMinBulan": 12,
+   "umurMaxBulan": 23,
+   "tekstur": "keluarga",
+   "bahan": [
+    {
+     "nama": "Beras putih",
+     "takaran": "25 g",
+     "alergen": []
+    },
+    {
+     "nama": "Hati ayam",
+     "takaran": "50 g",
+     "alergen": []
+    },
+    {
+     "nama": "Minyak kelapa",
+     "takaran": "5 g",
+     "alergen": []
+    },
+    {
+     "nama": "Bayam",
+     "takaran": "20 g",
+     "alergen": []
+    },
+    {
+     "nama": "Santan",
+     "takaran": "50 g",
+     "alergen": []
+    }
+   ],
+   "langkah": [
+    "Memasak beras sampai menjadi nasi.",
+    "Membuat hati ayam goreng (goreng/tumis hati ayam dengan minyak kelapa).",
+    "Membuat sayur bayam.",
+    "Sajikan."
+   ],
+   "keselamatan": [
+    "Cuci tangan sebelum menyiapkan makanan dan sebelum memberi makan anak, dan jaga kebersihan makanan dan peralatan.",
+    "Perkenalkan makanan satu per satu sambil memperhatikan apakah anak memiliki alergi terhadap makanan tertentu.",
+    "Masak dengan direbus atau dikukus. Hindari makanan yang mengandung bahan pengawet dan yang tinggi gula dan garam.",
+    "Lama pemberian makan paling lama 30 menit, di lingkungan yang tenang (tidak sambil bermain atau menonton TV).",
+    "Perhatikan respons anak saat makan."
+   ],
+   "halamanPdf": [
+    31
+   ],
+   "halamanCetak": [
+    59
+   ],
+   "catatan": "Contoh membuat MPASI dari bahan mentah. Sumber menganjurkan menghindari makanan yang digoreng pada 6-12 bulan (hlm 30); contoh ini untuk 12-23 bulan dan ditulis apa adanya (lihat SUMBER-KONFLIK K18)."
+  }
+ ]
+}

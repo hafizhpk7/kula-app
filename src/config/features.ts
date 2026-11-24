@@ -10,6 +10,7 @@
  * - `revisiBayi`: navigasi 4 slot, Beranda baru, dan halaman Lainnya (SKEMA-REVISI.md, RV1).
  * - `animasiTumbuh`: ilustrasi gerakan 3D (R4a spike): halaman pratinjau /bayi/pratinjau-gerakan.
  * - `mpasi`: halaman MPASI (P1): tahap makan sesuai umur, catatan makan, makanan yang sudah dicoba.
+ * - `resep`: katalog resep MPASI dari Buku KIA dengan penyaring (P2). Butuh flag mpasi untuk saran dari catatan makan.
  * - `fotoMomen`: foto di Momen (R3b, D4; docs/fitur/USULAN-R3B.md). Butuh rules dan indeks R3b sudah di-deploy.
  */
 export const FEATURES = {
@@ -17,5 +18,6 @@ export const FEATURES = {
   revisiBayi: import.meta.env.VITE_FEATURE_REVISI_BAYI === "true",
   fotoMomen: import.meta.env.VITE_FEATURE_FOTO_MOMEN === "true",
   animasiTumbuh: import.meta.env.VITE_FEATURE_ANIMASI_TUMBUH === "true",
-  mpasi: import.meta.env.VITE_FEATURE_MPASI === "true"
+  mpasi: import.meta.env.VITE_FEATURE_MPASI === "true",
+  resep: import.meta.env.VITE_FEATURE_RESEP === "true"
 } as const;

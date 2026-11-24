@@ -112,6 +112,82 @@ function periksaMpasi(path) {
   if (d.gawat?.nomor !== "119") catat(path, "nomor gawat harus 119 (Buku KIA hlm 79)");
 }
 
+// ---------- Resep MPASI (P2) ----------
+// Klaim yang tidak boleh ada di teks resep: janji kesehatan, pengobatan, dan promosi. Konten resep hanya boleh
+// berbunyi seperti sumbernya: bahan, langkah, dan catatan keselamatan.
+export const KLAIM_BERLEBIHAN = [
+  /menyembuhkan|mengobati|\bobat\b|terapi/i,
+  /mencegah\s+(alergi|stunting|penyakit|infeksi|diare)/i,
+  /mengatasi\s+(alergi|stunting|diare|sembelit|susah makan)/i,
+  /meningkatkan\s+(iq|kecerdasan|imun|daya tahan|nafsu makan|berat badan)/i,
+  /menaikkan\s+berat/i,
+  /dijamin|\bpasti\b|ampuh|terbaik|paling\s+(sehat|bergizi|aman)|super\s?food|detoks/i,
+  /bebas\s+alergi|anti\s?alergi|hipoalergen|aman\s+untuk\s+semua/i
+];
+// Tanpa merek dan tanpa tautan beli.
+export const PROMOSI = [/https?:\/\/|www\./i, /\b(beli|dapatkan)\s+(di|produk|sekarang)\b/i, /\bmerek\b|\bbrand\b|\bproduk\s+kami\b/i];
+// Kata bahan yang wajib diberi tag kelompok, supaya penyaring "tanpa X" tidak melewatkan bahan.
+export const KATA_KELOMPOK = {
+  telur: /telur/i,
+  susu: /\b(susu|keju|yoghurt|yogurt|mentega|krim)\b/i,
+  ikan: /\bikan\b/i,
+  udang: /udang/i,
+  "kacang-kacangan": /kacang|kedelai|tempe|\btahu\b|oncom/i,
+  gandum: /gandum|terigu|\broti\b|\bmi\b|pasta/i
+};
+
+export function periksaResepData(d, path, galatKe) {
+  periksaMeta(path, d);
+  if (!d.kelompokBahan || typeof d.kelompokBahan !== "object") return galatKe(path, "kelompokBahan tidak ada");
+  const kelompok = Object.keys(d.kelompokBahan);
+  if (!Array.isArray(d.resep)) return galatKe(path, "resep harus array");
+  const idPernah = new Set();
+  d.resep.forEach((r, i) => {
+    const lok = `${path} resep ${i + 1}${r?.id ? ` (${r.id})` : ""}`;
+    if (!punyaTeks(r.id) || !/^[a-z0-9-]+$/.test(r.id)) galatKe(lok, "id kosong atau bukan kebab-case");
+    else if (idPernah.has(r.id)) galatKe(lok, `id ganda: ${r.id}`);
+    else idPernah.add(r.id);
+    if (!punyaTeks(r.judul) || r.judul.length > 80) galatKe(lok, "judul kosong atau lebih dari 80 karakter");
+    if (!Number.isInteger(r.umurMinBulan) || !Number.isInteger(r.umurMaxBulan) || r.umurMinBulan < 6 || r.umurMaxBulan > 23 || r.umurMinBulan > r.umurMaxBulan) {
+      galatKe(lok, "umur harus bilangan bulat dalam 6-23 bulan (rentang MPASI Buku KIA) dan min <= max");
+    }
+    if (r.tekstur !== undefined && !["lumat", "cincang", "keluarga"].includes(r.tekstur)) galatKe(lok, `tekstur tidak dikenal: ${r.tekstur}`);
+    // Tanpa waktu yang dikarang: boleh kosong, tetapi bila ada harus angka wajar.
+    if (r.waktuMenit !== undefined && (!Number.isInteger(r.waktuMenit) || r.waktuMenit <= 0 || r.waktuMenit > 240)) galatKe(lok, "waktuMenit harus bilangan bulat 1-240");
+    if (!Array.isArray(r.bahan) || r.bahan.length === 0) galatKe(lok, "bahan kosong");
+    else {
+      r.bahan.forEach((b, j) => {
+        const lb = `${lok} bahan ${j + 1}`;
+        if (!punyaTeks(b.nama)) galatKe(lb, "nama bahan kosong");
+        if (!punyaTeks(b.takaran)) galatKe(lb, "takaran kosong");
+        if (!Array.isArray(b.alergen)) return galatKe(lb, "alergen harus array (boleh kosong)");
+        for (const t of b.alergen) if (!kelompok.includes(t)) galatKe(lb, `tag tidak dikenal: ${t}`);
+        for (const [k, re] of Object.entries(KATA_KELOMPOK)) {
+          if (re.test(b.nama) && !b.alergen.includes(k)) galatKe(lb, `"${b.nama}" tampak mengandung ${k} tetapi tag ${k} tidak ada`);
+        }
+      });
+    }
+    if (!Array.isArray(r.langkah) || r.langkah.length === 0 || r.langkah.some((l) => !punyaTeks(l) || l.length < 6)) galatKe(lok, "langkah kosong atau ada langkah terlalu pendek");
+    if (!Array.isArray(r.keselamatan) || r.keselamatan.length === 0 || r.keselamatan.some((k) => !punyaTeks(k))) galatKe(lok, "catatan keselamatan kosong (wajib)");
+    if (!punyaTeks(r.sumber)) galatKe(lok, "sumber kosong (wajib)");
+    if (!punyaTeks(r.versi)) galatKe(lok, "versi kosong");
+    if (!Array.isArray(r.halamanPdf) || r.halamanPdf.length === 0) galatKe(lok, "halamanPdf kosong");
+    if (typeof r.perluReview !== "boolean") galatKe(lok, "perluReview harus boolean");
+    if (r.perluReview === false && !punyaTeks(r.peninjau)) galatKe(lok, "perluReview false butuh nama peninjau");
+    const semuaTeks = [r.judul, r.catatan, r.porsiResep, ...(r.langkah ?? []), ...(r.keselamatan ?? []), ...(r.bahan ?? []).flatMap((b) => [b.nama, b.takaran])].filter((x) => typeof x === "string");
+    for (const t of semuaTeks) {
+      for (const re of KLAIM_BERLEBIHAN) if (re.test(t)) galatKe(lok, `klaim berlebihan (${re}): "${t.slice(0, 60)}"`);
+      for (const re of PROMOSI) if (re.test(t)) galatKe(lok, `promosi, merek, atau tautan (${re}): "${t.slice(0, 60)}"`);
+    }
+  });
+}
+
+function periksaResep(path) {
+  if (!existsSync(path)) return catat(path, "berkas resep tidak ada");
+  const d = baca(path);
+  if (d) periksaResepData(d, path, catat);
+}
+
 const DERET_PERTUMBUHAN = {
   bbu: { mingguan: [0, 13, 1], bulanan: [0, 60, 1] },
   pbtbu: { mingguan: [0, 13, 1], bulananPB: [0, 24, 1], bulananTB: [24, 60, 1] },
@@ -217,6 +293,7 @@ periksaPertumbuhan(join(DIR, "pertumbuhan"));
 periksaAturanPertumbuhan(join(DIR, "aturan-pertumbuhan.json"));
 periksaStimulasi(join(DIR, "stimulasi", "aktivitas.json"));
 periksaMpasi(join(DIR, "mpasi", "tahap.json"));
+periksaResep(join(DIR, "resep", "resep.json"));
 
 if (galat.length) {
   console.error(`Validasi konten GAGAL (${galat.length}):`);
