@@ -131,6 +131,8 @@ export interface JurnalMomen {
   pertamaKali?: boolean;
   /** id butir KPSP (milestone) yang dirujuk */
   milestoneId?: string;
+  /** id dokumen momenFoto (R3b). Rules mengizinkan maks 3; UI memakai MAKS_FOTO_PER_MOMEN. */
+  fotoIds?: string[];
   createdAt: string;
   updatedAt: string;
   createdBy?: string;

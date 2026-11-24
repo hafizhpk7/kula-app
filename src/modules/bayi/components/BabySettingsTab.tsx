@@ -8,6 +8,8 @@ import { getChildAge } from "../../../utils/dates";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Lipat } from "../../../components/common/Lipat";
 import { ZonaBahaya } from "../../../components/common/ZonaBahaya";
+import { FEATURES } from "../../../config/features";
+import { BATAS_FOTO_KELUARGA } from "../momen/foto/batas";
 
 interface Props {
   /** Buka lembar kelola profil anak (daftar) */
@@ -21,7 +23,7 @@ const tombol =
   "px-4 py-2.5 bg-surface hover:bg-surface-sunken text-text text-[14px] font-medium rounded-full border border-border-strong transition min-h-[44px] flex items-center gap-2 cursor-pointer";
 
 export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild }) => {
-  const { appState, activeProfile, resetSchedule, clearAllBabyData, isReadOnly } = useBayi();
+  const { appState, activeProfile, resetSchedule, clearAllBabyData, isReadOnly, fotoTerpakai, mode } = useBayi();
 
   const [deleteStep, setDeleteStep] = useState(0);
 
@@ -103,6 +105,8 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
           </div>
         )}
       </section>
+
+      {FEATURES.fotoMomen && FEATURES.tumbuhKembang && <PemakaianFoto terpakai={fotoTerpakai} keluarga={mode === "family"} tamu={mode === "guest"} />}
       </div>
 
       <div className="space-y-4 min-w-0">
@@ -221,5 +225,40 @@ export const BabySettingsTab: React.FC<Props> = ({ onManageProfiles, onAddChild 
       </div>
       </div>
     </div>
+  );
+};
+
+/** Indikator pemakaian foto momen (R3b). Batas dipakai bersama seluruh keluarga, untuk semua anak. */
+export const PemakaianFoto: React.FC<{ terpakai: number; keluarga: boolean; tamu: boolean }> = ({ terpakai, keluarga, tamu }) => {
+  const persen = Math.min(100, Math.round((terpakai / BATAS_FOTO_KELUARGA) * 100));
+  const penuh = terpakai >= BATAS_FOTO_KELUARGA;
+  return (
+    <section className={kartu} aria-labelledby="blok-foto">
+      <h2 id="blok-foto" className="font-display text-[16px] text-text">
+        Foto momen
+      </h2>
+      <p className="text-[15px] font-semibold text-text font-tabular">
+        {terpakai} dari {BATAS_FOTO_KELUARGA} foto
+      </p>
+      <span
+        className="block w-full bg-track border border-field rounded-full h-2 overflow-hidden"
+        role="progressbar"
+        aria-valuenow={terpakai}
+        aria-valuemin={0}
+        aria-valuemax={BATAS_FOTO_KELUARGA}
+        aria-label="Pemakaian foto momen"
+      >
+        <span className={`block h-full rounded-full ${penuh ? "bg-danger" : "bg-primary"}`} style={{ width: `${persen}%` }} />
+      </span>
+      <p className="text-[13px] text-text-2 leading-relaxed">
+        {penuh
+          ? `Batas sudah tercapai. Hapus foto lama di Momen untuk menambah yang baru.`
+          : tamu
+            ? "Foto hanya tersimpan di HP ini dan tidak tersinkron."
+            : keluarga
+              ? "Batas ini dipakai bersama seluruh anggota keluarga, untuk semua anak."
+              : "Batas ini untuk semua anak di akun ini."}
+      </p>
+    </section>
   );
 };

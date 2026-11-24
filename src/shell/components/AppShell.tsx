@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { ChevronLeft, Settings } from "lucide-react";
 import { PAGE_CONTAINER } from "../../config/layout";
 import { AccountMenu } from "./AccountMenu";
@@ -36,6 +36,8 @@ export interface ShellTab {
   /** Label pendek untuk nav bawah di HP; default = label */
   shortLabel?: string;
   icon: React.ElementType;
+  /** Awalan rute lain yang membuat tab ini tampak aktif (mis. "Lainnya" untuk halaman tanpa slot sendiri). */
+  aktifJuga?: string[];
 }
 
 export interface PrimaryAction {
@@ -76,6 +78,8 @@ export const AppShell: React.FC<AppShellProps> = ({
 }) => {
   const tone = ACCENT[accent];
   const adaTab = tabs.length > 0;
+  const { pathname } = useLocation();
+  const aktif = (t: ShellTab, isActive: boolean) => isActive || !!t.aktifJuga?.some((p) => pathname.startsWith(p));
   const PrimaryIcon = primaryAction?.icon;
 
   return (
@@ -123,7 +127,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                       title={t.label}
                       className={({ isActive }) =>
                         `flex flex-col lg:flex-row items-center gap-1 lg:gap-2.5 px-2 lg:px-3 py-2.5 rounded-control text-[12px] lg:text-[14px] font-medium transition ${
-                          isActive ? `${tone.active} font-semibold shadow-[inset_3px_0_0_0_currentColor]` : "text-text-2 hover:text-text hover:bg-surface-sunken"
+                          aktif(t, isActive) ? `${tone.active} font-semibold shadow-[inset_3px_0_0_0_currentColor]` : "text-text-2 hover:text-text hover:bg-surface-sunken"
                         }`
                       }
                     >
@@ -205,7 +209,7 @@ export const AppShell: React.FC<AppShellProps> = ({
                 to={t.path}
                 className={({ isActive }) =>
                   `flex-1 flex flex-col items-center justify-center py-1 px-1 rounded-full min-h-[52px] min-w-[44px] text-[12px] font-medium transition active:scale-95 ${
-                    isActive ? `${tone.active} font-bold shadow-[inset_0_-3px_0_0_currentColor]` : "text-text-2 hover:text-text"
+                    aktif(t, isActive) ? `${tone.active} font-bold shadow-[inset_0_-3px_0_0_currentColor]` : "text-text-2 hover:text-text"
                   }`
                 }
               >

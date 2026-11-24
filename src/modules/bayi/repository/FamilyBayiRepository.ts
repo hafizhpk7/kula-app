@@ -6,6 +6,7 @@ import {
   getDocs,
   limit,
   onSnapshot,
+  query,
   runTransaction,
   setDoc,
   writeBatch
@@ -29,6 +30,28 @@ interface BabyDocData {
   sourceUid?: string;
   usiaKehamilanMinggu?: number;
   jenisKelamin?: JenisKelamin;
+}
+
+/**
+ * Payload dokumen jurnal keluarga, sesuai isValidFamilyJurnal di firestore.rules.
+ * Dipakai juga oleh penyimpanan foto (R3b), yang menulis entri dan fotonya dalam satu batch.
+ */
+export function payloadJurnalKeluarga(entry: JurnalMomen, uid: string, nowIso = new Date().toISOString()): Record<string, unknown> {
+  const payload: Record<string, unknown> = {
+    id: entry.id,
+    tanggal: entry.tanggal,
+    judul: entry.judul,
+    // createdAt dan createdBy tidak boleh berubah saat update (aturan rules).
+    createdAt: entry.createdAt || nowIso,
+    createdBy: entry.createdBy || uid,
+    updatedAt: nowIso,
+    updatedBy: uid
+  };
+  if (entry.catatan && entry.catatan.trim()) payload.catatan = entry.catatan.trim();
+  if (entry.pertamaKali === true) payload.pertamaKali = true;
+  if (entry.milestoneId) payload.milestoneId = entry.milestoneId;
+  if (entry.fotoIds && entry.fotoIds.length > 0) payload.fotoIds = entry.fotoIds.slice(0, 3);
+  return payload;
 }
 
 export class FamilyBayiRepository implements BayiRepository {
@@ -513,6 +536,18 @@ export class FamilyBayiRepository implements BayiRepository {
 
   private async deleteBabySubtree(babyId: string): Promise<void> {
     // 1. Delete records, KPSP, and milestone documents in batches
+    // 0. Foto momen: tiap foto punya dokumen penuh/data di bawahnya, yang tidak ikut terhapus otomatis.
+    while (true) {
+      const snaps = await getDocs(query(collection(db, this.basePath, "babies", babyId, "momenFoto"), limit(200)));
+      if (snaps.empty) break;
+      const batch = writeBatch(db);
+      snaps.docs.forEach((d) => {
+        batch.delete(doc(d.ref, "penuh", "data"));
+        batch.delete(d.ref);
+      });
+      await batch.commit();
+    }
+
     for (const nama of ["records", "kpsp", "milestone", "pengukuran", "jurnal", "stimulasi"]) {
       while (true) {
         const q = collection(db, this.basePath, "babies", babyId, nama);
@@ -672,22 +707,8 @@ export class FamilyBayiRepository implements BayiRepository {
    * (hanya penulis mengubah, penulis atau admin menghapus) ditegakkan firestore.rules.
    */
   async saveJurnal(babyId: string, entry: JurnalMomen): Promise<void> {
-    const nowIso = new Date().toISOString();
-    const payload: Record<string, any> = {
-      id: entry.id,
-      tanggal: entry.tanggal,
-      judul: entry.judul,
-      // createdAt dan createdBy tidak boleh berubah saat update (aturan rules).
-      createdAt: entry.createdAt || nowIso,
-      createdBy: entry.createdBy || this.uid,
-      updatedAt: nowIso,
-      updatedBy: this.uid
-    };
-    if (entry.catatan && entry.catatan.trim()) payload.catatan = entry.catatan.trim();
-    if (entry.pertamaKali === true) payload.pertamaKali = true;
-    if (entry.milestoneId) payload.milestoneId = entry.milestoneId;
     try {
-      await setDoc(doc(db, this.basePath, "babies", babyId, "jurnal", entry.id), payload);
+      await setDoc(doc(db, this.basePath, "babies", babyId, "jurnal", entry.id), payloadJurnalKeluarga(entry, this.uid));
     } catch (e: any) {
       handleFirestoreError(e, OperationType.WRITE, `${this.basePath}/babies/${babyId}/jurnal/${entry.id}`);
     }

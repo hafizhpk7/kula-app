@@ -4,6 +4,7 @@ import { useBayi } from "../context/BayiContext";
 import { DashboardTab } from "../components/DashboardTab";
 import { FEATURES } from "../../../config/features";
 import { KartuKunjunganBerikutnya } from "../tumbuhkembang/components/KartuKunjunganBerikutnya";
+import { BerandaView } from "../beranda/BerandaView";
 
 export const DashboardPage: React.FC = () => {
   const { activeProfile, paymentMode, quickMarkGiven, isReadOnly } = useBayi();
@@ -11,6 +12,19 @@ export const DashboardPage: React.FC = () => {
   const navigate = useNavigate();
 
   if (!activeProfile) return null;
+
+  if (FEATURES.revisiBayi) {
+    return (
+      <BerandaView
+        profile={activeProfile}
+        paymentMode={paymentMode}
+        tumbuhKembang={FEATURES.tumbuhKembang}
+        readOnly={isReadOnly}
+        onTandaiImunisasi={quickMarkGiven}
+        onBuka={(path) => navigate(path)}
+      />
+    );
+  }
 
   return (
     <DashboardTab

@@ -1,21 +1,17 @@
-import React, { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Check, ChevronRight, Clock, Stethoscope, Trash2 } from "lucide-react";
-import { KpspHasil, KpspSkrining, MilestoneStatus, Profile } from "../../../../types";
-import { formatIndonesianDate } from "../../../../utils/dates";
+import React, { useMemo } from "react";
+import { Link } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
+import { Profile } from "../../../../types";
 import { PageHeader } from "../../../../components/common/PageHeader";
-import { ATURAN, FORMULIR_KPSP, formulirUntukUmur } from "../konten";
+import { ATURAN, formulirUntukUmur } from "../konten";
 import { teksUmur, tentukanFormulir, titikRutinBerikutnya, umurKronologis, umurUntukPerkembangan } from "../logic/umur";
-import { aturMilestone, formulirSekitar } from "../logic/milestone";
-import { labelHasil } from "../logic/istilah";
 import { DisclaimerTumbuhKembang } from "./DisclaimerTumbuhKembang";
 import { KpspFlow } from "./KpspFlow";
-import { MilestoneDaftar } from "./MilestoneDaftar";
+import { PanelMilestone } from "./PanelMilestone";
+import { RiwayatKpsp } from "./RiwayatKpsp";
 import { PertumbuhanSection } from "./PertumbuhanSection";
 import { KartuStimulasi } from "./KartuStimulasi";
 import { PeranStimulasi } from "../logic/stimulasi";
-import { rayakan } from "../../../../components/common/Perayaan";
-import { penyimpananLokal, sekaliRayakan } from "../logic/rayakan";
 
 interface Props {
   profile: Profile;
@@ -40,17 +36,8 @@ const tombolUtama =
 const tombolSekunder =
   "px-4 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[44px] inline-flex items-center justify-center gap-2 hover:bg-surface-sunken transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
-const IKON_HASIL: Record<KpspHasil, React.ReactNode> = {
-  sesuai: <Check className="w-4 h-4" aria-hidden="true" />,
-  meragukan: <Clock className="w-4 h-4" aria-hidden="true" />,
-  kemungkinanPenyimpangan: <Stethoscope className="w-4 h-4" aria-hidden="true" />
-};
-
 export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, onBukaProfil, kpspBulan, onBukaKpsp, bukaUkur = false, onTutupUkur = () => {}, stimulasi, sekarang }) => {
   const now = sekarang ?? new Date();
-  const navigate = useNavigate();
-  const [tahapPilihan, setTahapPilihan] = useState<number | null>(null);
-  const [hapusId, setHapusId] = useState<string | null>(null);
 
   const pilihan = useMemo(
     () => tentukanFormulir({ tanggalLahir: profile.tanggalLahir, usiaKehamilanMinggu: profile.usiaKehamilanMinggu, tanggalPeriksa: now }),
@@ -82,22 +69,6 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
     );
   }
 
-  // Tahap milestone yang tampil: formulir saat ini, atau yang terdekat bila di luar rentang.
-  const tahapDasar =
-    pilihan.status === "ok" ? pilihan.formulirBulan : pilihan.status === "terlaluMuda" ? FORMULIR_KPSP[0]?.umurBulan : pilihan.status === "diLuarSasaran" ? FORMULIR_KPSP[FORMULIR_KPSP.length - 1]?.umurBulan : undefined;
-  const tahapAktif = tahapPilihan ?? tahapDasar;
-  const sekitar = tahapAktif !== undefined ? formulirSekitar(tahapAktif) : null;
-
-  const ubahMilestone = (butirId: string, status: MilestoneStatus | null, tanggal?: string) => {
-    // Perayaan hanya saat butir BERPINDAH ke "sudah" dan baru sekali per butir di perangkat ini (M1).
-    // Tidak ada perayaan untuk status lain, dan KPSP tidak dirayakan agar tidak bergantung pada hasil skrining.
-    const sebelumnya = profile.milestone?.find((c) => c.butirId === butirId)?.status;
-    if (status === "sudah" && sebelumnya !== "sudah" && sekaliRayakan(`milestone:${profile.id}:${butirId}`, penyimpananLokal())) rayakan();
-    perbarui({ milestone: aturMilestone(profile.milestone, butirId, status, { tanggal, sekarangIso: new Date().toISOString() }) });
-  };
-
-  const riwayat = [...(profile.kpsp ?? [])].sort((a, b) => (a.tanggal < b.tanggal ? 1 : a.tanggal > b.tanggal ? -1 : a.createdAt < b.createdAt ? 1 : -1));
-  const hapusTarget = riwayat.find((r) => r.id === hapusId);
   const rutinBerikutnya = pilihan.status === "ok" || pilihan.status === "terlaluMuda" ? titikRutinBerikutnya(pilihan.umurBulatBulan ?? 0) : null;
   const perluSaranKoreksi = !!kron && kron.bulanTotal < ATURAN.koreksi.batasUmurBulan && untukPerkembangan?.alasanTanpaKoreksi === "tidakDiisi";
 
@@ -211,109 +182,14 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
       </section>
 
       {/* Milestone */}
-      {sekitar && (
-        <section className={`${kartu} space-y-4`} aria-labelledby="tk-milestone">
-          <div className="space-y-1">
-            <h2 id="tk-milestone" className="font-display text-[16px] text-text">
-              Milestone umur {sekitar.saatIni.umurBulan} bulan
-            </h2>
-            <p className="text-[13px] text-text-2">
-              Kemampuan menurut formulir KPSP umur {sekitar.saatIni.umurBulan} bulan. Tandai yang sudah terlihat, belum, atau belum yakin. Ini bukan tenggat.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 flex-wrap" role="group" aria-label="Pilih tahap umur">
-            <button
-              type="button"
-              className={tombolSekunder}
-              disabled={!sekitar.sebelumnya}
-              onClick={() => sekitar.sebelumnya && setTahapPilihan(sekitar.sebelumnya.umurBulan)}
-            >
-              {sekitar.sebelumnya ? `Tahap ${sekitar.sebelumnya.umurBulan} bulan` : "Tahap sebelumnya"}
-            </button>
-            <button
-              type="button"
-              className={tombolSekunder}
-              disabled={!sekitar.berikutnya}
-              onClick={() => sekitar.berikutnya && setTahapPilihan(sekitar.berikutnya.umurBulan)}
-            >
-              {sekitar.berikutnya ? `Tahap ${sekitar.berikutnya.umurBulan} bulan` : "Tahap berikutnya"}
-            </button>
-            {tahapPilihan !== null && tahapPilihan !== tahapDasar && (
-              <button type="button" className={tombolSekunder} onClick={() => setTahapPilihan(null)}>
-                Kembali ke umur sekarang
-              </button>
-            )}
-          </div>
-          <MilestoneDaftar
-            formulir={sekitar.saatIni}
-            catatan={profile.milestone}
-            readOnly={readOnly}
-            onUbah={ubahMilestone}
-            onCatatMomen={(butirId, tanggal) => navigate(`/bayi/jurnal?dari=${encodeURIComponent(butirId)}${tanggal ? `&tanggal=${tanggal}` : ""}`)}
-          />
-          {readOnly && <p className="text-[13px] text-text-2">Mode lihat saja: catatan milestone tidak bisa diubah.</p>}
-        </section>
-      )}
+      <PanelMilestone profile={profile} readOnly={readOnly} onUpdateProfile={onUpdateProfile} pilihan={pilihan} />
 
       {/* Riwayat */}
       <section className={`${kartu} space-y-3`} aria-labelledby="tk-riwayat">
         <h2 id="tk-riwayat" className="font-display text-[16px] text-text">
           Riwayat skrining
         </h2>
-        {riwayat.length === 0 ? (
-          <p className="text-[14px] text-text-2">Belum ada hasil KPSP yang disimpan.</p>
-        ) : (
-          <ul className="divide-y divide-border">
-            {riwayat.map((r: KpspSkrining) => (
-              <li key={r.id} className="py-2.5 flex items-center justify-between gap-3">
-                <div className="min-w-0 space-y-1">
-                  <p className="text-[14px] text-text">
-                    KPSP umur {r.umurFormulirBulan} bulan · {formatIndonesianDateSafe(r.tanggal)}
-                  </p>
-                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-chip bg-surface-sunken border border-border text-[12px] text-text">
-                    {IKON_HASIL[r.hasil]}
-                    {labelHasil(r.hasil).judul}
-                  </span>
-                </div>
-                {!readOnly && (
-                  <button
-                    type="button"
-                    onClick={() => setHapusId(r.id)}
-                    aria-label={`Hapus hasil KPSP umur ${r.umurFormulirBulan} bulan tanggal ${formatIndonesianDateSafe(r.tanggal)}`}
-                    className="inline-flex items-center justify-center shrink-0 min-h-[44px] min-w-[44px] rounded-full text-danger-text hover:bg-danger-tint cursor-pointer"
-                  >
-                    <Trash2 className="w-5 h-5" aria-hidden="true" />
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-        {hapusTarget && (
-          <div role="alertdialog" aria-labelledby="tk-hapus-judul" className="rounded-control border border-danger/30 bg-danger-tint p-4 space-y-3">
-            <p id="tk-hapus-judul" className="text-[14px] font-semibold text-danger-text">
-              Hapus hasil KPSP umur {hapusTarget.umurFormulirBulan} bulan?
-            </p>
-            <p className="text-[13px] text-danger-text">
-              Hasil tanggal {formatIndonesianDateSafe(hapusTarget.tanggal)} akan hilang dan tidak bisa dikembalikan.
-            </p>
-            <div className="flex items-center gap-2 flex-wrap">
-              <button type="button" className={tombolSekunder} onClick={() => setHapusId(null)}>
-                Batal
-              </button>
-              <button
-                type="button"
-                className="px-4 rounded-full bg-danger text-white text-[14px] font-semibold min-h-[44px] cursor-pointer"
-                onClick={() => {
-                  perbarui({ kpsp: (profile.kpsp ?? []).filter((x) => x.id !== hapusTarget.id) });
-                  setHapusId(null);
-                }}
-              >
-                Hapus hasil skrining
-              </button>
-            </div>
-          </div>
-        )}
+        <RiwayatKpsp profile={profile} readOnly={readOnly} onUpdateProfile={onUpdateProfile} />
       </section>
 
       <section className={`${kartu} space-y-2`} aria-labelledby="tk-jurnal">
@@ -344,6 +220,3 @@ export const TumbuhKembangView: React.FC<Props> = ({ profile, readOnly, onUpdate
   );
 };
 
-function formatIndonesianDateSafe(iso: string): string {
-  return formatIndonesianDate(iso, "d MMM yyyy");
-}

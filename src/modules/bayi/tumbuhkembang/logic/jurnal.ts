@@ -145,6 +145,8 @@ export function bangunMomen(
   if (nilai.catatan) e.catatan = nilai.catatan;
   if (nilai.pertamaKali) e.pertamaKali = true;
   if (nilai.milestoneId) e.milestoneId = nilai.milestoneId;
+  // Foto tidak diatur form teks; ubah momen tanpa menyentuh foto tetap mempertahankannya.
+  if (opsi.awal?.fotoIds?.length) e.fotoIds = [...opsi.awal.fotoIds];
   const pembuat = opsi.awal?.createdBy ?? opsi.uid;
   if (pembuat) e.createdBy = pembuat;
   if (opsi.uid) e.updatedBy = opsi.uid;
