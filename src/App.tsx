@@ -26,6 +26,7 @@ import { FEATURES } from "./config/features";
 import { KeuanganPage } from "./modules/bayi/pages/KeuanganPage";
 import { VaccineInfoPage } from "./modules/bayi/pages/VaccineInfoPage";
 import { BabySettingsPage } from "./modules/bayi/pages/BabySettingsPage";
+import { LainnyaPage } from "./modules/bayi/pages/LainnyaPage";
 import { FamilyPage } from "./shell/family/pages/FamilyPage";
 import { JoinPage as JoinFamilyPage } from "./shell/family/pages/JoinPage";
 import { PerayaanLayer } from "./components/common/Perayaan";
@@ -82,6 +83,7 @@ function AppRoutes() {
         <Route path="asuransi" element={<Navigate to="/bayi/biaya" replace />} />
         <Route path="info-vaksin" element={<VaccineInfoPage />} />
         <Route path="pengaturan" element={<BabySettingsPage />} />
+        <Route path="lainnya" element={FEATURES.revisiBayi ? <LainnyaPage /> : <Navigate to="/bayi/beranda" replace />} />
       </Route>
 
       <Route path="/keluarga" element={<FamilyPage />} />

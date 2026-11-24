@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useOutletContext, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { useBayi } from "../context/BayiContext";
@@ -10,6 +10,16 @@ export const TumbuhKembangPage: React.FC = () => {
   const { user } = useAuth();
   const { setProfileModalOpen, setProfileModalMode } = useOutletContext<any>();
   const [params, setParams] = useSearchParams();
+  const bagian = params.get("bagian");
+
+  // ?bagian=milestone|stimulasi|pertumbuhan: ubin Beranda membuka bagian itu (sementara, sampai halaman sendiri di R2).
+  useEffect(() => {
+    if (!bagian || !/^[a-z]+$/.test(bagian)) return;
+    const el = document.querySelector(`[aria-labelledby="tk-${bagian}"]`);
+    if (!el) return;
+    // Sisakan ruang untuk bar atas yang menempel (h-14) supaya judul bagian tidak tertutup.
+    window.scrollTo?.({ top: el.getBoundingClientRect().top + window.scrollY - 72 });
+  }, [bagian, activeProfile?.id]);
 
   if (!activeProfile) return null;
 
