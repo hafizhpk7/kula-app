@@ -27,6 +27,7 @@ import { KeuanganPage } from "./modules/bayi/pages/KeuanganPage";
 import { VaccineInfoPage } from "./modules/bayi/pages/VaccineInfoPage";
 import { BabySettingsPage } from "./modules/bayi/pages/BabySettingsPage";
 import { LainnyaPage } from "./modules/bayi/pages/LainnyaPage";
+const PratinjauGerakanPage = React.lazy(() => import("./modules/bayi/pages/PratinjauGerakanPage"));
 import { MomenPage } from "./modules/bayi/pages/MomenPage";
 import { AlihkanDenganQuery } from "./modules/bayi/pages/AlihkanDenganQuery";
 import { MilestonePage } from "./modules/bayi/pages/MilestonePage";
@@ -103,6 +104,10 @@ function AppRoutes() {
         <Route path="asuransi" element={<Navigate to="/bayi/biaya" replace />} />
         <Route path="info-vaksin" element={<VaccineInfoPage />} />
         <Route path="pengaturan" element={<BabySettingsPage />} />
+        <Route
+          path="pratinjau-gerakan"
+          element={FEATURES.animasiTumbuh ? <React.Suspense fallback={null}><PratinjauGerakanPage /></React.Suspense> : <Navigate to="/bayi/beranda" replace />}
+        />
         <Route path="lainnya" element={FEATURES.revisiBayi ? <LainnyaPage /> : <Navigate to="/bayi/beranda" replace />} />
       </Route>
 

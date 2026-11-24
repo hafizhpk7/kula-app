@@ -483,3 +483,41 @@ Branch `feat/revisi-bayi-r3a`, dibuat dari `feat/revisi-bayi-r2`. Tanpa perubaha
 - Hapus momen ikut menghapus fotonya. Di mode keluarga keduanya satu batch. Hapus anak (pribadi), hapus semua data, dan `deleteBabySubtree` (keluarga) juga ikut membersihkan foto.
 - Kalau kuota habis atau sedang offline, momen dan fotonya disimpan sebagai draf di IndexedDB. Linimasa menampilkan tombol "Coba simpan lagi" dan "Buang draf".
 - Batas 100 foto per keluarga, dihitung dari `fotoIds`. Pemakaiannya ditampilkan di Pengaturan Bayi.
+
+## Status R4a (2026-11-24, spike, menunggu penilaian)
+
+- **Isi:** satu karakter bayi low-poly prosedural (`src/components/three/tumbuh/`), di balik flag baru `animasiTumbuh` (`VITE_FEATURE_ANIMASI_TUMBUH`, default mati). Pratinjau ada di `/bayi/pratinjau-gerakan`. Belum dipakai di Milestone atau Stimulasi.
+- **Model:** 2.534 segitiga [hitung]: bayi 1.880 dalam 19 mesh, tangan dewasa 540, bola 80, alas dan bayangan 34. Semua `flatShading`.
+  - Warna diambil dari token: `--mod-bayi`, `--primary`, dan `--ubin-hijau`, ditambah token baru `--figur-kulit`, `--figur-kulit-dewasa`, `--figur-rambut`, dan `--figur-bola`.
+  - Token dibaca apa adanya (`LinearSRGBColorSpace` + Canvas `linear`), jadi warna di layar sama dengan token dan tidak bergantung pada `ColorManagement` global milik maskot.
+- **Rig:** 16 sendi bernama tanpa skinning: `panggul → tulangBelakang → leher → kepala`, `lenganAtas/lenganBawah/tangan{K,N}`, dan `paha/betis/kaki{K,N}`. Tangan orang dewasa dan bola adalah objek terpisah.
+- **Format:**
+  - Pose: `{ akar, sendi: { nama: [rx, ry, rz] derajat }, tanganDewasa?, bola? }`.
+  - Animasi: `{ keyframe: [{ t, pose, easing }], durasiMs, ulang, poseDiam, properti, kamera?, perluReview: true }`.
+  - `periksaAnimasi` memvalidasi data, dan test memeriksa geometri: tangan sampai ke bola, dan tidak ada bagian tubuh yang menembus lantai.
+- **Tiga gerakan:** `tengkurap-angkat-kepala` (dengan tangan dewasa), `duduk-sendiri`, dan `raih-depan` (bola). Semuanya `perluReview: true`. Screenshot ada di `docs/fitur/r4a/`.
+- **Komponen:** `<AnimasiTumbuh pose="..." />`. Bagian three dimuat lazy (`AnimasiTumbuh3D`, 6,7 kB).
+  - Hanya satu Canvas aktif (`canvasTunggal`); ilustrasi lain menampilkan poster dan tombol "Putar ilustrasi".
+  - Render berhenti di luar layar (IntersectionObserver lalu `frameloop="never"`). DPR dibatasi 1,5.
+  - Kurangi animasi menampilkan pose diam (`frameloop="demand"`). HP lemah, Data Saver, atau tanpa WebGL menampilkan poster SVG tanpa mengunduh three.
+- **Bundle:**
+
+  | | Sebelum | Sesudah |
+  |---|---|---|
+  | `index.js` | 2.289,60 kB | 2.290,09 kB (+0,5 kB, rute lazy) |
+  | Maskot | `KulaMascot` 919,78 kB | `three` 904,21 kB (satu chunk bersama) + `KulaMascot` 9,66 kB |
+  | Precache | 17 entri / 2.360,81 KiB | 19 entri / 2.377,02 KiB |
+
+  Chunk `three`, `KulaMascot`, dan `AnimasiTumbuh3D` dikecualikan dari precache dan di-cache saat dipakai.
+- **Performa** [lihat, Chrome headless lewat CDP, build produksi, 375×812 @2x, GPU Apple M5]:
+  - CPU 1x, 4x, dan 6x lebih lambat: 60 fps, p95 16,8 ms, CPU sibuk ≤ 5%.
+  - Panggilan gambar WebGL per 2 detik (CPU 4x):
+
+    | Keadaan | Panggilan gambar |
+    |---|---|
+    | Terlihat | 3.360 (28 per frame) |
+    | Di luar layar | 0 |
+    | Terlihat lagi | ±3.360 |
+    | Pose diam | 0 |
+
+  - Belum diukur: HP asli dengan GPU lemah.
