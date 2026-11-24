@@ -511,6 +511,23 @@ service cloud.firestore {
         && data.updatedBy == request.auth.uid;
     }
 
+    // ---------- Resep buatan pengguna mode keluarga: babies/{babyId}/resepSaya (P2) ----------
+    // Rules tidak bisa memeriksa isi tiap elemen list: panjang teks bahan dan langkah dijaga klien, ukuran dokumen oleh Firestore.
+    function isValidFamilyResepSaya(data, resepId) {
+      return data.keys().hasAll(['id', 'judul', 'bahan', 'langkah', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.keys().hasOnly(['id', 'judul', 'umurMinBulan', 'bahan', 'langkah', 'catatan', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.id == resepId
+        && data.judul is string && data.judul.size() > 0 && data.judul.size() <= 80
+        && (!('umurMinBulan' in data) || (data.umurMinBulan is int && data.umurMinBulan >= 6 && data.umurMinBulan <= 23))
+        && data.bahan is list && data.bahan.size() >= 1 && data.bahan.size() <= 20
+        && data.langkah is list && data.langkah.size() >= 1 && data.langkah.size() <= 12
+        && (!('catatan' in data) || (data.catatan is string && data.catatan.size() <= 500))
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.createdBy is string && isValidId(data.createdBy)
+        && data.updatedBy == request.auth.uid;
+    }
+
     // ---------- Foto momen (R3b, D4): thumbnail di momenFoto/{id}, foto penuh di momenFoto/{id}/penuh/data ----------
     // Rules tidak bisa mengulang list, jadi tiap posisi (maks 3) dicek satu per satu.
     function isValidFotoIds(ids) {
@@ -761,6 +778,21 @@ service cloud.firestore {
             && incoming().createdBy == existing().createdBy
             && incoming().createdAt == existing().createdAt;
           allow delete: if isFamilyMember(familyId) && isValidId(makanId)
+            && (existing().createdBy == request.auth.uid || isFamilyAdmin(familyId));
+        }
+
+        // Resep buatan pengguna: anggota membaca dan menambah atas nama sendiri; penulis mengubah; penulis atau admin menghapus.
+        match /resepSaya/{resepId} {
+          allow get, list: if isFamilyMember(familyId);
+          allow create: if isFamilyMember(familyId) && isValidId(resepId)
+            && isValidFamilyResepSaya(incoming(), resepId)
+            && incoming().createdBy == request.auth.uid;
+          allow update: if isFamilyMember(familyId) && isValidId(resepId)
+            && isValidFamilyResepSaya(incoming(), resepId)
+            && existing().createdBy == request.auth.uid
+            && incoming().createdBy == existing().createdBy
+            && incoming().createdAt == existing().createdAt;
+          allow delete: if isFamilyMember(familyId) && isValidId(resepId)
             && (existing().createdBy == request.auth.uid || isFamilyAdmin(familyId));
         }
 

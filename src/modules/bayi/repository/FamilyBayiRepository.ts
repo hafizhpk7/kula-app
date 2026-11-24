@@ -12,7 +12,7 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
-import { AppState, CatatanMakan, Insurance, JenisKelamin, JurnalMomen, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, StimulasiCatatan, VaccineRecord } from "../../../types";
+import { AppState, CatatanMakan, ResepSaya, Insurance, JenisKelamin, JurnalMomen, KpspSkrining, MilestoneCatatan, Pengukuran, PaymentMode, Profile, ScheduleRow, StimulasiCatatan, VaccineRecord } from "../../../types";
 import { BayiDiffOp, diffAppState } from "../state/diff";
 import { BayiRepository } from "./types";
 
@@ -73,6 +73,23 @@ export function payloadMakanKeluarga(c: CatatanMakan, uid: string, nowIso = new 
   return p;
 }
 
+/** Payload dokumen resep buatan pengguna keluarga, sesuai isValidFamilyResepSaya di firestore.rules. */
+export function payloadResepSayaKeluarga(r: ResepSaya, uid: string, nowIso = new Date().toISOString()): Record<string, unknown> {
+  const p: Record<string, unknown> = {
+    id: r.id,
+    judul: r.judul,
+    bahan: r.bahan.slice(0, 20).map((b) => ({ nama: b.nama, ...(b.takaran ? { takaran: b.takaran } : {}), alergen: b.alergen })),
+    langkah: r.langkah.slice(0, 12),
+    createdAt: r.createdAt || nowIso,
+    createdBy: r.createdBy || uid,
+    updatedAt: nowIso,
+    updatedBy: uid
+  };
+  if (typeof r.umurMinBulan === "number") p.umurMinBulan = r.umurMinBulan;
+  if (r.catatan && r.catatan.trim()) p.catatan = r.catatan.trim();
+  return p;
+}
+
 export class FamilyBayiRepository implements BayiRepository {
   private basePath: string;
   private currentAssembledProfiles: Profile[] = [];
@@ -112,6 +129,7 @@ export class FamilyBayiRepository implements BayiRepository {
     const babyJurnalMap = new Map<string, Map<string, JurnalMomen>>();
     const babyStimulasiMap = new Map<string, Map<string, StimulasiCatatan>>();
     const babyMakanMap = new Map<string, Map<string, CatatanMakan>>();
+    const babyResepMap = new Map<string, Map<string, ResepSaya>>();
 
     // User preferences subscription (activeProfileId & paymentMode)
     const userAppDoc = doc(db, "users", this.uid, "appData", "current");
@@ -147,6 +165,7 @@ export class FamilyBayiRepository implements BayiRepository {
         const jurnal = Array.from(babyJurnalMap.get(babyId)?.values() ?? []);
         const stimulasi = Array.from(babyStimulasiMap.get(babyId)?.values() ?? []);
         const makan = Array.from(babyMakanMap.get(babyId)?.values() ?? []);
+        const resepSaya = Array.from(babyResepMap.get(babyId)?.values() ?? []);
 
         assembled.push({
           id: meta.id,
@@ -164,7 +183,8 @@ export class FamilyBayiRepository implements BayiRepository {
           ...(pengukuran.length ? { pengukuran } : {}),
           ...(jurnal.length ? { jurnal } : {}),
           ...(stimulasi.length ? { stimulasi } : {}),
-          ...(makan.length ? { makan } : {})
+          ...(makan.length ? { makan } : {}),
+          ...(resepSaya.length ? { resepSaya } : {})
         });
       }
 
@@ -314,7 +334,22 @@ export class FamilyBayiRepository implements BayiRepository {
               (err) => onError(err)
             );
 
+            const unsubResep = onSnapshot(
+              collection(db, this.basePath, "babies", babyId, "resepSaya"),
+              (rSnap) => {
+                const rMap = new Map<string, ResepSaya>();
+                rSnap.docs.forEach((rDoc) => {
+                  const r = rDoc.data() as ResepSaya;
+                  rMap.set(r.id || rDoc.id, r);
+                });
+                babyResepMap.set(babyId, rMap);
+                emitIfReady();
+              },
+              (err) => onError(err)
+            );
+
             subCleanups.set(babyId, () => {
+              unsubResep();
               unsubMakan();
               unsubSched();
               unsubRecs();
@@ -341,6 +376,7 @@ export class FamilyBayiRepository implements BayiRepository {
             babyJurnalMap.delete(id);
             babyStimulasiMap.delete(id);
             babyMakanMap.delete(id);
+            babyResepMap.delete(id);
           }
         }
 
@@ -586,7 +622,7 @@ export class FamilyBayiRepository implements BayiRepository {
       await batch.commit();
     }
 
-    for (const nama of ["records", "kpsp", "milestone", "pengukuran", "jurnal", "stimulasi", "makan"]) {
+    for (const nama of ["records", "kpsp", "milestone", "pengukuran", "jurnal", "stimulasi", "makan", "resepSaya"]) {
       while (true) {
         const q = collection(db, this.basePath, "babies", babyId, nama);
         const snaps = await getDocs(q);
@@ -804,6 +840,23 @@ export class FamilyBayiRepository implements BayiRepository {
       await deleteDoc(doc(db, this.basePath, "babies", babyId, "makan", id));
     } catch (e: any) {
       handleFirestoreError(e, OperationType.DELETE, `${this.basePath}/babies/${babyId}/makan/${id}`);
+    }
+  }
+
+  /** Tanpa checkAdminPermission (semua anggota boleh menulis); izin per penulis ditegakkan firestore.rules. */
+  async saveResepSaya(babyId: string, resep: ResepSaya): Promise<void> {
+    try {
+      await setDoc(doc(db, this.basePath, "babies", babyId, "resepSaya", resep.id), payloadResepSayaKeluarga(resep, this.uid));
+    } catch (e: any) {
+      handleFirestoreError(e, OperationType.WRITE, `${this.basePath}/babies/${babyId}/resepSaya/${resep.id}`);
+    }
+  }
+
+  async deleteResepSaya(babyId: string, id: string): Promise<void> {
+    try {
+      await deleteDoc(doc(db, this.basePath, "babies", babyId, "resepSaya", id));
+    } catch (e: any) {
+      handleFirestoreError(e, OperationType.DELETE, `${this.basePath}/babies/${babyId}/resepSaya/${id}`);
     }
   }
 

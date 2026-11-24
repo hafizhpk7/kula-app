@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ChevronRight, Info, ShieldAlert } from "lucide-react";
-import type { Profile } from "../../../../types";
+import { ChevronRight, Info, Pencil, Plus, ShieldAlert, Trash2 } from "lucide-react";
+import type { Profile, ResepSaya } from "../../../../types";
 import { BottomSheet } from "../../../../components/common/BottomSheet";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { KONTEN_MPASI, posisiTahap } from "../../mpasi/logika";
+import { bisaHapusMomen, bisaUbahMomen, KonteksPeran } from "../../tumbuhkembang/logic/jurnal";
+import { formatIndonesianDate } from "../../../../utils/dates";
 import {
   KATALOG_RESEP,
   LABEL_KELOMPOK,
@@ -16,15 +18,24 @@ import {
   tahapAwalFilter,
   tahapUntukResep
 } from "../logika";
+import { HasilValidasiResepSaya, KELOMPOK_PILIHAN, bangunResepSaya, keResep, urutkanResepSaya } from "../saya";
+import { FormResepSayaSheet } from "./FormResepSayaSheet";
 
 interface Props {
   profile: Profile;
   sekarang?: Date;
+  /** Bila ada, bagian "Resep saya" tampil. */
+  peran?: KonteksPeran;
+  namaPenulis?: (uid: string) => string | undefined;
+  onSimpanSaya?: (r: ResepSaya) => boolean;
+  onHapusSaya?: (id: string) => void;
   /** Hanya untuk tes. Default: window.localStorage. */
   penyimpanan?: Storage | null;
 }
 
 const KUNCI_REAKSI = "kula_resep_sembunyi_reaksi";
+const chipSekunder =
+  "px-4 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[44px] inline-flex items-center justify-center gap-2 hover:bg-surface-sunken transition cursor-pointer";
 const kartu = "bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)]";
 const chip = (aktif: boolean) =>
   `min-h-[44px] px-3 rounded-full border text-[14px] font-medium cursor-pointer transition ${
@@ -43,12 +54,16 @@ function simpanan(p?: Storage | null): Storage | null {
 const teksUmur = (r: Resep) => (r.umurMinBulan === r.umurMaxBulan ? `${r.umurMinBulan} bulan` : `${r.umurMinBulan}-${r.umurMaxBulan} bulan`);
 
 /** Halaman Resep MPASI (P2): daftar dari Buku KIA dengan penyaring umur/tahap, bahan, dan "tanpa ...". */
-export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan }) => {
+export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan, peran, namaPenulis, onSimpanSaya, onHapusSaya }) => {
   const posisi = posisiTahap(profile.tanggalLahir, sekarang ?? new Date());
   const [tahapId, setTahapId] = useState<string | null>(() => tahapAwalFilter(posisi));
   const [kata, setKata] = useState("");
   const [tanpa, setTanpa] = useState<string[]>([]);
   const [saring, setSaring] = useState(false);
+  const [bagian, setBagian] = useState<"katalog" | "saya">("katalog");
+  const [formBuka, setFormBuka] = useState(false);
+  const [ubahResep, setUbahResep] = useState<ResepSaya | null>(null);
+  const [konfirmHapus, setKonfirmHapus] = useState(false);
   const [buka, setBuka] = useState<string | null>(null);
   const [bukaSumber, setBukaSumber] = useState(false);
   const store = simpanan(penyimpanan);
@@ -68,12 +83,31 @@ export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan }
   }, [pakaiCatatan, store]);
 
   const berreaksi = useMemo(() => bahanBerreaksi(profile.makan), [profile.makan]);
-  const kelompok = useMemo(() => kelompokDiKatalog(), []);
+  const adaSaya = !!(peran && onSimpanSaya);
+  const sayaAsli = useMemo(() => urutkanResepSaya(profile.resepSaya), [profile.resepSaya]);
+  const sumberDaftar = useMemo(() => (bagian === "saya" ? sayaAsli.map(keResep) : KATALOG_RESEP), [bagian, sayaAsli]);
+  const kelompok = useMemo(() => (bagian === "saya" ? KELOMPOK_PILIHAN : kelompokDiKatalog()), [bagian]);
   const hasil = useMemo(
-    () => saringResep(KATALOG_RESEP, { tahapId, kata, tanpa, hindariBahan: pakaiCatatan ? berreaksi : [] }),
-    [tahapId, kata, tanpa, pakaiCatatan, berreaksi]
+    () => saringResep(sumberDaftar, { tahapId, kata, tanpa, hindariBahan: pakaiCatatan ? berreaksi : [] }),
+    [sumberDaftar, tahapId, kata, tanpa, pakaiCatatan, berreaksi]
   );
-  const terbuka = KATALOG_RESEP.find((r) => r.id === buka);
+  const terbuka = sumberDaftar.find((r) => r.id === buka);
+  const terbukaAsli = bagian === "saya" ? sayaAsli.find((r) => r.id === buka) : undefined;
+  const penulis = (r: ResepSaya) => {
+    if (!peran || peran.mode !== "family" || !r.createdBy) return null;
+    return r.createdBy === peran.uid ? "Anda" : (namaPenulis?.(r.createdBy) ?? "Anggota keluarga");
+  };
+  const simpanSaya = (nilai: NonNullable<HasilValidasiResepSaya["nilai"]>, lama?: ResepSaya) => {
+    const now = sekarang ?? new Date();
+    return !!onSimpanSaya?.(
+      bangunResepSaya(nilai, {
+        awal: lama,
+        id: `resep-${now.getTime().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
+        sekarangIso: now.toISOString(),
+        uid: peran?.uid
+      })
+    );
+  };
   const jumlahSaring = (tahapId ? 1 : 0) + (kata.trim() ? 1 : 0) + tanpa.length + (pakaiCatatan ? 1 : 0);
 
   return (
@@ -84,6 +118,17 @@ export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan }
         <p className="text-[14px] text-text leading-relaxed">
           {profile.panggilan} berumur {posisi.umurBulan} bulan. {KONTEN_MPASI.mulai.teks} Resep di bawah untuk umur 6 bulan ke atas.
         </p>
+      )}
+
+      {adaSaya && (
+        <div role="group" aria-label="Sumber resep" className="flex flex-wrap gap-2">
+          <button type="button" aria-pressed={bagian === "katalog"} onClick={() => setBagian("katalog")} className={chip(bagian === "katalog")}>
+            Dari Buku KIA
+          </button>
+          <button type="button" aria-pressed={bagian === "saya"} onClick={() => setBagian("saya")} className={chip(bagian === "saya")}>
+            Resep saya ({sayaAsli.length})
+          </button>
+        </div>
       )}
 
       {/* Penyaring */}
@@ -154,10 +199,30 @@ export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan }
 
       {/* Daftar */}
       <section aria-labelledby="resep-daftar" className="space-y-3">
-        <h2 id="resep-daftar" className="font-display text-[16px] text-text px-1">
-          {hasil.tampil.length} resep
-        </h2>
-        {hasil.tampil.length === 0 ? (
+        <div className="flex items-center justify-between gap-2">
+          <h2 id="resep-daftar" className="font-display text-[16px] text-text px-1">
+            {hasil.tampil.length} resep
+          </h2>
+          {bagian === "saya" && (
+            <button
+              type="button"
+              onClick={() => setFormBuka(true)}
+              className="px-4 rounded-full bg-mod-bayi text-mod-bayi-fg font-semibold text-[14px] min-h-[44px] inline-flex items-center gap-1.5 hover:brightness-95 active:scale-95 transition cursor-pointer"
+            >
+              <Plus className="w-4 h-4" aria-hidden="true" />
+              Tambah resep
+            </button>
+          )}
+        </div>
+        {bagian === "saya" && (
+          <p className="text-[12px] text-text-2 leading-relaxed px-1">Resep buatan sendiri, bukan dari sumber resmi dan belum ditinjau tenaga kesehatan. Resep dibagikan ke anggota keluarga bila kamu memakai mode keluarga.</p>
+        )}
+        {hasil.tampil.length === 0 && bagian === "saya" && sayaAsli.length === 0 ? (
+          <div className={`${kartu} space-y-2`}>
+            <p className="text-[14px] text-text">Belum ada resep buatan sendiri.</p>
+            <p className="text-[13px] text-text-2">Ketuk Tambah resep untuk menyimpan resep keluarga kamu.</p>
+          </div>
+        ) : hasil.tampil.length === 0 ? (
           <div className={`${kartu} space-y-3`}>
             <p className="text-[14px] text-text">Tidak ada resep yang cocok dengan penyaring ini.</p>
             {jumlahSaring > 0 && (
@@ -226,13 +291,13 @@ export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan }
         </div>
       </BottomSheet>
 
-      <BottomSheet isOpen={!!terbuka} onClose={() => setBuka(null)} title={terbuka?.judul ?? "Resep"} titleId="resep-detail">
+      <BottomSheet isOpen={!!terbuka} onClose={() => { setBuka(null); setKonfirmHapus(false); }} title={terbuka?.judul ?? "Resep"} titleId="resep-detail">
         {terbuka && (
           <div className="space-y-4">
             <p className="text-[13px] text-text-2">
-              Umur {teksUmur(terbuka)}
+              {terbukaAsli && terbukaAsli.umurMinBulan === undefined ? "Umur minimal tidak ditentukan" : `Umur ${teksUmur(terbuka)}`}
               {terbuka.porsiResep && ` · ${terbuka.porsiResep}`}
-              {tahapUntukResep(terbuka).length > 0 && ` · tahap ${tahapUntukResep(terbuka).map((t) => `${t.umurMinBulan}-${t.umurMaxBulan}`).join(" dan ")} bulan`}
+              {!(terbukaAsli && terbukaAsli.umurMinBulan === undefined) && tahapUntukResep(terbuka).length > 0 && ` · tahap ${tahapUntukResep(terbuka).map((t) => `${t.umurMinBulan}-${t.umurMaxBulan}`).join(" dan ")} bulan`}
             </p>
 
             <section aria-labelledby="resep-keselamatan" className="rounded-control border border-border-strong bg-surface-sunken p-3 space-y-2">
@@ -273,12 +338,79 @@ export const ResepHalaman: React.FC<Props> = ({ profile, sekarang, penyimpanan }
             </section>
 
             {terbuka.catatan && <p className="text-[13px] text-text-2 leading-relaxed">{terbuka.catatan}</p>}
-            <p className="text-[12px] text-text-2">
-              Sumber: {terbuka.sumber}, hlm PDF {terbuka.halamanPdf.join(", ")}. {terbuka.perluReview ? "Menunggu tinjauan tenaga kesehatan." : `Ditinjau ${terbuka.peninjau}.`}
-            </p>
+            {terbukaAsli ? (
+              <>
+                <p className="text-[12px] text-text-2 leading-relaxed">
+                  Resep buatan sendiri, bukan dari sumber resmi. Tanda kelompok bahan dipilih penulisnya dan bisa terlewat. Catatan keselamatan di atas berasal dari Buku KIA 2024.
+                  {penulis(terbukaAsli) && ` Ditulis oleh ${penulis(terbukaAsli)} pada ${formatIndonesianDate(terbukaAsli.createdAt.slice(0, 10), "d MMM yyyy")}.`}
+                </p>
+                {konfirmHapus ? (
+                  <div role="alertdialog" aria-labelledby="resep-hapus" className="rounded-control border border-danger/30 bg-danger-tint p-3 space-y-2">
+                    <p id="resep-hapus" className="text-[14px] font-semibold text-danger-text">
+                      Hapus resep “{terbukaAsli.judul}”?
+                    </p>
+                    <p className="text-[13px] text-danger-text">Resep ini akan hilang dan tidak bisa dikembalikan.{peran?.mode === "family" && " Anggota keluarga lain juga tidak akan melihatnya lagi."}</p>
+                    <div className="flex gap-2 flex-wrap">
+                      <button type="button" className={chipSekunder} onClick={() => setKonfirmHapus(false)}>
+                        Batal
+                      </button>
+                      <button
+                        type="button"
+                        className="px-4 rounded-full bg-danger text-white text-[14px] font-semibold min-h-[44px] cursor-pointer"
+                        onClick={() => {
+                          onHapusSaya?.(terbukaAsli.id);
+                          setKonfirmHapus(false);
+                          setBuka(null);
+                        }}
+                      >
+                        Hapus resep
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-2 flex-wrap">
+                    {peran && bisaUbahMomen(terbukaAsli, peran) && (
+                      <button
+                        type="button"
+                        className={chipSekunder}
+                        onClick={() => {
+                          setUbahResep(terbukaAsli);
+                          setBuka(null);
+                        }}
+                      >
+                        <Pencil className="w-4 h-4" aria-hidden="true" />
+                        Ubah resep
+                      </button>
+                    )}
+                    {peran && bisaHapusMomen(terbukaAsli, peran) && (
+                      <button type="button" className={chipSekunder} onClick={() => setKonfirmHapus(true)}>
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
+                        Hapus resep
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
+            ) : (
+              <p className="text-[12px] text-text-2">
+                Sumber: {terbuka.sumber}, hlm PDF {terbuka.halamanPdf.join(", ")}. {terbuka.perluReview ? "Menunggu tinjauan tenaga kesehatan." : `Ditinjau ${terbuka.peninjau}.`}
+              </p>
+            )}
           </div>
         )}
       </BottomSheet>
+
+      {adaSaya && (
+        <FormResepSayaSheet
+          isOpen={formBuka || ubahResep !== null}
+          onClose={() => {
+            setFormBuka(false);
+            setUbahResep(null);
+          }}
+          ubah={ubahResep ?? undefined}
+          onSimpan={simpanSaya}
+        />
+      )}
     </div>
   );
 };

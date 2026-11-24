@@ -1,6 +1,6 @@
 # Fase P2: Resep MPASI
 
-Status: **katalog, penyaring, dan validasi selesai** di balik flag `resep` (`VITE_FEATURE_RESEP`, default mati). **"Resep saya" menunggu ok** karena butuh skema dan rules baru (bagian 3). Tanpa perubahan rules pada langkah ini.
+Status: **katalog, penyaring, validasi, dan "Resep saya" selesai** (skema disetujui 24 November 2026), di balik flag `resep` (`VITE_FEATURE_RESEP`, default mati). Rules `resepSaya` belum di-deploy.
 
 ## 1. Sumber (langkah awal)
 
@@ -48,3 +48,13 @@ Resep buatan pengguna. Sumber katalog ada, jadi ini bukan pengganti katalog; ini
 - Catatan keselamatan dari Buku KIA ditampilkan otomatis di tiap resep buatan pengguna (bukan diketik pengguna), dan resep itu diberi label jelas "Resep buatan sendiri, bukan dari sumber".
 - Tag kelompok bahan dipilih pengguna. Aplikasi tidak menebak dari nama bahan, dan penyaring "Tanpa ..." memakai tag itu dengan peringatan bahwa tag buatan pengguna bisa terlewat.
 - **Foto:** tidak ikut. Infrastruktur foto R3b terikat pada momen (`momenId` dan `fotoIds` di rules); memakainya untuk resep butuh diff rules tersendiri. Disarankan sebagai langkah terpisah setelah "Resep saya" jalan.
+
+## 4. Implementasi "Resep saya" (24 November 2026)
+
+- Tipe `ResepSaya` aditif; tamu dan pribadi di `profile.resepSaya` (tanpa diff rules), keluarga di subkoleksi `resepSaya`. Rules `isValidFamilyResepSaya` dan 9 tes emulator (total `npm run test:rules` 169 lulus): judul 1–80, umur 6–23 bulat, bahan 1–20, langkah 1–12, catatan ≤ 500, field asing (foto, tautan) ditolak, peran seperti `makan`.
+- Rules tidak bisa memeriksa isi tiap elemen list; panjang teks bahan (60), takaran (40), dan langkah (300) dijaga klien.
+- UI: pilihan "Dari Buku KIA / Resep saya (n)", satu tombol "Tambah resep", form (judul, umur minimal, bahan dengan tag kelompok pilihan sendiri, langkah, catatan), detail dengan label "Resep buatan sendiri, bukan dari sumber resmi", ubah dan hapus (konfirmasi) sesuai peran.
+- **Keselamatan** di resep buatan pengguna = butir yang ada di semua resep katalog (jadi dari Buku KIA, dihitung otomatis), tampil paling atas dan tidak bisa dihapus.
+- Penyaring "Tanpa ..." memakai tag pilihan pengguna dengan peringatan bahwa tag bisa terlewat; aplikasi tidak menebak dari nama bahan.
+- Batas 100 resep per anak. Foto tidak ikut (lihat bagian 3).
+- Bukti tampilan di `docs/fitur/p2/` (`saya-*`).

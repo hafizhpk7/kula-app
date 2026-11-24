@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { belum, pesanPengguna } from "../../../utils/pesanError";
-import { AppState, CatatanMakan, Insurance, JurnalMomen, StimulasiCatatan, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
+import { AppState, CatatanMakan, ResepSaya, Insurance, JurnalMomen, StimulasiCatatan, PaymentMode, Profile, Record, ScheduleRow } from "../../../types";
 import { getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../components/common/Toast";
@@ -13,6 +13,7 @@ import { aturCatatan, hapusCatatanDari } from "../tumbuhkembang/logic/stimulasi"
 import { penyimpananLokal, sekaliRayakan } from "../tumbuhkembang/logic/rayakan";
 import { FEATURES } from "../../../config/features";
 import { aturMakan, bolehTambahMakan, hapusMakanDari, PESAN_TOLAK_MAKAN } from "../mpasi/logika";
+import { aturResepSaya, bolehTambahResepSaya, hapusResepSayaDari, PESAN_TOLAK_RESEP_SAYA } from "../resep/sayaBase";
 import { kuotaHabis, PerubahanFoto } from "../momen/foto/layanan";
 import { DrafMomen, tokoFotoPerangkat } from "../momen/foto/tokoLokal";
 import { BATAS_FOTO_KELUARGA, jumlahFoto, PESAN_FOTO } from "../momen/foto/batas";
@@ -446,6 +447,40 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     [activeProfile, repository, showToast]
   );
 
+  // P2: resep buatan pengguna. Seperti makan, tanpa assertCanWrite: anggota keluarga boleh menulis (rules menegakkan penulis).
+  const simpanResepSaya = useCallback(
+    (r: ResepSaya): boolean => {
+      if (!activeProfile) return false;
+      const baru = !(activeProfile.resepSaya ?? []).some((x) => x.id === r.id);
+      if (baru) {
+        const boleh = bolehTambahResepSaya(activeProfile, mode !== "family");
+        if (!boleh.ok) {
+          showToast(PESAN_TOLAK_RESEP_SAYA[boleh.alasan]);
+          return false;
+        }
+      }
+      const babyId = activeProfile.id;
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, resepSaya: aturResepSaya(p.resepSaya, r) } : p)) }));
+      repository.saveResepSaya(babyId, r).catch((err) => {
+        showToast(pesanPengguna("bayi", err, belum("Resep", "tersimpan")));
+      });
+      return true;
+    },
+    [activeProfile, mode, repository, showToast]
+  );
+
+  const hapusResepSaya = useCallback(
+    (id: string) => {
+      if (!activeProfile) return;
+      const babyId = activeProfile.id;
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, resepSaya: hapusResepSayaDari(p.resepSaya, id) } : p)) }));
+      repository.deleteResepSaya(babyId, id).catch((err) => {
+        showToast(pesanPengguna("bayi", err, belum("Resep", "terhapus")));
+      });
+    },
+    [activeProfile, repository, showToast]
+  );
+
   // H13: clearAllBabyData
   const clearAllBabyData = useCallback(() => {
     if (!assertCanWrite()) return;
@@ -492,6 +527,8 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     hapusStimulasi,
     simpanMakan,
     hapusMakan,
+    simpanResepSaya,
+    hapusResepSaya,
     clearAllBabyData
   };
 }

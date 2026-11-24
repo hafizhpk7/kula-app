@@ -1,9 +1,10 @@
-import { AppState, CatatanMakan, JurnalMomen, PaymentMode, Record, StimulasiCatatan, ScheduleRow } from "../../../types";
+import { AppState, CatatanMakan, JurnalMomen, ResepSaya, PaymentMode, Record, StimulasiCatatan, ScheduleRow } from "../../../types";
 import { clearAllData, getInitialState, loadAppState, saveAppState } from "../../../utils/storage";
 import { BayiRepository } from "./types";
 import { aturMomen, hapusMomenDari } from "../tumbuhkembang/logic/jurnal";
 import { aturCatatan, hapusCatatanDari } from "../tumbuhkembang/logic/stimulasi";
 import { aturMakan, hapusMakanDari } from "../mpasi/logika";
+import { aturResepSaya, hapusResepSayaDari } from "../resep/sayaBase";
 
 export class LocalBayiRepository implements BayiRepository {
   private listeners: Set<(state: AppState) => void> = new Set();
@@ -180,6 +181,26 @@ export class LocalBayiRepository implements BayiRepository {
     const updated: AppState = {
       ...cur,
       profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, makan: hapusMakanDari(p.makan, id) } : p))
+    };
+    saveAppState(updated);
+    this.notify();
+  }
+
+  async saveResepSaya(babyId: string, resep: ResepSaya): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, resepSaya: aturResepSaya(p.resepSaya, resep) } : p))
+    };
+    saveAppState(updated);
+    this.notify();
+  }
+
+  async deleteResepSaya(babyId: string, id: string): Promise<void> {
+    const cur = loadAppState();
+    const updated: AppState = {
+      ...cur,
+      profiles: cur.profiles.map((p) => (p.id === babyId ? { ...p, resepSaya: hapusResepSayaDari(p.resepSaya, id) } : p))
     };
     saveAppState(updated);
     this.notify();

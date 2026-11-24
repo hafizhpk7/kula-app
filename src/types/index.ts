@@ -181,6 +181,21 @@ export interface CatatanMakan {
   updatedBy?: string;
 }
 
+/** Resep buatan pengguna (P2). Bukan dari sumber: tag kelompok bahan dipilih sendiri oleh pengguna. */
+export interface ResepSaya {
+  id: string;
+  judul: string;
+  /** 6..23, opsional */
+  umurMinBulan?: number;
+  bahan: { nama: string; takaran?: string; alergen: string[] }[];
+  langkah: string[];
+  catatan?: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy?: string;
+  updatedBy?: string;
+}
+
 export interface Profile {
   id: string;
   panggilan: string;
@@ -201,6 +216,8 @@ export interface Profile {
   stimulasi?: StimulasiCatatan[];
   /** Catatan makan MPASI. Di mode keluarga disusun dari subkoleksi `makan`. */
   makan?: CatatanMakan[];
+  /** Resep buatan pengguna. Di mode keluarga disusun dari subkoleksi `resepSaya`. */
+  resepSaya?: ResepSaya[];
 }
 
 export type PaymentMode = "HYBRID" | "FULL_PRIVATE" | "FULL_BPJS";
