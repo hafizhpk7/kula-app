@@ -163,3 +163,19 @@ Acuan utama = Buku KIA 2024 (S4). Dokumen pembanding (PMBA Kemenkes, IDAI, WHO 2
 - Buku KIA 2024 menulis tahap MPASI per umur (6–8, 9–11, 12–23 bulan) tanpa menyebut usia koreksi [baca]. Buku KIA Khusus Bayi Kecil tidak memuat kata MPASI [baca].
 - **[usulan, dipakai di P1]** Kartu "Tahap sekarang" memakai **umur kronologis**, dan untuk bayi dengan usia kehamilan tercatat < 37 minggu menampilkan kalimat "Bayi lahir prematur: tanyakan ke tenaga kesehatan kapan mulai MPASI dan tahap mana yang sesuai." Ini perlu dikonfirmasi tenaga kesehatan.
 - Keputusan: **[tunggu]**
+
+## Fase P2 (Resep MPASI)
+
+## K18. Resep di Buku KIA: ketidakkonsistenan di dalam sumber
+
+- **Bahan dan langkah tidak sama:** contoh "Bayi 9-11 bulan, dari bahan mentah" (hlm PDF 31) mencantumkan **wortel 15 g** di daftar bahan, tetapi langkah ke-2 menyebut **buncis**. [baca] Ditulis apa adanya di `bubur-mentah-9-11`, dengan catatan.
+- **Digoreng:** hlm 30 menganjurkan menghindari makanan yang digoreng (konteks MPASI 6-12 bulan). Contoh "Bayi 12-23 bulan, dari bahan mentah" (hlm 31) memakai "hati ayam goreng (goreng/tumis ... dengan minyak kelapa)". [baca] Ditulis apa adanya untuk 12-23 bulan, dengan catatan; menunggu keputusan apakah resep ini ikut ditampilkan.
+- **Rentang umur resep hlm 32:** "Nasi Tim Ikan Kembung Telur Puyuh" berjudul "9 - 12 Bulan", sedangkan tahap di hlm 31 memakai 9-11 dan 12-23. Resep ditulis dengan umur 9-12 bulan, jadi muncul di dua tahap.
+- Keputusan: **[tunggu]**
+
+## K19. Kelompok bahan untuk penyaring "tanpa X" (bukan isi sumber)
+
+- Buku KIA tidak memuat daftar alergen. Yang ada hanya kelompok makanan di hlm 31: pokok (termasuk gandum), protein hewani (ikan, ayam, daging, hati, udang, telur, susu dan olahannya), dan kacang-kacangan (kedelai, kacang hijau, kacang polong, kacang tanah). [baca]
+- **[usulan, dipakai di P2]** Tag pada bahan memakai **nama kelompok makanan itu sendiri**: telur, susu, ikan, udang, kacang-kacangan (termasuk kedelai dan tempe), dan gandum. Aplikasi menyebutnya "Tanpa ..." dan menjelaskan bahwa ini hanya menyaring berdasarkan bahan yang tertulis di resep, **bukan penilaian alergi**. Daftar kelompok ini adalah pilihan aplikasi dan perlu dicek tenaga kesehatan.
+- Build gagal bila bahan yang jelas mengandung kelompok itu (mis. mengandung kata "telur" atau "tempe") tidak diberi tag.
+- Keputusan: **[tunggu]**

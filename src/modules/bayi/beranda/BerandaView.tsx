@@ -139,7 +139,7 @@ export const BerandaView: React.FC<Props> = ({ profile, paymentMode, tumbuhKemba
 
       {/* Grid ubin */}
       <GridFitur judul="Fitur Bayi">
-        {ubinBeranda({ tumbuhKembang, mpasi: FEATURES.mpasi }).map((f) => (
+        {ubinBeranda({ tumbuhKembang, mpasi: FEATURES.mpasi, resep: FEATURES.resep }).map((f) => (
           <UbinFitur
             key={f.id}
             label={f.label}
