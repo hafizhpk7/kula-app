@@ -65,6 +65,19 @@
   --mod-uang-tint: #FFF2CC;
   --kura-shell: #2FBF71;
   --kura-shell-line: #157A45;
+  /* Ubin fitur (SKEMA-REVISI RV2): latar lingkaran + warna ikon. Ikon/latar >= 6,6:1 */
+  --ubin-hijau: #CFF3DD;
+  --ubin-hijau-fg: #0F5C33;
+  --ubin-coral: #FFE0D5;
+  --ubin-coral-fg: #8A2A10;
+  --ubin-langit: #CDEEF5;
+  --ubin-langit-fg: #0D3B4A;
+  --ubin-kuning: #FFEFC2;
+  --ubin-kuning-fg: #5C4200;
+  --ubin-ungu: #E6E0FA;
+  --ubin-ungu-fg: #3D2C80;
+  --ubin-toska: #C9F0EA;
+  --ubin-toska-fg: #0B5A50;
   --kura-skin: #FFC53D;
   --kura-ink: #26201B;
   --shadow-float: 0 10px 24px -10px rgba(13, 59, 74, 0.35), 0 2px 6px -2px rgba(13, 59, 74, 0.12);
@@ -98,6 +111,18 @@
   --mod-uang-tint: #453610;
   --kura-shell: #3BCB7F;
   --kura-shell-line: #0F5C33;
+  --ubin-hijau: #173F2A;
+  --ubin-hijau-fg: #9BE8BC;
+  --ubin-coral: #4A261C;
+  --ubin-coral-fg: #FFB8A3;
+  --ubin-langit: #0F3442;
+  --ubin-langit-fg: #A9E3F0;
+  --ubin-kuning: #43360F;
+  --ubin-kuning-fg: #FFD98A;
+  --ubin-ungu: #2E2850;
+  --ubin-ungu-fg: #CFC4FF;
+  --ubin-toska: #123F3A;
+  --ubin-toska-fg: #93E6D9;
   --kura-skin: #FFD166;
   --kura-ink: #10201A;
   --shadow-float: 0 10px 24px -10px rgba(0, 0, 0, 0.6);
@@ -157,6 +182,18 @@
   --color-mod-uang: var(--mod-uang);
   --color-mod-uang-fg: var(--mod-uang-fg);
   --color-mod-uang-tint: var(--mod-uang-tint);
+  --color-ubin-hijau: var(--ubin-hijau);
+  --color-ubin-hijau-fg: var(--ubin-hijau-fg);
+  --color-ubin-coral: var(--ubin-coral);
+  --color-ubin-coral-fg: var(--ubin-coral-fg);
+  --color-ubin-langit: var(--ubin-langit);
+  --color-ubin-langit-fg: var(--ubin-langit-fg);
+  --color-ubin-kuning: var(--ubin-kuning);
+  --color-ubin-kuning-fg: var(--ubin-kuning-fg);
+  --color-ubin-ungu: var(--ubin-ungu);
+  --color-ubin-ungu-fg: var(--ubin-ungu-fg);
+  --color-ubin-toska: var(--ubin-toska);
+  --color-ubin-toska-fg: var(--ubin-toska-fg);
 
   --color-bg: var(--bg);
   --color-bg-sidebar: var(--bg-sidebar);
