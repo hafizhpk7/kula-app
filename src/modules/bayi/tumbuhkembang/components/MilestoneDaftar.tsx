@@ -1,5 +1,9 @@
-import React from "react";
-import { Check, CircleHelp, Minus } from "lucide-react";
+import React, { useState } from "react";
+import { Check, CircleHelp, Minus, Play } from "lucide-react";
+import { BottomSheet } from "../../../../components/common/BottomSheet";
+import { FEATURES } from "../../../../config/features";
+import { AnimasiTumbuhLazy } from "../../../../components/three/tumbuh/AnimasiTumbuhLazy";
+import { CATATAN_PETA, PETA_BUTIR } from "../../../../components/three/tumbuh/peta";
 import { MilestoneCatatan, MilestoneStatus } from "../../../../types";
 import { ButirKpsp, DOMAIN_LABEL, DOMAIN_URUT, FormulirKpsp } from "../konten";
 import { kelompokkanPerDomain, ringkasMilestone, statusButir } from "../logic/milestone";
@@ -33,6 +37,9 @@ const JENIS_TEKS: Record<ButirKpsp["jenis"], string> = {
 /** Checklist milestone per domain untuk satu formulir umur (butir KPSP). */
 export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, onUbah, onCatatMomen, tawaran }) => {
   const kelompok = kelompokkanPerDomain(formulir.butir);
+  // Ilustrasi gerakan (R4b, flag animasiTumbuh): ketuk butir yang punya gerakan untuk memutarnya.
+  const [gerakanId, setGerakanId] = useState<string | null>(null);
+  const butirGerakan = gerakanId ? formulir.butir.find((x) => x.id === gerakanId) : undefined;
   const r = ringkasMilestone(formulir.butir, catatan);
 
   return (
@@ -52,7 +59,21 @@ export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, 
               const namaGrup = `Status: ${b.teks.slice(0, 60)}`;
               return (
                 <li key={b.id} className="rounded-control border border-border p-3 space-y-2.5">
-                  <p className="text-[14px] text-text leading-relaxed">{b.teks}</p>
+                  {FEATURES.animasiTumbuh && PETA_BUTIR[b.id] ? (
+                    <button
+                      type="button"
+                      onClick={() => setGerakanId(b.id)}
+                      className="w-full text-left space-y-1.5 min-h-[44px] rounded-control hover:bg-surface-sunken transition cursor-pointer"
+                    >
+                      <span className="block text-[14px] text-text leading-relaxed">{b.teks}</span>
+                      <span className="inline-flex items-center gap-1.5 text-[13px] font-medium text-primary-text">
+                        <Play className="w-4 h-4" aria-hidden="true" />
+                        Lihat gerakan
+                      </span>
+                    </button>
+                  ) : (
+                    <p className="text-[14px] text-text leading-relaxed">{b.teks}</p>
+                  )}
                   <p className="text-[12px] text-text-2">
                     {JENIS_TEKS[b.jenis]}
                     {b.perluGambar && ` · memakai gambar di buku Pedoman (halaman ${formulir.halamanCetak.join("-")})`}
@@ -128,6 +149,19 @@ export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, 
           </ul>
         </section>
       ))}
+
+      <BottomSheet isOpen={!!butirGerakan} onClose={() => setGerakanId(null)} title="Ilustrasi gerakan" titleId={`gerakan-${formulir.id}`}>
+        {butirGerakan && PETA_BUTIR[butirGerakan.id] && (
+          <div className="space-y-3">
+            <p className="text-[15px] text-text leading-relaxed">{butirGerakan.teks}</p>
+            <AnimasiTumbuhLazy pose={PETA_BUTIR[butirGerakan.id]} />
+            {CATATAN_PETA[butirGerakan.id] && <p className="text-[13px] text-text-2 leading-relaxed">{CATATAN_PETA[butirGerakan.id]}</p>}
+            <p className="text-[12px] text-text-2 leading-relaxed">
+              Ini ilustrasi pendamping. Yang berlaku adalah teks butir di atas{butirGerakan.perluGambar ? " dan gambar di buku Pedoman" : ""}. Gambar gerakan ini menunggu tinjauan tenaga kesehatan.
+            </p>
+          </div>
+        )}
+      </BottomSheet>
     </div>
   );
 };

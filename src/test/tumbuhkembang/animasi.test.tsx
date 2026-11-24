@@ -197,8 +197,13 @@ describe("animasi singkat dan bisa dimatikan (CSS)", () => {
 
 describe("PWA: chunk three tidak di-precache (P1)", () => {
   const cfg = readFileSync("vite.config.ts", "utf8");
-  it("globIgnores memuat KulaMascot dan ada runtime caching-nya", () => {
-    expect(cfg).toContain("globIgnores: ['**/KulaMascot-*.js']");
+  it("globIgnores memuat chunk three bersama, maskot, dan ilustrasi gerakan; ada runtime caching-nya", () => {
+    expect(cfg).toContain("globIgnores: ['**/three-*.js', '**/KulaMascot-*.js', '**/AnimasiTumbuh3D-*.js']");
+    expect(cfg).toContain("(three|KulaMascot|AnimasiTumbuh3D)");
     expect(cfg).toContain("maskot-3d-cache");
+  });
+  it("three dan @react-three jadi satu chunk bernama tetap, tanpa menarik dependensi bersama (R4a)", () => {
+    expect(cfg).toContain("name: 'three'");
+    expect(cfg).toContain("includeDependenciesRecursively: false");
   });
 });

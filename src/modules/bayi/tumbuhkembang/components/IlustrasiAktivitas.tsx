@@ -2,8 +2,10 @@ import React from "react";
 import { KuraBerenang } from "../../../../components/common/LautKura";
 
 /**
- * Ilustrasi bergaya untuk aktivitas yang berbenda. ATURAN: tidak ada tubuh bayi (risiko menyesatkan soal
- * posisi tengkurap, duduk, gendong, tidur); hanya benda dan Kura sebagai peraga. Dekoratif (aria-hidden):
+ * Ilustrasi bergaya untuk aktivitas yang berbenda. Aturan awal: tidak ada tubuh bayi (risiko menyesatkan soal
+ * posisi tengkurap, duduk, gendong, tidur); hanya benda dan Kura sebagai peraga. Sejak D6 (SKEMA-REVISI.md) bayi
+ * 3D boleh dipakai di balik flag animasiTumbuh, dengan tinjauan tenaga kesehatan; ilustrasi ini tetap menjadi
+ * cadangan saat 3D tidak tampil, dan tetap satu-satunya ilustrasi saat flag mati. Dekoratif (aria-hidden):
  * semua informasi ada di teks langkah. Gerak singkat, berhenti sendiri, mati pada mode kurangi gerak.
  */
 

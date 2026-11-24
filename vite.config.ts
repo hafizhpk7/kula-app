@@ -54,16 +54,16 @@ export default defineConfig(() => {
         workbox: {
           maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
-          // Chunk three (maskot 3D, ±920 kB) hanya dipakai layar >= 1024 px. Jangan diunduh paksa oleh
-          // setiap HP yang memasang PWA; di-cache saat dipakai (runtime caching di bawah).
-          globIgnores: ['**/KulaMascot-*.js'],
+          // Chunk three bersama (±910 kB) dan pemakainya (maskot 3D, ilustrasi gerakan) hanya diunduh saat dipakai.
+          // Jangan diunduh paksa oleh setiap HP yang memasang PWA; di-cache saat dipakai (runtime caching di bawah).
+          globIgnores: ['**/three-*.js', '**/KulaMascot-*.js', '**/AnimasiTumbuh3D-*.js'],
           runtimeCaching: [
             {
-              urlPattern: /\/assets\/KulaMascot-[^/]+\.js$/i,
+              urlPattern: /\/assets\/(three|KulaMascot|AnimasiTumbuh3D)-[^/]+\.js$/i,
               handler: 'CacheFirst',
               options: {
                 cacheName: 'maskot-3d-cache',
-                expiration: { maxEntries: 2, maxAgeSeconds: 60 * 60 * 24 * 90 },
+                expiration: { maxEntries: 6, maxAgeSeconds: 60 * 60 * 24 * 90 },
                 cacheableResponse: { statuses: [0, 200] }
               }
             },
@@ -103,6 +103,18 @@ export default defineConfig(() => {
         }
       })
     ],
+    build: {
+      rolldownOptions: {
+        output: {
+          // Satu chunk three bernama tetap, dipakai bersama maskot dan ilustrasi gerakan (dan bisa dikecualikan dari precache).
+          advancedChunks: {
+            // Jangan ikut menarik dependensi bersama (react, helper CJS) ke chunk three: index tidak boleh mengimpornya.
+            includeDependenciesRecursively: false,
+            groups: [{ name: 'three', test: /node_modules[\\/](three|@react-three)[\\/]/ }]
+          }
+        }
+      }
+    },
     resolve: {
       alias: {
         '@': path.resolve('.')
