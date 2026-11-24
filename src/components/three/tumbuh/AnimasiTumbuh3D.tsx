@@ -11,6 +11,12 @@ export interface AnimasiTumbuh3DProps {
   animasi: Animasi;
   /** "diam": satu pose (gerak dikurangi). */
   mode: "animasi" | "diam";
+  /** Naik tiap kali animasi sekali-jalan (ulang: false) diputar lagi: mengulang dari keyframe pertama. */
+  putaran?: number;
+  /** Animasi sekali-jalan sudah selesai: render berhenti sampai diputar lagi. */
+  selesai?: boolean;
+  /** Titik waktu tetap (0..1) untuk meninjau gerakan frame demi frame. Mengabaikan `mode`: tampil diam di titik itu. */
+  waktu?: number;
   /** false saat di luar layar atau tab tersembunyi: render berhenti. */
   berjalan: boolean;
   onSiap?: () => void;
@@ -27,7 +33,7 @@ declare global {
   }
 }
 
-const Adegan: React.FC<{ animasi: Animasi; mode: "animasi" | "diam"; onSiap?: () => void }> = ({ animasi, mode, onSiap }) => {
+const Adegan: React.FC<{ animasi: Animasi; mode: "animasi" | "diam"; waktu?: number; putaran?: number; onSiap?: () => void }> = ({ animasi, mode, waktu, putaran, onSiap }) => {
   const { scene, camera, invalidate } = useThree();
   const rig = useMemo(() => bangunBayi(paletDariToken()), []);
   const mulai = useRef<number | null>(null);
@@ -56,17 +62,26 @@ const Adegan: React.FC<{ animasi: Animasi; mode: "animasi" | "diam"; onSiap?: ()
     invalidate();
   }, [animasi, camera, invalidate]);
 
+  // Putar ulang animasi sekali-jalan.
+  useEffect(() => {
+    mulai.current = null;
+    invalidate();
+  }, [putaran, invalidate]);
+
   // Pose diam: terapkan sekali lalu minta satu frame.
   useEffect(() => {
     mulai.current = null;
-    if (mode === "diam") {
+    if (waktu !== undefined) {
+      terapkanPose(rig, poseDiWaktu(animasi, waktu * animasi.durasiMs));
+      invalidate();
+    } else if (mode === "diam") {
       terapkanPose(rig, animasi.keyframe[animasi.poseDiam].pose);
       invalidate();
     }
-  }, [animasi, mode, rig, invalidate]);
+  }, [animasi, mode, waktu, rig, invalidate]);
 
   useFrame((state, delta) => {
-    if (mode === "animasi") {
+    if (mode === "animasi" && waktu === undefined) {
       if (mulai.current === null) mulai.current = state.clock.elapsedTime;
       terapkanPose(rig, poseDiWaktu(animasi, (state.clock.elapsedTime - mulai.current) * 1000));
     }
@@ -80,12 +95,12 @@ const Adegan: React.FC<{ animasi: Animasi; mode: "animasi" | "diam"; onSiap?: ()
   return null;
 };
 
-const AnimasiTumbuh3D: React.FC<AnimasiTumbuh3DProps> = ({ animasi, mode, berjalan, onSiap, onGagal }) => (
+const AnimasiTumbuh3D: React.FC<AnimasiTumbuh3DProps> = ({ animasi, mode, waktu, putaran, selesai, berjalan, onSiap, onGagal }) => (
   <Canvas
     flat
     linear
     dpr={[1, DPR_MAKS]}
-    frameloop={mode === "diam" ? "demand" : berjalan ? "always" : "never"}
+    frameloop={mode === "diam" || waktu !== undefined || selesai ? "demand" : berjalan ? "always" : "never"}
     gl={{ alpha: true, antialias: true, powerPreference: "low-power" }}
     camera={{ position: [...KAMERA_DEFAULT.posisi], fov: 30, near: 0.05, far: 20 }}
     onCreated={({ gl }) => {
@@ -96,7 +111,7 @@ const AnimasiTumbuh3D: React.FC<AnimasiTumbuh3DProps> = ({ animasi, mode, berjal
       });
     }}
   >
-    <Adegan animasi={animasi} mode={mode} onSiap={onSiap} />
+    <Adegan animasi={animasi} mode={mode} waktu={waktu} putaran={putaran} onSiap={onSiap} />
   </Canvas>
 );
 

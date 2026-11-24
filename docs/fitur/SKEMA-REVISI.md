@@ -521,3 +521,14 @@ Branch `feat/revisi-bayi-r3a`, dibuat dari `feat/revisi-bayi-r2`. Tanpa perubaha
     | Pose diam | 0 |
 
   - Belum diukur: HP asli dengan GPU lemah.
+
+## Status R4b (2026-11-24, menunggu penilaian)
+
+- **Peta:** `docs/fitur/PETA-ANIMASI.md` (dibuat otomatis dari `docs/fitur/peta-animasi.json` oleh `scripts/buat-peta-animasi.mjs`). Dari 160 butir milestone, 19 punya gerakan dan 141 tanpa animasi; dari 12 aktivitas stimulasi, 6 punya gerakan. Alasan tanpa animasi dikodekan (11 kode) dan dijelaskan di berkas peta. Pemetaan hanya dari isi butir; tidak ada konten medis berubah.
+- **Gerakan:** 15 gerakan: 13 dari 20 yang diusulkan di R0 (tabel bagian 4; `genggam-goyang` menjadi `genggam-benda`) dan 2 baru (`pertemukan-balok`, `masukkan-wadah`). Properti: bola, 2 balok, kerincingan, mainan gantung, cangkir, dan tangan dewasa. Tujuh yang belum dibuat (termasuk `merangkak`) tercatat di bagian "Yang tidak dibuat" di PETA-ANIMASI.md.
+- **Pemakaian (flag `animasiTumbuh`, default mati):**
+  - Milestone: butir yang punya gerakan berisi tombol "Lihat gerakan"; mengetuknya membuka lembar dengan teks butir (tetap utama), animasi, catatan, dan keterangan "menunggu tinjauan tenaga kesehatan".
+  - Stimulasi: kartu "Coba ini hari ini" menampilkan animasi; ilustrasi 2D lama menjadi cadangan saat 3D tidak tampil.
+- **Pemutar:** gerakan sekali-jalan (`berguling`, `masukkan-wadah`) berhenti di akhir, render berhenti, dan ada tombol "Putar ulang". Halaman pratinjau punya penggeser "Titik waktu" untuk meninjau frame demi frame.
+- **Aturan keselamatan yang dites:** tidak ada benda kecil (semua benda > 10 cm model), tidak ada butir bidang bicara dan bahasa yang dianimasikan, tidak ada pose tidur, tidak ada bagian tubuh menembus lantai (> 2 cm) di sepanjang gerakan, dan benda yang dipegang tidak melayang.
+- Bukti tampilan di `docs/fitur/r4b/` (lembar 4 titik waktu per gerakan, lembar Milestone, kartu Stimulasi).

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { NAMA_SENDI, NamaSendi, Pose, Transform, Vek3 } from "./pose";
+import { NAMA_BENDA, NAMA_SENDI, NamaBenda, NamaSendi, Pose, Transform, Vek3 } from "./pose";
 
 /**
  * Bayi low-poly prosedural (R4a, D5/D6): bergaya, tanpa wajah detail, flatShading, segmen sedikit.
@@ -14,6 +14,7 @@ export interface Palet {
   celana: string;
   rambut: string;
   bola: string;
+  balok: string;
   alas: string;
 }
 
@@ -25,6 +26,7 @@ export const PALET_CADANGAN: Palet = {
   celana: "#17804A",
   rambut: "#5A3E2B",
   bola: "#F2B53A",
+  balok: "#4F8FD6",
   alas: "#CFF3DD"
 };
 
@@ -35,6 +37,7 @@ const TOKEN: Record<keyof Palet, string> = {
   celana: "--primary",
   rambut: "--figur-rambut",
   bola: "--figur-bola",
+  balok: "--figur-balok",
   alas: "--ubin-hijau"
 };
 
@@ -74,8 +77,10 @@ const RANGKA: Record<NamaSendi, { induk: NamaSendi | null; posisi: Vek3 }> = {
 export interface RigBayi {
   akar: THREE.Group;
   sendi: Record<NamaSendi, THREE.Group>;
-  tanganDewasa: THREE.Group;
-  bola: THREE.Mesh;
+  /** Tangan orang dewasa dan properti, di luar rig bayi. */
+  benda: Record<NamaBenda, THREE.Object3D>;
+  /** Wadah benda yang tidak dipegang. Benda yang dipegang dipindah ke sendi tangan, dan kembali ke sini saat dilepas. */
+  dunia: THREE.Group;
   /** Bayangan lembut di lantai, mengikuti posisi akar. */
   bayangan: THREE.Mesh;
   alas: THREE.Mesh;
@@ -190,8 +195,25 @@ export function bangunBayi(palet: Palet = PALET_CADANGAN): RigBayi {
   tanganDewasa.children[tanganDewasa.children.length - 1].rotation.set(Math.PI / 2, 0, -0.9);
   tanganDewasa.add(mesh(kapsul(0.07, 0.3), kulitDewasa, [1, 1, 0.85], [0, 0, -0.22], [90, 0, 0]));
 
+  // Properti. Titik asal tiap benda: bola dan balok di pusatnya, kerincingan di titik genggam (tengah tangkai),
+  // mainan gantung di pusat mainannya (benang naik ke +Y), wadah di tengah dasarnya.
   const bolaMesh = new THREE.Mesh(g(new THREE.IcosahedronGeometry(0.08, 1)), bahan(palet.bola));
-  bolaMesh.name = "bola";
+  const balokGeo = g(new THREE.BoxGeometry(0.1, 0.1, 0.1));
+  const balokA = new THREE.Mesh(balokGeo, bahan(palet.bola));
+  const balokB = new THREE.Mesh(balokGeo, bahan(palet.balok));
+  const kerincingan = new THREE.Group();
+  kerincingan.add(mesh(kapsul(0.018, 0.26), bahan(palet.balok), [1, 1, 1], [0, 0, 0], [90, 0, 0]));
+  kerincingan.add(new THREE.Mesh(g(new THREE.IcosahedronGeometry(0.06, 0)), bahan(palet.bola)).translateZ(0.14));
+  const gantung = new THREE.Group();
+  gantung.add(new THREE.Mesh(g(new THREE.IcosahedronGeometry(0.05, 0)), bahan(palet.bola)));
+  gantung.add(mesh(g(new THREE.CylinderGeometry(0.004, 0.004, 0.5, 4)), bahan(palet.rambut), [1, 1, 1], [0, 0.275, 0]));
+  const matWadah = bahan(palet.celana);
+  matWadah.side = THREE.DoubleSide;
+  const wadah = new THREE.Group();
+  wadah.add(mesh(g(new THREE.CylinderGeometry(0.085, 0.065, 0.1, 8, 1, true)), matWadah, [1, 1, 1], [0, 0.05, 0]));
+  wadah.add(mesh(g(new THREE.CircleGeometry(0.065, 8)), matWadah, [1, 1, 1], [0, 0.001, 0], [-90, 0, 0]));
+  const benda: Record<NamaBenda, THREE.Object3D> = { tanganDewasa, bola: bolaMesh, balokA, balokB, kerincingan, gantung, wadah };
+  for (const n of NAMA_BENDA) benda[n].name = n;
 
   // Alas bermain dan bayangan lembut, keduanya datar di lantai (y = 0).
   const alas = new THREE.Mesh(g(new THREE.CircleGeometry(1.05, 20)), bahan(palet.alas));
@@ -202,14 +224,17 @@ export function bangunBayi(palet: Palet = PALET_CADANGAN): RigBayi {
   bayangan.rotation.x = -Math.PI / 2;
   bayangan.position.y = 0.003;
 
-  const objek: THREE.Object3D[] = [alas, bayangan, akar, tanganDewasa, bolaMesh];
+  const dunia = new THREE.Group();
+  dunia.name = "dunia";
+  for (const n of NAMA_BENDA) dunia.add(benda[n]);
+  const objek: THREE.Object3D[] = [alas, bayangan, akar, dunia];
   const segitiga = objek.reduce((n, o) => n + hitungSegitiga(o), 0);
 
   return {
     akar,
     sendi,
-    tanganDewasa,
-    bola: bolaMesh,
+    benda,
+    dunia,
     bayangan,
     alas,
     objek,
@@ -234,10 +259,15 @@ export function terapkanPose(rig: RigBayi, pose: Pose): void {
     const r = pose.sendi[n] ?? [0, 0, 0];
     rig.sendi[n].rotation.set(r[0] * D2R, r[1] * D2R, r[2] * D2R);
   }
-  rig.tanganDewasa.visible = !!pose.tanganDewasa;
-  if (pose.tanganDewasa) setTransform(rig.tanganDewasa, pose.tanganDewasa);
-  rig.bola.visible = !!pose.bola;
-  if (pose.bola) setTransform(rig.bola, pose.bola);
+  for (const n of NAMA_BENDA) {
+    const t = pose.benda?.[n];
+    const o = rig.benda[n];
+    o.visible = !!t;
+    if (!t) continue;
+    const induk = t.pegang ? rig.sendi[t.pegang] : rig.dunia;
+    if (o.parent !== induk) induk.add(o);
+    setTransform(o, t);
+  }
   rig.bayangan.position.x = rig.akar.position.x;
   rig.bayangan.position.z = rig.akar.position.z;
 }

@@ -4,6 +4,9 @@ import { Eye, EyeOff, RefreshCw, ShieldAlert } from "lucide-react";
 import { Profile, ReaksiStimulasi, StimulasiCatatan } from "../../../../types";
 import { PemanduKura } from "../../../../components/common/PemanduKura";
 import { IlustrasiAktivitas } from "./IlustrasiAktivitas";
+import { FEATURES } from "../../../../config/features";
+import { AnimasiTumbuhLazy } from "../../../../components/three/tumbuh/AnimasiTumbuhLazy";
+import { CATATAN_PETA, PETA_AKTIVITAS } from "../../../../components/three/tumbuh/peta";
 import { umurUntukPerkembangan } from "../logic/umur";
 import {
   PeranStimulasi,
@@ -122,7 +125,17 @@ export const KartuStimulasi: React.FC<Props> = ({ profile, peran, onSimpan, onHa
             <p className="text-[12px] text-text-2">Untuk umur {aktivitas.umurMinBulan} sampai {aktivitas.umurMaxBulan} bulan</p>
           </div>
 
-          <IlustrasiAktivitas aktivitasId={aktivitas.id} />
+          {FEATURES.animasiTumbuh && PETA_AKTIVITAS[aktivitas.id] ? (
+            <div className="space-y-1.5">
+              <AnimasiTumbuhLazy pose={PETA_AKTIVITAS[aktivitas.id]} cadangan={<IlustrasiAktivitas aktivitasId={aktivitas.id} />} />
+              <p className="text-[12px] text-text-2 leading-relaxed">
+                Ilustrasi pendamping; ikuti langkah di bawah. Gambar gerakan ini menunggu tinjauan tenaga kesehatan.
+                {CATATAN_PETA[aktivitas.id] ? ` ${CATATAN_PETA[aktivitas.id]}` : ""}
+              </p>
+            </div>
+          ) : (
+            <IlustrasiAktivitas aktivitasId={aktivitas.id} />
+          )}
 
           <ol className="list-decimal pl-5 space-y-1.5 text-[14px] text-text leading-relaxed">
             {aktivitas.langkah.map((l) => (

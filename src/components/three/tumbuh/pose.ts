@@ -28,11 +28,20 @@ export const NAMA_SENDI = [
 ] as const;
 
 export type NamaSendi = (typeof NAMA_SENDI)[number];
+
+/** Benda di luar rig bayi: tangan orang dewasa (objek terpisah) dan properti. Tampil hanya bila ada di pose. */
+export const NAMA_BENDA = ["tanganDewasa", "bola", "balokA", "balokB", "kerincingan", "gantung", "wadah"] as const;
+export type NamaBenda = (typeof NAMA_BENDA)[number];
 export type Vek3 = readonly [number, number, number];
 
 export interface Transform {
   posisi?: Vek3;
   rotasi?: Vek3;
+  /**
+   * Benda dipegang bayi: posisi dan rotasi menjadi relatif terhadap sendi tangan itu dan benda ikut tangannya.
+   * Antar keyframe yang berbeda pegangannya, benda berpindah mendadak di titik tengah (hindari selisih posisi besar).
+   */
+  pegang?: "tanganK" | "tanganN";
 }
 
 export interface Pose {
@@ -40,10 +49,8 @@ export interface Pose {
   akar?: Transform;
   /** Sendi yang tidak disebut memakai 0,0,0. */
   sendi: Partial<Record<NamaSendi, Vek3>>;
-  /** Tangan orang dewasa (objek terpisah, bukan bagian rig). */
-  tanganDewasa?: Transform;
-  /** Properti, mis. bola. */
-  bola?: Transform;
+  /** Tangan orang dewasa dan properti. Benda yang tidak disebut disembunyikan. */
+  benda?: Partial<Record<NamaBenda, Transform>>;
 }
 
 export const KAMERA_DEFAULT = { posisi: [1.7, 1.05, 2.1] as Vek3, lihat: [0, 0.22, 0.05] as Vek3 };
@@ -69,7 +76,7 @@ export interface Animasi {
   keyframe: Keyframe[];
   /** Indeks keyframe yang ditampilkan saat gerak dikurangi (pose diam). */
   poseDiam: number;
-  properti: ("tanganDewasa" | "bola")[];
+  properti: NamaBenda[];
   /** Sudut kamera supaya pose paling terbaca. Default: tiga perempat dari depan-kanan. */
   kamera?: { posisi: Vek3; lihat: Vek3 };
   /** Selalu true sampai dicek tenaga kesehatan. */
@@ -94,7 +101,12 @@ const NOL: Vek3 = [0, 0, 0];
 
 function lerpTransform(a: Transform | undefined, b: Transform | undefined, u: number): Transform | undefined {
   if (!a && !b) return undefined;
-  return { posisi: lerp3(a?.posisi ?? b?.posisi ?? NOL, b?.posisi ?? a?.posisi ?? NOL, u), rotasi: lerp3(a?.rotasi ?? NOL, b?.rotasi ?? NOL, u) };
+  // Pegangan beda (tangan lain, atau dilepas): tidak ada nilai di antara; pakai salah satu sisi.
+  if (a && b && a.pegang !== b.pegang) return u < 0.5 ? a : b;
+  const hasil: Transform = { posisi: lerp3(a?.posisi ?? b?.posisi ?? NOL, b?.posisi ?? a?.posisi ?? NOL, u), rotasi: lerp3(a?.rotasi ?? NOL, b?.rotasi ?? NOL, u) };
+  const pegang = a?.pegang ?? b?.pegang;
+  if (pegang) hasil.pegang = pegang;
+  return hasil;
 }
 
 export function campurPose(a: Pose, b: Pose, u: number): Pose {
@@ -104,12 +116,12 @@ export function campurPose(a: Pose, b: Pose, u: number): Pose {
     const rb = b.sendi[n];
     if (ra || rb) sendi[n] = lerp3(ra ?? NOL, rb ?? NOL, u);
   }
-  return {
-    akar: lerpTransform(a.akar, b.akar, u),
-    sendi,
-    tanganDewasa: lerpTransform(a.tanganDewasa, b.tanganDewasa, u),
-    bola: lerpTransform(a.bola, b.bola, u)
-  };
+  const benda: Partial<Record<NamaBenda, Transform>> = {};
+  for (const n of NAMA_BENDA) {
+    const t = lerpTransform(a.benda?.[n], b.benda?.[n], u);
+    if (t) benda[n] = t;
+  }
+  return { akar: lerpTransform(a.akar, b.akar, u), sendi, benda };
 }
 
 /** Pose pada waktu tertentu (ms sejak mulai). Animasi sekali berhenti di keyframe terakhir. */
@@ -149,8 +161,10 @@ export function periksaAnimasi(a: Animasi): string[] {
       if (!(NAMA_SENDI as readonly string[]).includes(n)) masalah.push(`sendi tidak dikenal di keyframe ${i}: ${n}`);
       if (r && r.some((x) => !Number.isFinite(x) || Math.abs(x) > BATAS_ROTASI)) masalah.push(`rotasi ${n} di keyframe ${i} di luar ±${BATAS_ROTASI}`);
     }
-    if (k.pose.tanganDewasa && !a.properti.includes("tanganDewasa")) masalah.push(`tanganDewasa di keyframe ${i} tapi tidak di properti`);
-    if (k.pose.bola && !a.properti.includes("bola")) masalah.push(`bola di keyframe ${i} tapi tidak di properti`);
+    for (const n of Object.keys(k.pose.benda ?? {})) {
+      if (!(NAMA_BENDA as readonly string[]).includes(n)) masalah.push(`benda tidak dikenal di keyframe ${i}: ${n}`);
+      else if (!a.properti.includes(n as NamaBenda)) masalah.push(`${n} di keyframe ${i} tapi tidak di properti`);
+    }
   });
   return masalah;
 }

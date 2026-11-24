@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect, useId, useMemo, useRef, useState } from "react";
-import { Play } from "lucide-react";
+import { Play, RotateCcw } from "lucide-react";
 import { deteksiKemampuan } from "../../../utils/kemampuan";
 import { cariGerakan } from "./gerakan";
 import { adaWebGL, ModeAnimasi, modeAnimasi } from "./kemampuanAnimasi";
@@ -9,12 +9,16 @@ import { PosterGerakan } from "./PosterGerakan";
 // Chunk berat (three + R3F + model) hanya diunduh saat ilustrasi benar-benar ditampilkan.
 const Lazy3D = React.lazy(() => import("./AnimasiTumbuh3D"));
 
-interface Props {
+export interface AnimasiTumbuhProps {
   /** id gerakan, mis. "tengkurap-angkat-kepala" */
   pose: string;
   className?: string;
   /** Paksa mode (tes dan halaman pratinjau). Tanpa ini, mode ditentukan dari perangkat dan Pengaturan. */
   modePaksa?: ModeAnimasi;
+  /** Tampilkan satu titik waktu (0..1) saja, untuk meninjau gerakan frame demi frame di halaman pratinjau. */
+  waktu?: number;
+  /** Gambar pengganti saat 3D tidak tampil (poster, memuat, atau gagal). Default: poster siluet umum. */
+  poster?: React.ReactNode;
 }
 
 class BatasGalat extends React.Component<{ onGalat: () => void; children: React.ReactNode }, { galat: boolean }> {
@@ -36,7 +40,7 @@ class BatasGalat extends React.Component<{ onGalat: () => void; children: React.
  * - Render berhenti saat di luar layar.
  * - Kurangi animasi: satu pose diam. HP lemah, Data Saver, atau tanpa WebGL: poster, tanpa mengunduh three.
  */
-export const AnimasiTumbuh: React.FC<Props> = ({ pose, className = "", modePaksa }) => {
+export const AnimasiTumbuh: React.FC<AnimasiTumbuhProps> = ({ pose, className = "", modePaksa, waktu, poster }) => {
   const animasi = cariGerakan(pose);
   const id = useId();
   const { aktif, minta, lepas } = useCanvasTunggal(id);
@@ -44,6 +48,9 @@ export const AnimasiTumbuh: React.FC<Props> = ({ pose, className = "", modePaksa
   const [terlihat, setTerlihat] = useState(false);
   const [siap, setSiap] = useState(false);
   const [gagal, setGagal] = useState(false);
+  // Animasi sekali-jalan (ulang: false): berhenti di akhir dan bisa diputar ulang.
+  const [putaran, setPutaran] = useState(0);
+  const [selesai, setSelesai] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   // Berhenti saat di luar layar; minta Canvas saat pertama kali terlihat.
@@ -64,6 +71,18 @@ export const AnimasiTumbuh: React.FC<Props> = ({ pose, className = "", modePaksa
   }, [terlihat, mode, minta]);
 
   useEffect(() => lepas, [lepas]);
+
+  const sekali = !!animasi && !animasi.ulang && mode === "animasi" && waktu === undefined;
+  // Mulai dari awal tiap kali kembali terlihat; tandai selesai setelah durasinya habis.
+  useEffect(() => {
+    if (!sekali || !terlihat || !siap) return;
+    setSelesai(false);
+    const t = window.setTimeout(() => setSelesai(true), (animasi?.durasiMs ?? 0) + 300);
+    return () => window.clearTimeout(t);
+  }, [sekali, terlihat, siap, putaran, animasi?.durasiMs]);
+  useEffect(() => {
+    if (sekali && terlihat) setPutaran((p) => p + 1);
+  }, [sekali, terlihat]);
   useEffect(() => setSiap(false), [aktif, pose]);
 
   if (!animasi) return null;
@@ -77,7 +96,7 @@ export const AnimasiTumbuh: React.FC<Props> = ({ pose, className = "", modePaksa
     >
       <span role="img" aria-label={`Ilustrasi: ${animasi.judul}`} className="absolute inset-0" />
       <div aria-hidden="true" className={`absolute inset-0 p-6 transition-opacity duration-300 ${tampil3D && siap ? "opacity-0" : "opacity-100"}`}>
-        <PosterGerakan />
+        {poster ?? <PosterGerakan />}
       </div>
 
       {tampil3D && (
@@ -87,6 +106,9 @@ export const AnimasiTumbuh: React.FC<Props> = ({ pose, className = "", modePaksa
               <Lazy3D
                 animasi={animasi}
                 mode={mode === "diam" ? "diam" : "animasi"}
+                waktu={waktu}
+                putaran={putaran}
+                selesai={selesai}
                 berjalan={terlihat}
                 onSiap={() => setSiap(true)}
                 onGagal={() => setGagal(true)}
@@ -94,6 +116,20 @@ export const AnimasiTumbuh: React.FC<Props> = ({ pose, className = "", modePaksa
             </div>
           </Suspense>
         </BatasGalat>
+      )}
+
+      {sekali && tampil3D && siap && selesai && (
+        <button
+          type="button"
+          onClick={() => {
+            setSelesai(false);
+            setPutaran((p) => p + 1);
+          }}
+          className="absolute bottom-3 right-3 min-h-[44px] px-4 rounded-full bg-surface/95 border border-border-strong text-text text-[14px] font-medium inline-flex items-center gap-2 cursor-pointer shadow-[var(--shadow-card)]"
+        >
+          <RotateCcw className="w-4 h-4" aria-hidden="true" />
+          Putar ulang
+        </button>
       )}
 
       {mode !== "poster" && !aktif && !gagal && (
