@@ -157,8 +157,7 @@ Batas itu dijaga klien (bagian 5). Orang yang memanggil API langsung bisa melewa
 - **Field:** field asing ditolak. `babyId` di mode keluarga ditolak.
 - **`fotoIds`:** di jurnal keluarga, 4 id ditolak dan id tidak valid ditolak. Entri lama tanpa `fotoIds` tetap lolos, dan `jurnal.test.ts` yang ada tetap hijau.
 
-**Penghalang:** di Mac ini Java belum terpasang, jadi `npm run test:rules` belum bisa jalan. Pilihannya, kamu izinkan
-aku memasang `brew install openjdk@21` (hanya alat lokal, tidak masuk repo), atau kamu yang menjalankan tesnya.
+**Hasil:** lulus dengan emulator (JDK di `~/Tools/jdk`): 23 test di `momenfoto.test.ts`, dan seluruh `npm run test:rules` 149 test lulus.
 
 ## 3. Indeks: `firestore.indexes.json` (baru)
 

@@ -475,7 +475,7 @@ Branch `feat/revisi-bayi-r3a`, dibuat dari `feat/revisi-bayi-r2`. Tanpa perubaha
 ## Status R3b (2026-11-24)
 
 - Rincian dan angka ada di `docs/fitur/USULAN-R3B.md`. Semua fitur di balik flag baru `fotoMomen` (`VITE_FEATURE_FOTO_MOMEN`), mati secara default. Selama flag mati, form tetap menampilkan "Foto segera hadir."
-- Rules `momenFoto` (pribadi dan keluarga), `fotoIds` di jurnal keluarga, dan `firestore.indexes.json` (thumbnail dan foto dikecualikan dari indeks) sudah ditulis tapi **belum di-deploy**. Tes emulator `tests/rules/momenfoto.test.ts` sudah ditulis tapi belum dijalankan karena Java belum ada di mesin ini.
+- Rules `momenFoto` (pribadi dan keluarga), `fotoIds` di jurnal keluarga, dan `firestore.indexes.json` (thumbnail dan foto dikecualikan dari indeks) sudah ditulis tapi **belum di-deploy**. Tes emulator lulus: `npm run test:rules` 7 file / 149 test, termasuk `tests/rules/momenfoto.test.ts` (23 test). JDK ada di `~/Tools/jdk`, jadi `JAVA_HOME` perlu diset.
 - Di klien:
   - Ada dua tombol: "Ambil foto" (`capture="environment"`) dan "Pilih dari galeri".
   - Foto diperkecil lewat canvas ke ≤ 1280px dan ≤ 250 KB (WebP, atau JPEG kalau WebP tidak didukung), dengan thumbnail ≤ 320px dan ≤ 25 KB. Metadata dibuang dua kali: oleh re-encode canvas, lalu oleh `buangMetadata` + `adaMetadata`.
