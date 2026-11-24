@@ -10,6 +10,7 @@ Satu kata untuk satu hal. Dipakai di judul, tombol, toast, dan pesan galat. Sesi
 | Menambah item ke daftar | **Tambah** | Buat, Catat | Tambah dompet, Tambah kategori, Tambah target, Tambah anak |
 | Membuat hal besar yang baru | **Buat** | Tambah | Buat keluarga, Buat undangan |
 | Menyunting | **Ubah** | Edit | Ubah nama, Ubah target |
+| Kejadian berharga anak yang dicatat | **Momen** (di layar); `jurnal` hanya nama data | Jurnal, Kenangan | Tambah momen, Hapus momen |
 | Menghapus permanen | **Hapus** | Cabut, Buang | Hapus transaksi, Hapus keluarga |
 | Menyembunyikan tanpa menghapus | **Arsipkan** / **Pulihkan** | Hapus | Arsipkan dompet |
 | Menarik kembali undangan | **Batalkan** | Cabut | Batalkan undangan |

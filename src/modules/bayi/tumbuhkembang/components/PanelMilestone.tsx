@@ -4,6 +4,7 @@ import { MilestoneStatus, Profile } from "../../../../types";
 import { FORMULIR_KPSP } from "../konten";
 import { PemilihanFormulir } from "../logic/umur";
 import { aturMilestone, formulirSekitar } from "../logic/milestone";
+import { sudahAdaMomenUntuk } from "../logic/momen";
 import { MilestoneDaftar } from "./MilestoneDaftar";
 import { rayakan } from "../../../../components/common/Perayaan";
 import { penyimpananLokal, sekaliRayakan } from "../logic/rayakan";
@@ -13,6 +14,8 @@ interface Props {
   readOnly: boolean;
   onUpdateProfile: (p: Profile) => void;
   pilihan: PemilihanFormulir;
+  /** Halaman Momen baru: tawarkan "Simpan sebagai momen?" setelah butir dicentang "sudah". Tanpa ini, tombol lama "Catat sebagai momen". */
+  tawarkanMomen?: boolean;
 }
 
 const kartu = "bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)]";
@@ -28,9 +31,10 @@ export function tahapDasarDari(pilihan: PemilihanFormulir): number | undefined {
 }
 
 /** Bagian milestone: pilih tahap umur dan catat status butir. */
-export const PanelMilestone: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, pilihan }) => {
+export const PanelMilestone: React.FC<Props> = ({ profile, readOnly, onUpdateProfile, pilihan, tawarkanMomen = false }) => {
   const navigate = useNavigate();
   const [tahapPilihan, setTahapPilihan] = useState<number | null>(null);
+  const [tawaran, setTawaran] = useState<{ butirId: string; tanggal?: string } | null>(null);
   const tahapDasar = tahapDasarDari(pilihan);
   const tahapAktif = tahapPilihan ?? tahapDasar;
   const sekitar = tahapAktif !== undefined ? formulirSekitar(tahapAktif) : null;
@@ -41,6 +45,12 @@ export const PanelMilestone: React.FC<Props> = ({ profile, readOnly, onUpdatePro
     // Tidak ada perayaan untuk status lain, dan KPSP tidak dirayakan agar tidak bergantung pada hasil skrining.
     const sebelumnya = profile.milestone?.find((c) => c.butirId === butirId)?.status;
     if (status === "sudah" && sebelumnya !== "sudah" && sekaliRayakan(`milestone:${profile.id}:${butirId}`, penyimpananLokal())) rayakan();
+    // Tawaran hanya saat butir BERPINDAH ke "sudah" dan belum ada momen yang menaut ke butir itu; status lain menutupnya.
+    if (tawarkanMomen) {
+      if (status === "sudah" && sebelumnya !== "sudah" && !sudahAdaMomenUntuk(profile.jurnal, butirId)) setTawaran({ butirId, tanggal });
+      else if (status !== "sudah" || sebelumnya !== "sudah") setTawaran(null);
+      else setTawaran((t) => (t?.butirId === butirId ? { butirId, tanggal } : t));
+    }
     onUpdateProfile({ ...profile, milestone: aturMilestone(profile.milestone, butirId, status, { tanggal, sekarangIso: new Date().toISOString() }) });
   };
 
@@ -82,7 +92,16 @@ export const PanelMilestone: React.FC<Props> = ({ profile, readOnly, onUpdatePro
         catatan={profile.milestone}
         readOnly={readOnly}
         onUbah={ubahMilestone}
-        onCatatMomen={(butirId, tanggal) => navigate(`/bayi/jurnal?dari=${encodeURIComponent(butirId)}${tanggal ? `&tanggal=${tanggal}` : ""}`)}
+        onCatatMomen={tawarkanMomen ? undefined : (butirId, tanggal) => navigate(`/bayi/jurnal?dari=${encodeURIComponent(butirId)}${tanggal ? `&tanggal=${tanggal}` : ""}`)}
+        tawaran={
+          tawarkanMomen && tawaran
+            ? {
+                butirId: tawaran.butirId,
+                onSimpan: () => navigate(`/bayi/momen?dari=${encodeURIComponent(tawaran.butirId)}${tawaran.tanggal ? `&tanggal=${tawaran.tanggal}` : ""}`),
+                onNanti: () => setTawaran(null)
+              }
+            : null
+        }
       />
       {readOnly && <p className="text-[13px] text-text-2">Mode lihat saja: catatan milestone tidak bisa diubah.</p>}
     </section>

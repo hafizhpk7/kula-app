@@ -93,6 +93,11 @@ describe("rute pecahan di daftar fitur dan navigasi", () => {
     expect(FITUR.milestone.path).toBe("/bayi/milestone");
     expect(FITUR.stimulasi.path).toBe("/bayi/stimulasi");
     expect(FITUR.pertumbuhan.path).toBe("/bayi/pertumbuhan");
+    expect(FITUR.momen.path).toBe("/bayi/momen");
+  });
+  it("'Lainnya' tetap menyala di Momen dan di rute jurnal lama", () => {
+    const tab = tabBayiBaru({ tumbuhKembang: true }).find((t) => t.path === "/bayi/lainnya")!;
+    expect(tab.aktifJuga).toEqual(expect.arrayContaining(["/bayi/momen", "/bayi/jurnal"]));
   });
   it("slot Tumbuh kembang tetap aktif di halaman pecahannya", () => {
     const tab = tabBayiBaru({ tumbuhKembang: true }).find((t) => t.path === "/bayi/tumbuh-kembang")!;

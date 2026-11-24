@@ -49,7 +49,6 @@ export interface Fitur {
   butuhTumbuhKembang: boolean;
 }
 
-// Momen masih di /bayi/jurnal sampai R3a.
 export const FITUR: Record<IdFitur, Fitur> = {
   kunjungan: { id: "kunjungan", label: "Kunjungan", path: "/bayi/kunjungan", ikon: CalendarCheck, warna: "langit", butuhTumbuhKembang: true },
   jadwal: { id: "jadwal", label: "Jadwal", path: "/bayi/jadwal", ikon: CalendarDays, warna: "langit", butuhTumbuhKembang: false },
@@ -57,7 +56,7 @@ export const FITUR: Record<IdFitur, Fitur> = {
   milestone: { id: "milestone", label: "Milestone", path: "/bayi/milestone", ikon: ListChecks, warna: "hijau", butuhTumbuhKembang: true },
   stimulasi: { id: "stimulasi", label: "Stimulasi", path: "/bayi/stimulasi", ikon: Puzzle, warna: "toska", butuhTumbuhKembang: true },
   pertumbuhan: { id: "pertumbuhan", label: "Pertumbuhan", labelUbin: "Pertum\u00ADbuhan", path: "/bayi/pertumbuhan", ikon: Ruler, warna: "ungu", butuhTumbuhKembang: true },
-  momen: { id: "momen", label: "Momen", path: "/bayi/jurnal", ikon: Sparkles, warna: "coral", butuhTumbuhKembang: true },
+  momen: { id: "momen", label: "Momen", path: "/bayi/momen", ikon: Sparkles, warna: "coral", butuhTumbuhKembang: true },
   ringkasanDokter: { id: "ringkasanDokter", label: "Ringkasan dokter", path: "/bayi/ringkasan-dokter", ikon: ClipboardList, warna: "ungu", butuhTumbuhKembang: true },
   biaya: { id: "biaya", label: "Biaya vaksin", path: "/bayi/biaya", ikon: Receipt, warna: "kuning", butuhTumbuhKembang: false },
   infoVaksin: { id: "infoVaksin", label: "Info vaksin", path: "/bayi/info-vaksin", ikon: BookOpen, warna: "langit", butuhTumbuhKembang: false }
@@ -118,7 +117,7 @@ export function tabBayiBaru(b: BenderaFitur): ShellTab[] {
         path: "/bayi/lainnya",
         label: "Lainnya",
         icon: LayoutGrid,
-        aktifJuga: [...lainnyaDasar, "/bayi/jadwal", "/bayi/biaya", "/bayi/jurnal", "/bayi/ringkasan-dokter"]
+        aktifJuga: [...lainnyaDasar, "/bayi/jadwal", "/bayi/biaya", "/bayi/jurnal", "/bayi/momen", "/bayi/ringkasan-dokter"]
       }
     ];
   }

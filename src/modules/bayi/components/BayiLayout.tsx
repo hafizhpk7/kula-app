@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Outlet, useLocation, useSearchParams } from "react-router-dom";
-import { LayoutDashboard, CalendarDays, CalendarCheck, Sprout, Receipt, BookOpen, CheckCheck } from "lucide-react";
+import { Outlet, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { LayoutDashboard, CalendarDays, CalendarCheck, Sprout, Receipt, BookOpen, CheckCheck, Plus } from "lucide-react";
 import { FEATURES } from "../../../config/features";
 import { useBayi } from "../context/BayiContext";
 import { tabBayiBaru } from "../beranda/fitur";
@@ -45,6 +45,7 @@ export const BayiLayout: React.FC = () => {
 
   const { showToast } = useToast();
   const { pathname, state: stateRute } = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // Modals state
@@ -82,6 +83,10 @@ export const BayiLayout: React.FC = () => {
     !isReadOnly &&
     !!barisBerikutnya;
 
+  // Halaman Momen (flag revisiBayi): "Tambah momen" jadi aksi utama di bar aplikasi. Lembar tambah dibuka lewat ?tambah=1.
+  // Tidak dibatasi mode lihat saja: anggota keluarga boleh menulis momen (J1).
+  const diMomen = FEATURES.revisiBayi && FEATURES.tumbuhKembang && pathname.endsWith("/momen");
+
   return (
     <>
       <AppShell
@@ -97,7 +102,9 @@ export const BayiLayout: React.FC = () => {
         }
         settings={FEATURES.revisiBayi ? undefined : { path: "/bayi/pengaturan", label: "Pengaturan Bayi" }}
         primaryAction={
-          tampilkanAksi && barisBerikutnya
+          diMomen && !hasNoProfiles
+            ? { label: "Tambah momen", shortLabel: "Tambah", icon: Plus, onClick: () => navigate("/bayi/momen?tambah=1", { replace: true }) }
+            : tampilkanAksi && barisBerikutnya
             ? {
                 label: "Tandai selesai",
                 shortLabel: "Tandai",

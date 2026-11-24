@@ -113,7 +113,7 @@ describe("Beranda Bayi", () => {
     tampil(profil({ jurnal: [{ id: "m1", tanggal: "2026-07-01", judul: "Tertawa keras", createdAt: "x", updatedAt: "x" }] }), { tumbuhKembang: true });
     const grid = screen.getByRole("navigation", { name: "Fitur Bayi" });
     expect(within(grid).getAllByRole("link")).toHaveLength(7);
-    expect(screen.getByRole("link", { name: /Momen terakhir.*Tertawa keras/ })).toHaveAttribute("href", "/bayi/jurnal");
+    expect(screen.getByRole("link", { name: /Momen terakhir.*Tertawa keras/ })).toHaveAttribute("href", "/bayi/momen");
   });
 
   it("status imunisasi lewat jadwal di ubin Jadwal tidak hanya lewat warna", () => {

@@ -180,7 +180,7 @@ export const BerandaView: React.FC<Props> = ({ profile, paymentMode, tumbuhKemba
 const KartuMomenTerakhir: React.FC<{ profile: Profile }> = ({ profile }) => {
   const terakhir = urutkanJurnal(profile.jurnal)[0];
   return (
-    <Link to="/bayi/jurnal" className={`${kartu} !p-4 space-y-1 hover:border-border-strong transition`}>
+    <Link to="/bayi/momen" className={`${kartu} !p-4 space-y-1 hover:border-border-strong transition`}>
       <span className="flex items-center gap-1.5 text-[13px] font-medium text-text-2">
         <Smile className="w-4 h-4" aria-hidden="true" />
         Momen terakhir

@@ -27,6 +27,8 @@ import { KeuanganPage } from "./modules/bayi/pages/KeuanganPage";
 import { VaccineInfoPage } from "./modules/bayi/pages/VaccineInfoPage";
 import { BabySettingsPage } from "./modules/bayi/pages/BabySettingsPage";
 import { LainnyaPage } from "./modules/bayi/pages/LainnyaPage";
+import { MomenPage } from "./modules/bayi/pages/MomenPage";
+import { AlihkanDenganQuery } from "./modules/bayi/pages/AlihkanDenganQuery";
 import { MilestonePage } from "./modules/bayi/pages/MilestonePage";
 import { StimulasiPage } from "./modules/bayi/pages/StimulasiPage";
 import { PertumbuhanPage } from "./modules/bayi/pages/PertumbuhanPage";
@@ -78,9 +80,19 @@ function AppRoutes() {
         <Route path="milestone" element={<RutePecahan><MilestonePage /></RutePecahan>} />
         <Route path="stimulasi" element={<RutePecahan><StimulasiPage /></RutePecahan>} />
         <Route path="pertumbuhan" element={<RutePecahan><PertumbuhanPage /></RutePecahan>} />
+        <Route path="momen" element={<RutePecahan ke="/bayi/jurnal"><MomenPage /></RutePecahan>} />
+        {/* Rute lama: dengan revisiBayi menyala menjadi /bayi/momen (query ikut), selain itu tetap halaman jurnal lama */}
         <Route
           path="jurnal"
-          element={FEATURES.tumbuhKembang ? <JurnalPage /> : <Navigate to="/bayi/beranda" replace />}
+          element={
+            !FEATURES.tumbuhKembang ? (
+              <Navigate to="/bayi/beranda" replace />
+            ) : FEATURES.revisiBayi ? (
+              <AlihkanDenganQuery ke="/bayi/momen" />
+            ) : (
+              <JurnalPage />
+            )
+          }
         />
         <Route
           path="ringkasan-dokter"

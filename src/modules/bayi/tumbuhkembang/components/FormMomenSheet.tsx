@@ -1,8 +1,10 @@
 import React, { useEffect, useId, useState } from "react";
 import { format } from "date-fns";
+import { Camera } from "lucide-react";
 import { BottomSheet } from "../../../../components/common/BottomSheet";
 import { JurnalMomen, Profile } from "../../../../types";
 import { BATAS_JURNAL, HasilValidasiMomen, MasukanMomen, validasiMomen } from "../logic/jurnal";
+import { GrupMilestone } from "../logic/momen";
 
 export interface AwalMomen {
   tanggal?: string;
@@ -22,6 +24,10 @@ interface Props {
   /** Mengembalikan false bila ditolak (mis. jurnal penuh), supaya lembar tetap terbuka. */
   onSimpan: (nilai: NonNullable<HasilValidasiMomen["nilai"]>, ubah?: JurnalMomen) => boolean;
   sekarang?: Date;
+  /** Bila ada, tampil pilihan "Terkait milestone (opsional)". Tanpa ini, tautan milestone hanya bisa datang dari `awal`. */
+  opsiMilestone?: GrupMilestone[];
+  /** Menampilkan tempat foto (belum aktif; foto dikerjakan di fase R3b). */
+  tempatFoto?: boolean;
 }
 
 const kolom = "w-full px-3 py-2 text-[16px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]";
@@ -31,7 +37,7 @@ const tombolUtama =
   "px-5 rounded-full bg-mod-bayi text-mod-bayi-fg font-semibold text-[15px] min-h-[48px] inline-flex items-center justify-center hover:brightness-95 active:scale-95 transition cursor-pointer";
 
 /** Lembar bawah untuk menambah atau mengubah satu momen jurnal. */
-export const FormMomenSheet: React.FC<Props> = ({ isOpen, onClose, profile, ubah, awal, onSimpan, sekarang }) => {
+export const FormMomenSheet: React.FC<Props> = ({ isOpen, onClose, profile, ubah, awal, onSimpan, sekarang, opsiMilestone, tempatFoto }) => {
   const idDasar = useId();
   const hari = format(sekarang ?? new Date(), "yyyy-MM-dd");
   const dariProps = (): MasukanMomen =>
@@ -145,6 +151,48 @@ export const FormMomenSheet: React.FC<Props> = ({ isOpen, onClose, profile, ubah
           />
           <span>Tandai sebagai “pertama kali”</span>
         </label>
+
+        {opsiMilestone && (
+          <div className="space-y-1">
+            <label htmlFor={id("milestone")} className="text-[13px] font-medium text-text">
+              Terkait milestone (opsional)
+            </label>
+            <select
+              id={id("milestone")}
+              value={m.milestoneId ?? ""}
+              onChange={(e) => setM((x) => ({ ...x, milestoneId: e.target.value || undefined }))}
+              className={kolom}
+            >
+              <option value="">Tidak terkait milestone</option>
+              {opsiMilestone.map((g) => (
+                <optgroup key={g.umurBulan} label={`Umur ${g.umurBulan} bulan`}>
+                  {g.pilihan.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.teks}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {tempatFoto && (
+          <div className="space-y-1">
+            <button
+              type="button"
+              disabled
+              aria-describedby={id("foto-info")}
+              className="w-full min-h-[44px] px-4 rounded-control border border-dashed border-border-strong text-text-2 text-[14px] inline-flex items-center justify-center gap-2 opacity-70 cursor-not-allowed"
+            >
+              <Camera className="w-5 h-5" aria-hidden="true" />
+              Tambah foto
+            </button>
+            <p id={id("foto-info")} className="text-[12px] text-text-2">
+              Foto segera hadir.
+            </p>
+          </div>
+        )}
       </form>
     </BottomSheet>
   );

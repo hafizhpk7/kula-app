@@ -118,7 +118,7 @@ export const MilestoneHalaman: React.FC<Props> = ({ profile, readOnly, onUpdateP
         </div>
       )}
 
-      <PanelMilestone profile={profile} readOnly={readOnly} onUpdateProfile={onUpdateProfile} pilihan={pilihan} />
+      <PanelMilestone profile={profile} readOnly={readOnly} onUpdateProfile={onUpdateProfile} pilihan={pilihan} tawarkanMomen />
 
       <details className="bg-surface rounded-card border border-border px-5 shadow-[var(--shadow-card)]">
         <summary className="min-h-[52px] flex items-center font-display text-[16px] text-text cursor-pointer">Skrining KPSP dan riwayat ({jumlahRiwayat})</summary>

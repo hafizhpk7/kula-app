@@ -5,16 +5,18 @@ import { AlihkanDenganQuery } from "./AlihkanDenganQuery";
 
 interface Props {
   children: React.ReactElement;
+  /** Tujuan saat revisiBayi mati (halaman lama padanannya). Default: halaman Tumbuh kembang lama. */
+  ke?: string;
   /** Hanya untuk tes. Default: FEATURES. */
   bendera?: { tumbuhKembang: boolean; revisiBayi: boolean };
 }
 
 /**
- * Pagar halaman pecahan Tumbuh kembang (Milestone, Stimulasi, Pertumbuhan).
- * tumbuhKembang mati: ke Beranda. revisiBayi mati: ke halaman Tumbuh kembang lama beserta query.
+ * Pagar halaman pecahan Tumbuh kembang (Milestone, Stimulasi, Pertumbuhan) dan Momen.
+ * tumbuhKembang mati: ke Beranda. revisiBayi mati: ke halaman lama padanannya (`ke`) beserta query.
  */
-export const RutePecahan: React.FC<Props> = ({ children, bendera = FEATURES }) => {
+export const RutePecahan: React.FC<Props> = ({ children, ke = "/bayi/tumbuh-kembang", bendera = FEATURES }) => {
   if (!bendera.tumbuhKembang) return <Navigate to="/bayi/beranda" replace />;
-  if (!bendera.revisiBayi) return <AlihkanDenganQuery ke="/bayi/tumbuh-kembang" />;
+  if (!bendera.revisiBayi) return <AlihkanDenganQuery ke={ke} />;
   return children;
 };

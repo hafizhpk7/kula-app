@@ -12,6 +12,11 @@ interface Props {
   onUbah: (butirId: string, status: MilestoneStatus | null, tanggal?: string) => void;
   /** Bila ada, butir berstatus "sudah" menampilkan tombol "Catat sebagai momen" (tersedia juga di mode lihat saja). */
   onCatatMomen?: (butirId: string, tanggal?: string) => void;
+  /**
+   * Tawaran sekali jalan "Simpan sebagai momen?" tepat di bawah butir yang baru dicentang "sudah".
+   * Tidak memaksa: "Nanti saja" menutupnya. Dipakai halaman Momen baru; tanpa ini tampil tombol "Catat sebagai momen".
+   */
+  tawaran?: { butirId: string; onSimpan: () => void; onNanti: () => void } | null;
 }
 
 const PILIHAN: { status: MilestoneStatus; label: string; ikon: React.ReactNode }[] = [
@@ -26,7 +31,7 @@ const JENIS_TEKS: Record<ButirKpsp["jenis"], string> = {
 };
 
 /** Checklist milestone per domain untuk satu formulir umur (butir KPSP). */
-export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, onUbah, onCatatMomen }) => {
+export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, onUbah, onCatatMomen, tawaran }) => {
   const kelompok = kelompokkanPerDomain(formulir.butir);
   const r = ringkasMilestone(formulir.butir, catatan);
 
@@ -86,6 +91,27 @@ export const MilestoneDaftar: React.FC<Props> = ({ formulir, catatan, readOnly, 
                         className="px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]"
                       />
                     </label>
+                  )}
+                  {cat?.status === "sudah" && tawaran?.butirId === b.id && (
+                    <div role="status" className="rounded-control border border-border-strong bg-surface-sunken p-3 space-y-2">
+                      <p className="text-[14px] font-medium text-text">Simpan sebagai momen?</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={tawaran.onSimpan}
+                          className="px-4 rounded-full bg-mod-bayi text-mod-bayi-fg text-[14px] font-semibold min-h-[44px] inline-flex items-center hover:brightness-95 transition cursor-pointer"
+                        >
+                          Simpan sebagai momen
+                        </button>
+                        <button
+                          type="button"
+                          onClick={tawaran.onNanti}
+                          className="px-4 rounded-full border border-border-strong text-text text-[14px] font-medium min-h-[44px] inline-flex items-center hover:bg-surface transition cursor-pointer"
+                        >
+                          Nanti saja
+                        </button>
+                      </div>
+                    </div>
                   )}
                   {cat?.status === "sudah" && onCatatMomen && (
                     <button
