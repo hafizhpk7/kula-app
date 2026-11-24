@@ -1,0 +1,6 @@
+{
+  "firestore": {
+    "database": "ai-studio-growbang-b67e938a-b51b-499d-a35e-3b45d002df97",
+    "rules": "firestore.rules"
+  }
+}
