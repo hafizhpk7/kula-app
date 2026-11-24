@@ -134,6 +134,24 @@ service cloud.firestore {
       allow delete: if isOwner(userId) && isValidId(userId);
 
       // User state and immunization records subcollection
+      // Foto momen mode pribadi: hanya pemilik. Tidak pernah diubah, hanya dibuat dan dihapus.
+      match /momenFoto/{fotoId} {
+        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow create: if isOwner(userId) && isValidId(userId) && isValidId(fotoId)
+          && isValidMomenFoto(incoming(), fotoId, true);
+        allow update: if false;
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(fotoId);
+
+        match /penuh/{docId} {
+          allow get: if isOwner(userId) && isValidId(userId) && docId == 'data';
+          allow list: if false;
+          allow create: if isOwner(userId) && isValidId(userId) && docId == 'data'
+            && isValidMomenFotoPenuh(incoming());
+          allow update: if false;
+          allow delete: if isOwner(userId) && isValidId(userId) && docId == 'data';
+        }
+      }
+
       match /appData/{docId} {
         allow get: if isOwner(userId) && isValidId(userId) && isValidId(docId);
         allow list: if isOwner(userId) && isValidId(userId);
@@ -453,20 +471,53 @@ service cloud.firestore {
 
     // ---------- Jurnal momen mode keluarga: babies/{babyId}/jurnal ----------
     // Mencerminkan FamilyBayiRepository.saveJurnal. Berbeda dari data Bayi lain, semua anggota boleh menulis;
-    // izin per penulis ditegakkan di match di bawah. Teks saja (tanpa foto).
+    // izin per penulis ditegakkan di match di bawah. Foto ada di momenFoto; entri hanya menyimpan fotoIds.
     function isValidFamilyJurnal(data, jurnalId) {
       return data.keys().hasAll(['id', 'tanggal', 'judul', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
-        && data.keys().hasOnly(['id', 'tanggal', 'judul', 'catatan', 'pertamaKali', 'milestoneId', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.keys().hasOnly(['id', 'tanggal', 'judul', 'catatan', 'pertamaKali', 'milestoneId', 'fotoIds', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
         && data.id == jurnalId
         && data.tanggal is string && data.tanggal.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
         && data.judul is string && data.judul.size() > 0 && data.judul.size() <= 100
         && (!('catatan' in data) || (data.catatan is string && data.catatan.size() <= 2000))
         && (!('pertamaKali' in data) || data.pertamaKali is bool)
         && (!('milestoneId' in data) || (data.milestoneId is string && data.milestoneId.size() > 0 && data.milestoneId.size() <= 64))
+        && (!('fotoIds' in data) || isValidFotoIds(data.fotoIds))
         && data.createdAt is string && data.createdAt.size() <= 64
         && data.updatedAt is string && data.updatedAt.size() <= 64
         && data.createdBy is string && isValidId(data.createdBy)
         && data.updatedBy == request.auth.uid;
+    }
+
+    // ---------- Foto momen (R3b, D4): thumbnail di momenFoto/{id}, foto penuh di momenFoto/{id}/penuh/data ----------
+    // Rules tidak bisa mengulang list, jadi tiap posisi (maks 3) dicek satu per satu.
+    function isValidFotoIds(ids) {
+      return ids is list && ids.size() <= 3
+        && (ids.size() < 1 || isValidId(ids[0]))
+        && (ids.size() < 2 || isValidId(ids[1]))
+        && (ids.size() < 3 || isValidId(ids[2]));
+    }
+    // Dokumen thumbnail dan metadata. `babyId` hanya di mode pribadi (semua anak ada di satu akun).
+    function isValidMomenFoto(data, fotoId, pribadi) {
+      return data.keys().hasAll(['id', 'momenId', 'thumb', 'mime', 'lebar', 'tinggi', 'ukuran', 'createdBy', 'createdAt'])
+        && data.keys().hasOnly(['id', 'momenId', 'babyId', 'thumb', 'mime', 'lebar', 'tinggi', 'ukuran', 'createdBy', 'createdAt'])
+        && data.id == fotoId
+        && isValidId(data.momenId)
+        && (pribadi ? (data.babyId is string && isValidId(data.babyId)) : !('babyId' in data))
+        && data.thumb is bytes && data.thumb.size() > 0 && data.thumb.size() <= 25600
+        && data.mime in ['image/webp', 'image/jpeg']
+        && data.lebar is int && data.lebar > 0 && data.lebar <= 2048
+        && data.tinggi is int && data.tinggi > 0 && data.tinggi <= 2048
+        && data.ukuran is int && data.ukuran > 0 && data.ukuran <= 256000
+        && data.createdBy == request.auth.uid
+        && data.createdAt is string && data.createdAt.size() <= 64;
+    }
+    // Dokumen foto penuh.
+    function isValidMomenFotoPenuh(data) {
+      return data.keys().hasAll(['foto', 'createdBy', 'createdAt'])
+        && data.keys().hasOnly(['foto', 'createdBy', 'createdAt'])
+        && data.foto is bytes && data.foto.size() > 0 && data.foto.size() <= 256000
+        && data.createdBy == request.auth.uid
+        && data.createdAt is string && data.createdAt.size() <= 64;
     }
 
     // ---------- Stimulasi harian mode keluarga: babies/{babyId}/stimulasi ----------
@@ -649,6 +700,30 @@ service cloud.firestore {
             && incoming().createdAt == existing().createdAt;
           allow delete: if isFamilyMember(familyId) && isValidId(jurnalId)
             && (existing().createdBy == request.auth.uid || isFamilyAdmin(familyId));
+        }
+
+        // Foto momen: anggota membaca; hanya penulis momen yang menambah foto ke momennya (dicek dengan
+        // getAfter, jadi foto dan entri jurnal ditulis dalam satu batch); penulis foto atau admin menghapus.
+        // Tidak ada update: foto hanya dibuat dan dihapus.
+        match /momenFoto/{fotoId} {
+          allow get, list: if isFamilyMember(familyId);
+          allow create: if isFamilyMember(familyId) && isValidId(fotoId)
+            && isValidMomenFoto(incoming(), fotoId, false)
+            && getAfter(/databases/$(database)/documents/families/$(familyId)/babies/$(babyId)/jurnal/$(incoming().momenId)).data.createdBy == request.auth.uid;
+          allow update: if false;
+          allow delete: if isFamilyMember(familyId) && isValidId(fotoId)
+            && (existing().createdBy == request.auth.uid || isFamilyAdmin(familyId));
+
+          match /penuh/{docId} {
+            allow get: if isFamilyMember(familyId) && docId == 'data';
+            allow list: if false;
+            allow create: if isFamilyMember(familyId) && docId == 'data'
+              && isValidMomenFotoPenuh(incoming())
+              && getAfter(/databases/$(database)/documents/families/$(familyId)/babies/$(babyId)/momenFoto/$(fotoId)).data.createdBy == request.auth.uid;
+            allow update: if false;
+            allow delete: if isFamilyMember(familyId) && docId == 'data'
+              && (existing().createdBy == request.auth.uid || isFamilyAdmin(familyId));
+          }
         }
 
         // Stimulasi harian: semua anggota membaca dan menambah (atas nama sendiri); hanya penulis mengubah;

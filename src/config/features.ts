@@ -8,8 +8,10 @@
  *
  * - `tumbuhKembang`: Kunjungan, Tumbuh kembang, Jurnal momen, Ringkasan dokter.
  * - `revisiBayi`: navigasi 4 slot, Beranda baru, dan halaman Lainnya (SKEMA-REVISI.md, RV1).
+ * - `fotoMomen`: foto di Momen (R3b, D4; docs/fitur/USULAN-R3B.md). Butuh rules dan indeks R3b sudah di-deploy.
  */
 export const FEATURES = {
   tumbuhKembang: import.meta.env.VITE_FEATURE_TUMBUH_KEMBANG === "true",
-  revisiBayi: import.meta.env.VITE_FEATURE_REVISI_BAYI === "true"
+  revisiBayi: import.meta.env.VITE_FEATURE_REVISI_BAYI === "true",
+  fotoMomen: import.meta.env.VITE_FEATURE_FOTO_MOMEN === "true"
 } as const;

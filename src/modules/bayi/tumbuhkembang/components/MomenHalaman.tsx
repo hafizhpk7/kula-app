@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Pencil, Sparkles, Trash2, Users } from "lucide-react";
+import { CloudOff, ImageOff, Pencil, Sparkles, Trash2, Users } from "lucide-react";
 import { JurnalMomen, Profile } from "../../../../types";
 import { BottomSheet } from "../../../../components/common/BottomSheet";
 import { PageHeader } from "../../../../components/common/PageHeader";
@@ -7,7 +7,25 @@ import { PemanduKura } from "../../../../components/common/PemanduKura";
 import { formatIndonesianDate } from "../../../../utils/dates";
 import { bangunMomen, bisaHapusMomen, bisaUbahMomen, HasilValidasiMomen, KonteksPeran } from "../logic/jurnal";
 import { FilterMomen, kelompokkanPerUmur, opsiMilestone, saringMomen, teksButir } from "../logic/momen";
-import { AwalMomen, FormMomenSheet } from "./FormMomenSheet";
+import { AwalMomen, FormMomenSheet, KonfigFotoForm } from "./FormMomenSheet";
+import type { FotoSiap } from "../../momen/foto/kompres";
+import type { LayananFotoMomen, PerubahanFoto } from "../../momen/foto/layanan";
+import type { DrafMomen } from "../../momen/foto/tokoLokal";
+import type { HasilSimpanFoto } from "../../hooks/useBayiState";
+import { bolehTambahFoto, PESAN_FOTO } from "../../momen/foto/batas";
+import { lupakanFoto, StatusFoto, useFotoPenuh, useIdFoto, useThumbnail } from "../../momen/foto/useFotoMomen";
+
+/** Foto di Momen (R3b, flag fotoMomen). */
+export interface KonfigFotoHalaman {
+  layanan: LayananFotoMomen;
+  /** Foto terpakai di seluruh keluarga (batas BATAS_FOTO_KELUARGA). */
+  terpakai: number;
+  siapkan: (berkas: File) => Promise<FotoSiap>;
+  onSimpan: (e: JurnalMomen, perubahan: PerubahanFoto) => Promise<HasilSimpanFoto>;
+  draf: DrafMomen[];
+  onKirimUlang: (id: string) => Promise<HasilSimpanFoto>;
+  onBuangDraf: (id: string) => void;
+}
 
 interface Props {
   profile: Profile;
@@ -24,6 +42,7 @@ interface Props {
   /** Bila ada, lembar tambah terbuka dengan isian ini (dari milestone). */
   awalDariMilestone?: AwalMomen;
   sekarang?: Date;
+  foto?: KonfigFotoHalaman;
 }
 
 const tombolSekunder =
@@ -51,7 +70,8 @@ export const MomenHalaman: React.FC<Props> = ({
   tambah,
   onTutupTambah,
   awalDariMilestone,
-  sekarang
+  sekarang,
+  foto
 }) => {
   const now = sekarang ?? new Date();
   const [filter, setFilter] = useState<FilterMomen>("semua");
@@ -72,15 +92,42 @@ export const MomenHalaman: React.FC<Props> = ({
     setUbah(null);
   };
 
-  const simpan = (nilai: NonNullable<HasilValidasiMomen["nilai"]>, lama?: JurnalMomen): boolean => {
+  const [pesanFoto, setPesanFoto] = useState<string | null>(null);
+  const idFoto = useIdFoto(profile.jurnal);
+  const thumbs = useThumbnail(foto?.layanan, profile.id, idFoto);
+  const drafAnak = (foto?.draf ?? []).filter((d) => d.babyId === profile.id);
+
+  const simpan = (nilai: NonNullable<HasilValidasiMomen["nilai"]>, lama?: JurnalMomen, perubahan?: PerubahanFoto): boolean | Promise<boolean> => {
     const entri = bangunMomen(nilai, {
       awal: lama,
       id: `momen-${now.getTime().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
       sekarangIso: now.toISOString(),
       uid: peran.uid
     });
-    return onSimpan(entri);
+    if (!perubahan || !foto) return onSimpan(entri);
+    const ids = [...(lama?.fotoIds ?? []).filter((x) => !perubahan.hapus.includes(x)), ...perubahan.baru.map((f) => f.id)];
+    if (ids.length > 0) entri.fotoIds = ids;
+    else delete entri.fotoIds;
+    setPesanFoto(null);
+    return foto.onSimpan(entri, perubahan).then((h) => {
+      if (h === "ok") lupakanFoto(perubahan.hapus);
+      if (h === "drafKuota") setPesanFoto(PESAN_FOTO.kuota);
+      if (h === "drafOffline") setPesanFoto(PESAN_FOTO.offline);
+      return h === "ok" || h === "drafKuota" || h === "drafOffline";
+    });
   };
+
+  const konfigForm: KonfigFotoForm | undefined = foto
+    ? {
+        tersinkron: foto.layanan.tersinkron,
+        bolehTambah: bolehTambahFoto(foto.terpakai),
+        urlLama: (fid) => {
+          const t = thumbs.get(fid);
+          return t && typeof t === "object" ? t.url : undefined;
+        },
+        siapkan: foto.siapkan
+      }
+    : undefined;
 
   const penulis = (e: JurnalMomen): string | null => {
     if (!keluarga || !e.createdBy) return null;
@@ -102,6 +149,17 @@ export const MomenHalaman: React.FC<Props> = ({
           <Users className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
           <span>Momen di sini dibagikan ke semua anggota keluarga. Setiap anggota bisa menambah; yang mengubah hanya penulisnya.</span>
         </p>
+      )}
+
+      {pesanFoto && (
+        <p role="status" className="flex items-start gap-2 rounded-control border border-border bg-surface-sunken p-3 text-[13px] text-text leading-relaxed">
+          <CloudOff className="w-4 h-4 mt-0.5 shrink-0" aria-hidden="true" />
+          <span>{pesanFoto}</span>
+        </p>
+      )}
+
+      {foto && drafAnak.length > 0 && (
+        <DaftarDraf draf={drafAnak} onKirimUlang={foto.onKirimUlang} onBuang={foto.onBuangDraf} />
       )}
 
       {jumlah === 0 ? (
@@ -152,8 +210,10 @@ export const MomenHalaman: React.FC<Props> = ({
                           type="button"
                           onClick={() => setDetailId(e.id)}
                           aria-label={`Buka momen ${e.judul}`}
-                          className="w-full text-left bg-surface rounded-card border border-border p-4 space-y-1.5 shadow-[var(--shadow-card)] hover:border-border-strong transition cursor-pointer min-h-[44px]"
+                          className="w-full text-left bg-surface rounded-card border border-border p-4 shadow-[var(--shadow-card)] hover:border-border-strong transition cursor-pointer min-h-[44px] flex gap-3"
                         >
+                          {foto && e.fotoIds?.[0] && <ThumbKartu status={thumbs.get(e.fotoIds[0])} />}
+                          <span className="block flex-1 min-w-0 space-y-1.5">
                           <span className="block text-[12px] text-text-2">
                             {formatIndonesianDate(e.tanggal, "d MMM yyyy")}
                             {nama && <> · {nama}</>}
@@ -162,6 +222,7 @@ export const MomenHalaman: React.FC<Props> = ({
                           {e.pertamaKali && <LabelPertamaKali />}
                           {e.catatan && <span className="block text-[14px] text-text-2 leading-relaxed line-clamp-2 break-words">{e.catatan}</span>}
                           {e.milestoneId && teksButir(e.milestoneId) && <span className="block text-[12px] text-text-2">Terkait milestone</span>}
+                          </span>
                         </button>
                       </li>
                     );
@@ -183,6 +244,7 @@ export const MomenHalaman: React.FC<Props> = ({
               </p>
               {detail.pertamaKali && <LabelPertamaKali />}
             </div>
+            {foto && detail.fotoIds?.[0] && <FotoDetail layanan={foto.layanan} babyId={profile.id} fotoId={detail.fotoIds[0]} judul={detail.judul} />}
             {detail.catatan && <p className="text-[14px] text-text leading-relaxed whitespace-pre-wrap break-words">{detail.catatan}</p>}
             {detail.milestoneId && teksButir(detail.milestoneId) && (
               <p className="text-[13px] text-text-2">Terkait milestone: {teksButir(detail.milestoneId)}</p>
@@ -194,7 +256,7 @@ export const MomenHalaman: React.FC<Props> = ({
                   Hapus momen “{detail.judul}”?
                 </p>
                 <p className="text-[13px] text-danger-text">
-                  Momen ini akan hilang dan tidak bisa dikembalikan. Catatan milestone tidak ikut terhapus.
+                  Momen ini akan hilang dan tidak bisa dikembalikan{detail.fotoIds?.length ? ", termasuk fotonya" : ""}. Catatan milestone tidak ikut terhapus.
                   {keluarga && " Anggota keluarga lain juga tidak akan melihatnya lagi."}
                 </p>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -206,6 +268,7 @@ export const MomenHalaman: React.FC<Props> = ({
                     className="px-4 rounded-full bg-danger text-white text-[14px] font-semibold min-h-[44px] cursor-pointer"
                     onClick={() => {
                       onHapus(detail.id);
+                      lupakanFoto(detail.fotoIds ?? []);
                       tutupDetail();
                     }}
                   >
@@ -254,7 +317,72 @@ export const MomenHalaman: React.FC<Props> = ({
         sekarang={sekarang}
         opsiMilestone={opsi}
         tempatFoto
+        foto={konfigForm}
       />
     </div>
+  );
+};
+
+const ThumbKartu: React.FC<{ status?: StatusFoto }> = ({ status }) => {
+  if (status && typeof status === "object")
+    return <img src={status.url} alt="" className="w-16 h-16 shrink-0 object-cover rounded-control border border-border" />;
+  return (
+    <span className="w-16 h-16 shrink-0 rounded-control border border-border bg-surface-sunken flex items-center justify-center text-text-2" aria-hidden="true">
+      {status === "tidakAda" ? <ImageOff className="w-5 h-5" /> : null}
+    </span>
+  );
+};
+
+const FotoDetail: React.FC<{ layanan: LayananFotoMomen; babyId: string; fotoId: string; judul: string }> = ({ layanan, babyId, fotoId, judul }) => {
+  const status = useFotoPenuh(layanan, babyId, fotoId);
+  if (status && typeof status === "object") return <img src={status.url} alt={`Foto momen ${judul}`} className="w-full max-h-[60vh] object-contain rounded-control bg-surface-sunken" />;
+  if (status === "tidakAda")
+    return (
+      <p className="flex items-center gap-2 text-[13px] text-text-2">
+        <ImageOff className="w-4 h-4" aria-hidden="true" />
+        Foto ini tidak tersedia di perangkat ini.
+      </p>
+    );
+  return (
+    <div className="w-full aspect-[4/3] rounded-control bg-surface-sunken animate-pulse" role="status" aria-label="Memuat foto" />
+  );
+};
+
+const DaftarDraf: React.FC<{ draf: DrafMomen[]; onKirimUlang: (id: string) => Promise<HasilSimpanFoto>; onBuang: (id: string) => void }> = ({
+  draf,
+  onKirimUlang,
+  onBuang
+}) => {
+  const [mengirim, setMengirim] = useState<string | null>(null);
+  return (
+    <section aria-labelledby="momen-draf" className="bg-surface rounded-card border border-border p-4 space-y-3">
+      <h2 id="momen-draf" className="flex items-center gap-2 text-[14px] font-semibold text-text">
+        <CloudOff className="w-4 h-4" aria-hidden="true" />
+        {draf.length} momen belum tersimpan
+      </h2>
+      <ul className="space-y-2">
+        {draf.map((d) => (
+          <li key={d.id} className="space-y-2">
+            <p className="text-[14px] text-text break-words">{d.entri.judul}</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                className={tombolSekunder}
+                disabled={mengirim === d.id}
+                onClick={() => {
+                  setMengirim(d.id);
+                  onKirimUlang(d.id).finally(() => setMengirim(null));
+                }}
+              >
+                {mengirim === d.id ? "Menyimpan…" : "Coba simpan lagi"}
+              </button>
+              <button type="button" className={tombolSekunder} onClick={() => onBuang(d.id)}>
+                Buang draf
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 };

@@ -7,13 +7,18 @@ import { MomenHalaman } from "../tumbuhkembang/components/MomenHalaman";
 import { AwalMomen } from "../tumbuhkembang/components/FormMomenSheet";
 import { FORMULIR_KPSP } from "../tumbuhkembang/konten";
 import { judulAwalDariMilestone } from "../tumbuhkembang/logic/jurnal";
+import { FEATURES } from "../../../config/features";
+import { siapkanFoto } from "../momen/foto/kompres";
+
+/** id foto: unik per perangkat dan waktu, lolos isValidId di rules. */
+const idFotoBaru = () => `foto-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
 
 /**
  * Rute /bayi/momen. ?tambah=1 membuka lembar tambah (tombol "Tambah momen" ada di bar aplikasi).
  * ?dari=<butirId>&tanggal=<yyyy-MM-dd> membuka form terisi dari milestone.
  */
 export const MomenPage: React.FC = () => {
-  const { activeProfile, mode, isAdmin, simpanMomen, hapusMomen } = useBayi();
+  const { activeProfile, mode, isAdmin, simpanMomen, hapusMomen, simpanMomenFoto, fotoMomen, fotoTerpakai, draf, kirimUlangDraf, buangDraf } = useBayi();
   const { user } = useAuth();
   const { members } = useFamily();
   const [params, setParams] = useSearchParams();
@@ -47,6 +52,19 @@ export const MomenPage: React.FC = () => {
         setParams(next, { replace: true });
       }}
       awalDariMilestone={awal}
+      foto={
+        FEATURES.fotoMomen
+          ? {
+              layanan: fotoMomen,
+              terpakai: fotoTerpakai,
+              siapkan: (berkas) => siapkanFoto(berkas, idFotoBaru()),
+              onSimpan: simpanMomenFoto,
+              draf,
+              onKirimUlang: kirimUlangDraf,
+              onBuangDraf: buangDraf
+            }
+          : undefined
+      }
     />
   );
 };

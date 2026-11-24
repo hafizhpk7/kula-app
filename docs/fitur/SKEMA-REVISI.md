@@ -471,3 +471,15 @@ Branch `feat/revisi-bayi-r3a`, dibuat dari `feat/revisi-bayi-r2`. Tanpa perubaha
 - Tawaran "Simpan sebagai momen?" muncul tepat di bawah butir yang baru dicentang "sudah" di halaman Milestone, dengan "Simpan sebagai momen" (membuka form terisi) dan "Nanti saja". Tidak muncul bila butir itu sudah punya momen. Tombol lama "Catat sebagai momen" tetap hanya di halaman lama.
 - Redirect: `revisiBayi` nyala → `/bayi/jurnal` ke `/bayi/momen` (query `dari` dan `tanggal` ikut); mati → `/bayi/momen` ke `/bayi/jurnal`; `tumbuhKembang` mati → Beranda. Ubin Momen dan kartu "Momen terakhir" di Beranda menuju rute baru. Istilah di layar "Momen", data tetap `jurnal` (glosarium diperbarui).
 - Bug yang ditemukan lewat verifikasi di browser dan diperbaiki: dua `setSearchParams` berturut-turut memakai `params` yang sama sehingga yang terakhir mengembalikan `?tambah=1` dan lembar tidak menutup setelah simpan. Sekarang satu pembaruan URL, dengan test di tingkat halaman.
+
+## Status R3b (2026-11-24)
+
+- Rincian dan angka ada di `docs/fitur/USULAN-R3B.md`. Semua fitur di balik flag baru `fotoMomen` (`VITE_FEATURE_FOTO_MOMEN`), mati secara default. Selama flag mati, form tetap menampilkan "Foto segera hadir."
+- Rules `momenFoto` (pribadi dan keluarga), `fotoIds` di jurnal keluarga, dan `firestore.indexes.json` (thumbnail dan foto dikecualikan dari indeks) sudah ditulis tapi **belum di-deploy**. Tes emulator `tests/rules/momenfoto.test.ts` sudah ditulis tapi belum dijalankan karena Java belum ada di mesin ini.
+- Di klien:
+  - Ada dua tombol: "Ambil foto" (`capture="environment"`) dan "Pilih dari galeri".
+  - Foto diperkecil lewat canvas ke ≤ 1280px dan ≤ 250 KB (WebP, atau JPEG kalau WebP tidak didukung), dengan thumbnail ≤ 320px dan ≤ 25 KB. Metadata dibuang dua kali: oleh re-encode canvas, lalu oleh `buangMetadata` + `adaMetadata`.
+  - Linimasa hanya memuat thumbnail (cache IndexedDB dulu, lalu kueri `in` maksimal 30 id). Foto penuh dimuat saat detail dibuka.
+- Hapus momen ikut menghapus fotonya. Di mode keluarga keduanya satu batch. Hapus anak (pribadi), hapus semua data, dan `deleteBabySubtree` (keluarga) juga ikut membersihkan foto.
+- Kalau kuota habis atau sedang offline, momen dan fotonya disimpan sebagai draf di IndexedDB. Linimasa menampilkan tombol "Coba simpan lagi" dan "Buang draf".
+- Batas 100 foto per keluarga, dihitung dari `fotoIds`. Pemakaiannya ditampilkan di Pengaturan Bayi.

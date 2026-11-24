@@ -11,11 +11,18 @@ import { rayakan } from "../../../components/common/Perayaan";
 import { aturMomen, BATAS_JURNAL, bolehTambahMomen, hapusMomenDari, PESAN_DITOLAK } from "../tumbuhkembang/logic/jurnal";
 import { aturCatatan, hapusCatatanDari } from "../tumbuhkembang/logic/stimulasi";
 import { penyimpananLokal, sekaliRayakan } from "../tumbuhkembang/logic/rayakan";
+import { FEATURES } from "../../../config/features";
+import { kuotaHabis, PerubahanFoto } from "../momen/foto/layanan";
+import { DrafMomen, tokoFotoPerangkat } from "../momen/foto/tokoLokal";
+import { BATAS_FOTO_KELUARGA, jumlahFoto, PESAN_FOTO } from "../momen/foto/batas";
+
+/** Hasil simpan momen berfoto: tersimpan, jadi draf (kuota habis atau offline), ditolak (batas), atau gagal. */
+export type HasilSimpanFoto = "ok" | "drafKuota" | "drafOffline" | "ditolak" | "gagal";
 
 export function useBayiState(onNavigateToBabyHome?: () => void) {
   const { user } = useAuth();
   const { showToast } = useToast();
-  const { repository, mode, isAdmin } = useBayiRepository();
+  const { repository, fotoMomen, mode, isAdmin } = useBayiRepository();
 
   const [appState, setAppState] = useState<AppState>(() => {
     if (typeof window !== "undefined") {
@@ -126,8 +133,10 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
       repository.saveState(next, appState).catch((err) => {
         showToast(pesanPengguna("bayi", err, belum("Profil anak", "terhapus")));
       });
+      // Pribadi: foto anak ini ada di koleksi akun, tidak ikut terhapus bersama profil. (Keluarga: deleteBabySubtree.)
+      if (mode === "personal") fotoMomen.hapusSemuaAnak(id).catch(() => {});
     },
-    [appState, assertCanWrite, repository, showToast]
+    [appState, assertCanWrite, fotoMomen, mode, repository, showToast]
   );
 
   // H5: updateScheduleRow
@@ -272,12 +281,103 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     (id: string) => {
       if (!activeProfile) return;
       const babyId = activeProfile.id;
+      const entri = (activeProfile.jurnal ?? []).find((x) => x.id === id);
       setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: hapusMomenDari(p.jurnal, id) } : p)) }));
-      repository.deleteJurnal(babyId, id).catch((err) => {
-        showToast(pesanPengguna("bayi", err, belum("Momen", "terhapus")));
-      });
+      const gagal = (err: unknown) => showToast(pesanPengguna("bayi", err, belum("Momen", "terhapus")));
+      // Momen berfoto: dokumen fotonya ikut dihapus (keluarga: satu batch dengan entri).
+      if (entri?.fotoIds?.length) {
+        fotoMomen.hapusMomen(babyId, entri, () => repository.deleteJurnal(babyId, id)).catch(gagal);
+        return;
+      }
+      repository.deleteJurnal(babyId, id).catch(gagal);
     },
-    [activeProfile, repository, showToast]
+    [activeProfile, fotoMomen, repository, showToast]
+  );
+
+  // R3b: momen yang menambah atau melepas foto. Ditunggu (tidak optimistis) supaya galat kuota bisa jadi draf.
+  const [draf, setDraf] = useState<DrafMomen[]>([]);
+  const muatDraf = useCallback(() => {
+    if (!FEATURES.fotoMomen) return;
+    tokoFotoPerangkat()
+      .semuaDraf()
+      .then(setDraf)
+      .catch(() => setDraf([]));
+  }, []);
+  useEffect(muatDraf, [muatDraf]);
+
+  const fotoTerpakai = useMemo(() => jumlahFoto(appState.profiles), [appState.profiles]);
+
+  const kirimMomenFoto = useCallback(
+    async (babyId: string, entri: JurnalMomen, perubahan: PerubahanFoto, dariDraf: boolean): Promise<HasilSimpanFoto> => {
+      const simpanDraf = async () => {
+        await tokoFotoPerangkat()
+          .simpanDraf({ id: entri.id, babyId, entri, baru: perubahan.baru, hapus: perubahan.hapus, waktu: new Date().toISOString() })
+          .catch(() => {});
+        muatDraf();
+      };
+      if (typeof navigator !== "undefined" && navigator.onLine === false && fotoMomen.tersinkron) {
+        await simpanDraf();
+        return "drafOffline";
+      }
+      try {
+        await fotoMomen.simpan(babyId, entri, perubahan, () => repository.saveJurnal(babyId, entri));
+      } catch (err) {
+        if (kuotaHabis(err)) {
+          await simpanDraf();
+          return "drafKuota";
+        }
+        if (!dariDraf) showToast(pesanPengguna("bayi", err, PESAN_FOTO.gagal));
+        return "gagal";
+      }
+      if (dariDraf) await tokoFotoPerangkat().hapusDraf(entri.id).catch(() => {});
+      setAppState((s) => ({ ...s, profiles: s.profiles.map((p) => (p.id === babyId ? { ...p, jurnal: aturMomen(p.jurnal, entri) } : p)) }));
+      muatDraf();
+      return "ok";
+    },
+    [fotoMomen, muatDraf, repository, showToast]
+  );
+
+  const simpanMomenFoto = useCallback(
+    async (entri: JurnalMomen, perubahan: PerubahanFoto): Promise<HasilSimpanFoto> => {
+      if (!activeProfile) return "ditolak";
+      const baru = !(activeProfile.jurnal ?? []).some((x) => x.id === entri.id);
+      if (baru) {
+        const boleh = bolehTambahMomen(activeProfile, mode !== "family");
+        if (!boleh.ok) {
+          showToast(PESAN_DITOLAK[boleh.alasan]);
+          return "ditolak";
+        }
+      }
+      if (fotoTerpakai - perubahan.hapus.length + perubahan.baru.length > BATAS_FOTO_KELUARGA && perubahan.baru.length > 0) {
+        showToast(PESAN_FOTO.penuh);
+        return "ditolak";
+      }
+      const hasil = await kirimMomenFoto(activeProfile.id, entri, perubahan, false);
+      if (hasil === "ok" && baru && (activeProfile.jurnal?.length ?? 0) === 0 && sekaliRayakan(`jurnal:${activeProfile.id}`, penyimpananLokal())) rayakan();
+      return hasil;
+    },
+    [activeProfile, fotoTerpakai, kirimMomenFoto, mode, showToast]
+  );
+
+  const kirimUlangDraf = useCallback(
+    async (id: string): Promise<HasilSimpanFoto> => {
+      const d = draf.find((x) => x.id === id);
+      if (!d) return "gagal";
+      const hasil = await kirimMomenFoto(d.babyId, d.entri, { baru: d.baru, hapus: d.hapus }, true);
+      if (hasil === "gagal") showToast(PESAN_FOTO.gagal);
+      return hasil;
+    },
+    [draf, kirimMomenFoto, showToast]
+  );
+
+  const buangDraf = useCallback(
+    (id: string) => {
+      tokoFotoPerangkat()
+        .hapusDraf(id)
+        .catch(() => {})
+        .finally(muatDraf);
+    },
+    [muatDraf]
   );
 
   // H16 dan H17: catatan stimulasi harian. Seperti jurnal, tanpa assertCanWrite (semua anggota keluarga boleh).
@@ -315,6 +415,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
   const clearAllBabyData = useCallback(() => {
     if (!assertCanWrite()) return;
     repository.clearAllData().then(() => {
+      if (mode !== "family") fotoMomen.hapusSemua().catch(() => {});
       setAppState(getInitialState());
       if (onNavigateToBabyHome) {
         onNavigateToBabyHome();
@@ -322,7 +423,7 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     }).catch((err) => {
       showToast(pesanPengguna("bayi", err, belum("Data Bayi", "terhapus")));
     });
-  }, [assertCanWrite, onNavigateToBabyHome, repository, showToast]);
+  }, [assertCanWrite, fotoMomen, mode, onNavigateToBabyHome, repository, showToast]);
 
   return {
     appState,
@@ -346,6 +447,12 @@ export function useBayiState(onNavigateToBabyHome?: () => void) {
     updatePaymentMode,
     simpanMomen,
     hapusMomen,
+    simpanMomenFoto,
+    fotoMomen,
+    fotoTerpakai,
+    draf,
+    kirimUlangDraf,
+    buangDraf,
     simpanStimulasi,
     hapusStimulasi,
     clearAllBabyData
