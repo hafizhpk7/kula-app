@@ -5,6 +5,7 @@
 
 import React from "react";
 import { HashRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { AuthScreen } from "./components/auth/AuthScreen";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
 import { PWANotification } from "./components/common/PWANotification";
@@ -151,6 +152,7 @@ export default function App() {
           <MainApp />
           <PWANotification />
           <PerayaanLayer />
+          <Analytics />
         </ToastProvider>
       </ThemeProvider>
     </ErrorBoundary>
