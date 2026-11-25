@@ -4,6 +4,7 @@
  */
 
 import React from "react";
+import { AnalitikRute } from "./analytics";
 import { HashRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { AuthScreen } from "./components/auth/AuthScreen";
 import { ErrorBoundary } from "./components/common/ErrorBoundary";
@@ -138,6 +139,7 @@ function BayiProviderWrapper() {
 function MainApp() {
   return (
     <HashRouter>
+      <AnalitikRute />
       <BayiProviderWrapper />
     </HashRouter>
   );
