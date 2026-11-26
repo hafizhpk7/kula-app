@@ -220,6 +220,7 @@ export class FamilyCloudRepository implements FinanceRepository {
               dayOfMonth: typeof data.dayOfMonth === "number" ? data.dayOfMonth : undefined,
               dayOfWeek: typeof data.dayOfWeek === "number" ? data.dayOfWeek : undefined,
               lastGeneratedThrough: data.lastGeneratedThrough || undefined,
+              catatOtomatis: data.catatOtomatis === false ? false : undefined,
               createdAt: data.createdAt || undefined,
               updatedAt: data.updatedAt || undefined,
               createdBy: data.createdBy || undefined
@@ -465,6 +466,7 @@ export class FamilyCloudRepository implements FinanceRepository {
       if (typeof rule.dayOfMonth === "number") payload.dayOfMonth = rule.dayOfMonth;
       if (typeof rule.dayOfWeek === "number") payload.dayOfWeek = rule.dayOfWeek;
       if (rule.lastGeneratedThrough) payload.lastGeneratedThrough = rule.lastGeneratedThrough;
+      if (rule.catatOtomatis === false) payload.catatOtomatis = false;
 
       await setDoc(ref, payload);
     } catch (e: any) {

@@ -63,3 +63,31 @@ describe("rute Keuangan yang tidak dikenal", () => {
     expect(window.location.hash).toBe("#/keuangan-keluarga/ringkasan");
   });
 });
+
+describe("flag tagihan mati", () => {
+  beforeEach(() => {
+    const NOW2 = new Date().toISOString();
+    localStorage.setItem(
+      LOCAL_FINANCE_STORAGE_KEY,
+      JSON.stringify({
+        schemaVersion: 2, transactions: [], config: { schemaVersion: 1, customCategories: [], budgets: {}, includeVaccineCosts: false }, savingsGoals: [],
+        recurringRules: [{ id: "rt", name: "PDAM", type: "expense", amount: 100000, categoryId: "tagihan-utilitas", walletId: "default", frequency: "monthly", active: true, startDate: "2026-01-05", dayOfMonth: 5, catatOtomatis: false, createdAt: NOW2, updatedAt: NOW2 }],
+        drafTransaksi: [], aturanKategori: []
+      })
+    );
+  });
+
+  it("tanpa kartu, tautan, rute, dan saklar; aturan bertanda tagihan tetap tidak dicatat sendiri", async () => {
+    window.location.hash = "#/keuangan-keluarga/ringkasan";
+    const { unmount } = render(<App />);
+    expect(await screen.findByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Tagihan minggu ini" })).not.toBeInTheDocument();
+    unmount();
+    window.location.hash = "#/keuangan-keluarga/tagihan";
+    render(<App />);
+    expect(await screen.findByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument(); // dialihkan
+    expect(screen.queryByRole("link", { name: /Tagihan.*(belum dibayar|menunggu)/ })).not.toBeInTheDocument();
+    // tidak pernah mencatat tanpa konfirmasi, walau fiturnya dimatikan
+    expect(JSON.parse(localStorage.getItem(LOCAL_FINANCE_STORAGE_KEY)!).transactions).toEqual([]);
+  });
+});

@@ -12,6 +12,8 @@ import { usulkanKategori, pelajariAturan } from "../draf/aturan";
 import { alasanMasukanTidakSah, bangunDraf, dompetBawaan, MasukanDraf, transaksiDariDraf } from "../draf/bangun";
 import { kunciKandidat } from "../draf/kunci";
 import { jenisKeTipe } from "../draf/normalisasi";
+import { buildRecurringTransaction } from "../utils/recurring";
+import { adalahTagihan, hitungTagihan, TAGIHAN_LOOKBACK_HARI, TAGIHAN_MAJU_HARI, geserHari, TagihanItem } from "../utils/tagihan";
 import { dompetTerakhir, simpanDompetTerakhir, simpanKategoriTerakhir } from "../utils/kategoriTerakhir";
 import { getActiveCategories, validateCategoryName } from "../utils/categories";
 import { pesanGagal } from "../utils/pesan";
@@ -37,6 +39,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const { status: statusKeluarga, canEditFinance } = useFamily();
   // Keluarga: hanya admin menulis (sama dengan transaksi). Tamu dan pribadi: selalu boleh.
   const bolehUbahDraf = statusKeluarga !== "active" || canEditFinance;
+  const bolehUbahTagihan = bolehUbahDraf;
+  // Id transaksi di sekitar hari ini, terlepas dari bulan yang sedang dilihat; hanya untuk menentukan tagihan yang sudah dibayar
+  const [idBayarTagihan, setIdBayarTagihan] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [migrationDecision, setMigrationDecision] = useState<"none" | "auto-upload" | "prompt">("none");
@@ -124,6 +129,28 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       unsubAturan();
     };
   }, [repository, windowRange]);
+
+  // Tagihan (K5): langganan terpisah untuk transaksi di sekitar hari ini, hanya bila flag menyala dan ada aturan tagihan.
+  // Terpisah dari langganan utama karena itu mengikuti bulan yang dilihat, sedangkan tagihan selalu terhadap hari ini.
+  const adaAturanTagihan = recurringRules.some(adalahTagihan);
+  useEffect(() => {
+    if (!FEATURES.tagihan || !adaAturanTagihan) {
+      setIdBayarTagihan(new Set());
+      return;
+    }
+    const hari = todayLocal();
+    const unsub = repository.subscribeTransactions(
+      { from: geserHari(hari, -TAGIHAN_LOOKBACK_HARI - 1), to: geserHari(hari, TAGIHAN_MAJU_HARI + 1) },
+      (txs) => setIdBayarTagihan(new Set(txs.map((t) => t.id))),
+      () => console.warn("Tagihan sub error")
+    );
+    return unsub;
+  }, [repository, adaAturanTagihan]);
+
+  const tagihan = useMemo(
+    () => (FEATURES.tagihan && adaAturanTagihan ? hitungTagihan(recurringRules, (id) => idBayarTagihan.has(id), todayLocal()) : []),
+    [adaAturanTagihan, recurringRules, idBayarTagihan]
+  );
 
   // Evaluate recurring rules engine on mount / rules change
   useEffect(() => {
@@ -807,6 +834,30 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     [repository, showToast]
   );
 
+  const tandaiTagihanDibayar = useCallback(
+    async (item: TagihanItem) => {
+      const aturan = recurringRules.find((r) => r.id === item.ruleId);
+      if (!aturan) return { ok: false };
+      // Transaksi yang sama persis dengan pencatatan otomatis (id rec:<aturan>:<tanggal>): tidak mungkin ganda
+      const tx = buildRecurringTransaction(aturan, item.tanggal, userId);
+      try {
+        await repository.upsertTransaction(tx);
+      } catch (e) {
+        showToast(pesanGagal("simpanTransaksi", e));
+        return { ok: false };
+      }
+      showToast("Tagihan ditandai sudah dibayar.", "Urungkan", async () => {
+        try {
+          await repository.deleteTransaction(tx.id);
+        } catch (e) {
+          showToast(pesanGagal("hapusTransaksi", e));
+        }
+      });
+      return { ok: true };
+    },
+    [recurringRules, repository, userId, showToast]
+  );
+
   const deleteAllFinanceData = useCallback(async () => {
     try {
       await repository.deleteAllData();
@@ -861,6 +912,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ubahKategoriUsulan,
       ubahKategoriAturan,
       hapusAturanKategori,
+      tagihan,
+      bolehUbahTagihan,
+      tandaiTagihanDibayar,
       migrationDecision,
       uploadGuestDataToCloud,
       clearGuestData
@@ -903,6 +957,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       ubahKategoriUsulan,
       ubahKategoriAturan,
       hapusAturanKategori,
+      tagihan,
+      bolehUbahTagihan,
+      tandaiTagihanDibayar,
       migrationDecision,
       uploadGuestDataToCloud,
       clearGuestData

@@ -101,7 +101,7 @@ service cloud.firestore {
 
     function isValidRecurringRule(data) {
       return data.keys().hasAll(['id', 'type', 'amount', 'categoryId', 'walletId', 'frequency'])
-        && data.keys().hasOnly(['id', 'name', 'type', 'amount', 'categoryId', 'walletId', 'frequency', 'active', 'startDate', 'dayOfMonth', 'dayOfWeek', 'lastGeneratedThrough', 'createdAt', 'updatedAt', 'createdBy'])
+        && data.keys().hasOnly(['id', 'name', 'type', 'amount', 'categoryId', 'walletId', 'frequency', 'active', 'startDate', 'dayOfMonth', 'dayOfWeek', 'lastGeneratedThrough', 'catatOtomatis', 'createdAt', 'updatedAt', 'createdBy'])
         && data.id is string && data.id.size() > 0 && data.id.size() <= 128
         && (!('name' in data) || (data.name is string && data.name.size() <= 100))
         && data.type in ['income', 'expense']
@@ -110,6 +110,7 @@ service cloud.firestore {
         && data.walletId is string && data.walletId.size() > 0 && data.walletId.size() <= 64
         && data.frequency in ['daily', 'weekly', 'monthly']
         && (!('active' in data) || data.active is bool)
+        && (!('catatOtomatis' in data) || data.catatOtomatis is bool)
         && (!('startDate' in data) || (data.startDate is string && data.startDate.size() <= 64))
         && (!('dayOfMonth' in data) || (data.dayOfMonth is int && data.dayOfMonth >= 1 && data.dayOfMonth <= 31))
         && (!('dayOfWeek' in data) || (data.dayOfWeek is int && data.dayOfWeek >= 0 && data.dayOfWeek <= 6))

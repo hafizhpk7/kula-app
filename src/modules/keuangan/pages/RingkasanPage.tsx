@@ -16,6 +16,7 @@ import { formatRupiah } from "../../../utils/calc";
 import { MODULE_REGISTRY } from "../../registry";
 import { formatPersen } from "../utils/persen";
 import { MonthSelector } from "../components/MonthSelector";
+import { TagihanMingguIni } from "../components/TagihanMingguIni";
 import { useCatatTransaksi } from "../components/FinanceLayout";
 import { useFinance } from "../state/FinanceContext";
 import { resolveCategoryName } from "../utils/categories";
@@ -429,6 +430,8 @@ export const RingkasanPage: React.FC = () => {
           </span>
         </Link>
       )}
+
+      {FEATURES.tagihan && <TagihanMingguIni />}
 
       {isMonthEmpty ? (
         <>

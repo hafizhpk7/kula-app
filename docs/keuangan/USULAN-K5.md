@@ -1,6 +1,6 @@
 # K5: Tagihan jatuh tempo dan `pengingatMendatang()`
 
-Status: **menunggu ok skema (satu field opsional).** Tidak ada kode, rules, atau flag yang diubah. Dokumen ini satu-satunya perubahan di branch `feat/k5-tagihan` (dari `feat/k2-perlu-dicek`).
+Status: **disetujui (opsi B, D1 sampai D5 ikut rekomendasi) dan diimplementasikan** di branch `feat/k5-tagihan` (dari `feat/k2-perlu-dicek`), di balik flag `tagihan` (`VITE_FEATURE_TAGIHAN`, default mati). **Rules belum di-deploy**; perintahnya di bagian 7.
 
 K5 bilang "tanpa skema baru kalau bisa; kalau perlu, usulkan dulu". Setelah membaca mesin transaksi berulang, **spesifikasinya tidak bisa dipenuhi tanpa satu field**. Alasannya di bagian 1.
 
@@ -132,3 +132,32 @@ Gerbang: `tsc`, seluruh tes, `build`, `npm run test:rules`. **Rules tidak di-dep
 | **D5** | `pengingatMendatang()` memuat imunisasi dan KPSP dari `kelompokkanKunjungan` dan titik rutin (tanpa menambah jenis pengingat lain)? | **Ya** |
 
 **STOP.** Setelah "ok" (dan jawaban D1 sampai D5, atau "ikut rekomendasi"), implementasi: tipe, mesin, repository, rules + tes emulator, `pengingatMendatang()`, flag `tagihan`, layar dan kartu, tes.
+
+## 7. Hasil implementasi
+
+**Dibangun:**
+- `RecurringRule.catatOtomatis?: boolean` + rules aditif (`isValidRecurringRule`), dipakai pribadi dan keluarga. Repository cloud menulis field itu hanya bila `false`; membaca `false` saja.
+- `utils/recurring.ts`: `kemunculanAntara(rule, dari, sampai)` sebagai dasar bersama; `getDueOccurrences` memakainya tanpa mengubah perilaku (tes lama lulus). `evaluateAllRecurringRules` melewati aturan `catatOtomatis === false`.
+- `utils/tagihan.ts`: `hitungTagihan`, status (terlewat, hari ini, mendekat, nanti), jendela −60 sampai +30 hari, dibayar = ada transaksi `rec:<aturan>:<tanggal>`.
+- `modules/pengingat/pengingatMendatang.ts`: `pengingatMendatang()` (tagihan, imunisasi dari `kelompokkanKunjungan`, KPSP rutin) dan `untukPush()` (hanya `{jenis, tanggal}`).
+- `FinanceProvider`: `tagihan`, `bolehUbahTagihan`, `tandaiTagihanDibayar` (idempoten, dengan Urungkan). Langganan transaksi tambahan hanya bila flag menyala **dan** ada aturan tagihan; terpisah dari langganan utama karena yang itu mengikuti bulan yang dilihat.
+- UI: saklar "Catat otomatis saat jatuh tempo" di modal aturan (hanya pengeluaran), lencana "Tagihan" di daftar aturan, layar `/keuangan-keluarga/tagihan`, kartu "Tagihan minggu ini" di Ringkasan, tautan di Pengaturan.
+
+**Keputusan implementasi:**
+- Aturan `catatOtomatis: false` **tidak pernah dicatat sendiri, walau flag `tagihan` dimatikan** (sesuai prinsip tanpa pencatatan otomatis tanpa konfirmasi). Mematikan flag menyembunyikan layarnya tetapi tidak membuat tagihan menumpuk jadi transaksi.
+- Aturan bulanan yang berulang lagi dalam 30 hari muncul dua kali (mis. terlewat dan bulan depan). Itu perilaku yang benar, bukan duplikat.
+- `pengingatMendatang()` membatasi imunisasi terlambat ke 60 hari dan KPSP ke titik rutin berikutnya yang belum punya hasil (titik yang tanggalnya sudah lewat digantikan titik sesudahnya).
+
+**Bug lama yang ikut diperbaiki (mode pribadi):** `CloudRepository.upsertRecurringRule` menulis `null` untuk field kosong (`name`, `dayOfMonth`, `dayOfWeek`, `startDate`, `lastGeneratedThrough`), dan rules menolak `null` untuk field opsional. Aturan berulang pribadi yang tidak punya semuanya (hampir semuanya, karena bulanan tidak punya `dayOfWeek`) karena itu gagal tersimpan dengan "Aturan berulang belum tersimpan". Dibuktikan dengan tes rules (`tests/rules/tagihan.test.ts`). Sekarang field kosong dihilangkan, seperti yang sudah dilakukan `FamilyCloudRepository`. Perbaikan ini tidak mengubah penulisan yang sah.
+
+**Dibuktikan:**
+- Tes rules emulator `tests/rules/tagihan.test.ts` (8 kasus): aturan lama tanpa field tetap lolos, boolean diterima, bukan boolean (string, angka, null) dan field asing ditolak, peran tidak berubah, `null` lama ditolak.
+- Uji ujung ke ujung di browser (emulator, SDK dan rules sungguhan, admin keluarga): aturan tersimpan dengan `catatOtomatis: false`, tidak dicatat otomatis, muncul di Tagihan "Mendekat 3 hari lagi", "Sudah dibayar" menulis `rec:<aturan>:<tanggal>` dengan payload keluarga, dan tagihannya hilang dengan toast Urungkan.
+
+**Deploy rules (untuk Anda)**, setelah `diff` dengan produksi sesuai `docs/rilis/RILIS-0.md` bagian 3. Rules ini menambah `drafTransaksi`, `aturanKategori` (K2), dan `catatOtomatis` (K5) sekaligus:
+
+```bash
+npx firebase-tools deploy --only firestore:rules --project enhanced-airline-rghtt --config firebase.produksi.json
+```
+
+Flag `tagihan` baru boleh dinyalakan setelah rules ter-deploy dan layarnya dites di HP.

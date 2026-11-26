@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { AturanKategori, Category, DrafTransaksi, FinanceConfig, LedgerEntry, RecurringRule, SavingsGoal, Transaction, TxType } from "../types";
 import { MasukanDraf } from "../draf/bangun";
+import { TagihanItem } from "../utils/tagihan";
 
 export interface FinanceContextType {
   selectedMonth: string;
@@ -70,6 +71,14 @@ export interface FinanceContextType {
   ubahKategoriUsulan: (id: string, categoryId: string) => Promise<void>;
   ubahKategoriAturan: (id: string, categoryId: string) => Promise<void>;
   hapusAturanKategori: (id: string) => Promise<void>;
+
+  // ---- Tagihan (K5). Kosong dan tanpa langganan tambahan bila flag tagihan mati. ----
+  /** Tagihan yang belum dibayar: terlewat (maks 60 hari), hari ini, dan 30 hari ke depan. */
+  tagihan: TagihanItem[];
+  /** Keluarga: hanya admin yang boleh menandai dibayar. */
+  bolehUbahTagihan: boolean;
+  /** Buat transaksi `rec:<aturan>:<tanggal>` untuk tagihan itu. Idempoten. */
+  tandaiTagihanDibayar: (item: TagihanItem) => Promise<{ ok: boolean }>;
 
   migrationDecision: "none" | "auto-upload" | "prompt";
   uploadGuestDataToCloud: () => Promise<void>;

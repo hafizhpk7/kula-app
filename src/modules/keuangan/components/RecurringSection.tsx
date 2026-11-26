@@ -80,6 +80,11 @@ export const RecurringSection: React.FC<{ embedded?: boolean }> = ({ embedded = 
                       }`}>
                         {rule.type === "income" ? "Pemasukan" : "Pengeluaran"}
                       </span>
+                      {rule.catatOtomatis === false && (
+                        <span className="text-[12px] font-medium px-2 py-0.5 rounded-full bg-warning-tint text-warning-text border border-warning/30">
+                          Tagihan
+                        </span>
+                      )}
                       {needsInspection && (
                         <span className="inline-flex items-center gap-1 text-[12px] font-medium px-2 py-0.5 rounded-full bg-danger-tint text-danger-text border border-danger/20">
                           <AlertCircle className="w-3 h-3" />

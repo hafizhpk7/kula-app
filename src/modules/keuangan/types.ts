@@ -84,6 +84,11 @@ export interface RecurringRule {
   dayOfMonth?: number;         // 1..31
   dayOfWeek?: number;          // 0..6
   lastGeneratedThrough?: string; // "YYYY-MM-DD"
+  /**
+   * Kosong atau true: dicatat otomatis saat jatuh tempo (perilaku bawaan).
+   * false: jadi TAGIHAN (K5): tidak dicatat sendiri, muncul di Tagihan sampai ditandai dibayar. Hanya untuk pengeluaran.
+   */
+  catatOtomatis?: boolean;
   createdAt?: string;          // ISO timestamp
   updatedAt?: string;          // ISO timestamp
   createdBy?: string;          // uid

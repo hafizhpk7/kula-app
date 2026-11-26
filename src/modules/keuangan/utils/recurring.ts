@@ -21,34 +21,23 @@ function getLastDayOfMonth(year: number, month: number): number {
   return new Date(Date.UTC(year, month, 0)).getUTCDate();
 }
 
-export function getDueOccurrences(
-  rule: RecurringRule,
-  todayStr: string = todayLocal()
-): string[] {
-  if (rule.active === false) return [];
-
-  const startDateStr = rule.startDate || todayStr;
-  const highWater = rule.lastGeneratedThrough || "";
-  const today = parseDateUtc(todayStr);
+/**
+ * Tanggal jatuh tempo aturan dari `dariStr` sampai `sampaiStr` (inklusif), tidak sebelum `startDate`.
+ * Dasar bersama untuk pencatatan otomatis (sampai hari ini) dan tagihan (ke depan).
+ */
+export function kemunculanAntara(rule: RecurringRule, dariStr: string, sampaiStr: string, maks = 120): string[] {
+  const startDateStr = rule.startDate || sampaiStr;
   const start = parseDateUtc(startDateStr);
-
-  const occurrences: string[] = [];
-  let curr = new Date(start.getTime());
-
-  if (highWater) {
-    const hwDate = parseDateUtc(highWater);
-    if (hwDate.getTime() >= start.getTime()) {
-      curr = new Date(hwDate.getTime());
-      curr.setUTCDate(curr.getUTCDate() + 1);
-    }
-  }
+  const akhir = parseDateUtc(sampaiStr);
+  const curr = parseDateUtc(dariStr);
 
   const freq = rule.frequency;
   const dayOfWeekTarget = rule.dayOfWeek !== undefined ? rule.dayOfWeek : start.getUTCDay();
   const targetDayOfMonth = rule.dayOfMonth !== undefined ? rule.dayOfMonth : start.getUTCDate();
 
+  const occurrences: string[] = [];
   let count = 0;
-  while (curr.getTime() <= today.getTime() && count < 120) {
+  while (curr.getTime() <= akhir.getTime() && count < maks) {
     const currStr = formatDateUtc(curr);
     let isMatch = false;
 
@@ -68,7 +57,7 @@ export function getDueOccurrences(
       }
     }
 
-    if (isMatch && currStr >= startDateStr && currStr <= todayStr) {
+    if (isMatch && currStr >= startDateStr && currStr <= sampaiStr) {
       occurrences.push(currStr);
       count++;
     }
@@ -77,6 +66,27 @@ export function getDueOccurrences(
   }
 
   return occurrences;
+}
+
+export function getDueOccurrences(
+  rule: RecurringRule,
+  todayStr: string = todayLocal()
+): string[] {
+  if (rule.active === false) return [];
+
+  const startDateStr = rule.startDate || todayStr;
+  const highWater = rule.lastGeneratedThrough || "";
+  const start = parseDateUtc(startDateStr);
+
+  let dari = startDateStr;
+  if (highWater) {
+    const hwDate = parseDateUtc(highWater);
+    if (hwDate.getTime() >= start.getTime()) {
+      hwDate.setUTCDate(hwDate.getUTCDate() + 1);
+      dari = formatDateUtc(hwDate);
+    }
+  }
+  return kemunculanAntara(rule, dari, todayStr);
 }
 
 export function buildRecurringTransaction(
@@ -114,6 +124,8 @@ export function evaluateAllRecurringRules(
   const ruleUpdates: { ruleId: string; lastGeneratedThrough: string }[] = [];
 
   for (const rule of rules) {
+    // Tagihan (catatOtomatis === false) tidak dicatat sendiri: menunggu ditandai dibayar
+    if (rule.catatOtomatis === false) continue;
     const dueDates = getDueOccurrences(rule, todayStr);
     if (dueDates.length > 0) {
       for (const d of dueDates) {

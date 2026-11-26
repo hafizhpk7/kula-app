@@ -209,6 +209,7 @@ export class CloudRepository implements FinanceRepository {
               dayOfMonth: typeof data.dayOfMonth === "number" ? data.dayOfMonth : undefined,
               dayOfWeek: typeof data.dayOfWeek === "number" ? data.dayOfWeek : undefined,
               lastGeneratedThrough: data.lastGeneratedThrough || undefined,
+              catatOtomatis: data.catatOtomatis === false ? false : undefined,
               createdAt: data.createdAt || undefined,
               updatedAt: data.updatedAt || undefined,
               createdBy: data.createdBy || undefined
@@ -433,23 +434,26 @@ export class CloudRepository implements FinanceRepository {
       const snap = await getDoc(ref);
       const existing = snap.exists() ? snap.data() : null;
       const nowIso = new Date().toISOString();
+      // Field kosong DIHILANGKAN, bukan ditulis null: rules menolak null untuk field opsional (name, dayOfMonth, dayOfWeek, ...)
       const payload: Record<string, any> = {
         id: rule.id,
-        name: rule.name ? rule.name.trim() : null,
         type: rule.type,
         amount: Math.floor(rule.amount),
         categoryId: rule.categoryId,
         walletId: rule.walletId || "default",
         frequency: rule.frequency,
         active: rule.active !== false,
-        startDate: rule.startDate || null,
-        dayOfMonth: rule.dayOfMonth ?? null,
-        dayOfWeek: rule.dayOfWeek ?? null,
-        lastGeneratedThrough: rule.lastGeneratedThrough || existing?.lastGeneratedThrough || null,
         createdAt: rule.createdAt || existing?.createdAt || nowIso,
         updatedAt: nowIso,
         createdBy: existing?.createdBy || rule.createdBy || this.uid
       };
+      if (rule.name && rule.name.trim()) payload.name = rule.name.trim();
+      if (rule.startDate) payload.startDate = rule.startDate;
+      if (typeof rule.dayOfMonth === "number") payload.dayOfMonth = rule.dayOfMonth;
+      if (typeof rule.dayOfWeek === "number") payload.dayOfWeek = rule.dayOfWeek;
+      const sampai = rule.lastGeneratedThrough || existing?.lastGeneratedThrough;
+      if (sampai) payload.lastGeneratedThrough = sampai;
+      if (rule.catatOtomatis === false) payload.catatOtomatis = false;
       await setDoc(ref, payload);
     } catch (e: any) {
       handleFirestoreError(e, OperationType.WRITE, docPath);

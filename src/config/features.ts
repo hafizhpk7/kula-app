@@ -14,6 +14,8 @@
  * - `asisten`: Asisten Tahap 1 tanpa LLM (P3b, docs/fitur/ASISTEN-AI.md): cari konten bersumber, masak dari bahan, untuk dokter.
  * - `drafTransaksi`: Keuangan v2, layar "Perlu dicek": draf transaksi dari luar yang baru jadi transaksi setelah dikonfirmasi
  *   (K2, docs/keuangan/USULAN-K2.md). Butuh rules `drafTransaksi` dan `aturanKategori` sudah di-deploy untuk mode pribadi dan keluarga.
+ * - `tagihan`: Keuangan v2, tagihan jatuh tempo dari aturan berulang yang tidak dicatat otomatis (K5, docs/keuangan/USULAN-K5.md).
+ *   Butuh rules `catatOtomatis` di aturan berulang sudah di-deploy untuk mode pribadi dan keluarga.
  * - `fotoMomen`: foto di Momen (R3b, D4; docs/fitur/USULAN-R3B.md). Butuh rules dan indeks R3b sudah di-deploy.
  */
 export const FEATURES = {
@@ -24,5 +26,6 @@ export const FEATURES = {
   mpasi: import.meta.env.VITE_FEATURE_MPASI === "true",
   resep: import.meta.env.VITE_FEATURE_RESEP === "true",
   asisten: import.meta.env.VITE_FEATURE_ASISTEN === "true",
-  drafTransaksi: import.meta.env.VITE_FEATURE_DRAF_TRANSAKSI === "true"
+  drafTransaksi: import.meta.env.VITE_FEATURE_DRAF_TRANSAKSI === "true",
+  tagihan: import.meta.env.VITE_FEATURE_TAGIHAN === "true"
 } as const;
