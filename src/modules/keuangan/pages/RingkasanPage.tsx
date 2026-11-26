@@ -64,6 +64,8 @@ export const RingkasanPage: React.FC = () => {
   const budgetSummary = summarizeBudgets(summary.expenseByCategory, config.budgets || {}, []);
   const adaAnggaran = budgetSummary.rows.length > 0 && budgetSummary.totalBudget > 0;
   const sisa = budgetSummary.totalBudget - budgetSummary.totalSpentOnBudgeted;
+  // Pengeluaran di kategori yang tidak punya batas: tidak ikut "sisa anggaran", jadi disebut terpisah.
+  const tanpaBatas = Math.max(0, summary.expense - budgetSummary.totalSpentOnBudgeted);
   const persenTerpakai = adaAnggaran
     ? Math.round((budgetSummary.totalSpentOnBudgeted / budgetSummary.totalBudget) * 100)
     : 0;
@@ -138,7 +140,7 @@ export const RingkasanPage: React.FC = () => {
   const blokSisa = (
     <section className={`${kartu} space-y-3`} aria-labelledby="blok-sisa">
       <p id="blok-sisa" className="text-[12px] font-semibold text-text-3 uppercase tracking-wider">
-        {adaAnggaran ? "Sisa anggaran" : "Keluar bulan ini"}
+        {adaAnggaran ? "Sisa anggaran kategori" : "Keluar bulan ini"}
       </p>
       {adaAnggaran ? (
         <>
@@ -165,6 +167,15 @@ export const RingkasanPage: React.FC = () => {
             <p className="text-[12.5px] text-text-2 font-tabular">
               Terpakai {formatPersen(persenTerpakai)} dari {formatRupiah(budgetSummary.totalBudget)}
             </p>
+            {tanpaBatas > 0 && (
+              <Link
+                to="/keuangan-keluarga/anggaran"
+                className="inline-flex items-center gap-1 min-h-[44px] text-[12.5px] text-text-2 hover:text-text font-tabular"
+              >
+                <span>Belum termasuk {formatRupiah(tanpaBatas)} di kategori tanpa anggaran</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              </Link>
+            )}
           </div>
         </>
       ) : (
@@ -213,8 +224,8 @@ export const RingkasanPage: React.FC = () => {
           const hampir = row.status.state === "warning";
           return (
             <li key={row.categoryId} className="space-y-1">
-              <div className="flex items-center justify-between gap-2 text-[13.5px]">
-                <span className="flex items-center gap-1.5 text-text font-medium min-w-0 truncate">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5 text-[13.5px]">
+                <span className="flex items-center gap-1.5 text-text font-medium min-w-0 break-words">
                   {(lewat || hampir) && (
                     <AlertTriangle className={`w-4 h-4 shrink-0 ${lewat ? "text-danger-text" : "text-warning-text"}`} aria-hidden="true" />
                   )}

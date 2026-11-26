@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { Link } from "react-router-dom";
-import { ExternalLink, Plus, SlidersHorizontal } from "lucide-react";
+import { ExternalLink, Search, SlidersHorizontal } from "lucide-react";
 import { formatRupiah } from "../../../utils/calc";
 import { READING_MAX } from "../../../config/layout";
 import { PageHeader } from "../../../components/common/PageHeader";
@@ -71,6 +71,9 @@ export const TransaksiPage: React.FC = () => {
       { type: typeFilter, categoryId: filters.categoryId, query: filters.query },
       config
     );
+    if (filters.walletId !== "all") {
+      list = list.filter((e) => (e.walletId || "default") === filters.walletId);
+    }
     if (filters.member !== "all") {
       list = list.filter((e) => (filters.member === "me" ? e.createdBy === user?.uid : e.createdBy === filters.member));
     }
@@ -83,6 +86,9 @@ export const TransaksiPage: React.FC = () => {
   const totalKeluar = filteredList.filter((e) => e.type === "expense").reduce((s, e) => s + e.amount, 0);
 
   const allCategories = getAllCategories(config);
+  const daftarDompet = Object.values(config.wallets || {});
+  // Nama dompet di baris hanya berguna kalau ada lebih dari satu dompet aktif
+  const tampilDompet = daftarDompet.filter((w) => !w.archived).length > 1;
   const filterAktif = hitungFilterTransaksi(filters);
   const isMonthEmpty = monthEntries.length === 0;
 
@@ -96,17 +102,7 @@ export const TransaksiPage: React.FC = () => {
       {isMonthEmpty ? (
         <EmptyState
           title="Belum ada transaksi di bulan ini"
-          description="Catat pengeluaran atau pemasukan pertama untuk bulan ini."
-          action={
-            <button
-              type="button"
-              onClick={() => bukaCatat()}
-              className="px-5 min-h-[44px] rounded-full bg-primary hover:bg-primary-hover text-primary-fg text-[14px] font-semibold transition cursor-pointer inline-flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Catat transaksi</span>
-            </button>
-          }
+          description="Ketuk Catat untuk menambah pengeluaran atau pemasukan pertama bulan ini."
         />
       ) : (
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-6 lg:items-start space-y-4 lg:space-y-0">
@@ -142,6 +138,19 @@ export const TransaksiPage: React.FC = () => {
                 </span>
               )}
             </button>
+          </div>
+
+          {/* Cari langsung di halaman (HP); di desktop ada di panel samping */}
+          <div className="relative lg:hidden">
+            <Search className="w-4 h-4 text-text-2 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true" />
+            <input
+              type="search"
+              value={filters.query}
+              onChange={(e) => setFilters({ ...filters, query: e.target.value })}
+              placeholder="Cari catatan atau kategori"
+              aria-label="Cari transaksi"
+              className="w-full pl-10 pr-3 py-2 text-[15px] rounded-full border border-border bg-surface text-text min-h-[44px]"
+            />
           </div>
 
           {/* Total sesuai filter */}
@@ -233,7 +242,13 @@ export const TransaksiPage: React.FC = () => {
                                 )}
                               </div>
                               <p className="text-[12px] text-text-2 line-clamp-2 break-words" title={entry.note || undefined}>
-                                {[entry.note, pencatat ? `Dicatat oleh ${pencatat}` : ""].filter(Boolean).join(" · ")}
+                                {[
+                                  tampilDompet ? config.wallets?.[entry.walletId || "default"]?.name : "",
+                                  entry.note,
+                                  pencatat ? `Dicatat oleh ${pencatat}` : ""
+                                ]
+                                  .filter(Boolean)
+                                  .join(" · ")}
                               </p>
                             </div>
 
@@ -286,6 +301,7 @@ export const TransaksiPage: React.FC = () => {
               onChange={setFilters}
               categories={allCategories}
               members={members}
+              wallets={daftarDompet}
               idAwal="tfp"
             />
             {(filterAktif > 0 || typeFilter !== "all") && (
@@ -312,7 +328,9 @@ export const TransaksiPage: React.FC = () => {
         onChange={setFilters}
         categories={allCategories}
         members={members}
+        wallets={daftarDompet}
         hasil={filteredList.length}
+        tanpaCari
       />
     </div>
   );

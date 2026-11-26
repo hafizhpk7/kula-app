@@ -1,5 +1,10 @@
 # Audit Keuangan (K1)
 
+> **Status perbaikan (branch `feat/k1-perbaikan-keuangan`):** #1, #3, #4, #5, #6, #7, #8, #9, #10, #11, #13, #14, #15 sudah diperbaiki dengan tes (`src/test/keuangan/k1_perbaikan.test.tsx`). **Tidak dikerjakan sesuai keputusan:** #2 (transaksi berulang otomatis) dan #12 (pil "Catat" menutupi jumlah).
+>
+> **Koreksi atas temuan #9:** audit menulis bahwa kategori "tidak punya pintasan". Itu kurang tepat: aplikasi sudah memajukan satu kategori terakhir dipakai (dengan tanda "Terakhir"); di audit tidak terlihat karena belum ada transaksi tersimpan di perangkat uji. Yang diperbaiki hanyalah jumlahnya: sekarang tiga kategori terakhir dipakai dimajukan, bukan satu.
+> Catatan #6: nama target panjang akhirnya tidak dipotong sama sekali (turun baris), karena `title` tidak bisa dibaca di layar sentuh.
+
 Audit read-only atas semua layar modul Keuangan, sebelum Keuangan v2 (K2 dan seterusnya). **Tidak ada kode yang diubah.** Satu-satunya berkas yang ditambah adalah dokumen ini.
 
 Label bukti: **[lihat]** diamati di render browser (375×812 dan 1440×900, terang dan gelap), **[kode]** dibaca dari kode, **[tidak dites]** belum bisa dicek di sini.

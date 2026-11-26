@@ -69,7 +69,7 @@ describe("UI-5: kategori di Catat transaksi tidak pra-pilih, terakhir dipakai di
     fireEvent.click(within(dialog).getByRole("button", { name: "Simpan" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
 
-    expect(JSON.parse(localStorage.getItem(KUNCI_KATEGORI_TERAKHIR)!)).toEqual({ expense: "transportasi" });
+    expect(JSON.parse(localStorage.getItem(KUNCI_KATEGORI_TERAKHIR)!)).toEqual({ expense: ["transportasi"] });
 
     dialog = await bukaForm();
     const pertama = within(dialog)

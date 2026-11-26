@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, within } from "@testing-library/react";
 import React from "react";
 import App from "../App";
 import { InviteList } from "../shell/family/components/InviteList";
@@ -72,7 +72,10 @@ describe("Empty state mengarahkan ke aksi berikutnya", () => {
     window.location.hash = "#/keuangan-keluarga/transaksi";
     render(<App />);
     expect(await screen.findByText("Belum ada transaksi di bulan ini")).toBeInTheDocument();
-    expect(screen.getByText(/Catat pengeluaran atau pemasukan pertama/)).toBeInTheDocument();
+    expect(screen.getByText(/Ketuk Catat untuk menambah pengeluaran atau pemasukan pertama/)).toBeInTheDocument();
+    // K1 #13: satu pintu saja (tombol Catat di shell), tidak ada tombol kedua di dalam kartu kosong
+    const kartu = screen.getByRole("heading", { name: "Belum ada transaksi di bulan ini" }).parentElement!.parentElement!;
+    expect(within(kartu).queryByRole("button", { name: /Catat transaksi/ })).not.toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: /Catat transaksi/ }).length).toBeGreaterThan(0);
   });
 

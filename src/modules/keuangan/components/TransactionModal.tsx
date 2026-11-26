@@ -7,7 +7,13 @@ import { LedgerEntry, TxType } from "../types";
 import { getActiveCategories } from "../utils/categories";
 import { formatRupiahInput, parseRupiahInput } from "../utils/currency";
 import { formatDayHeader, todayLocal } from "../utils/dates";
-import { kategoriTerakhir, simpanKategoriTerakhir, urutkanTerakhirDulu } from "../utils/kategoriTerakhir";
+import {
+  dompetTerakhir,
+  kategoriTerakhirDaftar,
+  simpanDompetTerakhir,
+  simpanKategoriTerakhir,
+  urutkanTerakhirDulu
+} from "../utils/kategoriTerakhir";
 import { FieldError, ariaField } from "../../../components/common/FieldError";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 
@@ -70,7 +76,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
         setAmountStr("");
         // Tanpa pra-pilih: lupa memilih tidak boleh diam-diam tersimpan di kategori yang salah
         setCategoryId("");
-        setWalletId("default");
+        // Dompet bawaan: yang terakhir dipakai di perangkat ini, asal masih ada dan tidak diarsipkan
+        const wTerakhir = dompetTerakhir();
+        const wAda = wTerakhir ? config.wallets?.[wTerakhir] : undefined;
+        setWalletId(wAda && !wAda.archived ? wAda.id : "default");
         setDate(todayLocal());
         setNote("");
         setDetailOpen(false);
@@ -117,9 +126,13 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
 
     if (res.ok) {
       simpanKategoriTerakhir(type, categoryId);
+      simpanDompetTerakhir(walletId);
       onClose();
     } else if (res.errors) {
-      setErrors(res.errors);
+      // Kolom kosong bukan "nol": pesannya harus bilang isi, bukan soal angka
+      const errs = { ...res.errors };
+      if (errs.amount && !amountStr.trim()) errs.amount = "Isi nominal dulu.";
+      setErrors(errs);
       if (res.errors.amount) amountInputRef.current?.focus();
       else if (res.errors.categoryId) chipPertamaRef.current?.focus();
     }
@@ -131,8 +144,10 @@ export const TransactionModal: React.FC<TransactionModalProps> = ({
     onClose();
   };
 
-  const idTerakhir = isEdit ? undefined : kategoriTerakhir(type);
-  const activeCategories = urutkanTerakhirDulu(getActiveCategories(config, type), idTerakhir);
+  // Tiga kategori terakhir dipakai ada di depan; hanya yang paling akhir diberi tanda "Terakhir"
+  const idsTerakhir = isEdit ? [] : kategoriTerakhirDaftar(type);
+  const idTerakhir = idsTerakhir[0];
+  const activeCategories = urutkanTerakhirDulu(getActiveCategories(config, type), idsTerakhir);
   const wallets = Object.values(config.wallets || {}).filter((w) => !w.archived || w.id === walletId);
   const walletName = config.wallets?.[walletId]?.name ?? "Dompet";
   const tanggalLabel = date === todayLocal() ? "Hari ini" : formatDayHeader(date);

@@ -7,6 +7,7 @@ import { ZonaBahaya } from "../../../components/common/ZonaBahaya";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { MonthSelector } from "../components/MonthSelector";
 import { useFinance } from "../state/FinanceContext";
+import { useFamily } from "../../../shell/family/context/FamilyContext";
 import { summarizeMonth } from "../utils/calculations";
 import { monthLabel } from "../utils/dates";
 import { exportFinanceToExcel } from "../utils/export";
@@ -28,6 +29,8 @@ export const PengaturanPage: React.FC = () => {
     uploadGuestDataToCloud,
     clearGuestData
   } = useFinance();
+  const { status: familyStatus } = useFamily();
+  const modeKeluarga = familyStatus === "active";
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showClearGuestConfirm, setShowClearGuestConfirm] = useState(false);
@@ -104,6 +107,15 @@ export const PengaturanPage: React.FC = () => {
         <h2 id="blok-integrasi" className="font-display text-[16px] text-text">
           Integrasi modul Bayi
         </h2>
+        {modeKeluarga ? (
+          // Keputusan P8: di mode keluarga biaya vaksin tidak dihitung di Keuangan. Tanpa kontrol yang tidak bisa dipakai.
+          <div className="space-y-1">
+            <p className="text-[14px] font-medium text-text">Biaya vaksin dari modul Bayi</p>
+            <p className="text-[12px] text-text-2 leading-relaxed">
+              Belum dihitung di Keuangan keluarga. Biaya vaksin tetap bisa dilihat di tab Biaya pada modul Bayi.
+            </p>
+          </div>
+        ) : (
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <label htmlFor="toggle-vax" className="text-[14px] font-medium text-text cursor-pointer">
@@ -125,6 +137,7 @@ export const PengaturanPage: React.FC = () => {
             />
           </label>
         </div>
+        )}
       </section>
 
       {/* Ekspor */}
