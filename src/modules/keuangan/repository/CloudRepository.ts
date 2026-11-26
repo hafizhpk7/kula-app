@@ -15,16 +15,58 @@ import {
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
 import { DEFAULT_FINANCE_CONFIG } from "../constants/categories";
-import { FinanceConfig, RecurringFrequency, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringFrequency, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { DrafCloudStore } from "./drafCloud";
 import { normalizeConfig } from "../utils/normalization";
 import { applyConfigPatch, ConfigPatch } from "../utils/configPatch";
 import { FinanceRepository } from "./types";
 
 export class CloudRepository implements FinanceRepository {
   private basePath: string;
+  private draf: DrafCloudStore;
 
   constructor(private uid: string, familyId?: string | null) {
     this.basePath = familyId ? `families/${familyId}` : `users/${uid}`;
+    this.draf = new DrafCloudStore(this.basePath, uid);
+  }
+
+  // ---- Perlu dicek (K2) ----
+  subscribeDraf(onData: (d: DrafTransaksi[]) => void, onError: (e: Error) => void): () => void {
+    return this.draf.subscribeDraf(onData, onError);
+  }
+  ambilDrafByIds(ids: string[]): Promise<DrafTransaksi[]> {
+    return this.draf.ambilDrafByIds(ids);
+  }
+  tambahDraf(draf: DrafTransaksi[]): Promise<{ baru: number; duplikat: number }> {
+    return this.draf.tambahDraf(draf);
+  }
+  ubahDraf(id: string, patch: Partial<Pick<DrafTransaksi, "kategoriUsulan" | "status">>): Promise<void> {
+    return this.draf.ubahDraf(id, patch);
+  }
+  async konfirmasiDraf(id: string, tx: Transaction): Promise<void> {
+    const payload: Record<string, unknown> = {
+      id: tx.id,
+      ownerId: this.uid,
+      type: tx.type,
+      amount: tx.amount,
+      categoryId: tx.categoryId,
+      walletId: tx.walletId || "default",
+      date: tx.date,
+      createdAt: tx.createdAt,
+      updatedAt: tx.updatedAt,
+      createdBy: tx.createdBy || this.uid
+    };
+    if (tx.note && tx.note.trim()) payload.note = tx.note.trim();
+    await this.draf.konfirmasi(id, tx.id, payload);
+  }
+  subscribeAturanKategori(onData: (a: AturanKategori[]) => void, onError: (e: Error) => void): () => void {
+    return this.draf.subscribeAturan(onData, onError);
+  }
+  upsertAturanKategori(a: AturanKategori): Promise<void> {
+    return this.draf.upsertAturan(a);
+  }
+  deleteAturanKategori(id: string): Promise<void> {
+    return this.draf.deleteAturan(id);
   }
 
   subscribeTransactions(
@@ -516,6 +558,7 @@ export class CloudRepository implements FinanceRepository {
 
       const cfgRef = doc(db, this.basePath, "financeConfig", "main");
       await deleteDoc(cfgRef);
+      await this.draf.hapusSemua();
     } catch (e: any) {
       handleFirestoreError(e, OperationType.DELETE, this.basePath);
     }

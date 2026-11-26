@@ -13,6 +13,10 @@ import { monthLabel } from "../utils/dates";
 import { exportFinanceToExcel } from "../utils/export";
 import { WalletsSection } from "../components/WalletsSection";
 import { RecurringSection } from "../components/RecurringSection";
+import { AturanKategoriSection } from "../components/AturanKategoriSection";
+import { FEATURES } from "../../../config/features";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const kartu = "bg-surface rounded-card border border-border p-5 space-y-3 shadow-[var(--shadow-card)]";
 
@@ -27,7 +31,9 @@ export const PengaturanPage: React.FC = () => {
     deleteAllFinanceData,
     migrationDecision,
     uploadGuestDataToCloud,
-    clearGuestData
+    clearGuestData,
+    draf,
+    aturanKategori
   } = useFinance();
   const { status: familyStatus } = useFamily();
   const modeKeluarga = familyStatus === "active";
@@ -98,6 +104,27 @@ export const PengaturanPage: React.FC = () => {
       >
         <RecurringSection embedded />
       </Lipat>
+
+      {FEATURES.drafTransaksi && (
+        <>
+          <Link
+            to="/keuangan-keluarga/perlu-dicek"
+            className="bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)] flex items-center justify-between gap-3 min-h-[44px]"
+          >
+            <span className="space-y-0.5">
+              <span className="block font-display text-[16px] text-text">Perlu dicek</span>
+              <span className="block text-[12px] text-text-2">
+                {draf.length > 0 ? `${draf.length} draf menunggu konfirmasi` : "Tidak ada yang menunggu"}
+              </span>
+            </span>
+            <ArrowRight className="w-5 h-5 text-text-2 shrink-0" aria-hidden="true" />
+          </Link>
+
+          <Lipat title="Aturan kategori" summary={aturanKategori.length > 0 ? `${aturanKategori.length} aturan` : "Belum ada aturan"}>
+            <AturanKategoriSection />
+          </Lipat>
+        </>
+      )}
 
       </div>
 

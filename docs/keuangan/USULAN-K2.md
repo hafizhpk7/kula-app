@@ -1,6 +1,12 @@
 # K2: Fondasi "Perlu dicek"
 
-Status: **Langkah 1 (usulan skema), menunggu ok.** Belum ada kode, rules, atau flag yang diubah. Dokumen ini adalah satu-satunya perubahan di branch `feat/k2-perlu-dicek`.
+Status: **Langkah 1 disetujui (D1 sampai D5 ikut rekomendasi) dan Langkah 2 selesai** di branch `feat/k2-perlu-dicek`, di balik flag `drafTransaksi` (`VITE_FEATURE_DRAF_TRANSAKSI`, default mati). **Rules belum di-deploy**; perintahnya ada di bagian 7.
+
+Penyimpangan kecil dari usulan, ditemukan saat tes:
+- **Kunci duplikat:** tanggal tidak lagi ikut di dalam hash bila jam ada (nomor jendela sudah memuat tanggal dan jam). Kalau ikut, jendela tetangga yang melewati tengah malam memakai tanggal yang salah dan dua catatan 23:55 dan 00:03 tidak saling dikenali. Tanggal tetap ikut untuk granularitas harian (tanpa jam).
+- **Mencocokkan kata kunci:** "mengandung" dibaca sebagai rangkaian kata utuh ("gofood" cocok dengan "gofood bakmi gm", bukan "gofoodie").
+- **SHA-256 cadangan** (murni, tanpa dependensi) dipakai bila `crypto.subtle` tidak ada (halaman http di jaringan lokal); hasilnya identik, jadi kunci sama di semua perangkat.
+- **Bug lama ikut diperbaiki:** `<Navigate to="ringkasan">` di rute `*` Keuangan relatif dari rute splat, jadi alamat Keuangan yang tidak dikenal (termasuk `/perlu-dicek` saat flag mati) beralih tanpa akhir. Sekarang absolut. Ada tes regresinya.
 
 Tujuan: satu tempat bersama untuk semua yang masuk dari luar (CSV di K3, teks yang ditempel atau dibagikan di K4, app Android di NA). Semuanya menjadi **draf**, dan baru menjadi transaksi setelah dikonfirmasi pengguna. Tidak ada pencatatan otomatis.
 
@@ -245,3 +251,29 @@ Gerbang: `tsc`, seluruh tes, `build`, `npm run test:rules`. **Rules tidak di-dep
 | **D5** | Aturan kategori cocok bila merchant **mengandung** kata kunci (terpanjang menang), dan kata kunci = merchant ternormalisasi saat belajar? | **Ya**. Pengguna bisa mengubah dan menghapus di Pengaturan. |
 
 **STOP.** Setelah "ok" (dan jawaban D1 sampai D5, atau "ikut rekomendasi"), Langkah 2: implementasi (tipe, repository tiga mode, rules, flag `drafTransaksi`, layar Perlu dicek, tes).
+
+## 7. Hasil Langkah 2
+
+**Dibangun:**
+- `src/modules/keuangan/draf/`: `normalisasi`, `kunci` (+ `sha256`), `aturan`, `duplikat`, `bangun`; tipe `DrafTransaksi` dan `AturanKategori` di `types.ts`.
+- Repository: `LocalRepository` (blob versi 2, membaca versi 1), `DrafCloudStore` yang dipakai bersama `CloudRepository` (pribadi) dan `FamilyCloudRepository` (keluarga); `deleteAllData` ikut menghapus koleksi baru.
+- `firestore.rules`: `isValidDraf`, `isDrafUpdateSah`, `isValidAturanKategori`, dan blok `drafTransaksi` dan `aturanKategori` di `users/{uid}` dan `families/{fid}`. Tidak ada aturan lama yang diubah.
+- `FinanceProvider`: `draf`, `aturanKategori`, `bolehUbahDraf`, `tambahDraf` (pintu untuk K3, K4, NA), `konfirmasiDraf`, `konfirmasiBanyak`, `buangDraf` (dengan Urungkan), `ubahKategoriUsulan`, `ubahKategoriAturan`, `hapusAturanKategori`. Tanpa flag tidak ada langganan baru.
+- UI: lencana di Ringkasan ("Perlu dicek: N draf"), halaman `/keuangan-keluarga/perlu-dicek`, tautan dan "Aturan kategori" di Pengaturan Keuangan. Lencana ada di Ringkasan, bukan tab baru, karena nav bawah sudah empat tab.
+
+**Dibuktikan:**
+- Tes rules emulator `tests/rules/draf.test.ts` (33 kasus) membuktikan tiga asumsi teknis di bagian 2.4: `replace` mengganti semua spasi, `dikonfirmasi` final, dan `keyDiff` menangkap field yang dihapus.
+- Uji uji-ujung di browser (emulator, SDK Firestore dan rules sungguhan, admin keluarga): konfirmasi menulis transaksi `tx-<kunci>` bersama penanda draf dalam satu batch dan membuat `aturanKategori`; Buang mengubah status ke `dibuang` dan bisa diurungkan.
+
+**Belum dan catatan:**
+- **Draf tamu tidak ikut dipindahkan ke akun** saat tamu masuk (alur `uploadGuestDataToCloud` hanya memindahkan transaksi, config, target, dan aturan berulang). Tamu belum bisa membuat draf sebelum K3 dan K4, jadi tidak ada yang hilang sekarang; perlu diputuskan di K3.
+- **Tidak ada cara membuat draf dari UI** di K2 (itu K3 dan K4). `tambahDraf` sudah siap dan dites.
+- **Di mode keluarga hanya admin** yang melihat tombol Catat dan Buang (D1).
+
+**Deploy rules (untuk Anda, setelah `diff` dengan produksi sesuai `docs/rilis/RILIS-0.md` bagian 3):**
+
+```bash
+npx firebase-tools deploy --only firestore:rules --project enhanced-airline-rghtt --config firebase.produksi.json
+```
+
+Flag `drafTransaksi` baru boleh dinyalakan setelah rules ini ter-deploy dan layar diuji di HP (tambahkan kelompok ke `docs/rilis/CEKLIS-HP.md`).

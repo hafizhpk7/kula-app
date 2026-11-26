@@ -10,7 +10,8 @@ import {
   Legend,
   CartesianGrid
 } from "recharts";
-import { ShieldAlert, Info, Plus, ArrowRight, RefreshCw, AlertTriangle, ChevronRight } from "lucide-react";
+import { ShieldAlert, Info, Plus, ArrowRight, RefreshCw, AlertTriangle, ChevronRight, Inbox } from "lucide-react";
+import { FEATURES } from "../../../config/features";
 import { formatRupiah } from "../../../utils/calc";
 import { MODULE_REGISTRY } from "../../registry";
 import { formatPersen } from "../utils/persen";
@@ -49,7 +50,8 @@ export const RingkasanPage: React.FC = () => {
     error,
     entries,
     pendingClaims,
-    skippedVaccineWithoutDate
+    skippedVaccineWithoutDate,
+    draf
   } = useFinance();
   const bukaCatat = useCatatTransaksi();
   const lebar = useLayarLebar();
@@ -404,6 +406,28 @@ export const RingkasanPage: React.FC = () => {
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
+      )}
+
+      {FEATURES.drafTransaksi && draf.length > 0 && (
+        <Link
+          to="/keuangan-keluarga/perlu-dicek"
+          className="p-3.5 bg-warning-tint/60 border border-warning/30 rounded-card flex items-center justify-between gap-3 text-text min-h-[44px]"
+        >
+          <span className="flex items-center gap-2 text-[13px] font-medium min-w-0">
+            <Inbox className="w-5 h-5 text-warning-text shrink-0" aria-hidden="true" />
+            <span>
+              Perlu dicek:{" "}
+              <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-surface border border-warning/40 text-warning-text text-[12px] font-semibold" aria-label={`${draf.length} draf`}>
+                {draf.length}
+              </span>{" "}
+              draf menunggu konfirmasi
+            </span>
+          </span>
+          <span className="text-[12px] font-medium text-warning-text inline-flex items-center gap-1 shrink-0">
+            <span>Periksa</span>
+            <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+          </span>
+        </Link>
       )}
 
       {isMonthEmpty ? (

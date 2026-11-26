@@ -1,5 +1,5 @@
 import { DEFAULT_FINANCE_CONFIG } from "../constants/categories";
-import { FinanceConfig, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringRule, SavingsGoal, Transaction } from "../types";
 import { normalizeConfig } from "../utils/normalization";
 import { applyConfigPatch, ConfigPatch } from "../utils/configPatch";
 import { FinanceRepository } from "./types";
@@ -12,7 +12,16 @@ interface LocalStorageData {
   config: FinanceConfig;
   savingsGoals: SavingsGoal[];
   recurringRules: RecurringRule[];
+  /** Mulai blob versi 2 (K2). Blob versi 1 tidak punya larik ini dan dibaca sebagai kosong. */
+  drafTransaksi: DrafTransaksi[];
+  aturanKategori: AturanKategori[];
 }
+
+/** Versi blob yang ditulis. Pembaca menerima 1 dan 2; migrasi 1 ke 2 hanya menambah larik kosong, tidak menghapus apa pun. */
+const VERSI_BLOB = 2;
+
+/** Pengguna tamu tidak punya uid; penanda ini dipakai di kolom createdBy/updatedBy draf dan aturan. */
+const PENGGUNA_TAMU = "tamu";
 
 export class LocalRepository implements FinanceRepository {
   private txListeners: Set<{
@@ -41,22 +50,26 @@ export class LocalRepository implements FinanceRepository {
       const raw = localStorage.getItem(LOCAL_FINANCE_STORAGE_KEY);
       if (!raw) {
         return {
-          schemaVersion: 1,
+          schemaVersion: VERSI_BLOB,
           transactions: [],
           config: { ...DEFAULT_FINANCE_CONFIG },
           savingsGoals: [],
-          recurringRules: []
+          recurringRules: [],
+          drafTransaksi: [],
+          aturanKategori: []
         };
       }
 
       const parsed = JSON.parse(raw);
       if (!parsed || typeof parsed !== "object") {
         return {
-          schemaVersion: 1,
+          schemaVersion: VERSI_BLOB,
           transactions: [],
           config: { ...DEFAULT_FINANCE_CONFIG },
           savingsGoals: [],
-          recurringRules: []
+          recurringRules: [],
+          drafTransaksi: [],
+          aturanKategori: []
         };
       }
 
@@ -100,21 +113,47 @@ export class LocalRepository implements FinanceRepository {
         }
       }
 
+      const drafTransaksi: DrafTransaksi[] = [];
+      if (Array.isArray(parsed.drafTransaksi)) {
+        for (const d of parsed.drafTransaksi) {
+          if (
+            d && typeof d.id === "string" && typeof d.nominal === "number" && typeof d.tanggal === "string" &&
+            (d.jenis === "masuk" || d.jenis === "keluar") &&
+            (d.status === "baru" || d.status === "dikonfirmasi" || d.status === "dibuang")
+          ) {
+            drafTransaksi.push(d as DrafTransaksi);
+          }
+        }
+      }
+
+      const aturanKategori: AturanKategori[] = [];
+      if (Array.isArray(parsed.aturanKategori)) {
+        for (const a of parsed.aturanKategori) {
+          if (a && typeof a.id === "string" && typeof a.kataKunci === "string" && typeof a.kategoriId === "string" && (a.jenis === "masuk" || a.jenis === "keluar")) {
+            aturanKategori.push(a as AturanKategori);
+          }
+        }
+      }
+
       return {
-        schemaVersion: 1,
+        schemaVersion: VERSI_BLOB,
         transactions: validTxs,
         config,
         savingsGoals,
-        recurringRules
+        recurringRules,
+        drafTransaksi,
+        aturanKategori
       };
     } catch (e) {
       console.warn("Failed to parse local finance data:", e);
       return {
-        schemaVersion: 1,
+        schemaVersion: VERSI_BLOB,
         transactions: [],
         config: { ...DEFAULT_FINANCE_CONFIG },
         savingsGoals: [],
-        recurringRules: []
+        recurringRules: [],
+          drafTransaksi: [],
+          aturanKategori: []
       };
     }
   }
@@ -150,6 +189,19 @@ export class LocalRepository implements FinanceRepository {
     for (const listener of this.goalsListeners) {
       listener.onData(data.savingsGoals);
     }
+  }
+
+  private drafListeners: Set<{ onData: (d: DrafTransaksi[]) => void; onError: (e: Error) => void }> = new Set();
+  private aturanListeners: Set<{ onData: (a: AturanKategori[]) => void; onError: (e: Error) => void }> = new Set();
+
+  private notifyDrafListeners(): void {
+    const baru = this.loadData().drafTransaksi.filter((d) => d.status === "baru");
+    for (const l of this.drafListeners) l.onData(baru);
+  }
+
+  private notifyAturanListeners(): void {
+    const aturan = this.loadData().aturanKategori;
+    for (const l of this.aturanListeners) l.onData(aturan);
   }
 
   private notifyRulesListeners(): void {
@@ -399,12 +451,108 @@ export class LocalRepository implements FinanceRepository {
     return { created };
   }
 
+  // ---------- Perlu dicek (K2) ----------
+
+  subscribeDraf(onData: (d: DrafTransaksi[]) => void, onError: (e: Error) => void): () => void {
+    const listener = { onData, onError };
+    this.drafListeners.add(listener);
+    onData(this.loadData().drafTransaksi.filter((d) => d.status === "baru"));
+    return () => {
+      this.drafListeners.delete(listener);
+    };
+  }
+
+  async ambilDrafByIds(ids: string[]): Promise<DrafTransaksi[]> {
+    const set = new Set(ids);
+    return this.loadData().drafTransaksi.filter((d) => set.has(d.id));
+  }
+
+  async tambahDraf(draf: DrafTransaksi[]): Promise<{ baru: number; duplikat: number }> {
+    const data = this.loadData();
+    const ada = new Set(data.drafTransaksi.map((d) => d.id));
+    let baru = 0;
+    for (const d of draf) {
+      if (ada.has(d.id)) continue;
+      ada.add(d.id);
+      data.drafTransaksi.push({ ...d, createdBy: d.createdBy || PENGGUNA_TAMU, updatedBy: d.updatedBy || PENGGUNA_TAMU });
+      baru++;
+    }
+    if (baru > 0) {
+      this.saveData(data);
+      this.notifyDrafListeners();
+    }
+    return { baru, duplikat: draf.length - baru };
+  }
+
+  async ubahDraf(id: string, patch: Partial<Pick<DrafTransaksi, "kategoriUsulan" | "status">>): Promise<void> {
+    const data = this.loadData();
+    const i = data.drafTransaksi.findIndex((d) => d.id === id);
+    if (i < 0) throw new Error("Draf tidak ditemukan.");
+    const lama = data.drafTransaksi[i];
+    // Aturan yang sama dengan firestore.rules: dikonfirmasi final; baru ke dibuang; dibuang kembali ke baru
+    if (lama.status === "dikonfirmasi") throw new Error("Draf yang sudah dikonfirmasi tidak bisa diubah.");
+    if (patch.status && patch.status !== lama.status) {
+      const sah = (lama.status === "baru" && patch.status === "dibuang") || (lama.status === "dibuang" && patch.status === "baru");
+      if (!sah) throw new Error("Perubahan status draf tidak diizinkan.");
+    }
+    data.drafTransaksi[i] = { ...lama, ...patch, updatedAt: new Date().toISOString(), updatedBy: PENGGUNA_TAMU };
+    this.saveData(data);
+    this.notifyDrafListeners();
+  }
+
+  async konfirmasiDraf(id: string, tx: Transaction): Promise<void> {
+    const data = this.loadData();
+    const i = data.drafTransaksi.findIndex((d) => d.id === id);
+    if (i < 0 || data.drafTransaksi[i].status !== "baru") {
+      throw new Error("Draf sudah diproses atau tidak ditemukan.");
+    }
+    // Satu penulisan blob = atomik: transaksi dan status draf berubah bersama
+    const nowIso = new Date().toISOString();
+    const sudahAda = data.transactions.findIndex((t) => t.id === tx.id);
+    const resolved: Transaction = { ...tx, walletId: tx.walletId || "default" };
+    if (sudahAda >= 0) data.transactions[sudahAda] = resolved;
+    else data.transactions.push(resolved);
+    data.drafTransaksi[i] = { ...data.drafTransaksi[i], status: "dikonfirmasi", transaksiId: tx.id, updatedAt: nowIso, updatedBy: PENGGUNA_TAMU };
+    this.saveData(data);
+    this.notifyTxListeners();
+    this.notifyDrafListeners();
+  }
+
+  subscribeAturanKategori(onData: (a: AturanKategori[]) => void, onError: (e: Error) => void): () => void {
+    const listener = { onData, onError };
+    this.aturanListeners.add(listener);
+    onData(this.loadData().aturanKategori);
+    return () => {
+      this.aturanListeners.delete(listener);
+    };
+  }
+
+  async upsertAturanKategori(a: AturanKategori): Promise<void> {
+    const data = this.loadData();
+    const i = data.aturanKategori.findIndex((x) => x.id === a.id);
+    const resolved = { ...a, createdBy: a.createdBy || PENGGUNA_TAMU, updatedBy: a.updatedBy || PENGGUNA_TAMU };
+    if (i >= 0) data.aturanKategori[i] = resolved;
+    else data.aturanKategori.push(resolved);
+    this.saveData(data);
+    this.notifyAturanListeners();
+  }
+
+  async deleteAturanKategori(id: string): Promise<void> {
+    const data = this.loadData();
+    data.aturanKategori = data.aturanKategori.filter((a) => a.id !== id);
+    this.saveData(data);
+    this.notifyAturanListeners();
+  }
+
   async deleteAllData(): Promise<void> {
+    // Satu kunci memuat semuanya, termasuk draf dan aturan kategori
     localStorage.removeItem(LOCAL_FINANCE_STORAGE_KEY);
     this.notifyTxListeners();
     this.notifyConfigListeners();
     this.notifyGoalsListeners();
     this.notifyRulesListeners();
+    this.notifyDrafListeners();
+    this.notifyAturanListeners();
   }
 
   public getRawData(): LocalStorageData {

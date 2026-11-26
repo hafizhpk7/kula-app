@@ -194,6 +194,23 @@ service cloud.firestore {
         allow delete: if isOwner(userId) && isValidId(userId) && isValidId(ruleId);
       }
 
+      // Draf transaksi dan aturan kategori mode pribadi (K2): hanya pemilik.
+      match /drafTransaksi/{kunci} {
+        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow create: if isOwner(userId) && isValidId(userId) && isValidId(kunci)
+          && isValidDraf(incoming(), kunci) && incoming().status == 'baru' && !('transaksiId' in incoming());
+        allow update: if isOwner(userId) && isValidId(userId) && isValidId(kunci)
+          && isValidDraf(incoming(), kunci) && isDrafUpdateSah();
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(kunci);
+      }
+
+      match /aturanKategori/{aturanId} {
+        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow create, update: if isOwner(userId) && isValidId(userId) && isValidId(aturanId)
+          && isValidAturanKategori(incoming(), aturanId);
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(aturanId);
+      }
+
       // Penunjuk keanggotaan: users/{uid}/membership/current (dipakai createFamily, joinFamily, dst.).
       match /membership/{docId} {
         allow get: if isOwner(userId) && isValidId(userId) && docId == 'current';
@@ -580,6 +597,56 @@ service cloud.firestore {
         && data.updatedBy == request.auth.uid;
     }
 
+    // ---------- Keuangan v2: draf transaksi dari luar (K2, docs/keuangan/USULAN-K2.md) ----------
+    // Id dokumen = kunci duplikat. Teks asli notifikasi atau baris CSV tidak disimpan, hanya hasil uraiannya.
+    function isValidDraf(data, kunci) {
+      return data.keys().hasAll(['id', 'sumber', 'tanggal', 'nominal', 'jenis', 'penyedia', 'status', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.keys().hasOnly(['id', 'sumber', 'tanggal', 'jam', 'nominal', 'jenis', 'penyedia', 'merchant', 'kategoriUsulan', 'keyakinan',
+                                'batchId', 'status', 'transaksiId', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.id == kunci
+        && data.sumber in ['csv', 'tempel', 'bagikan', 'android']
+        && data.tanggal is string && data.tanggal.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && (!('jam' in data) || (data.jam is string && data.jam.matches('^[0-9]{2}:[0-9]{2}$')))
+        && data.nominal is int && data.nominal > 0 && data.nominal <= 1000000000000
+        && data.jenis in ['masuk', 'keluar']
+        && data.penyedia is string && data.penyedia.size() > 0 && data.penyedia.size() <= 40
+        && (!('merchant' in data) || (data.merchant is string && data.merchant.size() <= 80))
+        && (!('kategoriUsulan' in data) || (data.kategoriUsulan is string && data.kategoriUsulan.size() > 0 && data.kategoriUsulan.size() <= 64))
+        && (!('keyakinan' in data) || data.keyakinan in ['tinggi', 'sedang', 'rendah'])
+        && (!('batchId' in data) || (data.batchId is string && data.batchId.size() > 0 && data.batchId.size() <= 64))
+        && data.status in ['baru', 'dikonfirmasi', 'dibuang']
+        && (data.status != 'dikonfirmasi' || ('transaksiId' in data && data.transaksiId is string && data.transaksiId.size() > 0 && data.transaksiId.size() <= 128))
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.createdBy is string && isValidId(data.createdBy)
+        && data.updatedBy == request.auth.uid;
+    }
+
+    // Update: hanya kategori usulan, status, transaksiId. Alur: baru -> dikonfirmasi | dibuang; dibuang -> baru (urungkan).
+    // "dikonfirmasi" final. Isi uraian, createdAt, dan createdBy tidak boleh berubah.
+    function isDrafUpdateSah() {
+      return keyDiff().hasOnly(['kategoriUsulan', 'status', 'transaksiId', 'updatedAt', 'updatedBy'])
+        && (incoming().status == existing().status
+            || (existing().status == 'baru' && incoming().status in ['dikonfirmasi', 'dibuang'])
+            || (existing().status == 'dibuang' && incoming().status == 'baru'))
+        && existing().status != 'dikonfirmasi';
+    }
+
+    function isValidAturanKategori(data, aturanId) {
+      return data.keys().hasAll(['id', 'kataKunci', 'jenis', 'kategoriId', 'jumlah', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.keys().hasOnly(['id', 'kataKunci', 'jenis', 'kategoriId', 'jumlah', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.id == aturanId
+        && data.kataKunci is string && data.kataKunci.size() > 0 && data.kataKunci.size() <= 40 && data.kataKunci.matches('^[a-z0-9 ]+$')
+        && data.jenis in ['masuk', 'keluar']
+        && aturanId == data.jenis + ':' + data.kataKunci.replace(' ', '_')
+        && data.kategoriId is string && data.kategoriId.size() > 0 && data.kategoriId.size() <= 64
+        && data.jumlah is int && data.jumlah >= 1 && data.jumlah <= 1000000
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.createdBy is string && isValidId(data.createdBy)
+        && data.updatedBy == request.auth.uid;
+    }
+
     // ---------- sibling of `match /users/{userId}` ----------
     match /invites/{code} {
       allow get: if isSignedIn() && isValidId(code);
@@ -674,6 +741,23 @@ service cloud.firestore {
         allow create, update: if isFamilyAdmin(familyId) && isValidId(ruleId)
           && isValidRecurringRule(incoming()) && incoming().id == ruleId;
         allow delete: if isFamilyAdmin(familyId) && isValidId(ruleId);
+      }
+
+      // Draf transaksi dan aturan kategori mode keluarga (K2): anggota membaca, hanya admin menulis (sama dengan finance*).
+      match /drafTransaksi/{kunci} {
+        allow get, list: if isFamilyMember(familyId);
+        allow create: if isFamilyAdmin(familyId) && isValidId(kunci)
+          && isValidDraf(incoming(), kunci) && incoming().status == 'baru' && !('transaksiId' in incoming());
+        allow update: if isFamilyAdmin(familyId) && isValidId(kunci)
+          && isValidDraf(incoming(), kunci) && isDrafUpdateSah();
+        allow delete: if isFamilyAdmin(familyId) && isValidId(kunci);
+      }
+
+      match /aturanKategori/{aturanId} {
+        allow get, list: if isFamilyMember(familyId);
+        allow create, update: if isFamilyAdmin(familyId) && isValidId(aturanId)
+          && isValidAturanKategori(incoming(), aturanId);
+        allow delete: if isFamilyAdmin(familyId) && isValidId(aturanId);
       }
 
       // Bayi mode keluarga: anggota membaca, hanya admin yang menulis (sama dengan finance*).

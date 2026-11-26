@@ -5,8 +5,15 @@ import { DEFAULT_FINANCE_CONFIG } from "../constants/categories";
 import { LocalRepository, LOCAL_FINANCE_STORAGE_KEY } from "../repository/LocalRepository";
 import { CloudRepository } from "../repository/CloudRepository";
 import { useFinanceRepository } from "../repository/useFinanceRepository";
-import { Category, FinanceConfig, LedgerEntry, RecurringRule, SavingsGoal, Transaction, TxType } from "../types";
-import { validateCategoryName } from "../utils/categories";
+import { FEATURES } from "../../../config/features";
+import { useFamily } from "../../../shell/family/context/FamilyContext";
+import { AturanKategori, Category, DrafTransaksi, FinanceConfig, LedgerEntry, RecurringRule, SavingsGoal, Transaction, TxType } from "../types";
+import { usulkanKategori, pelajariAturan } from "../draf/aturan";
+import { alasanMasukanTidakSah, bangunDraf, dompetBawaan, MasukanDraf, transaksiDariDraf } from "../draf/bangun";
+import { kunciKandidat } from "../draf/kunci";
+import { jenisKeTipe } from "../draf/normalisasi";
+import { dompetTerakhir, simpanDompetTerakhir, simpanKategoriTerakhir } from "../utils/kategoriTerakhir";
+import { getActiveCategories, validateCategoryName } from "../utils/categories";
 import { pesanGagal } from "../utils/pesan";
 import { addMonths, currentMonthKey, monthRange, todayLocal } from "../utils/dates";
 import { decideGuestMigration } from "../utils/migration";
@@ -25,6 +32,11 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [config, setConfig] = useState<FinanceConfig>({ ...DEFAULT_FINANCE_CONFIG });
   const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([]);
   const [recurringRules, setRecurringRules] = useState<RecurringRule[]>([]);
+  const [draf, setDraf] = useState<DrafTransaksi[]>([]);
+  const [aturanKategori, setAturanKategori] = useState<AturanKategori[]>([]);
+  const { status: statusKeluarga, canEditFinance } = useFamily();
+  // Keluarga: hanya admin menulis (sama dengan transaksi). Tamu dan pribadi: selalu boleh.
+  const bolehUbahDraf = statusKeluarga !== "active" || canEditFinance;
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [migrationDecision, setMigrationDecision] = useState<"none" | "auto-upload" | "prompt">("none");
@@ -92,11 +104,24 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       }
     );
 
+    // Perlu dicek: hanya berlangganan bila flag menyala (tanpa flag, tidak ada pembacaan tambahan)
+    let unsubDraf = () => {};
+    let unsubAturan = () => {};
+    if (FEATURES.drafTransaksi) {
+      unsubDraf = repository.subscribeDraf(setDraf, () => console.warn("Draf sub error"));
+      unsubAturan = repository.subscribeAturanKategori(setAturanKategori, () => console.warn("Aturan kategori sub error"));
+    } else {
+      setDraf([]);
+      setAturanKategori([]);
+    }
+
     return () => {
       unsubTx();
       unsubCfg();
       unsubGoals();
       unsubRules();
+      unsubDraf();
+      unsubAturan();
     };
   }, [repository, windowRange]);
 
@@ -618,9 +643,175 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [repository, showToast]);
 
+  // ---------- Perlu dicek (K2) ----------
+  const kategoriValid = useCallback(
+    (id: string, jenis: DrafTransaksi["jenis"]) => getActiveCategories(config, jenisKeTipe(jenis)).some((c) => c.id === id),
+    [config]
+  );
+
+  const tambahDraf = useCallback(
+    async (masukan: MasukanDraf[]) => {
+      let tidakSah = 0;
+      const nowIso = new Date().toISOString();
+      const uid = userId || "tamu";
+      try {
+        const dibangun: { d: DrafTransaksi; kandidat: string[] }[] = [];
+        for (const m of masukan) {
+          if (alasanMasukanTidakSah(m)) {
+            tidakSah++;
+            continue;
+          }
+          const usulan = usulkanKategori(aturanKategori, m.jenis, m.merchant, (id) => kategoriValid(id, m.jenis));
+          const d = await bangunDraf(m, uid, nowIso, usulan);
+          const kandidat = await kunciKandidat({ penyedia: d.penyedia, jenis: d.jenis, nominal: d.nominal, merchant: d.merchant, tanggal: d.tanggal, jam: d.jam });
+          dibangun.push({ d, kandidat });
+        }
+        // Yang sudah pernah ada (status apa pun, termasuk dibuang dan dikonfirmasi) dan yang kembar di dalam masukan ini
+        const sudah = new Set((await repository.ambilDrafByIds(dibangun.flatMap((x) => x.kandidat))).map((x) => x.id));
+        const dibuat = new Set<string>();
+        const baru: DrafTransaksi[] = [];
+        for (const { d, kandidat } of dibangun) {
+          if (kandidat.some((k) => sudah.has(k) || dibuat.has(k))) continue;
+          dibuat.add(d.id);
+          baru.push(d);
+        }
+        if (baru.length > 0) await repository.tambahDraf(baru);
+        return { baru: baru.length, duplikat: dibangun.length - baru.length, tidakSah };
+      } catch (e) {
+        showToast(pesanGagal("tambahDraf", e));
+        return { baru: 0, duplikat: 0, tidakSah };
+      }
+    },
+    [repository, userId, aturanKategori, kategoriValid, showToast]
+  );
+
+  /** Tulis transaksi + tandai draf, lalu pelajari aturan kategori (gagal belajar tidak menggagalkan pencatatan). */
+  const prosesKonfirmasi = useCallback(
+    async (d: DrafTransaksi, categoryId: string, walletId: string | undefined, aturanKerja: AturanKategori[]) => {
+      if (!kategoriValid(categoryId, d.jenis)) return { ok: false as const, error: "Pilih kategori." };
+      const nowIso = new Date().toISOString();
+      const uid = userId || "tamu";
+      const dompet = walletId || dompetBawaan(config, d.penyedia, dompetTerakhir());
+      const tx = transaksiDariDraf(d, categoryId, dompet, nowIso, uid);
+      const val = validateTransactionInput({ type: tx.type, amount: tx.amount, categoryId, walletId: dompet, date: tx.date, note: tx.note }, config);
+      if (!val.ok) return { ok: false as const, error: Object.values(val.errors || {})[0] as string | undefined };
+      try {
+        await repository.konfirmasiDraf(d.id, tx);
+      } catch (e: any) {
+        const sudahDiproses = /sudah diproses|draf-tidak-baru/i.test(`${e?.message || ""} ${e?.code || ""}`);
+        showToast(pesanGagal(sudahDiproses ? "drafSudahDiproses" : "konfirmasiDraf", e));
+        return { ok: false as const };
+      }
+      simpanKategoriTerakhir(tx.type, categoryId);
+      simpanDompetTerakhir(dompet);
+      const aturan = pelajariAturan(aturanKerja, d.jenis, d.merchant, categoryId, uid, nowIso);
+      if (aturan) {
+        const i = aturanKerja.findIndex((a) => a.id === aturan.id);
+        if (i >= 0) aturanKerja[i] = aturan;
+        else aturanKerja.push(aturan);
+        repository.upsertAturanKategori(aturan).catch((e) => console.warn("[keuangan] aturan kategori belum tersimpan", e?.code));
+      }
+      return { ok: true as const };
+    },
+    [config, repository, userId, kategoriValid, showToast]
+  );
+
+  const konfirmasiDraf = useCallback(
+    async (id: string, categoryId: string, walletId?: string) => {
+      const d = draf.find((x) => x.id === id);
+      if (!d) return { ok: false, error: "Draf tidak ditemukan." };
+      const hasil = await prosesKonfirmasi(d, categoryId, walletId, [...aturanKategori]);
+      if (hasil.ok) showToast("Transaksi dicatat.");
+      return hasil;
+    },
+    [draf, aturanKategori, prosesKonfirmasi, showToast]
+  );
+
+  const konfirmasiBanyak = useCallback(
+    async (item: { id: string; categoryId: string }[]) => {
+      const aturanKerja = [...aturanKategori];
+      let berhasil = 0;
+      let gagal = 0;
+      for (const { id, categoryId } of item) {
+        const d = draf.find((x) => x.id === id);
+        if (!d) {
+          gagal++;
+          continue;
+        }
+        const hasil = await prosesKonfirmasi(d, categoryId, undefined, aturanKerja);
+        if (hasil.ok) berhasil++;
+        else gagal++;
+      }
+      if (berhasil > 0) showToast(gagal > 0 ? `${berhasil} transaksi dicatat, ${gagal} belum.` : `${berhasil} transaksi dicatat.`);
+      return { berhasil, gagal };
+    },
+    [draf, aturanKategori, prosesKonfirmasi, showToast]
+  );
+
+  const buangDraf = useCallback(
+    async (ids: string[]) => {
+      const berhasil: string[] = [];
+      for (const id of ids) {
+        try {
+          await repository.ubahDraf(id, { status: "dibuang" });
+          berhasil.push(id);
+        } catch (e) {
+          showToast(pesanGagal("ubahDraf", e));
+        }
+      }
+      if (berhasil.length === 0) return;
+      showToast(berhasil.length === 1 ? "Draf dibuang." : `${berhasil.length} draf dibuang.`, "Urungkan", async () => {
+        try {
+          for (const id of berhasil) await repository.ubahDraf(id, { status: "baru" });
+        } catch (e) {
+          showToast(pesanGagal("ubahDraf", e));
+        }
+      });
+    },
+    [repository, showToast]
+  );
+
+  const ubahKategoriUsulan = useCallback(
+    async (id: string, categoryId: string) => {
+      try {
+        await repository.ubahDraf(id, { kategoriUsulan: categoryId });
+      } catch (e) {
+        showToast(pesanGagal("ubahDraf", e));
+      }
+    },
+    [repository, showToast]
+  );
+
+  const ubahKategoriAturan = useCallback(
+    async (id: string, categoryId: string) => {
+      const a = aturanKategori.find((x) => x.id === id);
+      if (!a) return;
+      try {
+        await repository.upsertAturanKategori({ ...a, kategoriId: categoryId, updatedAt: new Date().toISOString(), updatedBy: userId || "tamu" });
+      } catch (e) {
+        showToast(pesanGagal("simpanAturanKategori", e));
+      }
+    },
+    [aturanKategori, repository, userId, showToast]
+  );
+
+  const hapusAturanKategori = useCallback(
+    async (id: string) => {
+      try {
+        await repository.deleteAturanKategori(id);
+        showToast("Aturan kategori dihapus.");
+      } catch (e) {
+        showToast(pesanGagal("hapusAturanKategori", e));
+      }
+    },
+    [repository, showToast]
+  );
+
   const deleteAllFinanceData = useCallback(async () => {
     try {
       await repository.deleteAllData();
+      setDraf([]);
+      setAturanKategori([]);
       setManualTransactions([]);
       setConfig({ ...DEFAULT_FINANCE_CONFIG });
       setSavingsGoals([]);
@@ -660,6 +851,16 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       upsertRecurringRule,
       deleteRecurringRule,
       deleteAllFinanceData,
+      draf,
+      aturanKategori,
+      bolehUbahDraf,
+      tambahDraf,
+      konfirmasiDraf,
+      konfirmasiBanyak,
+      buangDraf,
+      ubahKategoriUsulan,
+      ubahKategoriAturan,
+      hapusAturanKategori,
       migrationDecision,
       uploadGuestDataToCloud,
       clearGuestData
@@ -692,6 +893,16 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       upsertRecurringRule,
       deleteRecurringRule,
       deleteAllFinanceData,
+      draf,
+      aturanKategori,
+      bolehUbahDraf,
+      tambahDraf,
+      konfirmasiDraf,
+      konfirmasiBanyak,
+      buangDraf,
+      ubahKategoriUsulan,
+      ubahKategoriAturan,
+      hapusAturanKategori,
       migrationDecision,
       uploadGuestDataToCloud,
       clearGuestData
