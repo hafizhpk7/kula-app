@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
-import { AlertCircle, Check, Trash2 } from "lucide-react";
+import { Link } from "react-router-dom";
+import { AlertCircle, Check, FileUp, Trash2 } from "lucide-react";
+import { FEATURES } from "../../../config/features";
 import { formatRupiah } from "../../../utils/calc";
 import { formatIndonesianDate } from "../../../utils/dates";
 import { READING_MAX } from "../../../config/layout";
@@ -86,6 +88,17 @@ export const PerluDicekPage: React.FC = () => {
     <PageHeader
       title="Perlu dicek"
       subtitle={daftar.length > 0 ? `${daftar.length} draf menunggu konfirmasi` : "Tidak ada yang menunggu"}
+      action={
+        FEATURES.imporCsv ? (
+          <Link
+            to="/keuangan-keluarga/impor"
+            className="px-4 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 hover:bg-surface-sunken transition"
+          >
+            <FileUp className="w-4 h-4" aria-hidden="true" />
+            <span>Impor CSV</span>
+          </Link>
+        ) : undefined
+      }
     />
   );
 

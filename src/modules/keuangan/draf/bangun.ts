@@ -15,6 +15,8 @@ export interface MasukanDraf {
   merchant?: string;
   keyakinan?: KeyakinanDraf;
   batchId?: string;
+  /** Lihat BahanKunci.urutan: untuk catatan kembar yang sah dalam satu impor. */
+  urutan?: number;
 }
 
 const TANGGAL = /^\d{4}-\d{2}-\d{2}$/;
@@ -45,7 +47,7 @@ export function alasanMasukanTidakSah(m: MasukanDraf): string | null {
 export async function bangunDraf(m: MasukanDraf, uid: string, nowIso: string, kategoriUsulan?: string): Promise<DrafTransaksi> {
   const merchant = m.merchant?.trim().slice(0, 80) || undefined;
   const penyedia = m.penyedia.trim();
-  const id = await kunciDraf({ penyedia, jenis: m.jenis, nominal: m.nominal, merchant, tanggal: m.tanggal, jam: m.jam });
+  const id = await kunciDraf({ penyedia, jenis: m.jenis, nominal: m.nominal, merchant, tanggal: m.tanggal, jam: m.jam, urutan: m.urutan });
   const draf: DrafTransaksi = {
     id,
     sumber: m.sumber,

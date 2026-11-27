@@ -16,6 +16,8 @@
  *   (K2, docs/keuangan/USULAN-K2.md). Butuh rules `drafTransaksi` dan `aturanKategori` sudah di-deploy untuk mode pribadi dan keluarga.
  * - `tagihan`: Keuangan v2, tagihan jatuh tempo dari aturan berulang yang tidak dicatat otomatis (K5, docs/keuangan/USULAN-K5.md).
  *   Butuh rules `catatOtomatis` di aturan berulang sudah di-deploy untuk mode pribadi dan keluarga.
+ * - `imporCsv`: Keuangan v2, impor mutasi CSV ke "Perlu dicek" (K3). Diproses di perangkat, tanpa unggahan. Butuh flag `drafTransaksi`
+ *   dan rules `drafTransaksi` di-deploy.
  * - `fotoMomen`: foto di Momen (R3b, D4; docs/fitur/USULAN-R3B.md). Butuh rules dan indeks R3b sudah di-deploy.
  */
 export const FEATURES = {
@@ -27,5 +29,6 @@ export const FEATURES = {
   resep: import.meta.env.VITE_FEATURE_RESEP === "true",
   asisten: import.meta.env.VITE_FEATURE_ASISTEN === "true",
   drafTransaksi: import.meta.env.VITE_FEATURE_DRAF_TRANSAKSI === "true",
-  tagihan: import.meta.env.VITE_FEATURE_TAGIHAN === "true"
+  tagihan: import.meta.env.VITE_FEATURE_TAGIHAN === "true",
+  imporCsv: import.meta.env.VITE_FEATURE_IMPOR_CSV === "true"
 } as const;

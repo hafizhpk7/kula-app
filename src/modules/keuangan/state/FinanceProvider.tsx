@@ -690,7 +690,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           }
           const usulan = usulkanKategori(aturanKategori, m.jenis, m.merchant, (id) => kategoriValid(id, m.jenis));
           const d = await bangunDraf(m, uid, nowIso, usulan);
-          const kandidat = await kunciKandidat({ penyedia: d.penyedia, jenis: d.jenis, nominal: d.nominal, merchant: d.merchant, tanggal: d.tanggal, jam: d.jam });
+          const kandidat = await kunciKandidat({ penyedia: d.penyedia, jenis: d.jenis, nominal: d.nominal, merchant: d.merchant, tanggal: d.tanggal, jam: d.jam, urutan: m.urutan });
           dibangun.push({ d, kandidat });
         }
         // Yang sudah pernah ada (status apa pun, termasuk dibuang dan dikonfirmasi) dan yang kembar di dalam masukan ini

@@ -91,3 +91,12 @@ describe("flag tagihan mati", () => {
     expect(JSON.parse(localStorage.getItem(LOCAL_FINANCE_STORAGE_KEY)!).transactions).toEqual([]);
   });
 });
+
+describe("flag imporCsv mati", () => {
+  it("rute /impor dialihkan ke Ringkasan, dan Perlu dicek tidak punya tautan Impor CSV", async () => {
+    window.location.hash = "#/keuangan-keluarga/impor";
+    render(<App />);
+    expect(await screen.findByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Impor CSV/ })).not.toBeInTheDocument();
+  });
+});

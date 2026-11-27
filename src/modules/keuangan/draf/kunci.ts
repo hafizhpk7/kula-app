@@ -13,6 +13,12 @@ export interface BahanKunci {
   merchant?: string;
   tanggal: string; // yyyy-MM-dd (WIB)
   jam?: string; // HH:mm (WIB)
+  /**
+   * Urutan kemunculan untuk catatan yang persis sama dalam satu impor (dua kopi seharga sama di warung yang sama pada hari
+   * yang sama). 0 atau kosong tidak mengubah kunci, jadi kunci yang sudah ada tetap sama. Impor ulang berkas yang sama
+   * menghasilkan urutan yang sama, jadi tetap tidak ganda.
+   */
+  urutan?: number;
 }
 
 /** Menit sejak epoch untuk tanggal dan jam dinding Asia/Jakarta (UTC+7, tanpa DST). */
@@ -54,7 +60,8 @@ function bahanString(b: BahanKunci, bucket: number | "h"): string {
     // Nomor jendela sudah memuat tanggal dan jam. Tanggal dipisah hanya untuk granularitas harian; kalau ikut di sini,
     // jendela tetangga yang melewati tengah malam akan memakai tanggal yang salah.
     bucket === "h" ? b.tanggal : "",
-    String(bucket)
+    String(bucket),
+    ...(b.urutan && b.urutan > 0 ? [`u${Math.floor(b.urutan)}`] : [])
   ].join("|");
 }
 

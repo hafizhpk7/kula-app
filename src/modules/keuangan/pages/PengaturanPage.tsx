@@ -121,6 +121,19 @@ export const PengaturanPage: React.FC = () => {
         </Link>
       )}
 
+      {FEATURES.imporCsv && FEATURES.drafTransaksi && (
+        <Link
+          to="/keuangan-keluarga/impor"
+          className="bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)] flex items-center justify-between gap-3 min-h-[44px]"
+        >
+          <span className="space-y-0.5">
+            <span className="block font-display text-[16px] text-text">Impor CSV</span>
+            <span className="block text-[12px] text-text-2">Mutasi bank atau riwayat e-wallet, masuk ke Perlu dicek dulu</span>
+          </span>
+          <ArrowRight className="w-5 h-5 text-text-2 shrink-0" aria-hidden="true" />
+        </Link>
+      )}
+
       {FEATURES.drafTransaksi && (
         <>
           <Link
