@@ -31,6 +31,8 @@ const PESAN = {
   ubahDraf: `Draf belum berubah. ${SARAN}`,
   simpanAturanKategori: `Aturan kategori belum tersimpan. ${SARAN}`,
   hapusAturanKategori: `Aturan kategori belum terhapus. ${SARAN}`,
+  simpanTemplat: `Templat belum tersimpan. ${SARAN}`,
+  hapusTemplat: `Templat belum terhapus. ${SARAN}`,
   unggahTamu: `Data tamu belum terunggah ke akun, dan masih utuh di perangkat ini. ${SARAN}`
 } as const;
 

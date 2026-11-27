@@ -1,5 +1,5 @@
 import { DEFAULT_FINANCE_CONFIG } from "../constants/categories";
-import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringRule, SavingsGoal, TemplatPenyedia, Transaction } from "../types";
 import { normalizeConfig } from "../utils/normalization";
 import { applyConfigPatch, ConfigPatch } from "../utils/configPatch";
 import { FinanceRepository } from "./types";
@@ -15,6 +15,8 @@ interface LocalStorageData {
   /** Mulai blob versi 2 (K2). Blob versi 1 tidak punya larik ini dan dibaca sebagai kosong. */
   drafTransaksi: DrafTransaksi[];
   aturanKategori: AturanKategori[];
+  /** Ajari Kula (K4b). Tanpa menaikkan versi blob: blob lama dibaca sebagai kosong. */
+  templatPenyedia: TemplatPenyedia[];
 }
 
 /** Versi blob yang ditulis. Pembaca menerima 1 dan 2; migrasi 1 ke 2 hanya menambah larik kosong, tidak menghapus apa pun. */
@@ -56,7 +58,8 @@ export class LocalRepository implements FinanceRepository {
           savingsGoals: [],
           recurringRules: [],
           drafTransaksi: [],
-          aturanKategori: []
+          aturanKategori: [],
+          templatPenyedia: []
         };
       }
 
@@ -69,7 +72,8 @@ export class LocalRepository implements FinanceRepository {
           savingsGoals: [],
           recurringRules: [],
           drafTransaksi: [],
-          aturanKategori: []
+          aturanKategori: [],
+          templatPenyedia: []
         };
       }
 
@@ -135,6 +139,15 @@ export class LocalRepository implements FinanceRepository {
         }
       }
 
+      const templatPenyedia: TemplatPenyedia[] = [];
+      if (Array.isArray(parsed.templatPenyedia)) {
+        for (const t of parsed.templatPenyedia) {
+          if (t && typeof t.id === "string" && typeof t.nama === "string" && typeof t.bentuk === "string" && ["keluar", "masuk", "dari-kata"].includes(t.arah)) {
+            templatPenyedia.push(t as TemplatPenyedia);
+          }
+        }
+      }
+
       return {
         schemaVersion: VERSI_BLOB,
         transactions: validTxs,
@@ -142,7 +155,8 @@ export class LocalRepository implements FinanceRepository {
         savingsGoals,
         recurringRules,
         drafTransaksi,
-        aturanKategori
+        aturanKategori,
+        templatPenyedia
       };
     } catch (e) {
       console.warn("Failed to parse local finance data:", e);
@@ -153,7 +167,8 @@ export class LocalRepository implements FinanceRepository {
         savingsGoals: [],
         recurringRules: [],
           drafTransaksi: [],
-          aturanKategori: []
+          aturanKategori: [],
+          templatPenyedia: []
       };
     }
   }
@@ -197,6 +212,13 @@ export class LocalRepository implements FinanceRepository {
   private notifyDrafListeners(): void {
     const baru = this.loadData().drafTransaksi.filter((d) => d.status === "baru");
     for (const l of this.drafListeners) l.onData(baru);
+  }
+
+  private templatListeners: Set<{ onData: (t: TemplatPenyedia[]) => void; onError: (e: Error) => void }> = new Set();
+
+  private notifyTemplatListeners(): void {
+    const templat = this.loadData().templatPenyedia;
+    for (const l of this.templatListeners) l.onData(templat);
   }
 
   private notifyAturanListeners(): void {
@@ -544,6 +566,32 @@ export class LocalRepository implements FinanceRepository {
     this.notifyAturanListeners();
   }
 
+  subscribeTemplatPenyedia(onData: (t: TemplatPenyedia[]) => void, onError: (e: Error) => void): () => void {
+    const listener = { onData, onError };
+    this.templatListeners.add(listener);
+    onData(this.loadData().templatPenyedia);
+    return () => {
+      this.templatListeners.delete(listener);
+    };
+  }
+
+  async upsertTemplatPenyedia(t: TemplatPenyedia): Promise<void> {
+    const data = this.loadData();
+    const i = data.templatPenyedia.findIndex((x) => x.id === t.id);
+    const resolved = { ...t, createdBy: t.createdBy || PENGGUNA_TAMU, updatedBy: t.updatedBy || PENGGUNA_TAMU };
+    if (i >= 0) data.templatPenyedia[i] = resolved;
+    else data.templatPenyedia.push(resolved);
+    this.saveData(data);
+    this.notifyTemplatListeners();
+  }
+
+  async deleteTemplatPenyedia(id: string): Promise<void> {
+    const data = this.loadData();
+    data.templatPenyedia = data.templatPenyedia.filter((t) => t.id !== id);
+    this.saveData(data);
+    this.notifyTemplatListeners();
+  }
+
   async deleteAllData(): Promise<void> {
     // Satu kunci memuat semuanya, termasuk draf dan aturan kategori
     localStorage.removeItem(LOCAL_FINANCE_STORAGE_KEY);
@@ -553,6 +601,7 @@ export class LocalRepository implements FinanceRepository {
     this.notifyRulesListeners();
     this.notifyDrafListeners();
     this.notifyAturanListeners();
+    this.notifyTemplatListeners();
   }
 
   public getRawData(): LocalStorageData {

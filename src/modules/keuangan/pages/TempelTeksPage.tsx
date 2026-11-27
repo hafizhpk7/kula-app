@@ -6,7 +6,7 @@ import { READING_MAX } from "../../../config/layout";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { useFinance } from "../state/FinanceContext";
 import { buatBatchId, DrafUraian, HasilTangkap, keMasukanDraf, periksaDuplikat, RiwayatTangkap, tanggalJamWib, uraikanNotifikasi } from "../tangkap";
-import { ambilBagikan } from "../tangkap/bagikan";
+import { ambilBagikan, bawaKeAjari } from "../tangkap/bagikan";
 
 const MAKS_ITEM = 20;
 const kelasInput = "w-full px-3 py-2 text-[15px] rounded-control border border-border-strong bg-surface text-text min-h-[44px]";
@@ -32,6 +32,8 @@ interface Butir {
   penyedia: string;
   merchant: string;
   tanggal: string;
+  /** Hanya untuk butir "tidak dikenali" atau "bukan keuangan", supaya bisa dibawa ke Ajari Kula. Kosong untuk yang lain. */
+  teksAsli: string;
 }
 
 /** Pisahkan tempelan menjadi notifikasi: dipisah baris kosong; baris pertama sebuah blok berbaris-banyak dianggap judul. */
@@ -54,7 +56,7 @@ const bawaanSertakan = (h: HasilTangkap) => h.tindakan === "catat" && h.draf.tan
  * Perlu dicek sebagai draf; tidak ada yang tercatat sebelum dikonfirmasi di sana. Dipakai juga untuk teks dari "Bagikan ke Kula".
  */
 export const TempelTeksPage: React.FC = () => {
-  const { bolehUbahDraf, tambahDraf } = useFinance();
+  const { bolehUbahDraf, tambahDraf, templatPenyedia } = useFinance();
   const [teks, setTeks] = useState("");
   const [dariBagikan, setDariBagikan] = useState(false);
   const [butir, setButir] = useState<Butir[] | null>(null);
@@ -67,7 +69,7 @@ export const TempelTeksPage: React.FC = () => {
     const riwayat: RiwayatTangkap = new Map();
     const daftar: Butir[] = [];
     for (let i = 0; i < item.length; i++) {
-      const h = await periksaDuplikat(uraikanNotifikasi(item[i]), riwayat, String(i), sekarang);
+      const h = await periksaDuplikat(uraikanNotifikasi(item[i], { templat: templatPenyedia }), riwayat, String(i), sekarang);
       const d: DrafUraian | undefined = h.tindakan === "catat" || h.tindakan === "duplikat" ? h.draf : undefined;
       daftar.push({
         kunci: i,
@@ -76,7 +78,8 @@ export const TempelTeksPage: React.FC = () => {
         arahPindah: "",
         penyedia: d?.penyediaLabel ?? "",
         merchant: d?.merchant ?? "",
-        tanggal: tanggalJamWib(d?.waktu, sekarang).tanggal
+        tanggal: tanggalJamWib(d?.waktu, sekarang).tanggal,
+        teksAsli: h.tindakan === "abaikan" && (h.alasan === "tidak-dikenali" || h.alasan === "bukan-keuangan") ? (item[i].judul ? `${item[i].judul}\n${item[i].isi}` : item[i].isi) : ""
       });
     }
     setButir(daftar);
@@ -208,7 +211,7 @@ export const TempelTeksPage: React.FC = () => {
           {butir && (
             <section className="space-y-3" aria-label="Hasil bacaan">
               {butir.map((b) => (
-                <HasilButir key={b.kunci} b={b} bolehUbah={bolehUbahDraf} ubah={(p) => ubah(b.kunci, p)} />
+                <HasilButir key={b.kunci} b={b} bolehUbah={bolehUbahDraf} ubah={(p) => ubah(b.kunci, p)} ajari={bolehUbahDraf ? () => bawaKeAjari({ judul: "", isi: b.teksAsli }) : undefined} />
               ))}
 
               {catatTanpaArah > 0 && (
@@ -234,7 +237,7 @@ export const TempelTeksPage: React.FC = () => {
 
 const NAMA_ARAH = { keluar: "Pengeluaran", masuk: "Pemasukan", pindah: "Pindah dana" } as const;
 
-const HasilButir: React.FC<{ b: Butir; bolehUbah: boolean; ubah: (p: Partial<Butir>) => void }> = ({ b, bolehUbah, ubah }) => {
+const HasilButir: React.FC<{ b: Butir; bolehUbah: boolean; ubah: (p: Partial<Butir>) => void; ajari?: () => void }> = ({ b, bolehUbah, ubah, ajari }) => {
   const h = b.hasil;
   const kartu = "bg-surface rounded-card border border-border p-4 space-y-2 shadow-[var(--shadow-card)]";
 
@@ -242,6 +245,11 @@ const HasilButir: React.FC<{ b: Butir; bolehUbah: boolean; ubah: (p: Partial<But
     return (
       <div className={kartu}>
         <p className="text-[14px] text-text-2">{PESAN_ABAIKAN[h.alasan] ?? "Dilewati."}</p>
+        {(h.alasan === "tidak-dikenali" || h.alasan === "bukan-keuangan") && ajari && b.teksAsli && (
+          <Link to="/keuangan-keluarga/ajari" onClick={ajari} className="inline-flex items-center px-4 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium hover:bg-surface-sunken transition">
+            Ajari Kula
+          </Link>
+        )}
       </div>
     );
   }

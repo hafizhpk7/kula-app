@@ -1,4 +1,4 @@
-import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringRule, SavingsGoal, TemplatPenyedia, Transaction } from "../types";
 import { ConfigPatch } from "../utils/configPatch";
 
 export interface FinanceRepository {
@@ -47,6 +47,9 @@ export interface FinanceRepository {
   subscribeAturanKategori(onData: (a: AturanKategori[]) => void, onError: (e: Error) => void): () => void;
   upsertAturanKategori(a: AturanKategori): Promise<void>;
   deleteAturanKategori(id: string): Promise<void>;
+  subscribeTemplatPenyedia(onData: (t: TemplatPenyedia[]) => void, onError: (e: Error) => void): () => void;
+  upsertTemplatPenyedia(t: TemplatPenyedia): Promise<void>;
+  deleteTemplatPenyedia(id: string): Promise<void>;
 
   deleteAllData(): Promise<void>;
 }

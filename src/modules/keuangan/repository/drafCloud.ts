@@ -13,10 +13,11 @@ import {
   writeBatch
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
-import { AturanKategori, DrafTransaksi, StatusDraf } from "../types";
+import { AturanKategori, DrafTransaksi, StatusDraf, TemplatPenyedia } from "../types";
 
 const KOLEKSI_DRAF = "drafTransaksi";
 const KOLEKSI_ATURAN = "aturanKategori";
+const KOLEKSI_TEMPLAT = "templatPenyedia";
 
 const STATUS: StatusDraf[] = ["baru", "dikonfirmasi", "dibuang"];
 
@@ -32,6 +33,12 @@ function keAturan(data: Record<string, any> | undefined): AturanKategori | null 
   if (!data || typeof data.id !== "string" || typeof data.kataKunci !== "string" || typeof data.kategoriId !== "string") return null;
   if (data.jenis !== "masuk" && data.jenis !== "keluar") return null;
   return data as AturanKategori;
+}
+
+function keTemplat(data: Record<string, any> | undefined): TemplatPenyedia | null {
+  if (!data || typeof data.id !== "string" || typeof data.nama !== "string" || typeof data.bentuk !== "string") return null;
+  if (!["keluar", "masuk", "dari-kata"].includes(data.arah) || !["id", "en", "polos"].includes(data.formatAngka)) return null;
+  return data as TemplatPenyedia;
 }
 
 /**
@@ -153,10 +160,44 @@ export class DrafCloudStore {
     }
   }
 
-  /** Untuk "Hapus semua data": kosongkan kedua koleksi. */
+  subscribeTemplat(onData: (t: TemplatPenyedia[]) => void, onError: (e: Error) => void): () => void {
+    return onSnapshot(
+      collection(db, this.basePath, KOLEKSI_TEMPLAT),
+      (snap) => {
+        const hasil: TemplatPenyedia[] = [];
+        snap.forEach((d) => {
+          const t = keTemplat(d.data());
+          if (t) hasil.push(t);
+        });
+        onData(hasil);
+      },
+      (error) => {
+        console.warn("[keuangan] langganan templat penyedia gagal");
+        onError(error);
+      }
+    );
+  }
+
+  async upsertTemplat(t: TemplatPenyedia): Promise<void> {
+    try {
+      await setDoc(doc(db, this.basePath, KOLEKSI_TEMPLAT, t.id), t);
+    } catch (e) {
+      handleFirestoreError(e, OperationType.WRITE, `${this.basePath}/${KOLEKSI_TEMPLAT}/${t.id}`);
+    }
+  }
+
+  async deleteTemplat(id: string): Promise<void> {
+    try {
+      await deleteDoc(doc(db, this.basePath, KOLEKSI_TEMPLAT, id));
+    } catch (e) {
+      handleFirestoreError(e, OperationType.DELETE, `${this.basePath}/${KOLEKSI_TEMPLAT}/${id}`);
+    }
+  }
+
+  /** Untuk "Hapus semua data": kosongkan semua koleksi. */
   async hapusSemua(): Promise<void> {
     try {
-      for (const nama of [KOLEKSI_DRAF, KOLEKSI_ATURAN]) {
+      for (const nama of [KOLEKSI_DRAF, KOLEKSI_ATURAN, KOLEKSI_TEMPLAT]) {
         while (true) {
           const snaps = await getDocs(query(collection(db, this.basePath, nama), limit(400)));
           if (snaps.empty) break;

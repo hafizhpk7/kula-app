@@ -8,6 +8,7 @@ import { PerluDicekPage } from "./pages/PerluDicekPage";
 import { TagihanPage } from "./pages/TagihanPage";
 import { ImporCsvPage } from "./pages/ImporCsvPage";
 import { TempelTeksPage } from "./pages/TempelTeksPage";
+import { AjariKulaPage } from "./pages/AjariKulaPage";
 import { FEATURES } from "../../config/features";
 import { RingkasanPage } from "./pages/RingkasanPage";
 import { TransaksiPage } from "./pages/TransaksiPage";
@@ -28,6 +29,7 @@ export const KeuanganModule: React.FC = () => {
           {FEATURES.tagihan && <Route path="tagihan" element={<TagihanPage />} />}
           {FEATURES.imporCsv && FEATURES.drafTransaksi && <Route path="impor" element={<ImporCsvPage />} />}
           {FEATURES.tangkapTeks && FEATURES.drafTransaksi && <Route path="tempel" element={<TempelTeksPage />} />}
+          {FEATURES.tangkapTeks && FEATURES.drafTransaksi && <Route path="ajari" element={<AjariKulaPage />} />}
           {/* Absolut: "ringkasan" relatif dari rute splat menjadi /keuangan-keluarga/<yang-salah>/ringkasan dan beralih tanpa akhir */}
           <Route path="*" element={<Navigate to="/keuangan-keluarga/ringkasan" replace />} />
         </Route>

@@ -47,3 +47,14 @@ export function ambilBagikan(): TeksDibagikan | null {
 export function setBagikanUntukTes(t: TeksDibagikan | null): void {
   tertunda = t;
 }
+
+// ---- Teks yang dibawa dari layar Tempel ke layar Ajari Kula: hanya memori, diambil sekali ----
+let ajariTertunda: TeksDibagikan | null = null;
+export function bawaKeAjari(t: TeksDibagikan): void {
+  ajariTertunda = t;
+}
+export function ambilBawaanAjari(): TeksDibagikan | null {
+  const t = ajariTertunda;
+  ajariTertunda = null;
+  return t;
+}

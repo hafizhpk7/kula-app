@@ -5,6 +5,9 @@
  *   keMasukanDraf(draf, opsi)                -> MasukanDraf (K2) atau null
  */
 export { uraikanNotifikasi, BATAS_TEKS } from "./uraikan";
+export type { OpsiUraikan } from "./uraikan";
+export { buatTemplat, cocokkanTemplat, idTemplat, MAKS_TEMPLAT } from "./templat";
+export type { PenandaanAjar, TemplatBaru, HasilBuat } from "./templat";
 export { periksaDuplikat, kunciUraian, tanggalJamWib } from "./duplikat";
 export type { RiwayatTangkap } from "./duplikat";
 export { keMasukanDraf, buatBatchId } from "./keDraf";

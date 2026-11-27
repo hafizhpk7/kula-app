@@ -212,6 +212,13 @@ service cloud.firestore {
         allow delete: if isOwner(userId) && isValidId(userId) && isValidId(aturanId);
       }
 
+      match /templatPenyedia/{templatId} {
+        allow get, list: if isOwner(userId) && isValidId(userId);
+        allow create, update: if isOwner(userId) && isValidId(userId) && isValidId(templatId)
+          && isValidTemplatPenyedia(incoming(), templatId);
+        allow delete: if isOwner(userId) && isValidId(userId) && isValidId(templatId);
+      }
+
       // Penunjuk keanggotaan: users/{uid}/membership/current (dipakai createFamily, joinFamily, dst.).
       match /membership/{docId} {
         allow get: if isOwner(userId) && isValidId(userId) && docId == 'current';
@@ -633,6 +640,23 @@ service cloud.firestore {
         && existing().status != 'dikonfirmasi';
     }
 
+    // Ajari Kula (K4b): bentuk notifikasi dengan penanda; teks asli, nominal, dan merchant tidak disimpan.
+    function isValidTemplatPenyedia(data, templatId) {
+      return data.keys().hasAll(['id', 'nama', 'bentuk', 'arah', 'formatAngka', 'terverifikasi', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.keys().hasOnly(['id', 'nama', 'bentuk', 'bentukJudul', 'arah', 'formatAngka', 'terverifikasi', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
+        && data.id == templatId && templatId.matches('^t_[A-Za-z0-9_-]{1,126}$')
+        && data.nama is string && data.nama.size() > 0 && data.nama.size() <= 40
+        && data.bentuk is string && data.bentuk.size() > 0 && data.bentuk.size() <= 300
+        && (!('bentukJudul' in data) || (data.bentukJudul is string && data.bentukJudul.size() <= 100))
+        && data.arah in ['keluar', 'masuk', 'dari-kata']
+        && data.formatAngka in ['id', 'en', 'polos']
+        && data.terverifikasi is int && data.terverifikasi >= 0 && data.terverifikasi <= 1000000
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64
+        && data.createdBy is string && isValidId(data.createdBy)
+        && data.updatedBy == request.auth.uid;
+    }
+
     function isValidAturanKategori(data, aturanId) {
       return data.keys().hasAll(['id', 'kataKunci', 'jenis', 'kategoriId', 'jumlah', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
         && data.keys().hasOnly(['id', 'kataKunci', 'jenis', 'kategoriId', 'jumlah', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy'])
@@ -759,6 +783,13 @@ service cloud.firestore {
         allow create, update: if isFamilyAdmin(familyId) && isValidId(aturanId)
           && isValidAturanKategori(incoming(), aturanId);
         allow delete: if isFamilyAdmin(familyId) && isValidId(aturanId);
+      }
+
+      match /templatPenyedia/{templatId} {
+        allow get, list: if isFamilyMember(familyId);
+        allow create, update: if isFamilyAdmin(familyId) && isValidId(templatId)
+          && isValidTemplatPenyedia(incoming(), templatId);
+        allow delete: if isFamilyAdmin(familyId) && isValidId(templatId);
       }
 
       // Bayi mode keluarga: anggota membaca, hanya admin yang menulis (sama dengan finance*).

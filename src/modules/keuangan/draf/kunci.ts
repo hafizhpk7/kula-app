@@ -41,7 +41,7 @@ function base64Url(bytes: Uint8Array): string {
 }
 
 /** SHA-256 dari bahan, base64url, 22 karakter pertama (cocok sebagai id dokumen: [A-Za-z0-9_-]). */
-async function hashPendek(bahan: string): Promise<string> {
+export async function hashPendek(bahan: string): Promise<string> {
   const data = new TextEncoder().encode(bahan);
   // Web Crypto hanya ada di konteks aman (https, localhost); cadangannya menghasilkan nilai yang identik
   const digest =

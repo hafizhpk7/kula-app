@@ -14,6 +14,7 @@ import { exportFinanceToExcel } from "../utils/export";
 import { WalletsSection } from "../components/WalletsSection";
 import { RecurringSection } from "../components/RecurringSection";
 import { AturanKategoriSection } from "../components/AturanKategoriSection";
+import { TemplatSection } from "../components/TemplatSection";
 import { FEATURES } from "../../../config/features";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -34,6 +35,7 @@ export const PengaturanPage: React.FC = () => {
     clearGuestData,
     draf,
     aturanKategori,
+    templatPenyedia,
     tagihan
   } = useFinance();
   const { status: familyStatus } = useFamily();
@@ -164,6 +166,12 @@ export const PengaturanPage: React.FC = () => {
           <Lipat title="Aturan kategori" summary={aturanKategori.length > 0 ? `${aturanKategori.length} aturan` : "Belum ada aturan"}>
             <AturanKategoriSection />
           </Lipat>
+
+          {FEATURES.tangkapTeks && (
+            <Lipat title="Templat Ajari Kula" summary={templatPenyedia.length > 0 ? `${templatPenyedia.length} templat` : "Belum ada templat"}>
+              <TemplatSection />
+            </Lipat>
+          )}
         </>
       )}
 

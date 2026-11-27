@@ -45,3 +45,7 @@ Pengurai heuristik generik untuk teks notifikasi atau pesan transaksi, plus laya
 1. Build dengan `VITE_FEATURE_DRAF_TRANSAKSI=true VITE_FEATURE_TANGKAP_TEKS=true`, pasang PWA di Android.
 2. Di app lain, sorot teks sebuah pesan transaksi asli, Bagikan, pilih Kula. Layar Tempel teks harus terbuka dengan hasil bacaan.
 3. Periksa nominal, arah, dan merchant. Kalau keliru, itu bahan K4b; **jangan** mengubah kamus untuk satu bank.
+
+## Ajari Kula (K4b)
+
+Detail dan skema di `USULAN-K4B.md`. Ringkasnya: tempel satu notifikasi yang tidak terbaca, ketuk nominal, merchant, dan arah; yang disimpan hanya bentuk dengan penanda (`templatPenyedia`), bukan teks, nominal, atau merchant. Templat diuji terhadap contohnya sendiri, dicoba lebih dulu daripada pengurai generik (setelah penyaring), dan hitungan "terverifikasi" naik tiap draf dari templat itu dikonfirmasi. Butuh rules `templatPenyedia` di-deploy untuk mode pribadi dan keluarga.

@@ -39,6 +39,8 @@ export interface DrafUraian {
   /** keyakinan bukan "tinggi": pengguna perlu memeriksa. */
   periksa: boolean;
   tanda?: TandaUraian;
+  /** Id templat Ajari Kula yang membaca teks ini (kosong = pengurai generik). */
+  templatId?: string;
   /** Nominal dibulatkan ke rupiah (ada pecahan di teks). */
   dibulatkan?: boolean;
 }

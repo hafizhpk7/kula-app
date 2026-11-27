@@ -138,3 +138,26 @@ export interface AturanKategori {
   createdBy: string;
   updatedBy: string;
 }
+
+// ---------- Ajari Kula (K4b, docs/keuangan/USULAN-K4B.md) ----------
+
+export type ArahTemplat = "keluar" | "masuk" | "dari-kata";
+export type FormatAngkaTemplat = "id" | "en" | "polos";
+
+/**
+ * Bentuk satu notifikasi yang diajarkan pengguna, dengan bagian variabel diganti penanda ({N} nominal, {M} merchant,
+ * {A} kata arah, {*} bagian lain). TEKS ASLI, nominal, dan merchant TIDAK disimpan.
+ */
+export interface TemplatPenyedia {
+  id: string;                  // "t_" + hash bentuk, [A-Za-z0-9_-]{1,128}
+  nama: string;                // 1..40, label penyedia
+  bentuk: string;              // 1..300
+  bentukJudul?: string;        // ≤ 100
+  arah: ArahTemplat;
+  formatAngka: FormatAngkaTemplat;
+  terverifikasi: number;       // 0..1_000_000
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+}

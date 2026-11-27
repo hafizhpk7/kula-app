@@ -15,7 +15,7 @@ import {
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
 import { DEFAULT_FINANCE_CONFIG } from "../constants/categories";
-import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringFrequency, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringFrequency, RecurringRule, SavingsGoal, TemplatPenyedia, Transaction } from "../types";
 import { DrafCloudStore } from "./drafCloud";
 import { normalizeConfig } from "../utils/normalization";
 import { applyConfigPatch, ConfigPatch } from "../utils/configPatch";
@@ -67,6 +67,15 @@ export class CloudRepository implements FinanceRepository {
   }
   deleteAturanKategori(id: string): Promise<void> {
     return this.draf.deleteAturan(id);
+  }
+  subscribeTemplatPenyedia(onData: (t: TemplatPenyedia[]) => void, onError: (e: Error) => void): () => void {
+    return this.draf.subscribeTemplat(onData, onError);
+  }
+  upsertTemplatPenyedia(t: TemplatPenyedia): Promise<void> {
+    return this.draf.upsertTemplat(t);
+  }
+  deleteTemplatPenyedia(id: string): Promise<void> {
+    return this.draf.deleteTemplat(id);
   }
 
   subscribeTransactions(

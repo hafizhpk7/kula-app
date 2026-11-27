@@ -7,10 +7,11 @@ import { CloudRepository } from "../repository/CloudRepository";
 import { useFinanceRepository } from "../repository/useFinanceRepository";
 import { FEATURES } from "../../../config/features";
 import { useFamily } from "../../../shell/family/context/FamilyContext";
-import { AturanKategori, Category, DrafTransaksi, FinanceConfig, LedgerEntry, RecurringRule, SavingsGoal, Transaction, TxType } from "../types";
+import { AturanKategori, Category, DrafTransaksi, FinanceConfig, TemplatPenyedia, LedgerEntry, RecurringRule, SavingsGoal, Transaction, TxType } from "../types";
 import { usulkanKategori, pelajariAturan } from "../draf/aturan";
 import { alasanMasukanTidakSah, bangunDraf, dompetBawaan, MasukanDraf, transaksiDariDraf } from "../draf/bangun";
 import { kunciKandidat } from "../draf/kunci";
+import { buatTemplat, idTemplat, MAKS_TEMPLAT, MasukanNotif, PenandaanAjar } from "../tangkap";
 import { jenisKeTipe } from "../draf/normalisasi";
 import { buildRecurringTransaction } from "../utils/recurring";
 import { adalahTagihan, hitungTagihan, TAGIHAN_LOOKBACK_HARI, TAGIHAN_MAJU_HARI, geserHari, TagihanItem } from "../utils/tagihan";
@@ -36,6 +37,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [recurringRules, setRecurringRules] = useState<RecurringRule[]>([]);
   const [draf, setDraf] = useState<DrafTransaksi[]>([]);
   const [aturanKategori, setAturanKategori] = useState<AturanKategori[]>([]);
+  const [templatPenyedia, setTemplatPenyedia] = useState<TemplatPenyedia[]>([]);
+  const templatRef = useRef<TemplatPenyedia[]>([]);
+  templatRef.current = templatPenyedia;
   const { status: statusKeluarga, canEditFinance } = useFamily();
   // Keluarga: hanya admin menulis (sama dengan transaksi). Tamu dan pribadi: selalu boleh.
   const bolehUbahDraf = statusKeluarga !== "active" || canEditFinance;
@@ -112,6 +116,12 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     // Perlu dicek: hanya berlangganan bila flag menyala (tanpa flag, tidak ada pembacaan tambahan)
     let unsubDraf = () => {};
     let unsubAturan = () => {};
+    let unsubTemplat = () => {};
+    if (FEATURES.drafTransaksi && FEATURES.tangkapTeks) {
+      unsubTemplat = repository.subscribeTemplatPenyedia(setTemplatPenyedia, () => console.warn("Templat penyedia sub error"));
+    } else {
+      setTemplatPenyedia([]);
+    }
     if (FEATURES.drafTransaksi) {
       unsubDraf = repository.subscribeDraf(setDraf, () => console.warn("Draf sub error"));
       unsubAturan = repository.subscribeAturanKategori(setAturanKategori, () => console.warn("Aturan kategori sub error"));
@@ -127,6 +137,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       unsubRules();
       unsubDraf();
       unsubAturan();
+      unsubTemplat();
     };
   }, [repository, windowRange]);
 
@@ -740,6 +751,15 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         else aturanKerja.push(aturan);
         repository.upsertAturanKategori(aturan).catch((e) => console.warn("[keuangan] aturan kategori belum tersimpan", e?.code));
       }
+      // Ajari Kula: draf yang dibaca templat dikonfirmasi benar, jadi hitungan "terverifikasi" naik (gagal tidak menggagalkan pencatatan)
+      if (d.batchId?.startsWith("tpl-")) {
+        const t = templatRef.current.find((x) => x.id === d.batchId!.slice(4));
+        if (t) {
+          repository
+            .upsertTemplatPenyedia({ ...t, terverifikasi: Math.min(1_000_000, t.terverifikasi + 1), updatedAt: nowIso, updatedBy: uid })
+            .catch((e) => console.warn("[keuangan] hitungan templat belum tersimpan", e?.code));
+        }
+      }
       return { ok: true as const };
     },
     [config, repository, userId, kategoriValid, showToast]
@@ -836,6 +856,60 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     [repository, showToast]
   );
 
+  const simpanTemplat = useCallback(
+    async (nama: string, contoh: MasukanNotif, tanda: PenandaanAjar): Promise<{ ok: boolean; galat?: string }> => {
+      if (templatRef.current.length >= MAKS_TEMPLAT) return { ok: false, galat: `Maksimal ${MAKS_TEMPLAT} templat. Hapus yang tidak terpakai dulu.` };
+      const hasil = buatTemplat(nama, contoh, tanda);
+      if (!hasil.ok) return { ok: false, galat: hasil.galat };
+      const nowIso = new Date().toISOString();
+      const uid = userId || "tamu";
+      const id = await idTemplat(hasil.templat);
+      const ada = templatRef.current.find((x) => x.id === id);
+      try {
+        await repository.upsertTemplatPenyedia({
+          ...hasil.templat,
+          id,
+          terverifikasi: ada?.terverifikasi ?? 0,
+          createdAt: ada?.createdAt ?? nowIso,
+          updatedAt: nowIso,
+          createdBy: ada?.createdBy ?? uid,
+          updatedBy: uid
+        });
+        return { ok: true };
+      } catch (e) {
+        showToast(pesanGagal("simpanTemplat", e));
+        return { ok: false, galat: "Templat belum tersimpan." };
+      }
+    },
+    [repository, userId, showToast]
+  );
+
+  const ubahNamaTemplat = useCallback(
+    async (id: string, nama: string) => {
+      const t = templatRef.current.find((x) => x.id === id);
+      const bersih = nama.trim().slice(0, 40);
+      if (!t || !bersih) return;
+      try {
+        await repository.upsertTemplatPenyedia({ ...t, nama: bersih, updatedAt: new Date().toISOString(), updatedBy: userId || "tamu" });
+      } catch (e) {
+        showToast(pesanGagal("simpanTemplat", e));
+      }
+    },
+    [repository, userId, showToast]
+  );
+
+  const hapusTemplat = useCallback(
+    async (id: string) => {
+      try {
+        await repository.deleteTemplatPenyedia(id);
+        showToast("Templat dihapus.");
+      } catch (e) {
+        showToast(pesanGagal("hapusTemplat", e));
+      }
+    },
+    [repository, showToast]
+  );
+
   const tandaiTagihanDibayar = useCallback(
     async (item: TagihanItem) => {
       const aturan = recurringRules.find((r) => r.id === item.ruleId);
@@ -865,6 +939,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       await repository.deleteAllData();
       setDraf([]);
       setAturanKategori([]);
+      setTemplatPenyedia([]);
       setManualTransactions([]);
       setConfig({ ...DEFAULT_FINANCE_CONFIG });
       setSavingsGoals([]);
@@ -906,6 +981,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       deleteAllFinanceData,
       draf,
       aturanKategori,
+      templatPenyedia,
+      simpanTemplat,
+      ubahNamaTemplat,
+      hapusTemplat,
       bolehUbahDraf,
       tambahDraf,
       konfirmasiDraf,
@@ -951,6 +1030,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
       deleteAllFinanceData,
       draf,
       aturanKategori,
+      templatPenyedia,
+      simpanTemplat,
+      ubahNamaTemplat,
+      hapusTemplat,
       bolehUbahDraf,
       tambahDraf,
       konfirmasiDraf,

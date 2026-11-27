@@ -21,6 +21,8 @@ import {
   POLA_SELESAI_KUAT,
   POLA_TRANSAKSI
 } from "./kamus";
+import { TemplatPenyedia } from "../types";
+import { cocokkanTemplat } from "./templat";
 import { ArahUraian, DrafUraian, HasilTangkap, MasukanNotif, TandaUraian } from "./tipe";
 
 /** Panjang masukan yang diproses (karakter). Teks notifikasi nyata jauh lebih pendek. */
@@ -167,7 +169,12 @@ function tingkat(skor: number): KeyakinanDraf {
  * Penyaring dijalankan lebih dulu karena salah mencatat promo sebagai transaksi lebih buruk daripada melewatkan satu transaksi.
  * Hasil "abaikan" tidak memuat satu pun bagian dari teks.
  */
-export function uraikanNotifikasi(masukan: MasukanNotif): HasilTangkap {
+export interface OpsiUraikan {
+  /** Templat Ajari Kula milik pengguna. Dicoba lebih dulu daripada pengurai generik, tetapi sesudah penyaring. */
+  templat?: TemplatPenyedia[];
+}
+
+export function uraikanNotifikasi(masukan: MasukanNotif, opsi: OpsiUraikan = {}): HasilTangkap {
   const judul = (masukan.judul ?? "").slice(0, BATAS_TEKS);
   const isi = (masukan.isi ?? "").slice(0, BATAS_TEKS);
   if (!judul.trim() && !isi.trim()) return { tindakan: "abaikan", alasan: "kosong" };
@@ -188,6 +195,26 @@ export function uraikanNotifikasi(masukan: MasukanNotif): HasilTangkap {
   }
   if ((/saldo/.test(j) || /^\s*saldo\b/.test(i)) && !selesai) return { tindakan: "abaikan", alasan: "saldo" };
   if (POLA_PENGINGAT.test(semua) && !selesai) return { tindakan: "abaikan", alasan: "pengingat" };
+
+  // Templat pengguna (Ajari Kula) diutamakan di atas pengurai generik; yang terverifikasi paling sering dicoba dulu
+  for (const t of [...(opsi.templat ?? [])].sort((a, b) => b.terverifikasi - a.terverifikasi)) {
+    const r = cocokkanTemplat(t, { judul, isi });
+    if (!r) continue;
+    const draf: DrafUraian = {
+      arah: r.arah,
+      nominal: r.nominal,
+      penyediaLabel: t.nama,
+      kategoriUsulan: kategoriDari(r.arah, r.merchant, semua),
+      keyakinan: "tinggi",
+      skor: 100,
+      periksa: false,
+      templatId: t.id
+    };
+    if (r.merchant) draf.merchant = r.merchant;
+    const w = waktuIso(masukan.waktu);
+    if (w) draf.waktu = w;
+    return { tindakan: "catat", draf };
+  }
 
   // Nominal dicari di isi; bila isi tanpa nominal, di judul (teks tempelan yang tidak terbagi)
   let sumber = teks;

@@ -34,7 +34,9 @@ export function keMasukanDraf(d: DrafUraian, opsi: OpsiKeDraf): MasukanDraf | nu
   const merchant = opsi.merchant ?? d.merchant;
   if (merchant) m.merchant = merchant;
   if (d.kategoriUsulan) m.kategoriBawaan = d.kategoriUsulan;
-  if (opsi.batchId) m.batchId = opsi.batchId;
+  // Draf dari templat diberi batchId "tpl-<id>" supaya konfirmasinya bisa menaikkan hitungan "terverifikasi" (draf tidak punya field lain untuk itu)
+  if (d.templatId) m.batchId = `tpl-${d.templatId}`;
+  else if (opsi.batchId) m.batchId = opsi.batchId;
   return m;
 }
 

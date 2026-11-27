@@ -139,6 +139,14 @@ export const PerluDicekPage: React.FC = () => {
           <p className="text-[13px] text-text-2">
             Belum tercatat sebagai transaksi. Periksa lalu ketuk Catat, atau Buang kalau bukan transaksi Anda.
           </p>
+          {FEATURES.tangkapTeks && bolehUbahDraf && (
+            <p className="text-[13px] text-text-2">
+              Notifikasi tidak terbaca benar?{" "}
+              <Link to="/keuangan-keluarga/ajari" className="text-primary-text font-medium underline">
+                Ajari Kula
+              </Link>
+            </p>
+          )}
 
           {!bolehUbahDraf && (
             <p role="note" className="text-[13px] text-text-2 bg-surface-sunken border border-border rounded-control px-3.5 py-2.5">

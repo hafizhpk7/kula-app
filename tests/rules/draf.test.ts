@@ -321,6 +321,57 @@ describe("aturanKategori", () => {
   });
 });
 
+const TID = "t_AbC-123_xYz-4567890";
+const templat = (uid: string, over: Record<string, unknown> = {}): Record<string, unknown> => ({
+  id: TID, nama: "FiktifPay", bentuk: "Lunas {M} | {N} rupiah | via FiktifPay", arah: "keluar", formatAngka: "id", terverifikasi: 0,
+  createdAt: NOW, updatedAt: NOW, createdBy: uid, updatedBy: uid, ...over
+});
+const pTpl = (id = TID, fid = FID) => `families/${fid}/templatPenyedia/${id}`;
+const uTpl = (id = TID, uid = U) => `users/${uid}/templatPenyedia/${id}`;
+
+describe("templatPenyedia (K4b)", () => {
+  it("keluarga: anggota membaca, admin menulis, anggota biasa dan orang luar tidak", async () => {
+    await assertSucceeds(setDoc(doc(as(ADMIN), pTpl()), templat(ADMIN)));
+    await assertSucceeds(getDoc(doc(as(MEMBER), pTpl())));
+    await assertFails(setDoc(doc(as(MEMBER), pTpl("t_lain")), templat(MEMBER, { id: "t_lain" })));
+    await assertFails(getDoc(doc(as(OUTSIDER), pTpl())));
+    await assertFails(deleteDoc(doc(as(MEMBER), pTpl())));
+    await assertSucceeds(deleteDoc(doc(as(ADMIN), pTpl())));
+  });
+
+  it("pribadi: pemilik saja", async () => {
+    await assertSucceeds(setDoc(doc(as(U), uTpl()), templat(U, { bentukJudul: "FiktifPay", arah: "dari-kata" })));
+    await assertFails(getDoc(doc(as("u2"), uTpl())));
+    await assertFails(setDoc(doc(as("u2"), uTpl(TID, U)), templat("u2")));
+    await assertFails(getDoc(doc(anon(), uTpl())));
+  });
+
+  it("id harus berawalan t_ dan sama dengan field id; field asing (teks asli) ditolak", async () => {
+    await assertFails(setDoc(doc(as(U), uTpl("x_salah")), templat(U, { id: "x_salah" })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { id: "t_lain" })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { teksAsli: "Lunas Kedai 45.000" })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { nominal: 45000 })));
+  });
+
+  it("batas: nama 1..40, bentuk 1..300, bentukJudul ≤100, enum arah dan format, terverifikasi bulat 0..1.000.000", async () => {
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { nama: "" })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { nama: "a".repeat(41) })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { bentuk: "" })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { bentuk: "a".repeat(301) })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { bentukJudul: "a".repeat(101) })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { arah: "pindah" })));
+    await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { formatAngka: "us" })));
+    for (const terverifikasi of [-1, 1.5, 1000001, "1"]) await assertFails(setDoc(doc(as(U), uTpl()), templat(U, { terverifikasi })));
+    await assertSucceeds(setDoc(doc(as(U), uTpl()), templat(U, { nama: "a".repeat(40), bentuk: "a".repeat(300), terverifikasi: 1000000 })));
+  });
+
+  it("naikkan terverifikasi boleh; updatedBy harus uid penulis", async () => {
+    await sedia(uTpl(), templat(U));
+    await assertSucceeds(updateDoc(doc(as(U), uTpl()), { terverifikasi: 1, updatedAt: LATER, updatedBy: U }));
+    await assertFails(updateDoc(doc(as(U), uTpl()), { terverifikasi: 2, updatedAt: LATER, updatedBy: "orang-lain" }));
+  });
+});
+
 describe("penjaga: tidak melonggarkan data lain", () => {
   it("anggota biasa tetap tidak bisa menulis transaksi, dan koleksi lain tetap default-deny", async () => {
     await assertFails(setDoc(doc(as(MEMBER), `families/${FID}/financeTransactions/x1`), txKeluarga(MEMBER)));

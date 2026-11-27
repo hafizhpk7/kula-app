@@ -1,6 +1,6 @@
 # K4b: "Ajari Kula" dan koleksi `templatPenyedia`
 
-Status: **usulan, menunggu "ok"**. Belum ada kode. K4b perlu menyimpan templat sebagai data pengguna, yang berarti koleksi dan rules baru, jadi diusulkan dulu (gerbang skema).
+Status: **disetujui (D1 sampai D3 ikut rekomendasi) dan diimplementasikan** di branch `feat/k4b-ajari-kula`, di balik flag `tangkapTeks`. **Rules belum di-deploy**; perintahnya di bagian 4.
 
 ## 1. Apa yang disimpan
 
@@ -64,3 +64,18 @@ Aditif: koleksi baru, tidak ada dokumen atau aturan lama yang berubah. Tamu: blo
 | D3 | Bentuk menyimpan kata tetap di luar penanda (mis. "via FiktifPay"). Boleh? | **Boleh**; angka di luar penanda otomatis dibuang. Pengguna melihat bentuk sebelum menyimpan |
 
 Setelah "ok": implementasi, tes emulator (rules), lalu gue tulis perintah deploy rules (`diff` dulu) untuk lu. Gue tidak men-deploy.
+
+## 4. Hasil implementasi
+
+- Skema, rules (`isValidTemplatPenyedia`, pribadi dan keluarga), repository (Local, Cloud, Family), dan tes rules (`tests/rules/draf.test.ts`, 5 kasus baru) sesuai usulan. `npm run test:rules` hijau (214).
+- Logika di `src/modules/keuangan/tangkap/templat.ts` (murni): `buatTemplat` menguji templat terhadap contohnya sendiri sebelum jadi; `cocokkanTemplat` dipakai `uraikanNotifikasi(masukan, {templat})` **sesudah** penyaring dan **sebelum** pengurai generik. Kata depan sebelum merchant (`di`, `dari`, `ke`, ...) otomatis jadi `{P}`, jadi satu templat membaca "di" dan "dari" (dibutuhkan `ajari-02`).
+- Hitungan "terverifikasi": draf dari templat memakai `batchId = tpl-<id templat>`, dan konfirmasi di Perlu dicek menaikkan hitungannya. Ini cara tanpa menambah field ke draf, jadi rules `drafTransaksi` tidak berubah.
+- UI: `#/keuangan-keluarga/ajari` (tempel, ketuk nominal/merchant/kata arah, lihat bentuk, simpan), tautan "Ajari Kula" di Perlu dicek dan di hasil Tempel yang tidak terbaca, daftar templat (ganti nama, hapus) di Pengaturan Keuangan.
+- Diuji ujung ke ujung di browser (emulator, SDK dan rules sungguhan, admin keluarga): templat tersimpan tanpa teks contoh, notifikasi serupa terbaca, konfirmasi menaikkan `terverifikasi` menjadi 1.
+- Belum terverifikasi: notifikasi asli. Fixture sintetis.
+
+**Deploy rules (untuk Anda)**, setelah `diff` dengan produksi sesuai `docs/rilis/RILIS-0.md` bagian 3. Rules ini menambah `templatPenyedia` (K4b) di atas K2 dan K5:
+
+```bash
+npx firebase-tools deploy --only firestore:rules --project enhanced-airline-rghtt --config firebase.produksi.json
+```
