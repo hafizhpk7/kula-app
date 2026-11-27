@@ -1,0 +1,539 @@
+{
+  "versi": 1,
+  "sifat": "SINTETIS: semua teks, nama, dan angka dikarang. Bentuk kalimat adalah DUGAAN, belum diverifikasi terhadap notifikasi asli penyedia mana pun.",
+  "kasus": [
+    {
+      "id": "gopay-bayar-makan-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "gopay",
+      "judul": "Pembayaran berhasil",
+      "isi": "Kamu bayar Rp50.000 ke GoFood - Warung Makan Contoh.",
+      "waktu": "2026-11-26T12:31:00+07:00",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 50000,
+        "merchant": "GoFood - Warung Makan Contoh",
+        "kategoriUsulan": "Makan & Minum",
+        "alasan": null
+      },
+      "catatan": "Kasus utama dari permintaan pengguna (bayar GoFood 50 ribu)."
+    },
+    {
+      "id": "gopay-struk-duplikat-01",
+      "kelompok": "duplikat",
+      "penyediaDugaan": "gopay",
+      "judul": "Struk pembayaran",
+      "isi": "GoFood - Warung Makan Contoh, total Rp50.000. Terima kasih sudah memesan!",
+      "waktu": "2026-11-26T12:33:00+07:00",
+      "harapan": {
+        "tindakan": "duplikat",
+        "arah": "keluar",
+        "nominal": 50000,
+        "merchant": "GoFood - Warung Makan Contoh",
+        "kategoriUsulan": "Makan & Minum",
+        "alasan": "duplikat",
+        "duplikatDari": "gopay-bayar-makan-01"
+      },
+      "catatan": "Notifikasi kedua untuk pembayaran yang sama beberapa menit kemudian."
+    },
+    {
+      "id": "gopay-qris-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "gopay",
+      "judul": "Pembayaran QRIS berhasil",
+      "isi": "Rp 27.500 dibayar ke Kopi Contoh lewat QRIS.",
+      "waktu": "2026-11-26T16:02:00+07:00",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 27500,
+        "merchant": "Kopi Contoh",
+        "kategoriUsulan": "Makan & Minum",
+        "alasan": null
+      }
+    },
+    {
+      "id": "gopay-cashback-ekstra-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "gopay",
+      "judul": "Pembayaran berhasil",
+      "isi": "Bayar Rp50.000 ke Toko Contoh berhasil. Kamu dapat cashback Rp5.000!",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 50000,
+        "merchant": "Toko Contoh",
+        "kategoriUsulan": null,
+        "alasan": null
+      },
+      "catatan": "Nominal utama 50000, bukan 5000 (cashback)."
+    },
+    {
+      "id": "ovo-bayar-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "ovo",
+      "judul": "Pembayaran Berhasil",
+      "isi": "Pembayaran Rp 35.000 ke Toko Sembako Contoh berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 35000,
+        "merchant": "Toko Sembako Contoh",
+        "kategoriUsulan": "Belanja",
+        "alasan": null
+      }
+    },
+    {
+      "id": "dana-bayar-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "dana",
+      "judul": "Pembayaran Berhasil",
+      "isi": "Kamu telah membayar Rp 120.000 ke Apotek Contoh.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 120000,
+        "merchant": "Apotek Contoh",
+        "kategoriUsulan": "Kesehatan",
+        "alasan": null
+      }
+    },
+    {
+      "id": "shopeepay-bayar-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "shopeepay",
+      "judul": "Pembayaran berhasil",
+      "isi": "Pembayaran sebesar Rp89.900 di Toko Contoh berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 89900,
+        "merchant": "Toko Contoh",
+        "kategoriUsulan": null,
+        "alasan": null
+      }
+    },
+    {
+      "id": "ovo-format-koma-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "ovo",
+      "judul": "Pembayaran Berhasil",
+      "isi": "IDR 1,250,000.00 dibayarkan ke Penyedia Contoh.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 1250000,
+        "merchant": "Penyedia Contoh",
+        "kategoriUsulan": null,
+        "alasan": null
+      },
+      "catatan": "Format angka Inggris (koma ribuan, titik desimal)."
+    },
+    {
+      "id": "dana-format-koma-dash-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "dana",
+      "judul": "Pembayaran Berhasil",
+      "isi": "Pembayaran Rp1.250.000,- ke Penyedia Contoh telah berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 1250000,
+        "merchant": "Penyedia Contoh",
+        "kategoriUsulan": null,
+        "alasan": null
+      },
+      "catatan": "Akhiran ',-' setelah nominal."
+    },
+    {
+      "id": "bank-transfer-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "bank",
+      "judul": "Transfer Berhasil",
+      "isi": "Transfer ke 0000000000 a.n. BUDI CONTOH sebesar Rp150.000 berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 150000,
+        "merchant": "BUDI CONTOH",
+        "kategoriUsulan": null,
+        "alasan": null
+      }
+    },
+    {
+      "id": "bank-debit-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "bank",
+      "judul": "Transaksi kartu debit",
+      "isi": "Debit Rp 250.000 di INDOMARET CONTOH menggunakan kartu berakhiran 0000.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 250000,
+        "merchant": "INDOMARET CONTOH",
+        "kategoriUsulan": "Belanja",
+        "alasan": null
+      }
+    },
+    {
+      "id": "bank-listrik-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "bank",
+      "judul": "Pembayaran berhasil",
+      "isi": "Pembayaran listrik token Rp 387.500 berhasil. Biaya admin Rp 2.500.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 387500,
+        "merchant": "Listrik",
+        "kategoriUsulan": "Tagihan",
+        "alasan": null
+      },
+      "catatan": "Nominal utama 387500; biaya admin 2500 bukan transaksi terpisah (boleh dicatat sebagai catatan)."
+    },
+    {
+      "id": "bank-tarik-tunai-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "bank",
+      "judul": "Tarik tunai berhasil",
+      "isi": "Tarik tunai ATM Rp 500.000 berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 500000,
+        "merchant": "Tarik tunai ATM",
+        "kategoriUsulan": null,
+        "alasan": null
+      }
+    },
+    {
+      "id": "neobank-keluar-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "neobank",
+      "judul": "Pengeluaran",
+      "isi": "Kamu mengeluarkan Rp 18.000 di Warung Contoh.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 18000,
+        "merchant": "Warung Contoh",
+        "kategoriUsulan": "Makan & Minum",
+        "alasan": null
+      }
+    },
+    {
+      "id": "langganan-01",
+      "kelompok": "pengeluaran",
+      "penyediaDugaan": "bank",
+      "judul": "Tagihan berlangganan",
+      "isi": "Tagihan langganan Streaming Contoh Rp 54.000 telah dibayar.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "keluar",
+        "nominal": 54000,
+        "merchant": "Streaming Contoh",
+        "kategoriUsulan": "Hiburan",
+        "alasan": null
+      }
+    },
+    {
+      "id": "terima-transfer-01",
+      "kelompok": "pemasukan",
+      "penyediaDugaan": "gopay",
+      "judul": "Uang masuk",
+      "isi": "Kamu menerima Rp 500.000 dari SITI CONTOH.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "masuk",
+        "nominal": 500000,
+        "merchant": "SITI CONTOH",
+        "kategoriUsulan": null,
+        "alasan": null
+      }
+    },
+    {
+      "id": "gaji-01",
+      "kelompok": "pemasukan",
+      "penyediaDugaan": "bank",
+      "judul": "Dana masuk",
+      "isi": "Dana masuk Rp 7.500.000 dari PT CONTOH, keterangan GAJI NOVEMBER.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "masuk",
+        "nominal": 7500000,
+        "merchant": "PT CONTOH",
+        "kategoriUsulan": "Gaji",
+        "alasan": null
+      }
+    },
+    {
+      "id": "refund-01",
+      "kelompok": "pemasukan",
+      "penyediaDugaan": "gopay",
+      "judul": "Refund berhasil",
+      "isi": "Refund Rp 50.000 dari Pesan Antar Contoh sudah masuk ke saldo kamu.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "masuk",
+        "nominal": 50000,
+        "merchant": "Pesan Antar Contoh",
+        "kategoriUsulan": null,
+        "alasan": null,
+        "tanda": "refund"
+      }
+    },
+    {
+      "id": "topup-01",
+      "kelompok": "pindah",
+      "penyediaDugaan": "gopay",
+      "judul": "Top up berhasil",
+      "isi": "Top up Rp 200.000 dari Bank Contoh berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "pindah",
+        "nominal": 200000,
+        "merchant": "Top up dari Bank Contoh",
+        "kategoriUsulan": null,
+        "alasan": null,
+        "tanda": "mungkin-pindah-dana"
+      },
+      "catatan": "Pemindahan antar dompet sendiri. Draf harus ditandai agar tidak dihitung ganda sebagai pengeluaran dan pemasukan; pengguna memutuskan di Perlu dicek."
+    },
+    {
+      "id": "topup-bank-sisi-01",
+      "kelompok": "pindah",
+      "penyediaDugaan": "bank",
+      "judul": "Transfer Berhasil",
+      "isi": "Transfer ke GOPAY TOPUP Rp200.000 berhasil.",
+      "harapan": {
+        "tindakan": "catat",
+        "arah": "pindah",
+        "nominal": 200000,
+        "merchant": "GOPAY TOPUP",
+        "kategoriUsulan": null,
+        "alasan": null,
+        "tanda": "mungkin-pindah-dana"
+      },
+      "catatan": "Sisi bank dari top up yang sama dengan topup-01 (nominal sama, waktu berdekatan): pasangan pindah dana."
+    },
+    {
+      "id": "otp-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "bank",
+      "judul": "Kode verifikasi",
+      "isi": "Kode OTP kamu 482913. Jangan bagikan ke siapa pun, termasuk pihak yang mengaku dari kami.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "otp"
+      },
+      "catatan": "Tidak boleh disimpan sama sekali, termasuk kodenya."
+    },
+    {
+      "id": "otp-02",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "dana",
+      "judul": "Verifikasi masuk",
+      "isi": "482913 adalah kode DANA kamu. Berlaku 5 menit.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "otp"
+      }
+    },
+    {
+      "id": "promo-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "gopay",
+      "judul": "Promo spesial",
+      "isi": "Cashback 50% hingga Rp 25.000 untuk pembayaran pertama kamu hari ini!",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "promo"
+      },
+      "catatan": "Memuat angka Rp tapi bukan transaksi."
+    },
+    {
+      "id": "promo-02",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "shopeepay",
+      "judul": "Voucher untukmu",
+      "isi": "Diskon Rp 10.000 dengan voucher HEMAT. Berlaku sampai tengah malam.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "promo"
+      }
+    },
+    {
+      "id": "saldo-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "gopay",
+      "judul": "Info saldo",
+      "isi": "Saldo GoPay kamu saat ini Rp 1.234.000.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "saldo"
+      }
+    },
+    {
+      "id": "gagal-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "ovo",
+      "judul": "Pembayaran gagal",
+      "isi": "Pembayaran Rp 50.000 ke Toko Contoh gagal. Saldo kamu tidak terpotong.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "gagal"
+      }
+    },
+    {
+      "id": "diproses-01",
+      "kelompok": "tunggu",
+      "penyediaDugaan": "dana",
+      "judul": "Pembayaran diproses",
+      "isi": "Pembayaran Rp 75.000 ke Layanan Contoh sedang diproses.",
+      "harapan": {
+        "tindakan": "tunggu",
+        "arah": "keluar",
+        "nominal": 75000,
+        "merchant": "Layanan Contoh",
+        "kategoriUsulan": null,
+        "alasan": "diproses"
+      },
+      "catatan": "Belum final. Jangan jadikan draf; boleh disimpan sebagai tertunda sampai ada notifikasi berhasil."
+    },
+    {
+      "id": "pengingat-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "bank",
+      "judul": "Pengingat tagihan",
+      "isi": "Tagihan listrik Rp 387.500 jatuh tempo besok.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "pengingat"
+      },
+      "catatan": "Bukan transaksi. (Kelak boleh jadi sumber pengingat tagihan di K5, tapi bukan draf.)"
+    },
+    {
+      "id": "login-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "bank",
+      "judul": "Peringatan keamanan",
+      "isi": "Ada login baru di perangkat lain. Bukan kamu? Segera amankan akun.",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "bukan-keuangan"
+      }
+    },
+    {
+      "id": "chat-01",
+      "kelompok": "abaikan",
+      "penyediaDugaan": "lain",
+      "judul": "Pesan baru",
+      "isi": "Budi: nanti malam jadi makan di luar?",
+      "harapan": {
+        "tindakan": "abaikan",
+        "arah": null,
+        "nominal": null,
+        "merchant": null,
+        "kategoriUsulan": null,
+        "alasan": "bukan-keuangan"
+      }
+    }
+  ],
+  "ajariKula": [
+    {
+      "id": "ajari-01",
+      "kelompok": "ajari",
+      "penyediaDugaan": "fiktif-pay",
+      "contohAjar": {
+        "judul": "FiktifPay",
+        "isi": "Lunas ✔ Kedai Fiktif | 45.000 rupiah | via FiktifPay"
+      },
+      "pengguna_menandai": {
+        "nominal": "45.000",
+        "merchant": "Kedai Fiktif",
+        "arah": "keluar"
+      },
+      "contohUji": [
+        {
+          "judul": "FiktifPay",
+          "isi": "Lunas ✔ Toko Roti Fiktif | 18.500 rupiah | via FiktifPay",
+          "harapan": {
+            "tindakan": "catat",
+            "arah": "keluar",
+            "nominal": 18500,
+            "merchant": "Toko Roti Fiktif"
+          }
+        },
+        {
+          "judul": "FiktifPay",
+          "isi": "Promo ✨ Cashback 10 ribu untuk transaksi berikutnya",
+          "harapan": {
+            "tindakan": "abaikan",
+            "alasan": "promo"
+          }
+        }
+      ],
+      "catatan": "Format tanpa 'Rp' dan tanpa kata 'berhasil'. Pengurai generik boleh gagal atau ragu pada contohAjar; setelah pengguna menandai, templat harus mengurai contohUji[0] dengan benar dan tetap mengabaikan contohUji[1]."
+    },
+    {
+      "id": "ajari-02",
+      "kelompok": "ajari",
+      "penyediaDugaan": "bank-fiktif",
+      "contohAjar": {
+        "judul": "Info Rekening",
+        "isi": "Rek *0000 debet IDR 73.250,00 tgl 26/11 ref 99182 di MINIMARKET FIKTIF"
+      },
+      "pengguna_menandai": {
+        "nominal": "73.250,00",
+        "merchant": "MINIMARKET FIKTIF",
+        "arah": "keluar"
+      },
+      "contohUji": [
+        {
+          "judul": "Info Rekening",
+          "isi": "Rek *0000 kredit IDR 2.000.000,00 tgl 27/11 ref 99213 dari PT FIKTIF",
+          "harapan": {
+            "tindakan": "catat",
+            "arah": "masuk",
+            "nominal": 2000000,
+            "merchant": "PT FIKTIF"
+          }
+        }
+      ],
+      "catatan": "Kata arah 'debet'/'kredit' dan nominal 'IDR 73.250,00'; nomor referensi (99182) tidak boleh terbaca sebagai nominal."
+    }
+  ]
+}

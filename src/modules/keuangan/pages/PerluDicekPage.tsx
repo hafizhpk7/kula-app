@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { AlertCircle, Check, FileUp, Trash2 } from "lucide-react";
+import { AlertCircle, Check, ClipboardPaste, FileUp, Trash2 } from "lucide-react";
 import { FEATURES } from "../../../config/features";
 import { formatRupiah } from "../../../utils/calc";
 import { formatIndonesianDate } from "../../../utils/dates";
@@ -89,14 +89,27 @@ export const PerluDicekPage: React.FC = () => {
       title="Perlu dicek"
       subtitle={daftar.length > 0 ? `${daftar.length} draf menunggu konfirmasi` : "Tidak ada yang menunggu"}
       action={
-        FEATURES.imporCsv ? (
-          <Link
-            to="/keuangan-keluarga/impor"
-            className="px-4 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 hover:bg-surface-sunken transition"
-          >
-            <FileUp className="w-4 h-4" aria-hidden="true" />
-            <span>Impor CSV</span>
-          </Link>
+        FEATURES.imporCsv || FEATURES.tangkapTeks ? (
+          <div className="flex flex-wrap gap-2 justify-end">
+            {FEATURES.tangkapTeks && (
+              <Link
+                to="/keuangan-keluarga/tempel"
+                className="px-4 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 hover:bg-surface-sunken transition"
+              >
+                <ClipboardPaste className="w-4 h-4" aria-hidden="true" />
+                <span>Tempel teks</span>
+              </Link>
+            )}
+            {FEATURES.imporCsv && (
+              <Link
+                to="/keuangan-keluarga/impor"
+                className="px-4 min-h-[44px] rounded-full border border-border-strong bg-surface text-text text-[13px] font-medium inline-flex items-center gap-1.5 hover:bg-surface-sunken transition"
+              >
+                <FileUp className="w-4 h-4" aria-hidden="true" />
+                <span>Impor CSV</span>
+              </Link>
+            )}
+          </div>
         ) : undefined
       }
     />

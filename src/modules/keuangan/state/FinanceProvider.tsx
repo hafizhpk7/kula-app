@@ -688,7 +688,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
             tidakSah++;
             continue;
           }
-          const usulan = usulkanKategori(aturanKategori, m.jenis, m.merchant, (id) => kategoriValid(id, m.jenis));
+          const usulan =
+            usulkanKategori(aturanKategori, m.jenis, m.merchant, (id) => kategoriValid(id, m.jenis)) ??
+            (m.kategoriBawaan && kategoriValid(m.kategoriBawaan, m.jenis) ? m.kategoriBawaan : undefined);
           const d = await bangunDraf(m, uid, nowIso, usulan);
           const kandidat = await kunciKandidat({ penyedia: d.penyedia, jenis: d.jenis, nominal: d.nominal, merchant: d.merchant, tanggal: d.tanggal, jam: d.jam, urutan: m.urutan });
           dibangun.push({ d, kandidat });

@@ -100,3 +100,14 @@ describe("flag imporCsv mati", () => {
     expect(screen.queryByRole("link", { name: /Impor CSV/ })).not.toBeInTheDocument();
   });
 });
+
+describe("flag tangkapTeks mati", () => {
+  it("rute /tempel dialihkan ke Ringkasan, tanpa tautan Tempel teks, dan teks dari alamat tidak ditangkap", async () => {
+    window.location.hash = "#/keuangan-keluarga/tempel";
+    render(<App />);
+    expect(await screen.findByRole("heading", { level: 1, name: "Ringkasan" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Tempel teks/ })).not.toBeInTheDocument();
+    const { ambilBagikan } = await import("../../modules/keuangan/tangkap/bagikan");
+    expect(ambilBagikan()).toBeNull();
+  });
+});

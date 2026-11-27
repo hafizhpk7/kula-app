@@ -17,6 +17,8 @@ export interface MasukanDraf {
   batchId?: string;
   /** Lihat BahanKunci.urutan: untuk catatan kembar yang sah dalam satu impor. */
   urutan?: number;
+  /** Id kategori usulan dari kamus pengurai (K4). Dipakai hanya bila aturan kategori pengguna tidak punya usulan. */
+  kategoriBawaan?: string;
 }
 
 const TANGGAL = /^\d{4}-\d{2}-\d{2}$/;
