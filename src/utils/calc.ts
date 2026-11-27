@@ -16,6 +16,8 @@ export const YEAR_LABELS: Record<1 | 2 | 3 | 4 | 5, string> = {
 export function formatRupiah(amount: number | undefined | null, dashForZero = false): string {
   if (amount === undefined || amount === null || isNaN(amount)) return "-";
   if (amount === 0 && dashForZero) return "-";
+  // Tanda minus (U+2212) di depan "Rp", sama dengan format "−Rp" di daftar transaksi; bukan "Rp -123".
+  if (amount < 0) return "−Rp " + new Intl.NumberFormat("id-ID").format(-amount);
   return "Rp " + new Intl.NumberFormat("id-ID").format(amount);
 }
 

@@ -85,8 +85,8 @@ export const AnggaranPage: React.FC = () => {
           className="w-full text-left px-4 py-3.5 flex items-center gap-3 hover:bg-surface-sunken/50 transition cursor-pointer min-h-[72px]"
         >
           <span className="flex-1 min-w-0 space-y-1.5">
-            <span className="flex items-center justify-between gap-2">
-              <span className="flex items-center gap-1.5 text-[14px] font-medium text-text truncate">
+            <span className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+              <span className="flex items-center gap-1.5 text-[14px] font-medium text-text min-w-0 break-words">
                 {st.state === "over" && <AlertTriangle className="w-4 h-4 text-danger-text shrink-0" aria-hidden="true" />}
                 {cat.name}
               </span>

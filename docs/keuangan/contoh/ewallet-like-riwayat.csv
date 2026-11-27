@@ -1,0 +1,8 @@
+﻿Tanggal,Waktu,Aktivitas,Detail,Nominal,Status
+2026-11-02,12:31,Pembayaran,Warung Makan Contoh,-Rp50.000,Berhasil
+2026-11-03,08:05,Top Up,Dari Bank Contoh,+Rp200.000,Berhasil
+2026-11-04,19:44,Pembayaran,Kopi Contoh via QRIS,-Rp27.500,Berhasil
+2026-11-05,10:12,Pembayaran,Toko Contoh,-Rp75.000,Gagal
+2026-11-06,21:00,Pembayaran,Layanan Contoh,-Rp120.000,Diproses
+2026-11-08,09:20,Terima Uang,Dari SITI CONTOH,+Rp500.000,Berhasil
+2026-11-09,13:00,Refund,Pesan Antar Contoh,+Rp50.000,Berhasil

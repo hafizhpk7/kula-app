@@ -84,7 +84,80 @@ export interface RecurringRule {
   dayOfMonth?: number;         // 1..31
   dayOfWeek?: number;          // 0..6
   lastGeneratedThrough?: string; // "YYYY-MM-DD"
+  /**
+   * Kosong atau true: dicatat otomatis saat jatuh tempo (perilaku bawaan).
+   * false: jadi TAGIHAN (K5): tidak dicatat sendiri, muncul di Tagihan sampai ditandai dibayar. Hanya untuk pengeluaran.
+   */
+  catatOtomatis?: boolean;
   createdAt?: string;          // ISO timestamp
   updatedAt?: string;          // ISO timestamp
   createdBy?: string;          // uid
+}
+
+// ---------- Perlu dicek (K2, docs/keuangan/USULAN-K2.md) ----------
+
+export type SumberDraf = "csv" | "tempel" | "bagikan" | "android";
+export type StatusDraf = "baru" | "dikonfirmasi" | "dibuang";
+export type JenisDraf = "masuk" | "keluar";
+export type KeyakinanDraf = "tinggi" | "sedang" | "rendah";
+
+/**
+ * Hasil uraian satu transaksi dari luar (CSV, teks yang ditempel atau dibagikan, app Android).
+ * TEKS ASLI notifikasi atau baris CSV TIDAK DISIMPAN, hanya hasil uraiannya. Menjadi transaksi hanya
+ * setelah pengguna mengonfirmasi.
+ */
+export interface DrafTransaksi {
+  id: string;                  // = kunci duplikat, [A-Za-z0-9_-]{1,128}
+  sumber: SumberDraf;
+  tanggal: string;             // "YYYY-MM-DD", zona Asia/Jakarta
+  jam?: string;                // "HH:mm" Asia/Jakarta; kosong bila sumber tidak punya jam
+  nominal: number;             // bulat > 0, ≤ 1_000_000_000_000
+  jenis: JenisDraf;
+  penyedia: string;            // 1..40, mis. "GoPay", "BCA"
+  merchant?: string;           // ≤ 80
+  kategoriUsulan?: string;     // ≤ 64, id kategori; dari aturanKategori, bisa diganti pengguna
+  keyakinan?: KeyakinanDraf;   // dari pengurai (K4)
+  batchId?: string;            // ≤ 64, satu impor
+  status: StatusDraf;
+  transaksiId?: string;        // wajib bila status = "dikonfirmasi"
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+}
+
+/** Pasangan kata kunci ke kategori, dipelajari dari konfirmasi. Bisa diubah dan dihapus pengguna. */
+export interface AturanKategori {
+  id: string;                  // `${jenis}:${kataKunci dengan spasi jadi "_"}`
+  kataKunci: string;           // 1..40, huruf kecil a-z0-9 dan spasi
+  jenis: JenisDraf;
+  kategoriId: string;          // 1..64
+  jumlah: number;              // 1..1_000_000
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+}
+
+// ---------- Ajari Kula (K4b, docs/keuangan/USULAN-K4B.md) ----------
+
+export type ArahTemplat = "keluar" | "masuk" | "dari-kata";
+export type FormatAngkaTemplat = "id" | "en" | "polos";
+
+/**
+ * Bentuk satu notifikasi yang diajarkan pengguna, dengan bagian variabel diganti penanda ({N} nominal, {M} merchant,
+ * {A} kata arah, {*} bagian lain). TEKS ASLI, nominal, dan merchant TIDAK disimpan.
+ */
+export interface TemplatPenyedia {
+  id: string;                  // "t_" + hash bentuk, [A-Za-z0-9_-]{1,128}
+  nama: string;                // 1..40, label penyedia
+  bentuk: string;              // 1..300
+  bentukJudul?: string;        // ≤ 100
+  arah: ArahTemplat;
+  formatAngka: FormatAngkaTemplat;
+  terverifikasi: number;       // 0..1_000_000
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
 }

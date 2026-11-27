@@ -1,3 +1,4 @@
+import { FEATURES } from "../../../config/features";
 import React, { useEffect, useRef, useState } from "react";
 import { useRadioGroup } from "../../../hooks/useRadioGroup";
 import { judulFormulir } from "../../../config/copy";
@@ -37,6 +38,8 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
   const [dayOfMonth, setDayOfMonth] = useState<number>(1);
   const [dayOfWeek, setDayOfWeek] = useState<number>(1);
   const [active, setActive] = useState(true);
+  // K5: false = tagihan (tidak dicatat otomatis). Hanya bermakna untuk pengeluaran, dan hanya ditawarkan bila flag tagihan menyala.
+  const [catatOtomatis, setCatatOtomatis] = useState(true);
 
   const [errors, setErrors] = useState<{ name?: string; amount?: string; categoryId?: string; walletId?: string; startDate?: string }>({});
   const [submitting, setSubmitting] = useState(false);
@@ -58,6 +61,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
         setDayOfMonth(initialRule.dayOfMonth || 1);
         setDayOfWeek(initialRule.dayOfWeek || 1);
         setActive(initialRule.active !== false);
+        setCatatOtomatis(initialRule.catatOtomatis !== false);
       } else {
         setName("");
         setType("expense");
@@ -71,6 +75,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
         setDayOfMonth(parseInt(today.split("-")[2], 10));
         setDayOfWeek(1);
         setActive(true);
+        setCatatOtomatis(true);
       }
 
       setTimeout(() => nameInputRef.current?.focus(), 50);
@@ -93,7 +98,12 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
     dayOfMonth: frequency === "monthly" ? dayOfMonth : undefined,
     dayOfWeek: frequency === "weekly" ? dayOfWeek : undefined
   };
-  const duePreview = startDate < todayLocal() ? getDueOccurrences(previewRule, todayLocal()) : [];
+  const bisaTagihan = FEATURES.tagihan && type === "expense";
+  const jadiTagihan = bisaTagihan && !catatOtomatis;
+  // Tagihan tidak mencatat ke belakang, jadi tidak ada pratinjau pencatatan
+  const duePreview = startDate < todayLocal() && !jadiTagihan ? getDueOccurrences(previewRule, todayLocal()) : [];
+  // Dari tagihan kembali ke otomatis: yang belum ditandai dibayar langsung tercatat
+  const kembaliKeOtomatis = bisaTagihan && catatOtomatis && initialRule?.catatOtomatis === false;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,6 +124,7 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
       startDate,
       dayOfMonth: frequency === "monthly" ? Number(dayOfMonth) : undefined,
       dayOfWeek: frequency === "weekly" ? Number(dayOfWeek) : undefined,
+      ...(jadiTagihan ? { catatOtomatis: false } : {}),
       createdAt: initialRule?.createdAt,
       createdBy: initialRule?.createdBy
     };
@@ -359,6 +370,33 @@ export const RecurringRuleModal: React.FC<RecurringRuleModalProps> = ({
             />
             <FieldError id="rule-start">{errors.startDate}</FieldError>
           </div>
+
+          {bisaTagihan && (
+            <div className="space-y-1.5">
+              <label className="flex items-start gap-3 cursor-pointer min-h-[44px]">
+                <input
+                  id="rule-otomatis"
+                  type="checkbox"
+                  checked={catatOtomatis}
+                  onChange={(e) => setCatatOtomatis(e.target.checked)}
+                  className="mt-1 w-5 h-5 rounded border-border text-primary focus:ring-primary cursor-pointer shrink-0"
+                />
+                <span className="space-y-0.5">
+                  <span className="block text-[14px] font-medium text-text">Catat otomatis saat jatuh tempo</span>
+                  <span className="block text-[12px] text-text-2 leading-relaxed">
+                    {catatOtomatis
+                      ? "Dicatat sebagai transaksi pada tanggalnya, tanpa konfirmasi."
+                      : "Jadi tagihan: tidak dicatat sendiri. Muncul di Tagihan sampai Anda tandai sudah dibayar."}
+                  </span>
+                </span>
+              </label>
+              {kembaliKeOtomatis && (
+                <p className="text-[12px] text-text-2 bg-surface-sunken p-3 rounded-control border border-border">
+                  Tagihan yang belum ditandai dibayar akan langsung dicatat sebagai transaksi.
+                </p>
+              )}
+            </div>
+          )}
 
           {duePreview.length > 0 && (
             <div className="bg-surface-sunken p-3 rounded-control border border-border text-[12px] text-text-2">

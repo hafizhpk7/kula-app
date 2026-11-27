@@ -40,7 +40,8 @@ export const TabunganPage: React.FC = () => {
     return a.deadline.localeCompare(b.deadline);
   });
 
-  const totalTerkumpul = sortedGoals.reduce((s, g) => s + g.currentAmount, 0);
+  // Kelebihan di atas target tidak ikut dihitung, supaya total menggambarkan kemajuan, bukan saldo mentah.
+  const totalTerkumpul = sortedGoals.reduce((s, g) => s + Math.min(g.currentAmount, g.targetAmount), 0);
   const totalTarget = sortedGoals.reduce((s, g) => s + g.targetAmount, 0);
 
   const getDeadlineStatus = (deadline?: string, current = 0, target = 1) => {
@@ -133,7 +134,7 @@ export const TabunganPage: React.FC = () => {
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h2 className="font-display text-[17px] text-text truncate">{goal.name}</h2>
+                    <h2 className="font-display text-[17px] text-text break-words" title={goal.name}>{goal.name}</h2>
                     {goal.deadline && !tercapai && (
                       <div className="flex items-center gap-1.5 text-[12px] text-text-2 mt-0.5">
                         <Calendar className="w-3.5 h-3.5" />

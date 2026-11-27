@@ -1,0 +1,218 @@
+{
+  "bca-like-mutasi.csv": {
+    "encoding": "utf-8",
+    "pemisah": ",",
+    "barisPembuka": 6,
+    "barisHeader": 7,
+    "barisPenutup": "ringkasan saldo di akhir harus diabaikan",
+    "catatan": "Tanggal tanpa tahun (dd/MM) dan diawali apostrof; tahun diambil dari baris Periode. Jumlah berakhiran DB atau CR. Angka memakai titik desimal. Nominal harus dari kolom Jumlah, bukan dari angka di dalam Keterangan.",
+    "baris": [
+      {
+        "tanggal": "2026-11-01",
+        "arah": "keluar",
+        "nominal": 50000,
+        "keterangan": "TRSF E-BANKING DB 0111/FTSCY/WS95031 50000.00 WARUNG MAKAN CONTOH"
+      },
+      {
+        "tanggal": "2026-11-03",
+        "arah": "keluar",
+        "nominal": 87500,
+        "keterangan": "KARTU DEBIT 0311 INDOMARET CONTOH"
+      },
+      {
+        "tanggal": "2026-11-05",
+        "arah": "masuk",
+        "nominal": 7500000,
+        "keterangan": "TRSF E-BANKING CR 0511/FTSCY/WS95051 GAJI NOVEMBER, PT CONTOH"
+      },
+      {
+        "tanggal": "2026-11-07",
+        "arah": "keluar",
+        "nominal": 150000,
+        "keterangan": "BI-FAST DB 0711 BUDI CONTOH"
+      },
+      {
+        "tanggal": "2026-11-12",
+        "arah": "masuk",
+        "nominal": 1250.5,
+        "keterangan": "BUNGA/INTEREST"
+      },
+      {
+        "tanggal": "2026-11-15",
+        "arah": "keluar",
+        "nominal": 15000,
+        "keterangan": "BIAYA ADM"
+      }
+    ],
+    "dilewatiAtauTertunda": [
+      {
+        "keterangan": "TARIK TUNAI ATM",
+        "alasan": "tanggal bukan tanggal (PEND): transaksi tertunda"
+      }
+    ],
+    "jumlahDiimpor": 6
+  },
+  "mandiri-like-debit-kredit.csv": {
+    "encoding": "utf-8",
+    "pemisah": ";",
+    "barisPembuka": 0,
+    "barisHeader": 1,
+    "catatan": "Debit dan Kredit di kolom terpisah, angka Indonesia (titik ribuan, koma desimal), koma di dalam Keterangan tidak memecah kolom.",
+    "baris": [
+      {
+        "tanggal": "2026-11-02",
+        "arah": "keluar",
+        "nominal": 150000,
+        "keterangan": "TRANSFER KE 0000000000 BUDI CONTOH"
+      },
+      {
+        "tanggal": "2026-11-04",
+        "arah": "keluar",
+        "nominal": 200000,
+        "keterangan": "PEMBAYARAN PLN TOKEN"
+      },
+      {
+        "tanggal": "2026-11-06",
+        "arah": "masuk",
+        "nominal": 1000000,
+        "keterangan": "SETORAN TUNAI"
+      },
+      {
+        "tanggal": "2026-11-09",
+        "arah": "keluar",
+        "nominal": 50000,
+        "keterangan": "BELI PULSA, TELEKOM CONTOH"
+      }
+    ],
+    "dilewatiAtauTertunda": [
+      {
+        "keterangan": "KOREKSI",
+        "alasan": "debit dan kredit sama-sama nol"
+      }
+    ],
+    "jumlahDiimpor": 4
+  },
+  "ewallet-like-riwayat.csv": {
+    "encoding": "utf-8 dengan BOM",
+    "pemisah": ",",
+    "barisPembuka": 0,
+    "barisHeader": 1,
+    "catatan": "Tanda +/- dan 'Rp' menempel pada nominal. Kolom Status menentukan: hanya 'Berhasil' diimpor. Top Up dari bank kemungkinan pemindahan dana antar dompet sendiri: beri tanda 'mungkin pindah dana', jangan dihitung sebagai pemasukan murni tanpa konfirmasi.",
+    "baris": [
+      {
+        "tanggal": "2026-11-02",
+        "arah": "keluar",
+        "nominal": 50000,
+        "keterangan": "Warung Makan Contoh"
+      },
+      {
+        "tanggal": "2026-11-03",
+        "arah": "masuk",
+        "nominal": 200000,
+        "keterangan": "Top Up: Dari Bank Contoh",
+        "tanda": "mungkin-pindah-dana"
+      },
+      {
+        "tanggal": "2026-11-04",
+        "arah": "keluar",
+        "nominal": 27500,
+        "keterangan": "Kopi Contoh via QRIS"
+      },
+      {
+        "tanggal": "2026-11-08",
+        "arah": "masuk",
+        "nominal": 500000,
+        "keterangan": "Dari SITI CONTOH"
+      },
+      {
+        "tanggal": "2026-11-09",
+        "arah": "masuk",
+        "nominal": 50000,
+        "keterangan": "Pesan Antar Contoh",
+        "tanda": "refund"
+      }
+    ],
+    "dilewatiAtauTertunda": [
+      {
+        "keterangan": "Toko Contoh",
+        "alasan": "status Gagal"
+      },
+      {
+        "keterangan": "Layanan Contoh",
+        "alasan": "status Diproses (tertunda)"
+      }
+    ],
+    "jumlahDiimpor": 5
+  },
+  "satu-kolom-windows1252.csv": {
+    "encoding": "windows-1252",
+    "pemisah": ";",
+    "barisPembuka": 0,
+    "barisHeader": 1,
+    "catatan": "Satu kolom Jumlah: kurung berarti keluar, tanda minus di belakang berarti keluar, tanpa tanda berarti masuk. Tanda pisah (en dash) harus terbaca benar, bukan karakter rusak.",
+    "baris": [
+      {
+        "tanggal": "2026-11-01",
+        "arah": "keluar",
+        "nominal": 500000,
+        "keterangan": "Penarikan Tunai – ATM Contoh"
+      },
+      {
+        "tanggal": "2026-11-02",
+        "arah": "masuk",
+        "nominal": 3000000,
+        "keterangan": "Gaji"
+      },
+      {
+        "tanggal": "2026-11-03",
+        "arah": "keluar",
+        "nominal": 129900,
+        "keterangan": "Belanja Online – Toko Contoh"
+      },
+      {
+        "tanggal": "2026-11-04",
+        "arah": "keluar",
+        "nominal": 15000,
+        "keterangan": "Biaya Admin"
+      }
+    ],
+    "dilewatiAtauTertunda": [],
+    "jumlahDiimpor": 4
+  },
+  "rusak-sebagian.csv": {
+    "encoding": "utf-8",
+    "pemisah": ",",
+    "barisPembuka": 0,
+    "barisHeader": 1,
+    "catatan": "Tidak boleh crash. Baris bermasalah dilaporkan per nomor baris dan alasan; baris valid tetap diimpor. Nominal tanpa 'Rp' dan tanpa kolom arah: arah dari tanda atau dari pilihan pengguna di pratinjau (tanpa tanda = perlu ditanya).",
+    "baris": [
+      {
+        "tanggal": "2026-11-01",
+        "arah": "perlu-ditanya",
+        "nominal": 50000,
+        "keterangan": "Belanja Contoh"
+      },
+      {
+        "tanggal": "2026-11-05",
+        "arah": "perlu-ditanya",
+        "nominal": 25000,
+        "keterangan": "Valid terakhir"
+      }
+    ],
+    "dilewatiAtauTertunda": [
+      {
+        "nomorBaris": 3,
+        "alasan": "jumlah kolom kurang"
+      },
+      {
+        "nomorBaris": 4,
+        "alasan": "jumlah bukan angka"
+      },
+      {
+        "nomorBaris": 5,
+        "alasan": "tanggal mustahil"
+      }
+    ],
+    "jumlahDiimpor": 2
+  }
+}

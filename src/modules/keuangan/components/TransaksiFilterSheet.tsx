@@ -2,18 +2,19 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Repeat, Search } from "lucide-react";
 import { BottomSheet } from "../../../components/common/BottomSheet";
-import { Category } from "../types";
+import { Category, Wallet } from "../types";
 
 export interface TransaksiFilters {
   categoryId: string;
   member: string; // "all" | "me" | uid
   query: string;
+  walletId: string; // "all" | id dompet
 }
 
-export const FILTER_TRANSAKSI_AWAL: TransaksiFilters = { categoryId: "all", member: "all", query: "" };
+export const FILTER_TRANSAKSI_AWAL: TransaksiFilters = { categoryId: "all", member: "all", query: "", walletId: "all" };
 
 export function hitungFilterTransaksi(f: TransaksiFilters): number {
-  return (f.categoryId !== "all" ? 1 : 0) + (f.member !== "all" ? 1 : 0) + (f.query.trim() ? 1 : 0);
+  return (f.categoryId !== "all" ? 1 : 0) + (f.member !== "all" ? 1 : 0) + (f.query.trim() ? 1 : 0) + (f.walletId !== "all" ? 1 : 0);
 }
 
 interface Props {
@@ -23,7 +24,10 @@ interface Props {
   onChange: (f: TransaksiFilters) => void;
   categories: Category[];
   members: { uid: string; displayName: string }[];
+  wallets: Wallet[];
   hasil: number;
+  /** Kolom cari sudah ada di halaman (HP): jangan diulang di lembar. */
+  tanpaCari?: boolean;
 }
 
 const field =
@@ -35,12 +39,15 @@ export const TransaksiFilterFields: React.FC<{
   onChange: (f: TransaksiFilters) => void;
   categories: Category[];
   members: { uid: string; displayName: string }[];
+  wallets: Wallet[];
   idAwal: string;
-}> = ({ filters, onChange, categories, members, idAwal }) => {
+  tanpaCari?: boolean;
+}> = ({ filters, onChange, categories, members, wallets, idAwal, tanpaCari }) => {
   const set = (patch: Partial<TransaksiFilters>) => onChange({ ...filters, ...patch });
 
   return (
     <div className="space-y-4 text-[14px]">
+      {!tanpaCari && (
       <div className="space-y-1">
         <label htmlFor={`${idAwal}-cari`} className="text-[13px] font-medium text-text">
           Cari
@@ -57,6 +64,7 @@ export const TransaksiFilterFields: React.FC<{
           />
         </div>
       </div>
+      )}
 
       <div className="space-y-1">
         <label htmlFor={`${idAwal}-kategori`} className="text-[13px] font-medium text-text">
@@ -69,13 +77,41 @@ export const TransaksiFilterFields: React.FC<{
           className={field}
         >
           <option value="all">Semua kategori</option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name} {c.archived ? "(Diarsipkan)" : ""}
-            </option>
+          {/* Dikelompokkan per jenis: "Lainnya" ada di pengeluaran dan di pemasukan */}
+          {(["expense", "income"] as const).map((jenis) => (
+            <optgroup key={jenis} label={jenis === "expense" ? "Pengeluaran" : "Pemasukan"}>
+              {categories
+                .filter((c) => c.type === jenis)
+                .map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name} {c.archived ? "(Diarsipkan)" : ""}
+                  </option>
+                ))}
+            </optgroup>
           ))}
         </select>
       </div>
+
+      {wallets.length > 1 && (
+        <div className="space-y-1">
+          <label htmlFor={`${idAwal}-dompet`} className="text-[13px] font-medium text-text">
+            Dompet
+          </label>
+          <select
+            id={`${idAwal}-dompet`}
+            value={filters.walletId}
+            onChange={(e) => set({ walletId: e.target.value })}
+            className={field}
+          >
+            <option value="all">Semua dompet</option>
+            {wallets.map((w) => (
+              <option key={w.id} value={w.id}>
+                {w.name} {w.archived ? "(Diarsipkan)" : ""}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div className="space-y-1">
         <label htmlFor={`${idAwal}-anggota`} className="text-[13px] font-medium text-text">
@@ -108,7 +144,9 @@ export const TransaksiFilterSheet: React.FC<Props> = ({
   onChange,
   categories,
   members,
-  hasil
+  wallets,
+  hasil,
+  tanpaCari
 }) => {
   return (
     <BottomSheet
@@ -141,7 +179,9 @@ export const TransaksiFilterSheet: React.FC<Props> = ({
           onChange={onChange}
           categories={categories}
           members={members}
+          wallets={wallets}
           idAwal="tf"
+          tanpaCari={tanpaCari}
         />
 
         <Link

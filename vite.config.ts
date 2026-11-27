@@ -1,10 +1,13 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  // Bagikan ke Kula (K4a): share_target hanya ada di manifest bila flag tangkapTeks menyala saat build
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+  const tangkapTeks = env.VITE_FEATURE_TANGKAP_TEKS === 'true';
   return {
     plugins: [
       react(),
@@ -30,6 +33,15 @@ export default defineConfig(() => {
           display: 'standalone',
           start_url: '/',
           scope: '/',
+          ...(tangkapTeks
+            ? {
+                share_target: {
+                  action: '/#/keuangan-keluarga/tempel',
+                  method: 'GET',
+                  params: { title: 'title', text: 'text', url: 'url' }
+                }
+              }
+            : {}),
           icons: [
             {
               src: '/pwa-192x192.png',

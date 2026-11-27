@@ -15,16 +15,67 @@ import {
 } from "firebase/firestore";
 import { db, handleFirestoreError, OperationType } from "../../../services/firebase";
 import { DEFAULT_FINANCE_CONFIG } from "../constants/categories";
-import { FinanceConfig, RecurringFrequency, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringFrequency, RecurringRule, SavingsGoal, TemplatPenyedia, Transaction } from "../types";
+import { DrafCloudStore } from "./drafCloud";
 import { normalizeConfig } from "../utils/normalization";
 import { applyConfigPatch, ConfigPatch } from "../utils/configPatch";
 import { FinanceRepository } from "./types";
 
 export class CloudRepository implements FinanceRepository {
   private basePath: string;
+  private draf: DrafCloudStore;
 
   constructor(private uid: string, familyId?: string | null) {
     this.basePath = familyId ? `families/${familyId}` : `users/${uid}`;
+    this.draf = new DrafCloudStore(this.basePath, uid);
+  }
+
+  // ---- Perlu dicek (K2) ----
+  subscribeDraf(onData: (d: DrafTransaksi[]) => void, onError: (e: Error) => void): () => void {
+    return this.draf.subscribeDraf(onData, onError);
+  }
+  ambilDrafByIds(ids: string[]): Promise<DrafTransaksi[]> {
+    return this.draf.ambilDrafByIds(ids);
+  }
+  tambahDraf(draf: DrafTransaksi[]): Promise<{ baru: number; duplikat: number }> {
+    return this.draf.tambahDraf(draf);
+  }
+  ubahDraf(id: string, patch: Partial<Pick<DrafTransaksi, "kategoriUsulan" | "status">>): Promise<void> {
+    return this.draf.ubahDraf(id, patch);
+  }
+  async konfirmasiDraf(id: string, tx: Transaction): Promise<void> {
+    const payload: Record<string, unknown> = {
+      id: tx.id,
+      ownerId: this.uid,
+      type: tx.type,
+      amount: tx.amount,
+      categoryId: tx.categoryId,
+      walletId: tx.walletId || "default",
+      date: tx.date,
+      createdAt: tx.createdAt,
+      updatedAt: tx.updatedAt,
+      createdBy: tx.createdBy || this.uid
+    };
+    if (tx.note && tx.note.trim()) payload.note = tx.note.trim();
+    await this.draf.konfirmasi(id, tx.id, payload);
+  }
+  subscribeAturanKategori(onData: (a: AturanKategori[]) => void, onError: (e: Error) => void): () => void {
+    return this.draf.subscribeAturan(onData, onError);
+  }
+  upsertAturanKategori(a: AturanKategori): Promise<void> {
+    return this.draf.upsertAturan(a);
+  }
+  deleteAturanKategori(id: string): Promise<void> {
+    return this.draf.deleteAturan(id);
+  }
+  subscribeTemplatPenyedia(onData: (t: TemplatPenyedia[]) => void, onError: (e: Error) => void): () => void {
+    return this.draf.subscribeTemplat(onData, onError);
+  }
+  upsertTemplatPenyedia(t: TemplatPenyedia): Promise<void> {
+    return this.draf.upsertTemplat(t);
+  }
+  deleteTemplatPenyedia(id: string): Promise<void> {
+    return this.draf.deleteTemplat(id);
   }
 
   subscribeTransactions(
@@ -167,6 +218,7 @@ export class CloudRepository implements FinanceRepository {
               dayOfMonth: typeof data.dayOfMonth === "number" ? data.dayOfMonth : undefined,
               dayOfWeek: typeof data.dayOfWeek === "number" ? data.dayOfWeek : undefined,
               lastGeneratedThrough: data.lastGeneratedThrough || undefined,
+              catatOtomatis: data.catatOtomatis === false ? false : undefined,
               createdAt: data.createdAt || undefined,
               updatedAt: data.updatedAt || undefined,
               createdBy: data.createdBy || undefined
@@ -391,23 +443,26 @@ export class CloudRepository implements FinanceRepository {
       const snap = await getDoc(ref);
       const existing = snap.exists() ? snap.data() : null;
       const nowIso = new Date().toISOString();
+      // Field kosong DIHILANGKAN, bukan ditulis null: rules menolak null untuk field opsional (name, dayOfMonth, dayOfWeek, ...)
       const payload: Record<string, any> = {
         id: rule.id,
-        name: rule.name ? rule.name.trim() : null,
         type: rule.type,
         amount: Math.floor(rule.amount),
         categoryId: rule.categoryId,
         walletId: rule.walletId || "default",
         frequency: rule.frequency,
         active: rule.active !== false,
-        startDate: rule.startDate || null,
-        dayOfMonth: rule.dayOfMonth ?? null,
-        dayOfWeek: rule.dayOfWeek ?? null,
-        lastGeneratedThrough: rule.lastGeneratedThrough || existing?.lastGeneratedThrough || null,
         createdAt: rule.createdAt || existing?.createdAt || nowIso,
         updatedAt: nowIso,
         createdBy: existing?.createdBy || rule.createdBy || this.uid
       };
+      if (rule.name && rule.name.trim()) payload.name = rule.name.trim();
+      if (rule.startDate) payload.startDate = rule.startDate;
+      if (typeof rule.dayOfMonth === "number") payload.dayOfMonth = rule.dayOfMonth;
+      if (typeof rule.dayOfWeek === "number") payload.dayOfWeek = rule.dayOfWeek;
+      const sampai = rule.lastGeneratedThrough || existing?.lastGeneratedThrough;
+      if (sampai) payload.lastGeneratedThrough = sampai;
+      if (rule.catatOtomatis === false) payload.catatOtomatis = false;
       await setDoc(ref, payload);
     } catch (e: any) {
       handleFirestoreError(e, OperationType.WRITE, docPath);
@@ -516,6 +571,7 @@ export class CloudRepository implements FinanceRepository {
 
       const cfgRef = doc(db, this.basePath, "financeConfig", "main");
       await deleteDoc(cfgRef);
+      await this.draf.hapusSemua();
     } catch (e: any) {
       handleFirestoreError(e, OperationType.DELETE, this.basePath);
     }

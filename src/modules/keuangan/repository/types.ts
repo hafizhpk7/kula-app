@@ -1,4 +1,4 @@
-import { FinanceConfig, RecurringRule, SavingsGoal, Transaction } from "../types";
+import { AturanKategori, DrafTransaksi, FinanceConfig, RecurringRule, SavingsGoal, TemplatPenyedia, Transaction } from "../types";
 import { ConfigPatch } from "../utils/configPatch";
 
 export interface FinanceRepository {
@@ -33,6 +33,23 @@ export interface FinanceRepository {
     txs: Transaction[],
     ruleUpdates: { ruleId: string; lastGeneratedThrough: string }[]
   ): Promise<{ created: number }>;
+
+  // ---- Perlu dicek (K2) ----
+  /** Draf berstatus "baru". */
+  subscribeDraf(onData: (d: DrafTransaksi[]) => void, onError: (e: Error) => void): () => void;
+  /** Draf (status apa pun) untuk id-id itu; untuk memeriksa duplikat. */
+  ambilDrafByIds(ids: string[]): Promise<DrafTransaksi[]>;
+  /** Buat draf yang belum ada (id = kunci duplikat); yang sudah ada dihitung sebagai duplikat. */
+  tambahDraf(draf: DrafTransaksi[]): Promise<{ baru: number; duplikat: number }>;
+  ubahDraf(id: string, patch: Partial<Pick<DrafTransaksi, "kategoriUsulan" | "status">>): Promise<void>;
+  /** Satu langkah atomik: tulis transaksi dan tandai draf "dikonfirmasi". Gagal bila draf bukan "baru". */
+  konfirmasiDraf(id: string, tx: Transaction): Promise<void>;
+  subscribeAturanKategori(onData: (a: AturanKategori[]) => void, onError: (e: Error) => void): () => void;
+  upsertAturanKategori(a: AturanKategori): Promise<void>;
+  deleteAturanKategori(id: string): Promise<void>;
+  subscribeTemplatPenyedia(onData: (t: TemplatPenyedia[]) => void, onError: (e: Error) => void): () => void;
+  upsertTemplatPenyedia(t: TemplatPenyedia): Promise<void>;
+  deleteTemplatPenyedia(id: string): Promise<void>;
 
   deleteAllData(): Promise<void>;
 }

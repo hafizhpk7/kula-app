@@ -25,6 +25,14 @@ const PESAN = {
   hapusAturan: `Aturan berulang belum terhapus. ${SARAN}`,
   buatBerulang: `Transaksi berulang belum dibuat. Aplikasi akan mencoba lagi saat dibuka berikutnya. ${SARAN}`,
   hapusSemua: `Data keuangan belum terhapus. ${SARAN}`,
+  tambahDraf: `Draf belum tersimpan. ${SARAN}`,
+  konfirmasiDraf: `Draf belum dicatat sebagai transaksi dan masih di Perlu dicek. ${SARAN}`,
+  drafSudahDiproses: "Draf ini sudah diproses di perangkat lain, jadi tidak dicatat dua kali.",
+  ubahDraf: `Draf belum berubah. ${SARAN}`,
+  simpanAturanKategori: `Aturan kategori belum tersimpan. ${SARAN}`,
+  hapusAturanKategori: `Aturan kategori belum terhapus. ${SARAN}`,
+  simpanTemplat: `Templat belum tersimpan. ${SARAN}`,
+  hapusTemplat: `Templat belum terhapus. ${SARAN}`,
   unggahTamu: `Data tamu belum terunggah ke akun, dan masih utuh di perangkat ini. ${SARAN}`
 } as const;
 

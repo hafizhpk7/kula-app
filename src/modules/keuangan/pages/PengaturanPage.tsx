@@ -7,11 +7,17 @@ import { ZonaBahaya } from "../../../components/common/ZonaBahaya";
 import { BottomSheet } from "../../../components/common/BottomSheet";
 import { MonthSelector } from "../components/MonthSelector";
 import { useFinance } from "../state/FinanceContext";
+import { useFamily } from "../../../shell/family/context/FamilyContext";
 import { summarizeMonth } from "../utils/calculations";
 import { monthLabel } from "../utils/dates";
 import { exportFinanceToExcel } from "../utils/export";
 import { WalletsSection } from "../components/WalletsSection";
 import { RecurringSection } from "../components/RecurringSection";
+import { AturanKategoriSection } from "../components/AturanKategoriSection";
+import { TemplatSection } from "../components/TemplatSection";
+import { FEATURES } from "../../../config/features";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const kartu = "bg-surface rounded-card border border-border p-5 space-y-3 shadow-[var(--shadow-card)]";
 
@@ -26,8 +32,14 @@ export const PengaturanPage: React.FC = () => {
     deleteAllFinanceData,
     migrationDecision,
     uploadGuestDataToCloud,
-    clearGuestData
+    clearGuestData,
+    draf,
+    aturanKategori,
+    templatPenyedia,
+    tagihan
   } = useFinance();
+  const { status: familyStatus } = useFamily();
+  const modeKeluarga = familyStatus === "active";
 
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showClearGuestConfirm, setShowClearGuestConfirm] = useState(false);
@@ -96,6 +108,73 @@ export const PengaturanPage: React.FC = () => {
         <RecurringSection embedded />
       </Lipat>
 
+      {FEATURES.tagihan && (
+        <Link
+          to="/keuangan-keluarga/tagihan"
+          className="bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)] flex items-center justify-between gap-3 min-h-[44px]"
+        >
+          <span className="space-y-0.5">
+            <span className="block font-display text-[16px] text-text">Tagihan</span>
+            <span className="block text-[12px] text-text-2">
+              {tagihan.length > 0 ? `${tagihan.length} belum dibayar` : "Tidak ada yang menunggu"}
+            </span>
+          </span>
+          <ArrowRight className="w-5 h-5 text-text-2 shrink-0" aria-hidden="true" />
+        </Link>
+      )}
+
+      {FEATURES.imporCsv && FEATURES.drafTransaksi && (
+        <Link
+          to="/keuangan-keluarga/impor"
+          className="bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)] flex items-center justify-between gap-3 min-h-[44px]"
+        >
+          <span className="space-y-0.5">
+            <span className="block font-display text-[16px] text-text">Impor CSV</span>
+            <span className="block text-[12px] text-text-2">Mutasi bank atau riwayat e-wallet, masuk ke Perlu dicek dulu</span>
+          </span>
+          <ArrowRight className="w-5 h-5 text-text-2 shrink-0" aria-hidden="true" />
+        </Link>
+      )}
+      {FEATURES.tangkapTeks && FEATURES.drafTransaksi && (
+        <Link
+          to="/keuangan-keluarga/tempel"
+          className="bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)] flex items-center justify-between gap-3 min-h-[44px]"
+        >
+          <span className="space-y-0.5">
+            <span className="block font-display text-[16px] text-text">Tempel teks</span>
+            <span className="block text-[12px] text-text-2">Dari notifikasi atau pesan transaksi, masuk ke Perlu dicek dulu</span>
+          </span>
+          <ArrowRight className="w-5 h-5 text-text-2 shrink-0" aria-hidden="true" />
+        </Link>
+      )}
+
+      {FEATURES.drafTransaksi && (
+        <>
+          <Link
+            to="/keuangan-keluarga/perlu-dicek"
+            className="bg-surface rounded-card border border-border p-5 shadow-[var(--shadow-card)] flex items-center justify-between gap-3 min-h-[44px]"
+          >
+            <span className="space-y-0.5">
+              <span className="block font-display text-[16px] text-text">Perlu dicek</span>
+              <span className="block text-[12px] text-text-2">
+                {draf.length > 0 ? `${draf.length} draf menunggu konfirmasi` : "Tidak ada yang menunggu"}
+              </span>
+            </span>
+            <ArrowRight className="w-5 h-5 text-text-2 shrink-0" aria-hidden="true" />
+          </Link>
+
+          <Lipat title="Aturan kategori" summary={aturanKategori.length > 0 ? `${aturanKategori.length} aturan` : "Belum ada aturan"}>
+            <AturanKategoriSection />
+          </Lipat>
+
+          {FEATURES.tangkapTeks && (
+            <Lipat title="Templat Ajari Kula" summary={templatPenyedia.length > 0 ? `${templatPenyedia.length} templat` : "Belum ada templat"}>
+              <TemplatSection />
+            </Lipat>
+          )}
+        </>
+      )}
+
       </div>
 
       <div className="space-y-4 min-w-0">
@@ -104,6 +183,15 @@ export const PengaturanPage: React.FC = () => {
         <h2 id="blok-integrasi" className="font-display text-[16px] text-text">
           Integrasi modul Bayi
         </h2>
+        {modeKeluarga ? (
+          // Keputusan P8: di mode keluarga biaya vaksin tidak dihitung di Keuangan. Tanpa kontrol yang tidak bisa dipakai.
+          <div className="space-y-1">
+            <p className="text-[14px] font-medium text-text">Biaya vaksin dari modul Bayi</p>
+            <p className="text-[12px] text-text-2 leading-relaxed">
+              Belum dihitung di Keuangan keluarga. Biaya vaksin tetap bisa dilihat di tab Biaya pada modul Bayi.
+            </p>
+          </div>
+        ) : (
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1">
             <label htmlFor="toggle-vax" className="text-[14px] font-medium text-text cursor-pointer">
@@ -125,6 +213,7 @@ export const PengaturanPage: React.FC = () => {
             />
           </label>
         </div>
+        )}
       </section>
 
       {/* Ekspor */}

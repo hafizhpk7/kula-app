@@ -12,6 +12,14 @@
  * - `mpasi`: halaman MPASI (P1): tahap makan sesuai umur, catatan makan, makanan yang sudah dicoba.
  * - `resep`: katalog resep MPASI dari Buku KIA dengan penyaring (P2). Butuh flag mpasi untuk saran dari catatan makan.
  * - `asisten`: Asisten Tahap 1 tanpa LLM (P3b, docs/fitur/ASISTEN-AI.md): cari konten bersumber, masak dari bahan, untuk dokter.
+ * - `drafTransaksi`: Keuangan v2, layar "Perlu dicek": draf transaksi dari luar yang baru jadi transaksi setelah dikonfirmasi
+ *   (K2, docs/keuangan/USULAN-K2.md). Butuh rules `drafTransaksi` dan `aturanKategori` sudah di-deploy untuk mode pribadi dan keluarga.
+ * - `tagihan`: Keuangan v2, tagihan jatuh tempo dari aturan berulang yang tidak dicatat otomatis (K5, docs/keuangan/USULAN-K5.md).
+ *   Butuh rules `catatOtomatis` di aturan berulang sudah di-deploy untuk mode pribadi dan keluarga.
+ * - `imporCsv`: Keuangan v2, impor mutasi CSV ke "Perlu dicek" (K3). Diproses di perangkat, tanpa unggahan. Butuh flag `drafTransaksi`
+ *   dan rules `drafTransaksi` di-deploy.
+ * - `tangkapTeks`: Keuangan v2, "Tempel teks" notifikasi dan "Bagikan ke Kula" (Web Share Target) ke "Perlu dicek" (K4a). Diproses di perangkat.
+ *   Butuh flag `drafTransaksi` dan rules `drafTransaksi` di-deploy. Flag ini juga menambah `share_target` ke manifest PWA saat build.
  * - `fotoMomen`: foto di Momen (R3b, D4; docs/fitur/USULAN-R3B.md). Butuh rules dan indeks R3b sudah di-deploy.
  */
 export const FEATURES = {
@@ -21,5 +29,9 @@ export const FEATURES = {
   animasiTumbuh: import.meta.env.VITE_FEATURE_ANIMASI_TUMBUH === "true",
   mpasi: import.meta.env.VITE_FEATURE_MPASI === "true",
   resep: import.meta.env.VITE_FEATURE_RESEP === "true",
-  asisten: import.meta.env.VITE_FEATURE_ASISTEN === "true"
+  asisten: import.meta.env.VITE_FEATURE_ASISTEN === "true",
+  drafTransaksi: import.meta.env.VITE_FEATURE_DRAF_TRANSAKSI === "true",
+  tagihan: import.meta.env.VITE_FEATURE_TAGIHAN === "true",
+  imporCsv: import.meta.env.VITE_FEATURE_IMPOR_CSV === "true",
+  tangkapTeks: import.meta.env.VITE_FEATURE_TANGKAP_TEKS === "true"
 } as const;

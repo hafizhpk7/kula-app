@@ -110,7 +110,8 @@ describe("9.4 Keuangan Keluarga UI Tests (T-UI-1 .. T-UI-20)", () => {
     const simpanBtn = screen.getByRole("button", { name: "Simpan" });
     fireEvent.click(simpanBtn);
 
-    expect(await screen.findByText("Nominal harus lebih dari 0")).toBeInTheDocument();
+    // K1 #15: kolom kosong bukan nol: pesannya "Isi nominal dulu."
+    expect(await screen.findByText("Isi nominal dulu.")).toBeInTheDocument();
 
     // Enter valid amount
     const amountInput = screen.getByLabelText("Nominal");

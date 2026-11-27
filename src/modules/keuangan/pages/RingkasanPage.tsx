@@ -10,11 +10,13 @@ import {
   Legend,
   CartesianGrid
 } from "recharts";
-import { ShieldAlert, Info, Plus, ArrowRight, RefreshCw, AlertTriangle, ChevronRight } from "lucide-react";
+import { ShieldAlert, Info, Plus, ArrowRight, RefreshCw, AlertTriangle, ChevronRight, Inbox } from "lucide-react";
+import { FEATURES } from "../../../config/features";
 import { formatRupiah } from "../../../utils/calc";
 import { MODULE_REGISTRY } from "../../registry";
 import { formatPersen } from "../utils/persen";
 import { MonthSelector } from "../components/MonthSelector";
+import { TagihanMingguIni } from "../components/TagihanMingguIni";
 import { useCatatTransaksi } from "../components/FinanceLayout";
 import { useFinance } from "../state/FinanceContext";
 import { resolveCategoryName } from "../utils/categories";
@@ -49,7 +51,8 @@ export const RingkasanPage: React.FC = () => {
     error,
     entries,
     pendingClaims,
-    skippedVaccineWithoutDate
+    skippedVaccineWithoutDate,
+    draf
   } = useFinance();
   const bukaCatat = useCatatTransaksi();
   const lebar = useLayarLebar();
@@ -64,6 +67,8 @@ export const RingkasanPage: React.FC = () => {
   const budgetSummary = summarizeBudgets(summary.expenseByCategory, config.budgets || {}, []);
   const adaAnggaran = budgetSummary.rows.length > 0 && budgetSummary.totalBudget > 0;
   const sisa = budgetSummary.totalBudget - budgetSummary.totalSpentOnBudgeted;
+  // Pengeluaran di kategori yang tidak punya batas: tidak ikut "sisa anggaran", jadi disebut terpisah.
+  const tanpaBatas = Math.max(0, summary.expense - budgetSummary.totalSpentOnBudgeted);
   const persenTerpakai = adaAnggaran
     ? Math.round((budgetSummary.totalSpentOnBudgeted / budgetSummary.totalBudget) * 100)
     : 0;
@@ -138,7 +143,7 @@ export const RingkasanPage: React.FC = () => {
   const blokSisa = (
     <section className={`${kartu} space-y-3`} aria-labelledby="blok-sisa">
       <p id="blok-sisa" className="text-[12px] font-semibold text-text-3 uppercase tracking-wider">
-        {adaAnggaran ? "Sisa anggaran" : "Keluar bulan ini"}
+        {adaAnggaran ? "Sisa anggaran kategori" : "Keluar bulan ini"}
       </p>
       {adaAnggaran ? (
         <>
@@ -165,6 +170,15 @@ export const RingkasanPage: React.FC = () => {
             <p className="text-[12.5px] text-text-2 font-tabular">
               Terpakai {formatPersen(persenTerpakai)} dari {formatRupiah(budgetSummary.totalBudget)}
             </p>
+            {tanpaBatas > 0 && (
+              <Link
+                to="/keuangan-keluarga/anggaran"
+                className="inline-flex items-center gap-1 min-h-[44px] text-[12.5px] text-text-2 hover:text-text font-tabular"
+              >
+                <span>Belum termasuk {formatRupiah(tanpaBatas)} di kategori tanpa anggaran</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              </Link>
+            )}
           </div>
         </>
       ) : (
@@ -213,8 +227,8 @@ export const RingkasanPage: React.FC = () => {
           const hampir = row.status.state === "warning";
           return (
             <li key={row.categoryId} className="space-y-1">
-              <div className="flex items-center justify-between gap-2 text-[13.5px]">
-                <span className="flex items-center gap-1.5 text-text font-medium min-w-0 truncate">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5 text-[13.5px]">
+                <span className="flex items-center gap-1.5 text-text font-medium min-w-0 break-words">
                   {(lewat || hampir) && (
                     <AlertTriangle className={`w-4 h-4 shrink-0 ${lewat ? "text-danger-text" : "text-warning-text"}`} aria-hidden="true" />
                   )}
@@ -394,6 +408,30 @@ export const RingkasanPage: React.FC = () => {
           </Link>
         </div>
       )}
+
+      {FEATURES.drafTransaksi && draf.length > 0 && (
+        <Link
+          to="/keuangan-keluarga/perlu-dicek"
+          className="p-3.5 bg-warning-tint/60 border border-warning/30 rounded-card flex items-center justify-between gap-3 text-text min-h-[44px]"
+        >
+          <span className="flex items-center gap-2 text-[13px] font-medium min-w-0">
+            <Inbox className="w-5 h-5 text-warning-text shrink-0" aria-hidden="true" />
+            <span>
+              Perlu dicek:{" "}
+              <span className="inline-flex items-center justify-center min-w-5 h-5 px-1.5 rounded-full bg-surface border border-warning/40 text-warning-text text-[12px] font-semibold" aria-label={`${draf.length} draf`}>
+                {draf.length}
+              </span>{" "}
+              draf menunggu konfirmasi
+            </span>
+          </span>
+          <span className="text-[12px] font-medium text-warning-text inline-flex items-center gap-1 shrink-0">
+            <span>Periksa</span>
+            <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
+          </span>
+        </Link>
+      )}
+
+      {FEATURES.tagihan && <TagihanMingguIni />}
 
       {isMonthEmpty ? (
         <>
